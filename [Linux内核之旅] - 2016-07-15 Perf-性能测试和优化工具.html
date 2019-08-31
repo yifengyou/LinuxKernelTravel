@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Perf-性能测试和优化工具
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664602568&amp;idx=1&amp;sn=5a1cac116f3951ad6b3ad15086d0a660&amp;chksm=f04db62dc73a3f3b2805041964bceffd8a25311da45ef1e65baf2fda5c083b42b66525c2d40e&amp;scene=27#wechat_redirect&cpage=67' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Perf-性能测试和优化工具</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        王森
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-07-15</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                <div class="rich_media_thumb_wrp" id="media">
+                    
+                                        
+                                    </div>
+                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style=""><span style="font-size: 16px;">面对一个问题程序，最好采用自顶向下的策略。先整体看看该程序运行时各种统计事件的大概，再针对某些方向深入细节。而不要一下子扎进琐碎细节，会一叶障目的。</span></p><p style=""><span style="font-size: 16px;">对于优化自己写的代码，cpu bound 型 和 IO bound 型是不一样的：</span></p><ul style="" class=" list-paddingleft-2"><li><p><span style="font-size: 16px;">cpu bound 型：所谓cpu bound型指的是程序大部分时间都在使用CPU。</span></p></li><li><p><span style="font-size: 16px;">IO bound 型：由cpu bound型的定义就不难推出了。</span></p></li></ul><p><span style=""></span></p><h3 style=""><span style="font-size: 16px; color: rgb(2, 30, 170);"><strong style="box-sizing: inherit; -webkit-tap-highlight-color: transparent;">perf stat 命令用于统计进程总体的信息</strong></span></h3><p><img data-s="300,640" data-type="png" src="data:image/PNG;base64,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 " src="SeWfibBcBT0HFc68wC3OpwAUvwvKalVTA59ZXPfWB7OrDeHLYnSYd86FOCKm6n2IB3pE0k6OEXLGicTps2fyU5Iw"  data-ratio="0.5359712230215827" data-w=""  /><br  /></p><p style=""><span style="font-size: 16px;">task-clock：CPU 利用率，该值高，说明程序的多数时间花费在 CPU 计算上而非 IO。</span></p><p style=""><span style="font-size: 16px;">Context-switches：进程切换次数，记录了程序运行过程中发生了多少次进程切换，频繁的进程切换是应该避免的。</span></p><p style=""><span style="font-size: 16px;">Cache-misses：程序运行过程中总体的 cache 利用情况，如果该值过高，说明程序的 cache 利用不好</span></p><p style=""><span style="font-size: 16px;">CPU-migrations：表示进程 t1 运行过程中发生了多少次 CPU 迁移，即被调度器从一个 CPU 转移到另外一个 CPU 上运行。</span></p><p style=""><span style="font-size: 16px;">Cycles：处理器时钟，一条机器指令可能需要多个 cycles</span></p><p style=""><span style="font-size: 16px;">Instructions: 机器指令数目。</span></p><p style=""><span style="font-size: 16px;">IPC：是 Instructions/Cycles 的比值，该值越大越好，说明程序充分利用了处理器的特性。</span></p><p style=""><span style="font-size: 16px;">branches：待查</span></p><p style=""><span style="font-size: 16px;">branch misses：待查</span></p><p><span style=""></span></p><h3 style=""><span style="font-size: 16px; color: rgb(2, 30, 170);"><strong style="box-sizing: inherit; -webkit-tap-highlight-color: transparent;">perf top 命令可查看系统的实时信息</strong></span></h3><p style=""><span style="font-size: 16px;">例如系统中最耗时的内核函数或某个用户进程：</span></p><p><img data-s="300,640" data-type="png" src="data:image/PNG;base64,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 " src="SeWfibBcBT0HFc68wC3OpwAUvwvKalVTA3tL7C3oSJsCOZ2ULibD5FmicaickoTThyhWNzP4UGMXHhNibU9hVwcKNUg"  data-ratio="0.9856115107913669" data-w=""  /><br  /></p><h3 style=""><span style="color: rgb(2, 30, 170); font-size: 16px;"><strong style="box-sizing: inherit; -webkit-tap-highlight-color: transparent;">perf record</strong></span></h3><p style=""><span style="font-size: 16px;">记录单个函数级别的统计信息，并使用 perf report 来显示统计结果，以此可以找到热点：</span></p><p><img data-s="300,640" data-type="png" src="data:image/PNG;base64,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 " src="SeWfibBcBT0HFc68wC3OpwAUvwvKalVTA9WP08nRq2H5Amgdy3rFgG6Gj1vVcMibql9KibT6NTbQ2cDM2hVZCB2aQ"  data-ratio="0.6600719424460432" data-w=""  /><br  /><span style="">perf record -e cpu-clock -g 给出函数的调用关系，以便于找到次级热点：</span></p><p><span style=""><img data-s="300,640" data-type="png" src="data:image/PNG;base64,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 " src="SeWfibBcBT0HFc68wC3OpwAUvwvKalVTAHyQKE4iaBN25qemI0TV1mKMlYO1wJiaUF78Xq2GdroY7B7YDGgicoRH2w"  data-ratio="0.7841726618705036" data-w=""  /><br  /></span></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">王森</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

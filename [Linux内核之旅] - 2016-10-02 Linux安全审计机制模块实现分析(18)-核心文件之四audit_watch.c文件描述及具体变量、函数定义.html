@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Linux安全审计机制模块实现分析(18)-核心文件之四audit_watch.c文件描述及具体变量、函数定义
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664603193&amp;idx=1&amp;sn=7f1eaf4994661b038e050b5b04e86098&amp;chksm=f04db3dcc73a3acabe02c62bd745722f2842278eea4707128319449868d89127ab3ba3ada3a3&amp;scene=27#wechat_redirect&cpage=59' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Linux安全审计机制模块实现分析(18)-核心文件之四audit_watch.c文件描述及具体变量、函数定义</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        吴宪萍
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-10-02</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                <div class="rich_media_thumb_wrp" id="media">
+                    
+                                        
+                                    </div>
+                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <h3><span style="color: rgb(2, 30, 170); font-size: 16px;"><strong><span style="color: rgb(2, 30, 170); font-family: 宋体;">2.4.4<span style="color: rgb(2, 30, 170); font-family: 宋体;">文件四 </span><span style=" color: rgb(2, 30, 170) ; ;; ">audit</span></span>_watch<span style="color: rgb(2, 30, 170); font-family: 宋体;">.c</span></strong></span></h3><h4><span style="color: rgb(2, 30, 170); font-size: 16px;"><strong><span style="font-size: 16px; color: rgb(2, 30, 170); font-family: 宋体;">2.4.4.1 <span style="font-size: 16px; color: rgb(2, 30, 170); font-family: 宋体;">文件描述</span></span></strong></span></h4><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">static int __init audit_watch_init(void)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">功能：审计监视的初始化函数。</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">tatic int audit_watch_handle_event(struct fsnotify_group *group,&nbsp;&nbsp;&nbsp;&nbsp;struct fsnotify_mark *inode_mark, struct fsnotify_mark *vfsmount_mark,&nbsp;&nbsp;&nbsp;&nbsp;struct fsnotify_event *event)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">功能：审计监视的事件处理函数。</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">static void audit_update_watch(struct audit_parent *parent,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const char *dname, dev_t dev, unsigned long ino, unsigned invalidating)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能：更新审计监视信息</span>watch<span style="font-size: 16px; font-family: 宋体;">。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">static struct audit_parent *audit_init_parent(struct path *path)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能：初始化一个</span>audit_parent<span style="font-size: 16px; font-family: 宋体;">结构及监视信息。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">static inline struct audit_parent *audit_find_parent(struct inode *inode)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能：查找给定</span>inode<span style="font-size: 16px; font-family: 宋体;">的</span>audit_parent<span style="font-size: 16px; font-family: 宋体;">结构。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">static struct audit_watch *audit_dupe_watch(struct audit_watch *old)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能：复制一个</span>watch<span style="font-size: 16px; font-family: 宋体;">实例。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">int audit_add_watch(struct audit_krule *krule, struct list_head **list)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能：添加规则的审计监视信息</span>watch<span style="font-size: 16px; font-family: 宋体;">。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">static void audit_add_to_parent(struct audit_krule *krule, struct audit_parent *parent)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能：把指定规则的</span>watch<span style="font-size: 16px; font-family: 宋体;">添加到</span>parent<span style="font-size: 16px; font-family: 宋体;">的</span>watches<span style="font-size: 16px; font-family: 宋体;">链表上。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;"><strong><span style="font-family: Calibri; font-size: 14px; color: rgb(2, 30, 170);"><br  /></span></strong></span></p><h4><span style="font-size: 16px;"><strong><span style="font-size: 16px; font-family: 宋体; color: rgb(2, 30, 170);">2.4.4.2主要变量及宏定义</span></strong></span></h4><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">static struct fsnotify_group *audit_watch_group; &nbsp;//<span style="font-size: 16px; font-family: 宋体;">审计监视处理实例</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">#define AUDIT_FS_WATCH (FS_MOVE | FS_CREATE | FS_DELETE | FS_DELETE_SELF |\</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">FS_MOVE_SELF | FS_EVENT_ON_CHILD) //<span style="font-size: 16px; font-family: 宋体;">审计监视的事件</span></span></p><p style="text-indent:28px"><span style="font-size: 16px;"><strong><span style="font-size: 16px; font-family: Calibri; color: rgb(2, 30, 170);">&nbsp;</span></strong><strong><span style="font-size: 16px; font-family: Calibri; color: rgb(2, 30, 170);"></span></strong></span></p><h4><span style="font-size: 16px;"><strong><span style="font-size: 16px; font-family: 宋体; color: rgb(2, 30, 170);">2.4.4.3结构体定义</span></strong><strong><span style="font-size: 16px; font-family: 宋体; color: rgb(2, 30, 170);"></span></strong></span></h4><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">&nbsp;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">struct audit_watch {</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">atomic_tcount;/* <span style="font-size: 16px; font-family: 宋体;">引用数 </span>*/</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">dev_tdev;/* <span style="font-size: 16px; font-family: 宋体;">相关的设备号 </span>*/</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">char*path;/*<span style="font-size: 16px; font-family: 宋体;">监视的插入路径</span>*/</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">unsigned longino;/* <span style="font-size: 16px; font-family: 宋体;">相关的</span>inode<span style="font-size: 16px; font-family: 宋体;">号</span>*/</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">struct audit_parent*parent; /* <span style="font-size: 16px; font-family: 宋体;">监视所在的父目录信息 </span>*/</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">struct list_headwlist;/* <span style="font-size: 16px; font-family: 宋体;">用来形成</span>parent<span style="font-size: 16px; font-family: 宋体;">的</span>watches<span style="font-size: 16px; font-family: 宋体;">链表 </span>*/</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">struct list_headrules;/*<span style="font-size: 16px; font-family: 宋体;">所在的规则</span>*/</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">};</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">struct audit_parent {</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">struct list_headwatches; /*<span style="font-size: 16px; font-family: 宋体;">该目录下所有</span>watch<span style="font-size: 16px; font-family: 宋体;">实例的链表</span>*/</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">struct fsnotify_mark mark; /* inode<span style="font-size: 16px; font-family: 宋体;">中的</span>mark*/</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">};</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">static const struct fsnotify_ops audit_watch_fsnotify_ops = {</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">.should_send_event = audit_watch_should_send_event,</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">.handle_event = audit_watch_handle_event,</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">.free_group_priv = NULL,</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">.freeing_mark = NULL,</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">.free_event_priv = NULL,</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">}; &nbsp;//<span style="font-size: 16px; font-family: 宋体;">审计事件的处理函数</span></span></p><p style="text-indent:32px"><span style="font-size: 16px;">&nbsp;</span></p><h4><strong><span style="font-family: 宋体; font-size: 16px; color: rgb(2, 30, 170);">2.4.4.4外部函数</span></strong></h4><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">void fsnotify_get_mark(struct fsnotify_mark *mark)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能：获取</span>mark<span style="font-size: 16px; font-family: 宋体;">的一个引用。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">struct fsnotify_mark *fsnotify_find_inode_mark(struct fsnotify_group *group,</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;struct inode *inode)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能：查找</span>inode<span style="font-size: 16px; font-family: 宋体;">上的有审计监视的</span>mark.</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">void fsnotify_init_mark(struct fsnotify_mark *mark,</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">void (*free_mark)(struct fsnotify_mark *mark))</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能：初始化一个</span>mark.</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">int fsnotify_add_mark(struct fsnotify_mark *mark,</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;struct fsnotify_group *group, struct inode *inode,</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;struct vfsmount *mnt, int allow_dups)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能：把</span>mark<span style="font-size: 16px; font-family: 宋体;">注册给</span>group.</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">int audit_compare_dname_path(const char *dname, const char *path, int *dirlen)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能：把</span>dname<span style="font-size: 16px; font-family: 宋体;">和</span>path<span style="font-size: 16px; font-family: 宋体;">的最后一个分量相比较</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;"><br  /></span></span></p><h4><strong><span style="font-family: 宋体; font-size: 16px; color: rgb(2, 30, 170);">2.4.4.5内部函数</span></strong></h4><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">static int __init audit_watch_init(void)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">功能：审计监视的初始化函数。</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">tatic int audit_watch_handle_event(struct fsnotify_group *group,&nbsp;&nbsp;&nbsp;&nbsp;struct fsnotify_mark *inode_mark, struct fsnotify_mark *vfsmount_mark,&nbsp;&nbsp;&nbsp;&nbsp;struct fsnotify_event *event)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">功能：审计监视的事件处理函数。</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">static void audit_update_watch(struct audit_parent *parent,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const char *dname, dev_t dev, unsigned long ino, unsigned invalidating)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能：更新审计监视信息</span>watch<span style="font-size: 16px; font-family: 宋体;">。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">static struct audit_parent *audit_init_parent(struct path *path)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能：初始化一个</span>audit_parent<span style="font-size: 16px; font-family: 宋体;">结构及监视信息。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">static inline struct audit_parent *audit_find_parent(struct inode *inode)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能：查找给定</span>inode<span style="font-size: 16px; font-family: 宋体;">的</span>audit_parent<span style="font-size: 16px; font-family: 宋体;">结构。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">static struct audit_watch *audit_dupe_watch(struct audit_watch *old)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能：复制一个</span>watch<span style="font-size: 16px; font-family: 宋体;">实例。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">int audit_add_watch(struct audit_krule *krule, struct list_head **list)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能：添加规则的审计监视信息</span>watch<span style="font-size: 16px; font-family: 宋体;">。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">static void audit_add_to_parent(struct audit_krule *krule, struct audit_parent *parent)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能：把指定规则的</span>watch<span style="font-size: 16px; font-family: 宋体;">添加到</span>parent<span style="font-size: 16px; font-family: 宋体;">的</span>watches<span style="font-size: 16px; font-family: 宋体;">链表上。</span></span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">吴宪萍</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

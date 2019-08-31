@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		范畴和函子，以及它们在 Haskell 中的应用——洪峰老师讲创客道（三十四）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=417118155&amp;idx=1&amp;sn=86527b09ca989d135fed90728d6d8217&amp;chksm=76439a2e41341338819bf0598212bf33f96500054d4ac7bc68c8d0c88562b6a592126a7c6d67&amp;scene=27#wechat_redirect&cpage=74' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">范畴和函子，以及它们在 Haskell 中的应用——洪峰老师讲创客道（三十四）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        洪峰
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-04-15</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="text-indent:28px"><span style=";font-size:16px"></span></p><p><mpvoice frameborder="0" class="res_iframe js_editor_audio audio_iframe" src="/cgi-bin/readtemplate?t=tmpl/audio_tmpl&amp;name=%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9334&amp;play_length=24:56" name="%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9334" play_length="1496000" voice_encode_fileid="MzI3NzA5MzUxNF80MTcxMTgxNTM="></mpvoice></p><p style="text-indent:28px"><span style=";font-size:16px"></span><br  /></p><p style="text-indent:28px"><span style=";font-size:16px">在上一讲，我给大家介绍了函数的概念以及<span style="font-family:Times New Roman">Lambda</span><span style="font-family:宋体">演算，</span><span style="font-family:Times New Roman">Lambda</span><span style="font-family:宋体">演算是的函数式编程语言的共同基础，所有的函数式编程语言都以</span><span style="font-family:Times New Roman">Lambda</span><span style="font-family:宋体">演算作为理论基础。因此，理解</span><span style="font-family:Times New Roman">Lambda</span><span style="font-family:宋体">演算对于理解函数式编程语言是极为重要的。比如说，之前在</span><span style="font-family:Times New Roman">Lambda</span><span style="font-family:宋体">演算介绍里面提到过的关于正则序和应用序，对于我们现在学习</span><span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">非常重要。</span></span><span style=";font-weight:bold;font-size:16px">Haskell<span style="font-family:宋体">语言的求值顺序在默认情况下，就是正则序。</span></span></p><p style="text-indent:28px"><span style=";font-size:16px">在<span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">语言酝酿和提出规范的时候，计算机工业的发展水平还不够高，在那个年代，要实现大规模平行计算是比较困难的。但是现在看起来，</span><span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">语言的设计师们默认把</span><span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">语言的求值顺序定义为正则序，使得</span><span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">语言成为惰性（</span><span style="font-family:Times New Roman">Lazy</span><span style="font-family:宋体">）求值的语言。这种做法毫无疑问是具有眼光、具有前瞻性的。今天的计算机硬件发展非常快，计算机的多核、计算机上可用的存储资源非常丰富以及计算的速度都是今非昔比。在现在的计算机体系架构下，</span><span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">语言的内在特点充分的发挥了出来。函数式编程语言终于迎来了发展的黄金时代。相比</span><span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">以前的函数式编程语言，</span><span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">一个很重要的特点是，它把数学领域的范畴论应用到了计算机语言的设计中来。</span><span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">语言之所以成为一个纯函数式编程语言，很大程度上就是它采用了范畴论的理论作为他的设计思想。在这一讲，我就简要说明一下范畴论，以及范畴论是怎么应用带</span><span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">语言的设计中来的。</span></span></p><p style="text-indent:28px"><span style=";font-size:16px">我前面讲过，学习<span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">有三个轮回，在第二个轮回中我们要学</span></span><span style="font-size: 16px">习函数，函子和单子</span><span style=";font-size:16px">的概念。</span><span style=";font-weight:bold;font-size:16px">要理解函子和单子这个概念没有范畴论的基础是不行的。理解范畴论的第一步就是要理解范畴的概念，范畴</span><span style="font-size: 16px">在英文中被称为<span style="font-family:Times New Roman">Category</span><span style="font-family:宋体">，范畴论被称为</span><span style="font-family:Times New Roman">Category&nbsp;Theory</span><span style="font-family:宋体">。</span></span><span style=";font-size:16px">从某种意义上讲，范畴是集合论中集合在某种概念上的推广，请大家回顾一下，我在本书的第三种提出的<span style="font-family:Times New Roman">PM1/2/3</span><span style="font-family:宋体">的</span><span style="font-family:Times New Roman">3</span><span style="font-family:宋体">里面就有集合论。范畴是如何对集合进行推广的呢？</span></span><span style="font-size: 16px">我们原来学习集合论的时候我们一般只考虑集合中的元素，我们关注元素的个数也就是集合的基数、</span><span style=";font-size:16px">集合里面元素的排列顺序（偏序结构、两虚结构或者是传序结构）或者是集合中元素的分布密度。但是在很多的场合下</span><span style=";font-weight:bold;font-size:16px">我们还要考虑集合中的元素到另外一个元素的映射关系</span><span style=";font-size:16px">，比如说一个公司在市场上要生存下去，就必须具有资金、技术和人脉，这三样缺一不可。没有资金动不了；没有技术公司在市场上没有竞争力或者工作很辛苦；没有人脉打不开市场，社会是由人组成的，人与人之间的联系就是人脉，对于公司来说就很重要。</span></p><p style="text-indent:28px"><span style=";font-size:16px">当我们考察社会这个大集合的时候，在考虑集合里边的人的同时，也要考虑人与人之间的联系（朋友关系、师生关系、老乡关系等等）。互联网技术兴起之后，甚至出现了专门的网络服务帮助人扩大人脉。例如说<span style="font-family:Times New Roman">FaceBook</span><span style="font-family:宋体">、</span><span style="font-family:Times New Roman">LinkedIn</span><span style="font-family:宋体">等等。一个人从社会看，不同的角度有不同的角色。比如说我，我是我父母的儿子，我是我爱人的丈夫，同时我还是我孩子的父亲。儿子、丈夫和父亲这三个角色给予我一身。当然，我身上还有其他的角色，我现在给大家讲课。我和诸位有讲课人和听课人的关系。</span></span></p><p style="text-indent:28px"><span style=";font-size:16px">哲学家卡尔马克思讲过一句话：人是社会关系的总和。从我们数学家的角度来看，这句话是非常正确的。在范畴论的理论框架下，我们对集合的考虑不光有集合中的元素，还有集合中元素与元素之间的映射关系。只要集合中的元素两者之间有形影关系，我们把一些箭头画到集合元素之间去。此时，集合中不仅有点，点与点之间存在着大量的箭头。我们在考察一个范畴的时候，我们需要把注意力和重点放在范畴的箭头上。这就是关于范畴（<span style="font-family:Times New Roman">Category</span><span style="font-family:宋体">）的一个直觉性思考，有了这个数学直觉之后，我们要开始考虑如何从数学的角度来定义一个范畴，给出他的数学定义。不过，在往下进行之前，我还要向大家介绍一个很重要的概念</span><span style="font-family:Times New Roman">——</span></span><span style=";font-weight:bold;font-size:16px">关于函数的复合（<span style="font-family:Times New Roman">C</span></span><span style=";font-weight:bold;font-size:16px">omposite&nbsp;of&nbsp;Function</span><span style=";font-weight:bold;font-size:16px">）。</span></p><p style="text-indent:28px"><span style=";font-size:16px">为了解说的方便呢，请大家发挥一下想象力。假设我们现在有一个三角形，三角形当然有三个顶点。我们不妨对三个顶点做如下定义：左下角叫成都，上面顶点是北京，右下角的顶点叫做上海。假设<span style="font-family:Times New Roman">x</span><span style="font-family:宋体">、</span><span style="font-family:Times New Roman">y</span><span style="font-family:宋体">、</span><span style="font-family:Times New Roman">z</span><span style="font-family:宋体">就是成都、北京、上海是三个集合，因此出现了成都</span><span style="font-family:Times New Roman">x</span><span style="font-family:宋体">到北京</span><span style="font-family:Times New Roman">y</span><span style="font-family:宋体">再到上海</span><span style="font-family:Times New Roman">z</span><span style="font-family:宋体">的这样一个三角形。我们现在在三个集合之间放一些箭头，从成都到北京，我们用</span><span style="font-family:Times New Roman">f</span><span style="font-family:宋体">表示一种映射关系，比如说生活在北京的王先生，他的父母是成都人，这个关系我们用</span><span style="font-family:Times New Roman">d</span><span style="font-family:宋体">表示；从北京到上海，我们用</span><span style="font-family:Times New Roman">g</span><span style="font-family:宋体">表示一种映射关系，比如说刚刚提到的生活在北京的王先生，他的爱人是上海人，这是一种夫妻关系；从成都到上海，我们用</span><span style="font-family:Times New Roman">h</span><span style="font-family:宋体">表示这种关系，那么对于生活在北京的王先生来讲，他的来自成都的父母和来自上海的爱人是一种什么关系呢？王先生的妈妈和王先生的爱人是一种婆媳关系，这里我们用</span><span style="font-family:Times New Roman">h</span><span style="font-family:宋体">表示。</span><span style="font-family:Times New Roman">h</span><span style="font-family:宋体">关系是怎么来的呢？首先应为王先生出生在成都，工作在北京，这是</span><span style="font-family:Times New Roman">f</span><span style="font-family:宋体">关系定义的。王先生和王先生的爱人结婚以后，形成了夫妻关系，</span><span style="font-family:Times New Roman">g</span><span style="font-family:宋体">是这么产生的。所以</span><span style="font-family:Times New Roman">h</span><span style="font-family:宋体">这个婆媳关系是由</span><span style="font-family:Times New Roman">f</span><span style="font-family:宋体">和</span><span style="font-family:Times New Roman">g</span><span style="font-family:宋体">这两个关系复合得到的。换句话说，王先生家庭的婆媳关系是由母子关系和夫妻关系复合产生的。</span></span><span style=";font-weight:bold;font-size:16px">在数学里，我们可以把<span style="font-family:Times New Roman">h</span><span style="font-family:宋体">写成</span><span style="font-family:Times New Roman">g</span><span style="font-family:宋体">。</span><span style="font-family:Times New Roman">f</span><span style="font-family:宋体">，表示关系的复合</span></span><span style=";font-size:16px">。具体到这里说，就是函数的一种复合关系。</span></p><p style="text-indent:28px"><span style=";font-size:16px">有了前面讲的箭头和箭头的复合，用箭头表示一个函数，箭头的复合表示函数的复合。接下来，我们可以考虑如何定义范畴这个概念。回到我刚才给大家列举的成都、北京、上海三角形的例子。我们把成都人、北京人、上海人（当然还可以列出更多的城市的人口）称之为对象组成的领域，也就是说又成都人、北京人、上海人这些人组成了一个领域，我们叫做对象领域。这个时候不能单纯的谈成都人，也不是单独的谈北京人，更不是单独的谈上海人，而是把他们作为一个整体来考虑。</span><span style=";font-weight:bold;font-size:16px">对象领域是构造范畴的第一个要件；第二个要件是范式领域</span><span style="font-size: 16px">，对象领域的映射关系我们把它单独的拿出来，这个就是范式领域。范式领域实际上是我们在对象领域里面确定的一些箭头，可以让你直观的看待。</span><span style=";font-weight:bold;font-size:16px">范畴概念的第三个要件就是结合法则</span><span style="font-size: 16px">，在范式领域里面形成的箭头满足结合法则（注意：在范畴的概念里面，结合法则是对于同一种关系说的。比如说：王先生的父母在成都，王先生的父母是王先生的长辈。假设王先生的儿子在上海，王先生是他儿子的长辈。王先生的父母、王先生本人和王先生的儿子这三代人里面看，王先生的父母和王先生的儿子也是长辈和晚辈的关系呢。这就是我们说的结合法则）。</span></p><p style="text-indent:28px"><span style="font-size: 16px">有了这三个要件之后，范畴的概念也就有了。有了范畴的概念以后，我们可以学习什么叫</span><span style=";font-weight:bold;font-size:16px">函子</span><span style="font-size: 16px">。但是这里还有一个概念要跟大家事先介绍一下，那就是</span><span style=";font-weight:bold;font-size:16px">单位元</span><span style="font-size: 16px">的概念。前面我介绍半群的概念的时候，已经提到了半</span><span style=";font-weight:bold;font-size:16px">群满足运算的封闭性，还有满足结合律</span><span style="font-size: 16px">。如果对于一个半群而言，他的运算存在一个单位元的概念。什么叫单位元呢？比如说对乘法运算而言，在自然数、整数或者是实数系下，<span style="font-family:Times New Roman">1</span><span style="font-family:宋体">乘以任何一个数是不是还是等于这个数本身呢。这时，</span><span style="font-family:Times New Roman">1</span><span style="font-family:宋体">就是乘法运算的单位元。而对于加法运算，</span><span style="font-family:Times New Roman">0</span><span style="font-family:宋体">就是它的单位元，因为</span><span style="font-family:Times New Roman">0</span><span style="font-family:宋体">加任何一个数还是等于这个数。</span></span></p><p style="text-indent:28px"><span style="font-size: 16px">在<span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">语言里面，列表和</span><span style="font-family:Times New Roman">lisp</span><span style="font-family:宋体">语言一样还是一种内置的数据结构。所不同的是，</span><span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">的列表我们写在一个中括号里面，元素与元素之间用逗号隔开，而且要求元素的类型完全一致。对于</span><span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">语言来说，空表就是表运算关于串接处理的单位元，空表串接在</span><span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">语言里面写成两个加号。用空表串接一个表，还是等于这个表本身；用一个表去串接一个空表，也是这个表本身。也就是说，空表这个单位元，关于表串接运算满足交换律。单位元在英文里面称为</span><span style="font-family:Times New Roman">i\</span></span></p><p><span style="font-size: 16px">identity<span style="font-family:宋体">。对一个半群而言，如果它存在单位元的话，这个半群被成为幺半群（</span></span><span style="font-size: 16px">monoid</span><span style="font-size: 16px">），请大家记住幺半群这个概念，这个在<span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">编程里面极为重要。</span></span></p><p style="text-indent:28px"><span style="font-size: 16px">有了这些概念以后，我们现在可以看看函子（<span style="font-family:Times New Roman">Functor</span><span style="font-family:宋体">）的定义。</span><span style="font-family:Times New Roman">Functor</span><span style="font-family:宋体">实际上是建立在两个</span><span style="font-family:Times New Roman">Category</span><span style="font-family:宋体">之间的映射关系，用数学的术语讲，函子（</span><span style="font-family:Times New Roman">Functor</span><span style="font-family:宋体">）就是从一个范畴到另外一个范畴的态射（</span></span><span style="font-size: 16px">morphism</span><span style="font-size: 16px">）。这个概念跟我们函数的定义是不是很相似呢？这里我们回顾一下前面我们讲过的函数的定义，直系空间上的一个子集。函数的定义里面出现了定义域、值域以及从定义域到值域的映射关系，也就是一个箭头。与此类似，定义一个函子，我们可以把函子写成一个大写的字母<span style="font-family:Times New Roman">T</span><span style="font-family:宋体">，</span><span style="font-family:Times New Roman">T</span><span style="font-family:宋体">后面有一个冒号，然后写上大写的字母</span><span style="font-family:Times New Roman">A-&gt;</span><span style="font-family:宋体">（右箭头）到大写的字母</span><span style="font-family:Times New Roman">B</span><span style="font-family:宋体">，这里的</span><span style="font-family:Times New Roman">A</span><span style="font-family:宋体">和</span><span style="font-family:Times New Roman">B</span><span style="font-family:宋体">都是代表两个范畴。在范畴论的语言里面，</span><span style="font-family:Times New Roman">A</span><span style="font-family:宋体">仍然被成为定义域（</span><span style="font-family:Times New Roman">Domain</span><span style="font-family:宋体">）。</span><span style="font-family:Times New Roman">B</span><span style="font-family:宋体">被称之为协定义域（</span><span style="font-family:Times New Roman">Codomain</span><span style="font-family:宋体">）。刚才我说的这个细节，对于熟悉函数定义的人来说，理解起来没有任何困难。但是函子和函数的定义还有一个重大的区别，除了刚才提的映射关系以外，</span></span><span style=";font-weight:bold;font-size:16px">他还增加了两个函数。这两个函数分别叫做对象函数（<span style="font-family:Times New Roman">Object&nbsp;Function</span><span style="font-family:宋体">）和箭头函数（</span><span style="font-family:Times New Roman">Arrow&nbsp;Function</span><span style="font-family:宋体">），</span></span><span style="font-size: 16px">两个表示都是<span style="font-family:Times New Roman">T</span><span style="font-family:宋体">。这两个函数是什么意思呢？对象函数就是在范畴</span><span style="font-family:Times New Roman">A</span><span style="font-family:宋体">里面的一个对象，它在范畴</span><span style="font-family:Times New Roman">B</span><span style="font-family:宋体">里面有一个对应项，对应着这个对象而存在，这是这么一种映射关系。而箭头函数就是对应范畴</span><span style="font-family:Times New Roman">A</span><span style="font-family:宋体">里面的一个箭头，它会在范畴</span><span style="font-family:Times New Roman">B</span><span style="font-family:宋体">里面也有一个对应的箭头。</span></span><span style=";font-weight:bold;font-size:16px">而且函子中定义的态射满足两个重要的条件</span><span style="font-size: 16px">：一个是它存在单位元，单位元的概念我前面已经讲过了；第二个就是态射满足关于函数复合的性质，也就是说<span style="font-family:Times New Roman">Tg</span><span style="font-family:宋体">。</span><span style="font-family:Times New Roman">F&nbsp;=&nbsp;Tg</span><span style="font-family:宋体">。</span><span style="font-family:Times New Roman">Tf</span><span style="font-family:宋体">。前面一条，关于单位元的存在这个很好理解，意思是在范畴</span><span style="font-family:Times New Roman">A</span><span style="font-family:宋体">里面存在的单位元，在范畴</span><span style="font-family:Times New Roman">B</span><span style="font-family:宋体">里面也有一个单位元与之对应，这里就不花更多的时间解释了。关键是后面这条怎么理解，其实也很好理解。回想一下我前面介绍的关于成都、北京、上海这个三角形，我可以把它放到一个范畴里面去，同时我们假设美国也可以当做一个范畴。然后我们建立中国到美国的映射关系，这个映射就叫做态射。在中国的范畴中存在着亲子关系、夫妻关系以及婆媳关系都可以在美国领域里面中找到对应项，也就是说在美国范畴里面，也有两个箭头我们称为</span><span style="font-family:Times New Roman">Tg</span><span style="font-family:宋体">和</span><span style="font-family:Times New Roman">Tf</span><span style="font-family:宋体">，它们分别和中国范畴里面的</span><span style="font-family:Times New Roman">g</span><span style="font-family:宋体">和</span><span style="font-family:Times New Roman">f</span><span style="font-family:宋体">相对应。在中国的领域里面，婆媳关系是由亲子关系和夫妻关系复合而来的，那么在美国的领域里面，婆媳关系的对应项也是由亲子关系和夫妻关系的</span><span style="font-family:Times New Roman">Tf</span><span style="font-family:宋体">和</span><span style="font-family:Times New Roman">Tg</span><span style="font-family:宋体">复合得来。这就是第二条性质的形象化说明。</span></span></p><p style="text-indent:28px"><span style="font-size: 16px">在<span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">中，有直接定义函子的语法，大家可以阅读一下关于</span><span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">的教材。关于范畴论的书，我可以向大家推荐德国的斯普林格（</span></span><span style="font-size: 16px;font-family: 宋体">Springer-Verlag</span><span style="font-size: 16px">）出版社出版的研究生数学教科书系列，在这个系列里面的第五本是<span style="font-family:Times New Roman">Saunders&nbsp;Mac&nbsp;Lane</span><span style="font-family:宋体">写的《数学工作者必知的范畴学》（</span></span><span style="font-size: 16px">&nbsp;</span><span style="font-size: 16px">Categories&nbsp;for&nbsp;the&nbsp;Working&nbsp;Mathematician</span><span style="font-size: 16px">），这本书对范畴学主要的内容做了深入的介绍。这是我目前读到的关于范畴学最权威的著作。请大家务必理解范畴、函子的概念。因为在<span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">编程里面，你没有这两样东西的理解，对于后面我们讲单子、在</span><span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">语言里面处理&nbsp;</span><span style="font-family:Times New Roman">I/O</span><span style="font-family:宋体">以及带状态的问题处理这几个专题的时候，是不行的。</span></span></p><p style="text-indent:28px"><span style="font-size: 16px">在我们讲单子之前，先回到<span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">课程的三个轮回的第一个轮回</span><span style="font-family:Times New Roman">——</span></span><span style=";font-weight:bold;font-size:16px">类型变量和类型类</span><span style="font-size: 16px">。现在已经知道了范畴和函子的定义，所以可以开始讲类型类（<span style="font-family:Times New Roman">Type&nbsp;Class</span><span style="font-family:宋体">）。简单的讲，类型类就是由函子定义的一种类型结构。前面已经讲到，函子是一个范畴到另一个范畴的一种态射，一种特殊的映射关系，一种特殊的形影关系。更清晰的说就是，一个范畴的许多箭头按照某种映射关系投影到另外一个范畴中去，与另外一个范畴中的许多箭头建立形影关系。函子的定义域中的箭头的类型很多，这时候，我们为了表达上的方便，采用类型变量这个术语表达一堆的箭头。</span></span></p><p style="text-indent:28px"><span style="font-size: 16px">前面我已经说过，在<span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">语言中函数是一种特殊的类型，所以用这个类型变量就表示一堆的函数。类似的类型变量还可以表示许许多多的类型，不一定是函数类型。</span></span><span style=";font-weight:bold;font-size:16px">从这个意义上讲，类型变量实际上代表了类型复数的概念。</span><span style="font-size: 16px">如果你明白了我刚才讲的类型类与函子之间的关系的话，你就会明白在类型类定义的时候为什么要使用类型变量。</span><span style=";font-weight:bold;font-size:16px">关于类型类，我还有两点要告诉大家：</span><span style="font-size: 16px">一个是在<span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">里面，一个类型类是可以形成子类的，就是</span><span style="font-family:Times New Roman">sub-class</span><span style="font-family:宋体">这个概念使用与</span><span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">的类型类；第二个就是一个类型类可以实例化，实例化是什么意思呢？函子是一堆箭头到另外一个范畴中一堆箭头之间的态射吗？当我们把态射具体到某一个或者是某一些箭头上，我们把这个叫做类型类的实例化，这个在</span><span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">中是由直接的语阀来表达的。很自然的，一个类型类可以生成许多的这个类型类实例，这个刚刚解释过了。反过来说，一个类型类的实例可以看成是许许多多类型类实例化得到的。也就是说，在</span><span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">中，类型类和类型类的实例可以产生多多对应的关系。这个是比较费解的，我们把这个概念放在函子的框架下去看，也很好理解。函子有许多，不止一个对不对？从一个范畴相互发，投影到其他的许许多多的范畴中会产生许许多多的函子，也就是可以定义许许多多的类型类。前面我讲范畴和函子的时候，我讲到了中国这个范畴向美国这个范畴的态射，形成了一个函子。实际上中国也可以向欧洲、俄罗斯和东南亚等等国家和地区形成函子关系呢？一样也是可以的。从这个意义上上讲，一个类型类的实例属于许多的类型类。当然这里还有一个关系就是，你要成为一个类型类的实例，你可能首先需要成为另外一个类型类的实例，这里有一个先决条件的关系。这个和我前面说的，一个类型类可以形成自己的子类也有关系，也有可能这两个映射在逻辑上有先后的次序，你需要去遵守。这个问题我们留在</span><span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">编程实践中去讲解。</span></span></p><p style="text-indent:28px"><span style="font-size: 16px">到这里，我第一轮涉及到的类型类和类型变量基本上就讲完了。在<span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">里面有</span><span style="font-family:Times New Roman">data</span><span style="font-family:宋体">（数据）、</span><span style="font-family:Times New Roman">type</span><span style="font-family:宋体">（类型）、</span><span style="font-family:Times New Roman">newtype</span><span style="font-family:宋体">（新类型）、</span><span style="font-family:Times New Roman">class</span><span style="font-family:宋体">（类）、</span></span><span style="font-size: 16px;font-family: 宋体">instance</span><span style="font-size: 16px">（实例）等等这样一些关键词，这些关键词都是围绕我前面讲的三个概念，包括类型、类型变量和类型类而提供的，</span><span style=";font-weight:bold;font-size:16px">所以大家学习<span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">的时候如果能够结合范畴论的背景类学习的话，会有事半功倍之效</span></span><span style="font-size: 16px">。在明白这些概念之后，我就可以回过头去讲我们第二轮中的关于函数、函子和单子的概念中的单子，这是下一讲的主题。</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">洪峰</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

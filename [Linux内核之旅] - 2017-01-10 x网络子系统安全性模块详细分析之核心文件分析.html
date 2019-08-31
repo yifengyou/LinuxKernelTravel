@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		x网络子系统安全性模块详细分析之核心文件分析
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664603654&amp;idx=1&amp;sn=e0dbecd5f0bc3f45487523d0102529f4&amp;chksm=f04d8de3c73a04f516d1dc7915f7c57033fddf9f153079e1e3064de07e226e0dccd5cdc2281a&amp;scene=27#wechat_redirect&cpage=50' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">x网络子系统安全性模块详细分析之核心文件分析</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        李廷，张超
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2017-01-10</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <h2 style="margin-top:17px;margin-bottom:17px;line-height:172%"><a name="_Toc345011222" style="color: rgb(2, 30, 170); text-decoration: underline;"><span style="font-size: 16px; color: rgb(2, 30, 170);"><strong style="line-height: 1.6;"><span style="text-decoration: underline; color: rgb(2, 30, 170); font-size: 16px; font-family: 宋体;">2.4 核心文件分析</span></strong></span></a></h2><h2 style="margin-top:17px;margin-bottom:17px;line-height:172%"><span style="font-size: 16px; color: rgb(2, 30, 170);"><strong style="line-height: 1.6;"><span style="font-size: 16px; font-family: 宋体;">2.4.1文件一</span></strong><strong style="line-height: 1.6;"><span style="font-size: 16px; font-family: 宋体;">nf_nat_rule.c</span></strong></span></h2><h4><span style="font-size: 16px;"><span style="font-size: 16px; color: rgb(2, 30, 170);"><strong><span style="color: rgb(2, 30, 170); font-size: 16px; font-family: 宋体;"><u>2.4.1.1</u>文件描述</span></strong></span></span></h4><p style="line-height:24px"><span style="font-family: 宋体; font-size: 16px;">该文件的路径是</span><a style="font-size: 16px; text-decoration: underline;"><span style="font-size: 16px;">linux-3.5.4/</span></a><a style="font-size: 16px; text-decoration: underline;"><span style="font-size: 16px;">net/</span></a><a style="font-size: 16px; text-decoration: underline;"><span style="font-size: 16px;">ipv4/</span></a><a style="font-size: 16px; text-decoration: underline;"><span style="font-size: 16px;">netfilter/</span></a><a style="font-size: 16px; text-decoration: underline;"><span style="font-size: 16px;">nf_nat_rule.c</span></a><span style="font-family: 宋体; font-size: 16px;">。</span></p><p style="line-height:24px"><a style="font-family: 宋体; font-size: 16px; text-decoration: underline;"><span style="font-family: 宋体; font-size: 16px;">该文件</span></a><span style="font-family: 宋体; font-size: 16px;">主要完成nat表的初始化，分别按<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">snat</span>和<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">dnat</span>两种网络地址转化，设置匹配规则，匹配后需要执行目的函数。</span></p><p><span style="font-size: 16px;"><strong><em><span style="font-family: 宋体; color: rgb(127, 127, 127); font-size: 14px;"><a name="_Toc342498726">&nbsp;</a></span></em></strong></span></p><h4><span style="font-size: 16px; color: rgb(2, 30, 170);"><strong><span style="font-size: 16px; font-family: 宋体;">2.4.1.2 <span style="font-size: 16px; font-family: 宋体;">主要</span></span></strong><strong><span style="font-size: 16px; font-family: 宋体;">变量</span></strong><strong><span style="font-size: 16px; font-family: 宋体;">及宏定义</span></strong><strong><span style="font-size: 16px; font-family: 宋体;"></span></strong></span></h4><h4><span style="font-size: 16px;"><span style="line-height: 24px; font-family: 宋体;">1.&nbsp;nat_table</span><span style="line-height: 24px; font-family: 宋体;">结构体变量定义如下：</span></span></h4><p style="text-indent:0;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">&nbsp;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">static const struct xt_table nat_table = {</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.name &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= "nat",</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.valid_hooks &nbsp;&nbsp;&nbsp;= NAT_VALID_HOOKS,</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.me &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= THIS_MODULE,</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.af &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= NFPROTO_IPV4,</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">}</span></p><p><span style="font-family: 宋体; font-size: 16px;">定义了nat规则表的初始化信息，<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">name</span>为表的名字，<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">af</span>协议类型为<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">IPV4</span>。</span></p><p style="text-indent:0;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">&nbsp;</span><span style="font-size: 16px;"><span style="font-family: 宋体;">2.</span><span style="font-family: 宋体;">ipt_snat_reg结构体变量定义如下：</span></span></p><p><span style="font-family: 宋体; font-size: 16px;"></span></p><p style="line-height:24px"><span style="font-size: 16px;">static struct xt_target ipt_snat_reg __read_mostly = {</span></p><p style="line-height:24px"><span style="font-size: 14px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.name &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= "SNAT",</span></p><p style="line-height:24px"><span style="font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.target &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= ipt_snat_target,</span></p><p style="line-height:24px"><span style="font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.targetsize &nbsp;&nbsp;&nbsp;&nbsp;= sizeof(struct nf_nat_ipv4_multi_range_compat),</span></p><p style="line-height:24px"><span style="font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.table &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= "nat",</span></p><p style="line-height:24px"><span style="font-size: 16px;"><span style="font-size: 14px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.hooks &nbsp;&nbsp;&nbsp;</span><span style="font-family: 宋体; font-size: 14px;">&nbsp;</span><span style="font-size: 14px;">= (1 &lt;&lt; NF_INET_POST_ROUTING) | (1 &lt;&lt; NF_INET_LOCAL_IN),</span></span></p><p style="line-height:24px"><span style="font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.checkentry &nbsp;&nbsp;&nbsp;&nbsp;= ipt_snat_checkentry,</span></p><p style="line-height:24px"><span style="font-size: 16px;"><span style="font-size: 14px;">&nbsp;&nbsp;</span><span style="font-family: 宋体; font-size: 14px;">&nbsp;&nbsp;&nbsp;</span><span style="font-size: 14px;">&nbsp;.family &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="font-family: 宋体; font-size: 14px;">&nbsp;</span><span style="font-size: 14px;">= AF_INET,</span></span></p><p style="line-height:24px"><span style="font-size: 16px;">&nbsp;};</span></p><p><span style="font-family: 宋体; font-size: 16px;">ipt_snat_reg结构体变量定义如下：</span><span style="font-size: 16px; font-family: 宋体;"><br  /></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">描述snat表操作集，表的名字是<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">SNAT</span>，表的类型是<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">nat</span>表，目标执行函数<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">ipt_snat_target</span>，<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">hooks</span>是执行函数挂接在哪个<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">HOOK</span>点，<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">family</span>是协议族类型。</span></p><p style="text-indent:0;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">&nbsp;</span></p><h4><span style="font-size: 16px;"><strong><span style="font-family: 宋体; font-size: 19px;"><a name="_Toc342498727"></a><a name="_Toc345011226" style="text-decoration: underline; font-family: 宋体; font-size: 16px; color: rgb(2, 30, 170);"><span style="font-family: 宋体; font-size: 16px; color: rgb(2, 30, 170);">2.4.1.3 </span></a></span></strong><span style="font-size: 16px; color: rgb(2, 30, 170);"><strong><span style="color: rgb(2, 30, 170); font-size: 16px; font-family: 宋体;">结构体定义</span></strong></span></span></h4><h4><span style="line-height: 24px; font-family: 仿宋;">1.&nbsp;</span><span style="font-family: 宋体; font-size: 14px; line-height: 1.6;">xt_af结构体定义如下：</span></h4><p style="margin-left:56px;line-height:24px"><span style="font-family: 宋体; line-height: 1.6; font-size: 16px;"></span></p><p style="line-height:24px"><span style="font-size: 16px;">struct xt_af {</span></p><p style="line-height:24px"><span style="font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;struct mutex mutex;</span></p><p style="line-height:24px"><span style="font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;struct list_head match;</span></p><p style="line-height:24px"><span style="font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;struct list_head target;</span></p><p style="line-height:24px"><span style="font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;struct mutex compat_mutex;</span></p><p style="line-height:24px"><span style="font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;struct compat_delta *compat_offsets;</span></p><p style="line-height:24px"><span style="font-size: 16px;"><span style="font-size: 14px;">}<span style="font-family:宋体">；</span></span></span></p><p style="text-indent:27px;line-height:24px"><span style="font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">内核中规则表存在全局的结构</span><span style="font-size: 14px;">xt_af</span><span style="font-size: 16px; font-family: 宋体;">数组</span><span style="font-size: 14px;">xt</span><span style="font-size: 16px; font-family: 宋体;">中，数组</span><span style="font-size: 14px;">xt</span><span style="font-size: 16px; font-family: 宋体;">是协议族编号</span><span style="font-size: 16px; font-family: 宋体;">。</span><span style="font-size: 16px; font-family: 宋体;">从结构体中可以看出，这是一个存放所有规则信息的数据结构。不同协议族的规则表存在数组</span><span style="font-size: 14px;">xt</span><span style="font-size: 16px; font-family: 宋体;">的不同元素中。对于规则表、匹配和目标都使用独立的内核模块进行描述</span><span style="font-size: 16px; font-family: 宋体;">。</span></span></p><p style="text-indent:27px;line-height:24px"><span style="font-family: 宋体; font-size: 14px;">2.&nbsp;xt_match</span><span style="font-family: 宋体; font-size: 16px;">结构体定义如下：</span></p><p style="margin-left:56px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;"></span></p><p style="margin-left:28px"><span style="font-size: 16px;">struct xt_match {</span></p><p style="margin-left:28px;text-indent:28px"><span style="font-size: 16px;">struct list_head list;</span></p><p style="margin-left:56px"><span style="font-family: 宋体; font-size: 16px;">const char name[XT_EXTENSION_MAXNAMELEN]; </span></p><p style="margin-left:28px;text-indent:28px"><span style="font-size: 16px;">u_int8_t revision;</span></p><p style="line-height:24px"><span style="font-size: 16px;">bool (*match)(const struct sk_buff *skb,struct xt_action_param *);</span></p><p style="line-height:24px"><span style="font-family: 宋体; font-size: 16px;">int (*checkentry)(const struct xt_mtchk_param *);</span></p><p style="line-height:24px"><span style="font-family: 宋体; font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;void (*destroy)(const struct xt_mtdtor_param *);</span></p><p style="line-height:24px"><span style="font-size: 16px;">#ifdef CONFIG_COMPAT</span></p><p style="line-height:24px"><span style="font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;void (*compat_from_user)(void *dst, const void *src);</span></p><p style="line-height:24px"><span style="font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;int (*compat_to_user)(void __user *dst, const void *src);</span></p><p style="line-height:24px"><span style="font-size: 16px;">#endif</span></p><p style="line-height:24px"><span style="font-family: 宋体; font-size: 16px;">struct module *me; </span></p><p style="line-height:24px"><span style="font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;const char *table;</span></p><p style="line-height:24px"><span style="font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;unsigned int matchsize;</span></p><p style="line-height:24px"><span style="font-size: 16px;">&nbsp;#ifdef CONFIG_COMPAT</span></p><p style="line-height:24px"><span style="font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;unsigned int compatsize;</span></p><p style="line-height:24px"><span style="font-size: 16px;">#endif</span></p><p style="margin-left:28px;line-height:24px"><span style="font-size: 16px;">unsigned int hooks;</span></p><p style="margin-left:28px;line-height:24px"><span style="font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;unsigned short proto;</span></p><p style="margin-left:28px;line-height:24px"><span style="font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;unsigned short family;</span></p><p style="margin-left:28px;line-height:24px"><span style="font-size: 16px;">&nbsp;}</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;"><span style="font-family: 宋体; font-size: 14px;"><span style="font-size: 16px; font-family: 宋体;">设置规则处理的函数指针，在定义操作集时使用。</span>const char name<span style="font-size: 16px; font-family: 宋体;">匹配的名字，用户空间使用，应该与模块名一致；</span></span><span style="font-size: 14px;">checkentry ( )</span><span style="font-family: 宋体; font-size: 14px;"><span style="font-size: 16px; font-family: 宋体;">当用户尝试插入这个类型的新条目时调用</span>,<span style="font-size: 16px; font-family: 宋体;">检查一个规则的定义，如果返回</span><span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">0</span><span style="font-size: 16px; font-family: 宋体;">，规则将不被用户接受；</span></span><span style="font-size: 14px;">destroy( )</span><span style="font-size: 16px; font-family: 宋体;">在对模块进行撤销时调用。如果需要新加一个扩展模块，则需要构造一个</span><span style="font-size: 14px;">ipt_match</span><span style="font-family: 宋体; font-size: 14px;"><span style="font-size: 16px; font-family: 宋体;">结构并注册到相应的</span>match<span style="font-size: 16px; font-family: 宋体;">链表中。</span></span></span></p><p style="text-indent:32px"><span style="font-family: 仿宋; font-size: 16px;">&nbsp;</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">李廷，张超</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

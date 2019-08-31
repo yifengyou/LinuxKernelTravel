@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		open()在Linux内核的实现(3)-特殊目录项的处理
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=411496071&amp;idx=1&amp;sn=c51a466a96b36053a2fed5a16f2aeb36&amp;chksm=7619c362416e4a744619fd97044dbaa34091f458947d569d4311e5e0bfade2796d24230cdec1&amp;scene=27#wechat_redirect&cpage=83' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">open()在Linux内核的实现(3)-特殊目录项的处理</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        edsionte
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2015-12-15</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <h2 style="">1.基本说明</h2><p style=""><span style="font-size: 16px;">open()在内核的实现过程中，有一大部分工作都是路径查找。路径查找即对用户态传入的文件路径以目录项为单位进行依次遍历。目录项包含五种类型，当目录项为”.”（LAST_DOT）或者“..”(LAST_DOTDOT)，那么walk_component()将通过handle_dots()对其进行处理。</span></p><p style=""><span style="font-size: 16px;">实际上，如果当前目录项为“.”，那么该函数什么也不做直接返回（返回到link_path_walk中）即可。也就是说，如果当前目录项为”.”，那么walk_component()此时的作用就是“越过”这些当前目录，而nd信息不做改变，因为所有“.”之前的普通目录项已经更新了nd。比如/home/edsionte/./././doc，目录项edsionte之后的“.”对应的nd与edsionte目录项相同，因此walk_component()在遇到“.”时直接越过他们，进而处理doc目录项。</span></p><p style=""><span style="font-size: 16px;">如果当前目录项为“..”，即当前要walk的目录项为上一次已经walk的目录项的父目录，也就是需要向上获取当前目录的父目录。</span></p><h2 style="">2.函数实现</h2><h3 style="">2.1.handle_dots()</h3><p style=""><span style="font-size: 16px;">该函数的实现比较简单，内部根据当前的walk类型做了函数分发。</span></p><table width="576" height="NaN"><tbody style=" border: 0px !important; font-size: 1em !important; outline: 0px !important; float: none !important; vertical-align: baseline !important;  left: auto !important; top: auto !important; right: auto !important; bottom: auto !important; height: auto !important; width: auto !important; line-height: 1.1em !important; min-height: auto !important; border-radius: 0px !important; overflow: visible !important; box-sizing: content-box !important; direction: ltr !important; box-shadow: none !important; background: none !important; "><tr style=" border: 0px !important; font-size: 1em !important; outline: 0px !important; float: none !important; vertical-align: baseline !important;  left: auto !important; top: auto !important; right: auto !important; bottom: auto !important; height: auto !important; width: auto !important; line-height: 1.1em !important; min-height: auto !important; border-radius: 0px !important; overflow: visible !important; box-sizing: content-box !important; direction: ltr !important; box-shadow: none !important; background: none !important; "><td class="number" style=" border: 0px !important; font-size: 1em !important; outline: 0px !important; padding: 0px !important; float: none !important; vertical-align: top !important;  left: auto !important; top: auto !important; right: auto !important; bottom: auto !important; line-height: 1.1em !important; min-height: auto !important; border-radius: 0px !important; overflow: visible !important; box-sizing: content-box !important; direction: ltr !important; box-shadow: none !important; color: rgb(175, 175, 175) !important; background: none !important; " width="3" height="NaN"><code style=""><span style="font-size: 16px;">1</span></code></td><td class="content" style=" border-width: 0px 0px 0px 3px !important; border-left-color: rgb(108, 226, 108) !important; font-size: 1em !important; outline: 0px !important; padding: 0px 0px 0px 0.5em !important; float: none !important; vertical-align: top !important;  left: auto !important; top: auto !important; right: auto !important; bottom: auto !important; line-height: 1.1em !important; min-height: auto !important; border-radius: 0px !important; overflow: visible !important; box-sizing: content-box !important; direction: ltr !important; box-shadow: none !important; color: rgb(0, 0, 0) !important; background: none !important; " width="NaN" height="NaN"><code class="Brush keyword bold" style=""><span style="font-size: 16px;">static</span></code> <code class="Brush keyword bold" style=""><span style="font-size: 16px;">inline</span></code> <code class="Brush color1 bold" style=""><span style="font-size: 16px;">int</span></code> <code class="Brush plain" style=""><span style="font-size: 16px;">handle_dots(</span></code><code class="Brush keyword bold" style=""><span style="font-size: 16px;">struct</span></code> <code class="Brush plain" style=""><span style="font-size: 16px;">nameidata *nd, </span></code><code class="Brush color1 bold" style=""><span style="font-size: 16px;">int</span></code> <code class="Brush plain" style=""><span style="font-size: 16px;">type);</span></code></td></tr></tbody></table><p style=""><span style="font-size: 16px;">如果当前搜索路径的模式位rcu，则进入follow_dotdot_rcu()的流程；否则进入follow_dotdot()的流程。</span></p><h3 style="">2.2.follow_dotdot_rcu()</h3><p style=""><span style="font-size: 16px;">该函数的声明如下：</span></p><table width="576" height="NaN"><tbody style=" border: 0px !important; font-size: 1em !important; outline: 0px !important; float: none !important; vertical-align: baseline !important;  left: auto !important; top: auto !important; right: auto !important; bottom: auto !important; height: auto !important; width: auto !important; line-height: 1.1em !important; min-height: auto !important; border-radius: 0px !important; overflow: visible !important; box-sizing: content-box !important; direction: ltr !important; box-shadow: none !important; background: none !important; "><tr style=" border: 0px !important; font-size: 1em !important; outline: 0px !important; float: none !important; vertical-align: baseline !important;  left: auto !important; top: auto !important; right: auto !important; bottom: auto !important; height: auto !important; width: auto !important; line-height: 1.1em !important; min-height: auto !important; border-radius: 0px !important; overflow: visible !important; box-sizing: content-box !important; direction: ltr !important; box-shadow: none !important; background: none !important; "><td class="number" style=" border: 0px !important; font-size: 1em !important; outline: 0px !important; padding: 0px !important; float: none !important; vertical-align: top !important;  left: auto !important; top: auto !important; right: auto !important; bottom: auto !important; line-height: 1.1em !important; min-height: auto !important; border-radius: 0px !important; overflow: visible !important; box-sizing: content-box !important; direction: ltr !important; box-shadow: none !important; color: rgb(175, 175, 175) !important; background: none !important; " width="3" height="NaN"><code style=""><span style="font-size: 16px;">1</span></code></td><td class="content" style=" border-width: 0px 0px 0px 3px !important; border-left-color: rgb(108, 226, 108) !important; font-size: 1em !important; outline: 0px !important; padding: 0px 0px 0px 0.5em !important; float: none !important; vertical-align: top !important;  left: auto !important; top: auto !important; right: auto !important; bottom: auto !important; line-height: 1.1em !important; min-height: auto !important; border-radius: 0px !important; overflow: visible !important; box-sizing: content-box !important; direction: ltr !important; box-shadow: none !important; color: rgb(0, 0, 0) !important; background: none !important; " width="NaN" height="NaN"><code class="Brush keyword bold" style=""><span style="font-size: 16px;">static</span></code> <code class="Brush color1 bold" style=""><span style="font-size: 16px;">int</span></code> <code class="Brush plain" style=""><span style="font-size: 16px;">follow_dotdot_rcu(</span></code><code class="Brush keyword bold" style=""><span style="font-size: 16px;">struct</span></code> <code class="Brush plain" style=""><span style="font-size: 16px;">nameidata *nd);</span></code></td></tr></tbody></table><p style=""><span style="font-size: 16px;">该函数是在rcu模式下获取父目录项信息，如果搜索成功，则返回0；否则，返回ECHILD，也就是说需要切换到ref-walk方式下进行搜索路径。该函数的主要处理过程如下：</span></p><p style=""><span style="font-size: 16px;">1.如果有需要的话，首先通过set_root_rcu()设置当前路径的根目录信息。可以在path_init()中获知，只有搜索路径是绝对路径，nd中的root才会在一开始就被设置；否则，比如是相对路径，那么这里就必须对根目录进行设置了。因为此处是向上搜索，可能会一直找到根目录处。</span></p><p style=""><span style="font-size: 16px;">2.进入循环体，向上获取当前目录项的父目录项。通过情况下，这个循环体只会被执行一次即退出，只有当父目录项为一个挂载点时才有可能不断进行循环。</span></p><p style=""><span style="font-size: 16px;">3.如果退出循环体，至此已经获取到了当前目录项的上一级目录项（即“..”所代表的父目录项）。</span></p><p style=""><span style="font-size: 16px;">4.如果这个父目录项是一个挂载点，那么还需做一些特殊检查。因为在特殊情况下，当前这个父目录项又被挂载了其他的文件系统，那么返回上级目录这个操作获取的应该是最新文件系统的内容而不是之前那个文件系统的内容。通过__lookup_mnt()检查父目录下挂载的文件系统是否为最新的文件系统，如果是则检查结束；否则，将继续检查；</span></p><p style=""><span style="font-size: 16px;">5.更新nd中的inode，并返回；</span></p><p style=""><span style="font-size: 16px;">在循环体中，可能会出现三种情况：</span></p><p style=""><span style="font-size: 16px;">a.如果当前目录项恰好为根目录目录项，则直接跳出循环；比如在根目录下执行“cd ../../../”;</span></p><p style=""><span style="font-size: 16px;">b.如果当前目录项既不是根目录，也不是一个挂载点，则属于最普通的情况，即直接获取当前目录项的父目录项。方法很简单，直接用当前目录项的parent（nd-&gt;path.dentry-&gt;d_parent）覆盖当前的nd结构中的path.dentry即可；</span></p><p style=""><span style="font-size: 16px;">c.如果当前目录项代表的是当前文件系统的根目录，则不能通过简单的获取当前目录项parent这种方法，因为获取的parent为“/”（当然指的是当前文件系统的根目录）。此时需要通过follow_up_rcu()对nd-&gt;path进行填充。如果follow_up_rcu()返回1，则循环继续；返回0，则结束循环；</span></p><h3 style="">2.3.follow_up_rcu()</h3><p style=""><span style="font-size: 16px;">如果“..”所代表的目录项正好是一个挂载点时，那么需要将当前的遍历从当前的文件系统向上（follow up）切换到父文件系统。该函数的声明如下：</span></p><table width="576" height="NaN"><tbody style=" border: 0px !important; font-size: 1em !important; outline: 0px !important; float: none !important; vertical-align: baseline !important;  left: auto !important; top: auto !important; right: auto !important; bottom: auto !important; height: auto !important; width: auto !important; line-height: 1.1em !important; min-height: auto !important; border-radius: 0px !important; overflow: visible !important; box-sizing: content-box !important; direction: ltr !important; box-shadow: none !important; background: none !important; "><tr style=" border: 0px !important; font-size: 1em !important; outline: 0px !important; float: none !important; vertical-align: baseline !important;  left: auto !important; top: auto !important; right: auto !important; bottom: auto !important; height: auto !important; width: auto !important; line-height: 1.1em !important; min-height: auto !important; border-radius: 0px !important; overflow: visible !important; box-sizing: content-box !important; direction: ltr !important; box-shadow: none !important; background: none !important; "><td class="number" style=" border: 0px !important; font-size: 1em !important; outline: 0px !important; padding: 0px !important; float: none !important; vertical-align: top !important;  left: auto !important; top: auto !important; right: auto !important; bottom: auto !important; line-height: 1.1em !important; min-height: auto !important; border-radius: 0px !important; overflow: visible !important; box-sizing: content-box !important; direction: ltr !important; box-shadow: none !important; color: rgb(175, 175, 175) !important; background: none !important; " width="3" height="NaN"><code style=""><span style="font-size: 16px;">1</span></code></td><td class="content" style=" border-width: 0px 0px 0px 3px !important; border-left-color: rgb(108, 226, 108) !important; font-size: 1em !important; outline: 0px !important; padding: 0px 0px 0px 0.5em !important; float: none !important; vertical-align: top !important;  left: auto !important; top: auto !important; right: auto !important; bottom: auto !important; line-height: 1.1em !important; min-height: auto !important; border-radius: 0px !important; overflow: visible !important; box-sizing: content-box !important; direction: ltr !important; box-shadow: none !important; color: rgb(0, 0, 0) !important; background: none !important; " width="NaN" height="NaN"><code class="Brush keyword bold" style=""><span style="font-size: 16px;">static</span></code> <code class="Brush color1 bold" style=""><span style="font-size: 16px;">int</span></code> <code class="Brush plain" style=""><span style="font-size: 16px;">follow_up_rcu(</span></code><code class="Brush keyword bold" style=""><span style="font-size: 16px;">struct</span></code> <code class="Brush plain" style=""><span style="font-size: 16px;">path *path);</span></code></td></tr></tbody></table><p style=""><span style="font-size: 16px;">既然是向上跨越到父文件系统，那么首先将父文件系统的挂载点对应的dentry（nd-&gt;path-&gt;mnt-&gt;mnt_mountpoint）赋值给当前nd中对应的dentry（nd-&gt;path-&gt;dentry）。因为这个挂载点也就是“..”对应的目录项，挂载点本质也就是个目录。</span></p><p style=""><span style="font-size: 16px;">其次，将父文件系统的vfsmount结构（nd-&gt;path-&gt;mnt-&gt;mnt_parent）复制给当前nd中对应的mnt项（nd-&gt;path-&gt;mnt）。</span></p><p style=""><span style="font-size: 16px;">通过以上两个步骤，即将当前的walk位置向上移动到父文件系统中的一个目录上。</span></p><p style=""><span style="font-size: 16px;">下面通过举例说明上述过程。假设存在路径/home/edsionte/work，其中fs1文件系统下有目录/home/edsionte/work，文件系统fs2挂载在work目录下，即fs2的挂载点为work。假设work下有文件w1和file，在/home/edsionte/work/file目录下，用户访问的路径为“../w1”，则“..”对应的dentry即为fs2文件系统根目录，则需要跨越到fs1文件系统中。“跨越”操作首先是将当前dentry指向work，也就是下次将要在work目录下寻找w1文件；其次，需要改变当前文件系统状态，即通过替换vfsmount来体现。</span></p><p style=""><span style="font-size: 16px;">完成以上操作，将返回1。也就是说，必须再进行一次follow_dotdot_rcu()中的循环过程，因为follow_up_rcu()完成的只是文件系统的跨越，跨越完毕后必须进行follow_dotdot_rcu()中的循环体工作。</span></p><p style=""><span style="font-size: 16px;">更特殊的是，跨越文件系统之后的这个目录项很可能又是一个挂载点，那么又必须进入follow_up_rcu()中执行上述操作。只有当当前文件系统的挂载点就是自己的时候，即跨越到根文件系统的时候，该函数返回0，那么返回到上级函数follow_dotdot_rcu()中的循环体时，也将结束整个循环过程。</span></p><p style=""><span style="font-size: 16px;">下面再通过举例说明follow_dotdot_rcu()中循环体反复执行的例子。假设fs1文件系统存在路径/home/edsionte/work，首先将fs2文件系统挂载于work下，再将fs3挂载在work下，那么此时fs3对应的父vfsmount为fs2对应的结构；再将fs4文件系统挂载在wrok下，那么fs4指向fs3。此刻，/home/edsionte/work可以访问fs4的内容，而其他之前挂载在这里的文件系统将被隐藏。假设用户在wrok目录下执行“cd ../”，用户想得到的结果是fs1文件系统下edsionte/下的内容。而此刻work位于fs4中，那么他必须向上逐步跨越文件系统，即fs4通过follow_up_rcu()跨越到父文件系统fs3，fs3再跨越到fs2，fs2再跨越到fs1。</span></p><h3 style="">2.4.follow_dotdot()</h3><p style=""><span style="font-size: 16px;">follow_dotdot()和follow_dotdot_rcu()的实现方式几乎一致，只不过该函数在内部实现上使用了读写锁。具体的，主要体现在follow_up()和follow_mount()两个函数的内部，它们的实现过程中均使用了读写锁，这在rcu-walk中是不允许的。</span></p><h2 style="">3.总结</h2><p style=""><span style="font-size: 16px;">本文针对open()在内核中的路径查找过程进行简单说明，并集中关注了“..”这个特殊的目录项。LAST_DOTDOT类型的目录项之所以特殊是由于它向上（follow up）的查找过程与当前所位于的路径查找过程（向下，follow down）相反，同时还会涉及到文件系统挂载点。如果您想了解其他类型目录项的查找过程，可以阅读本系列其他文章。</span></p><p style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);">参考资料：</strong></span></p><p style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);">1.Linux源码3.2.69；</strong></span></p><p style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);">2.Linux系统调用open七日游：http://blog.chinaunix.net/uid-20522771-id-4419666.html</strong></span></p><p style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);">3.深入理解Linux内核：http://book.douban.com/subject/2287506/；</strong></span></p><p style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);">4.深入Linux内核架构：http://book.douban.com/subject/4843567/；</strong></span></p><p style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);">5.Linux内核探秘：http://book.douban.com/subject/25817503/；</strong></span></p><p><span style="font-size: 16px;"><span style="font-size: 16px; border: 0px; outline: 0px;">上一篇:</span> open()在Linux内核的实现(2)-路径查找</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">edsionte</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		创客项目实战之Racket应用——洪峰老师讲创客道（十七）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=416816853&amp;idx=1&amp;sn=4960816435b3a039dbeedc0059fcb334&amp;chksm=764733304130ba26c54639c71040ff1090349a2f2da5a2c2fa306e4079cb401c31db342f4c2d&amp;scene=27#wechat_redirect&cpage=75' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">创客项目实战之Racket应用——洪峰老师讲创客道（十七）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        洪峰
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-03-27</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="text-indent:28px"><span style=""></span></p><p style="line-height: 25.6px; white-space: normal;"><mpvoice frameborder="0" class="res_iframe js_editor_audio audio_iframe" src="https://mp.weixin.qq.com/cgi-bin/readtemplate?t=tmpl/audio_tmpl&amp;name=%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9317&amp;play_length=18:41" name="%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9317" play_length="1121000" voice_encode_fileid="MzI3NzA5MzUxNF80MTY4MTY4NTE=" style="width: 556px;"></mpvoice></p><p style="line-height: 25.6px; white-space: normal; text-indent: 28px;"><span style=""></span><br  /></p><p style="line-height: 25.6px; white-space: normal; text-indent: 28px;"><span style="">前面我已经大量谈到了Racket这个语言的许多特性，而且我已经向大家介绍了Racket非常适合创客们从事自己的创客项目。下面我结合自己的切身体会，跟大家介绍、分享一下，我在自己的大小项目中，使用Racket的情况。我一共使用Racket开发了3个规模稍微大一点的项目，分别是用Racket支持CGI和FastCGI，第二个是用Racket写一个解释器，把markdown格式的文件翻译成符号表达式的文件，第三个是在心电图专家系统判读项目里面，使用Racket作为主要的人工智能的应用开发语言。下面，我分别谈一谈三个项目的一些情况。</span></p><p style="line-height: 25.6px; white-space: normal; text-indent: 28px;"><span style=""><br  /></span></p><p style="line-height: 25.6px; white-space: normal;"><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;第一个项目就是对CGI和FastCGI的支持，CGI全称为Common&nbsp;Gateway&nbsp;Interface，定义该协议的目的就是让Web服务器成为客户端和服务器上其他软件资源的一个中间界面，其工作原理是当Web浏览器或者其他的HTTP客户端向Web服务器发出请求以后，这个请求会被转发到服务器所在的操作系统上，被此操作系统上的一个进程去处理，也就是说Web服务器会请求它所在的操作系统启动一个新的进程，让新的进程去处理Web服务器所收到的数据，当这个进程完成工作以后，整个CGI的流程就结束了，然后当下一个请求到达的时候，Web服务器又会请求它所在的操作系统另外再启动一个新的进程去处理，重复此模式。</span></p><p style="line-height: 25.6px; white-space: normal;"><span style=""><br  /></span></p><p style="line-height: 25.6px; white-space: normal; text-indent: 28px;"><span style="">在90年代这个Web爆炸的年代，CGI程序是非常火、非常时髦的一项技术，在那个年代Perl语言被广泛的应用于CGI应用的编写，曾经有很多的程序是用CGI来编写的，实际上任何一个Web服务器都被要求实现对CGI的支持。我以前用的服务器叫做Apache，这款服务器曾经是使用用户装机数量最多的一个Web服务器，这个Web服务器很好的支持了CGI，所以我当时在接触了Scheme以后，就开始选用Scheme对CGI进行支持。要在Apache上支持CGI，首先要对Apache服务器进行适当的设定，配置工作并不复杂，Apache有一个conf文件，就是所有网站的一个配置文件，在这个文件里，按照说明进行适当的设定以后，那么就对CGI就可以支持了。剩下的任务就是要写进程启动的部分，进程启动的部分实际是用Racket写的一个脚本，Racket脚本如何在Unix系统上启动呢？这个费了我一点脑筋，但是也不是太复杂的部分，这个项目真正复杂的部分在于HTTP请求里面不管是get还是post请求，它对数据的格式是有约定的，所以首先要对HTTP协议有非常好的了解，第二个就是在了解了HTTP协议后，要对无论是get还是post请求进行数据的解析，这一部分的工作比较繁琐一点。相比较get请求，post请求显得更为复杂一些，它里面可以由用户有表端的Web&nbsp;form提供一些数据，这些数据可能是被编过码的，有对MIME协议的支持，所以要对数据进行还原。当所有的数据解析完成以后，下一个阶段就是对数据如何进行处理，这是我们叫做商业逻辑的部分，处理完之后，可能还会产生一个新的网页，显示计算结果，然后这个结果要通过Web服务器写到Web浏览器上。这些工作我用当时的MIT&nbsp;Scheme都完成的很好，这是我第一个项目的第一个阶段。</span></p><p style="line-height: 25.6px; white-space: normal; text-indent: 28px;"><span style=""><br  /></span></p><p style="line-height: 25.6px; white-space: normal; text-indent: 28px;"><span style="">在使用Apache1.3系列的同时，我还使用过一段时间2.0系列的Apache，不过从CGI编程的角度来看，两者没有太大的差异，所以在这里不讲那些开发的细节了。当我从Apache过渡到Nginx以后，我发现一个问题就是Nginx不支持CGI，但是它支持Fast&nbsp;CGI，前面已经讲过，CGI是每一个请求都要在服务器上启动一个进程的，这对于高负载的网站是不可接受的，所以FastCGI在一定的程度上缓解了这个问题，因为它的CGI进程，并不是处理完一个请求之后马上就退出，而是作为一个精灵进程（Daemon&nbsp;Process）而存在，关于精灵进程在这本书第七章会专门介绍，它会长期的在Web服务器所在的操作系统上运行下去，这样，每当请求来的时候，就不用让所在的操作系统另外再去启动一个进程，因为这个进程一直在运行。那么FastCGI它所产生的性能的跃升，相比CGI来说是巨大的，所以Nginx的设计者伊戈尔·西索夫（</span><span style="">Igor&nbsp;Sysoev</span><span style="">）</span><span style="">告诉我它不支持CGI的原因就在这里。有了Fast&nbsp;CGI的支持以后，Web应用的性能会大大的提升，还有一个好处就是FastCGI不一定要工作在Web服务器所在的机器上面，它可以工作在任何其他机器上，只要那台机器和Web服务器所在的机器能够通过TCP协议进行通讯就可以了，这也是一个巨大的好处，当然还有一个好处就是FastCGI和CGI相比，它的数据格式的定义基本上是有很大的相似性的，这样的话，我原来在支持CGI时，所学到的绝大多数知识，在我写FastCGI的时候会得到重用，这也是我喜欢FastCGI的一个地方。从技术的角度来看，写对Fast&nbsp;CGI的支持，主要是要理解一个Framing即分帧的概念，实际上一个请求会按照帧的概念进行分组，即很多个帧可以合成起来构成一个请求，那么一旦理解了这个帧的概念以后，实际上所有TCP上的网络通信协议都可以得到很好的支持，所以这也是学习FastCGI&nbsp;可以获得的额外的一种利益，我在FastCGI实现的过程中，也学到了很多关于网络通信的知识，这也是一个收获。当然，FastCGI程序可以用任何语言进行编写，但是我根据自己的切身体会，发现用Racket语言去写CGI和FastCGI，它所具有的表达能力是许多其他语言赶不上的，关于这一点，如果大家去尝试CGI或者FastCGI的编程，用MIT&nbsp;Scheme或Racket去写的话，我想大家应该会有同样的感受。</span></p><p style="line-height: 25.6px; white-space: normal; text-indent: 28px;"><span style=""><br  /></span></p><p style="line-height: 25.6px; white-space: normal; text-indent: 28px;"><span style="">我用Racket开发的第二个项目，是把Markdown格式的文件转换成符号表达式所构成的文件，大家都知道Markdown格式的文件是一个纯文本的文件，用纯文本的文件写的数据，它的可移植性是最好的，任何支持ASCII字符的计算机上都能读出Markdown格式的文件，所以现在有一个趋势就是在很多新的软件开发项目里，大家形成一个约定俗称的习惯，用Markdown格式来写自叙文件（README文件），这一点大家在Github上可以看的很清楚。实际上在我启动自己的项目以前，有一个软件包是用Haskell写的，叫作Pandoc，它可以把Markdown格式文件转换成许许多多其他格式文件，是一个万能的格式转换器，我当时启动自己的项目的时候，并不知道Pandoc可以做这些事情，如果那时候我知道Pandoc&nbsp;可以做这些转换工作的话，我也不会启动自己的这个项目了。但后来我知道了Pandoc可以完成这些功能的时候，我并不后悔，因为我的项目还是有自己的一些特点，因为一旦Markdown的数据被转换成为S-expression（Symbolic&nbsp;expression）这个符号表达式以后，它可以作为一种中间格式，转换成许许多多其他的输出，所以我的这个项目可以看成是一个非常小型的编译器项目，在这一个项目过程中，我学到了大量的关于词法分析、句法分析，以及根据环境来决定一个Markdown的元素属于什么类型，像这样的一些操作，在我mdtosexp这个项目里面得到充分的体现，我把这个代码也公布到了我个人的网站上，大家可以下载这个源代码进行学习。一旦有了这个程序以后，那么我在客户端上用Emacs写的Markdown文档可以被转换成网页发表在我的个人网站上，这个程序实际上变成了我个人出版系统的一个部分，这个项目显然没有Pandoc功能那么强大，但是它非常适合我自己的需求，有一句话叫做鞋子合不合脚，要自己穿才知道，我自己写的东西，我觉得是最适合自己的要求的，从这个小项目中我也产生了一些小小的成就感，在这里跟大家分享一下。</span></p><p style="line-height: 25.6px; white-space: normal; text-indent: 28px;"><span style=""><br  /></span></p><p style="line-height: 25.6px; white-space: normal;"><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="">我的第三个项应用Racket开发的项目是关于心电图的数据解读项目，这个项目的主体是用Racket写的，从我以前提出的标准来看，这个项目算是一个大项目，这个标准就是100行以内的程序算是例子，一般用在写书里面，演示某个功能；100行到1000行的，应该算是一个小小的玩具；1000行到1万行这样的项目，算是一个小项目；1万行到10万行这样的一个规模，是一个中级项目；大于10万行代码的项目，是一个大项目。我前面提到的对FastCGI的支持，像那种项目它的代码只有几千行，所以应该算是一个小项目，而对于Markdown的解析文件项目的源代码超过了1万5千行，所以算是一个中型项目，而我的心电图项目，Racket代码已经超过了10万行，所以按照我的标准把它定义为大项目。</span><span style="">这里，我要告诉大家，心电图这个技术并不是新的技术，早在1903年的时候，它就已经被发明出来了，发明人还获得了诺贝尔医学奖，所以从那个时代开始算的话，已经有100多年的历史了，心电图的主要价值在于检测心律不齐，这个我在前面的讲课中已经提到过，任何一份标准的心电图，应该有5个部分的内容：第一是关于心跳的心率，即每分钟心跳多少次；第二个是心律是否规律；第三部分是关于心电的电轴，它的偏转是否正常；第四部分是能否检测到心肌肥大；最后的第五部分是关于心肌梗塞的情况。这五部分对于医生诊断病人的心脏状态是非常有参考价值的，从现在的医学实践来看的话，标准的心电图采用12导联的形式，即6个肢体导联和6个胸部导联来给出，心电图的信号采集并不是特别复杂，可以通过电极把采集到的电信号进行A/D转换，完成A/D转换以后就可以得到数值信号，这个数值信号可以通过计算机网络传到我的服务器上面，如果信号是由用户的手机来传递的话，那就太好了，为什么呢?因为用户就不一定需要去医院进行心电图的检测了，他可以随时随地携带进行检查的这些传感器，通过传感器把自己心脏的跳动数据动态地传递给服务器，服务器可以对用户实施动态的监控。在本书的第四章《面粉与石膏》中讲数学建模的时候，我已经提到过，像这一类的应用属于典型的时序分析，它可以发展成为一个很好的商业模式，可以用计算机来代替人对人的生理数据进行不间断的监控，一旦发现某人有出现问题的苗头，那么就可以迅速的报告给用户本人或是通知他的监护人，然后把心脏病发的这个人立即送往就近的医院进行抢救，从这个意义上讲，这个心电图的价值是非常巨大的，这也是属于远程医疗服务的一个案例，在我写作这本书的时候，这个项目原型已经有了，如果将来能够把它做成一个具有工业力度的人工智能专家系统项目的话，那么这就是我学习Racket语言最大的一个收获。当然了，通过创作这个书，还有通过这个场合，向大家推荐Racket语言从事更多的创客项目，这也是我的一个小成就。</span></p><p style="line-height: 25.6px; white-space: normal;"><span style="">&nbsp;</span></p><p><span style=""><br  /></span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">洪峰</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

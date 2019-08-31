@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		《Linux操作系统内核分析》前言-写于1999年8月
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=406609615&amp;idx=1&amp;sn=a64a067458e65a704fb10467b2cc5eb8&amp;chksm=76a3732a41d4fa3c8fb082ec23a7abbc9e6470447b3af5bda7024b6404a23a3c360a9ecb26a4&amp;scene=27#wechat_redirect&cpage=86' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">《Linux操作系统内核分析》前言-写于1999年8月</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        陈莉君
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2015-11-20</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p><strong><span style="font-family: 宋体; font-size: 16px; color: rgb(64, 118, 0);">  题记：</span></strong><span style="font-family: 宋体; font-size: 16px; color: rgb(64, 118, 0);">这本书完稿于1999年8月，千年虫问题出现的前一年，依然记得我们对千年虫问题的热烈讨论。十几年过去了，很多年都不翻阅这本书了，今天抬头在书架看到本书，翻阅其前言，很为当时的豪言壮语感叹。本书曾被中科院软件所指定为考博参考书，尽管针对2.0内核版本，或许有些内容依然对后来者很有启发，现将前言原封不动搬过来，以分享16年前的心境。</span></p><p><br  /><span style="font-family: 宋体; font-size: 16px; color: rgb(64, 118, 0);"></span><span style="font-family: 宋体; font-size: 16px;"></span></p><p><span style="font-family: 宋体; font-size: 16px;">  如果说<span style="font-family: Times New Roman;">Linux</span>的出现是一个偶然，那么，席卷全球的<span style="font-family: Times New Roman;">Linux</span>热潮则是一个奇迹，<span style="font-family: Times New Roman;">Linux</span>正以势不可挡的趋势迅猛发展，其发展前景是无法预测的。</span></p><p><span style="font-family: 宋体; font-size: 16px;">你可能说，<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>不就是类<span style="font-size: 16px; font-family: Times New Roman;">Unix</span>吗？是的，她的外在表现形式确实与<span style="font-size: 16px; font-family: Times New Roman;">Unix</span>完全兼容，这也是她赖以生存的基本条件。但是，她的内涵则完全不同，这首先体现在其源代码全部重写及开放，其次是她的快速更新和发展，而更重要的是世界范围内众多计算机爱好者能参与开发，由此可见，借助于<span style="font-size: 16px; font-family: Times New Roman;">Internet</span>的肥沃土壤，<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>的迅速发展是毫无置疑了！</span></p><p><span style="font-family: 宋体; font-size: 16px;">   实际上，<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>最本质的东西体现在其“自由”和“开放”的思想，“自由”意味着世界范围内的知识共享，而“开放”则意味着<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>对所有的人都敞开大门，在这开放而自由的天地里，你的创造激情可以得到淋漓尽致地发挥。</span></p><p><span style="font-family: 宋体; font-size: 16px;">Linux内核源代码的开放给希望深入操作系统内部世界的人敞开无私的胸怀，我们有幸走进了这个世界，这是一个神奇、错综复杂而又充满诱惑的世界，让喜欢迎接挑战的人们可以充分检验自己的勇气和耐力。</span></p><p><span style="font-family: 宋体; font-size: 16px;">   走进<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>世界确实是一件幸运的事，人类追求自由和平等的梦想可以从这里找到。我的学生康华、季进宝、陈轶飞、张波、张蕾及胡清俊有幸成为<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>研究小组的成员，他们对<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>的内核分析倾其了极大热情，并分别承担了相应部分源代码的阅读及本书相关内容的编写工作，因为他们的通力合作，才使得本书在较短的时间内得以和读者见面。</span></p><p><span style="font-family: 宋体; font-size: 16px;">   <br  />我们对<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>内核的分析基于这样的思想：以操作系统的基本原理为指导思想，以内核主要数据结构的分析为核心，以搞清数据结构间的关系为线索，以分析实现机制为目的。尽管我们尽最大努力分析内核的内在机制，但仅仅分析了主要内容，因此，呈现给读者面前的这本书还有待完善，但如果这本书对你走进<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>内部世界有所帮助，那就是我们最大愿望了。</span></p><p><span style="font-family: 宋体; font-size: 16px;"> </span></p><p><span style="font-family: 宋体; font-size: 16px;">本书共分十三章来对<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>内核所涉及到的主要内容进行全面地分析。</span></p><p><span style="font-family: 宋体; font-size: 16px;">第一章为走进<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>内核。这一章介绍了<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>赖以成长的环境<span style="font-size: 16px; font-family: Times New Roman;">GNU</span>，<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>独特的开放式开发模式及我们通过对内核的分析而得出的内核特征，最后，给出了分析<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>内核源代码的意义。本章的目的是希望对<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>内核有兴趣的读者，应当对走进<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>内核充满信心。</span></p><p><span style="font-family: 宋体; font-size: 16px;">第二章为<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>操作系统结构。这一章站在全局的角度对<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>内核的整体结构进行了描述，并对内核的抽象结构、具体结构及代码分布结构进行了分析，给出了组成内核的五个基本子系统：进程调度、内存管理、进程间通信、虚拟文件系统及网络，并对它们从六个方面分别进行了描述。对本章的学习建立在对<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>内核有一定了解的基础上，它对读者从整体上把握内核结构有一定的指导意义。</span></p><p><span style="font-family: 宋体; font-size: 16px;">第三章为<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>进程调度。进程调度是整个内核的核心，本章给出了<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>对进程的描述，对进程乃至整个内核的主要数据结构<span style="font-size: 16px; font-family: Times New Roman;">task_struct</span>进行了较详细地描述，分析了与进程调度密切相关的时间系统，同时，对<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>调度程序进行了较为详尽地分析，最后，对<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>内核独具特色的内核机制（<span style="font-size: 16px; font-family: Times New Roman;">bottom half handler)</span>给出了具体描述。</span></p><p><span style="font-family: 宋体; font-size: 16px;">第四章为保护模式。保护模式是进行内存管理分析和启动系统分析的基础知识，本章对<span style="font-size: 16px; font-family: Times New Roman;">i386</span>保护模式基于描述符的存储器管理模式进行了描述。</span></p><p><span style="font-family: 宋体; font-size: 16px;">第五章为<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>启动系统。本章对<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>初始化过程进行了较系统的描述，尤其对<span style="font-size: 16px; font-family: Times New Roman;">boot loader</span>和<span style="font-size: 16px; font-family: Times New Roman;">head.S</span>进行了较详细地分析。</span></p><p><span style="font-family: 宋体; font-size: 16px;">第六章为<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>内存管理。本章主要分析了实现<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>虚拟存储管理的各种机制，即：地址映射机制、请页机制、交换机制、内存分配和回收机制、缓存和刷新机制以及内存共享机制，最后还分析了程序的创建和执行及内存的初始化。</span></p><p><span style="font-family: 宋体; font-size: 16px;">第七章为<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>进程间通信。本章描述了进程间几种主要的通信机制：管道、<span style="font-size: 16px; font-family: Times New Roman;">System V IPC</span>机制及信号，从内核和系统调用两个方面对这几种通信机制进行了分析，以使读者在了解内核的基础上，能灵活使用系统调用。</span></p><p><span style="font-family: 宋体; font-size: 16px;">第八章为虚拟文件系统。本章对虚拟文件系统涉及到的几个主要数据结构进行了较详尽地分析，并讨论了虚拟文件系统的注册、安装和卸载。</span></p><p><span style="font-family: 宋体; font-size: 16px;">第九章为<span style="font-size: 16px; font-family: Times New Roman;">ext2</span>文件系统。在对<span style="font-size: 16px; font-family: Times New Roman;">exr2</span>文件系统的主要系统数据结构分析的基础上，并对文件的访问权限和安全、链接文件等进行了讨论。</span></p><p><span style="font-family: 宋体; font-size: 16px;">第十章为<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>模块机制。模块机制也是<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>内核独具特色的一部分内容，本章分析了内核模块的实现机制，给出了编写内核模块的简单实例和具体方法。</span></p><p><span style="font-family: 宋体; font-size: 16px;">第十一章为<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>设备驱动程序。本章主要讨论了块设备驱动程序和字符设备驱动程序 ，对于块设备，分析了<span style="font-size: 16px; font-family: Times New Roman;">RAM</span>和硬盘驱动程序的实现机制，对于字符设备，则给出了编写一个简单的字符设备驱动程序的实例。</span></p><p><span style="font-family: 宋体; font-size: 16px;">第十二章为<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>系统调用机制。本章不是讨论内核提供给用户的系统调用，而是分析<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>内核对系统调用的实现机制，并给出了增加系统调用的实例。</span></p><p><span style="font-family: 宋体; font-size: 16px;">第十三章为<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>网络接口 。本章以面向对象的思想为核心，分别对网络部分中的四个主要对象：协议、套接字、套接字缓冲区及网络设备接口进行了分析。</span></p><p><span style="font-family: 宋体; font-size: 16px;">Linux在不断地发展，本书力求 反映<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>内核较本质的东西，但由于我们的知识还非常有限，对有些问题的理解难免有偏差，甚至有不少“<span style="font-size: 16px; font-family: Times New Roman;">bug&quot;</span>，希望读者能尽可能多地发现它，以共同对本书进行改进和完善。</span></p><p><span style="font-family: 宋体; font-size: 16px;">本书在编写的过程中，从<span style="font-size: 16px; font-family: Times New Roman;">Internet</span>上收集了大量相关的资料，非常感谢<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>爱好者无私提供的资料，尤其对<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>内核源代码导航的制作者表示深深地感谢，没有他们所做的大量工作，<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>内核分析很难进行下去。另外，再次对参与源代码分析与本书编写的几名学生表示感谢，是他们的勇气和极大的热情鼓励着我完成了本书的编写。</span></p><p><span style="font-family: 宋体; font-size: 16px;">由于时间仓促，以及国内<span style="font-size: 16px; font-family: Times New Roman;">Linux</span>方面的资料有限，书中有些术语的表达可能不妥，有些内容的分析也可能不够准确，敬请读者朋友批评指正，反馈信息到<span style="font-size: 16px; font-family: Times New Roman;">cljun@xiyou.edu.cn</span>，作者将非常感谢。</span></p><p><span style="font-family: 宋体; font-size: 16px;"> </span></p><p><span style="font-family: 宋体; font-size: 16px;">                 </span></p><p><span style="font-family: 宋体; font-size: 16px;">      编者</span></p><p><span style="font-family: 宋体; font-size: 16px;">    1999年<span style="font-size: 16px; font-family: Times New Roman;">8</span>月</span></p><p><span style=";font-family:宋体;font-size:14px">    <br  /></span></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">陈莉君</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

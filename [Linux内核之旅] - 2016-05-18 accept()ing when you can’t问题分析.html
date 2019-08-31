@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		accept()ing when you can’t问题分析
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664601920&amp;idx=1&amp;sn=9e62d2f573ab2b2b4277845c074cac65&amp;chksm=f04db4a5c73a3db3255e34254fe9b99fb8ccb79e671b050c08e1a82f2aba6ccf66f78e9a131f&amp;scene=27#wechat_redirect&cpage=71' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">accept()ing when you can’t问题分析</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        张义飞
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-05-18</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <h2 style=""><span style="font-size: 18px; color: rgb(255, 76, 0);">accept()ing when you can’t问题</span></h2><p style=""><span style="font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;在libev的官方文档中提到一个accept()ing when you can’t的问题，下面是作者对于这个问题的分析:&nbsp;</span><br style="box-sizing: border-box;"  /><span style="font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;For example, larger servers often run out of file descriptors (because of resource limits),causing accept to fail with ENFILE but not rejecting the connection, leading to libev signalling readinesson the next iteration again (the connection still exists after all), and typically causing the program toloop at 100% CPU usage.One of the easiest ways to handle this situation is to just ignore it - when the program encounters anoverload, it will just loop until the situation is over. While this is a form of busy waiting,no OS offers an event-based way to handle this situation, so it’s the best one can do.A better way to handle the situation is to log any errors other than EAGAIN and EWOULDBLOCK,making sure not to flood the log with such messages, and continue as usual, which at least gives the user an idea of what could be wrong (“raise the ulimit!”). For extra points one could stop the ev_io watcheron the listening fd “for a while”, which reduces CPU usage.If your program is single-threaded, then you could also keep a dummy file descriptor for overloadsituations (e.g. by opening /dev/null), and when you run into ENFILE or EMFILE, close it, run accept,close that fd, and create a new dummy fd. This will gracefully refuse clients under typical overload conditions.The last way to handle it is to simply log the error and exit, as is often done with malloc failures,but this results in an easy opportunity for a DoS attack.&nbsp;<br style="box-sizing: border-box;"  />在上面的这段作者的分析，内容大致如下:</span></p><p style=""><span style="font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;在大型服务器中，经过会出现描述符用完(因为linux的资源限制导致的)的，这会导致accept()失败，并返还一个ENFILE 错误，但是并没有拒绝这个连接，连接仍然在连接队列中，这导致在下一次迭代的时候，仍然会触发监听描述符的可读事件，这导致程序busy loop。一种简单的处理方式就是当程序遇到这种问题，就直接忽略掉，直到这种情况消失，显然这种方法将会导致busy waiting，一种比较好的处理方式就是记录除了EAGAIN或EWOULDBLOCK其他任何错误，告诉用户出现了某种错误，并停止监听描述符的可读事件，减少CPU的使用。如果程序是单线程的，我们可以先open /dev/null。保留一个描述符，当accept()出现ENFILE或EMFILE错误的时候，close掉/dev/null这个fd,然后accept，再close掉accept产生的fd，然后再次open/dev/null。这是一种比较优雅的方式来拒绝掉客户端的连接。最后一种方式则是遇到accept()的这种错误，直接拒绝并退出。但是显然这种方式很容易受到Dos攻击。</span></p><h2 style=""><a name="t1" style="box-sizing: border-box; color: rgb(12, 137, 207);"></a><span style="font-size: 18px; color: rgb(255, 41, 65);">问题分析</span></h2><p style=""><span style="font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;我参考了陈硕的muduo库，还有陈硕对accept()问题的分析。将这个问题的解决方案总结如下:&nbsp;<br style="box-sizing: border-box;"  />&nbsp;&nbsp;&nbsp;&nbsp;当文件描述符达到最大值时，可以采用如下的一些解决方案:</span></p><ul style="" class=" list-paddingleft-2"><li><p><span style="color: rgb(0, 82, 255);">１.调高进程文件描述符数目</span></p></li><li><p><span style="color: rgb(0, 82, 255);">２.忙等</span></p></li><li><p><span style="color: rgb(0, 82, 255);">3.退出程序</span></p></li><li><p><span style="color: rgb(0, 82, 255);">4.关闭监听套接字，那么什么时候重新打开呢?</span></p></li><li><p><span style="color: rgb(0, 82, 255);">5.如果是epoll模型，可以改用edge trigger，问题是如果漏掉一次accept,那么程序再也不会接受到新连接</span></p></li><li><p><span style="color: rgb(0, 82, 255);">6.准备一个空闲的文件描述符，遇到这种情况先关闭这个空闲文件，获得一个文件描述符名额，再accept(2)拿到socket连接的文件描述符，随后立刻close(2)，这样就优雅的断开了与客户端的连接。最后重新打开空闲文件。把”坑”填上，以备再次出现这种情况时使用。&nbsp;</span></p><p><span style="color: rgb(0, 82, 255);"></span><span style="font-size: 16px;">上述的几个方案中，每个方案都有其优缺点，下面是对上面的几个方案的分析:</span></p></li></ul><p style=""><span style="font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;对于第一种方案，治标不治本，提高进程的文件描述符后，仍然会出现描述符不够用的情况。&nbsp;<br style="box-sizing: border-box;"  />&nbsp;&nbsp;&nbsp;&nbsp;对于第二种方案，libev的作者也提到了，这种方案会导致cpu busy watting。&nbsp;<br style="box-sizing: border-box;"  />&nbsp;&nbsp;&nbsp;&nbsp;对于第三种方案，libev的作者提到了，但是这种方案很容易受到Dos攻击。&nbsp;<br style="box-sizing: border-box;"  />&nbsp;&nbsp;&nbsp;&nbsp;对于第四种方案，libev的作者提到了，记录日志，然后关闭监听描述符，减少CPU的使用，&nbsp;但是libev的作者并没有提及何时才能再次打开listenfd重新监听呢。显然没有一个好的时机。&nbsp;<br style="box-sizing: border-box;"  />&nbsp;&nbsp;&nbsp;&nbsp;对于第五种方案，改成edge trigger后，当accept遇到EMFILE/ENFILE错误的时候，下次就不会&nbsp;再次触发监听描述符的可读事件了，这显然避免了cpu busy watting，但是连接仍然在连接队列&nbsp;中，这导致永远不会触发下降沿/上升沿的事件，也就是说程序此后再也不能接受新的连接了。&nbsp;<br style="box-sizing: border-box;"  />&nbsp;&nbsp;&nbsp;&nbsp;对于第六种方案，也是目前觉得处理比较优雅的地方。</span></p><h2 style=""><a name="t2" style="box-sizing: border-box; color: rgb(12, 137, 207);"></a><span style="font-size: 18px; color: rgb(255, 76, 0);">方案的实现</span></h2><p style=""><span style="font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;对于上述的第六种方案的简易实现</span></p><p style=""><img data-s="300,640" data-type="jpeg" src="data:image/PNG;base64,iVBORw0KGgoAAAANSUhEUgAAArMAAAAKCAYAAACnvdaPAAAAAXNSR0IArs4c6QAAAK1JREFUeAHt1sENACAMAzFg/50LYouT3Akip4/sebccAQIECBAgQIAAgaDACWYWmQABAgQIECBAgMAXMGY9AgECBAgQIECAQFbAmM1WJzgBAgQIECBAgIAx6wcIECBAgAABAgSyAsZstjrBCRAgQIAAAQIEjFk/QIAAAQIECBAgkBUwZrPVCU6AAAECBAgQIGDM+gECBAgQIECAAIGsgDGbrU5wAgQIECBAgACBCwuVBBCl9PYXAAAAAElFTkSuQmCC " src="SeWfibBcBT0E83xrfCOicdwKCicWqXia5jExROBbwgKVcbvCoFP8aBh9vR4ibFDTmA8j3mlb49wYsicnPszJrPiaJ1fxg"  data-ratio="0.5719424460431655" data-w=""  /><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">张义飞</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://blog.csdn.net/zhangyifei216/article/details/49789445' target='_blank'>
+			阅读全文
+		</a>
+	</div>
+</body>

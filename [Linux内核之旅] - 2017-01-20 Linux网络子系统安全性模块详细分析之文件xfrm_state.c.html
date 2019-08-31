@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Linux网络子系统安全性模块详细分析之文件xfrm_state.c
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664603674&amp;idx=1&amp;sn=d771216d5c6d3e506ff08b50f6f3977d&amp;chksm=f04d8dffc73a04e9ca1a0a71c81bf19c9eaf3568b71867b2aa02a5b355b3d5af8e34a705d7a5&amp;scene=27#wechat_redirect&cpage=49' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Linux网络子系统安全性模块详细分析之文件xfrm_state.c</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        李廷、张超
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2017-01-20</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p><span style="font-size: 16px; color: rgb(2, 30, 170);"><strong><span style="font-size: 16px; font-family: 宋体;">2.4.4.6 核心代码注释</span></strong></span></p><p><span style="font-size: 16px; color: rgb(2, 30, 170);"><strong><span style="font-size: 16px; font-family: 宋体;"><br  /></span></strong></span></p><p><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">该文件中</span>xfrm_state_find( )函数涉及的原理较多，此处对其进行简要的注释。</span></p><p>struct xfrm_state * xfrm_state_find(const xfrm_address_t *daddr, const xfrm_address_t *saddr, const struct flowi *fl, struct xfrm_tmpl *tmpl, struct xfrm_policy *pol, int *err, unsigned short family)</p><p>{</p><p><span class="Apple-tab-span" style="white-space:pre">	</span>static xfrm_address_t saddr_wildcard = { };</p><p><span class="Apple-tab-span" style="white-space:pre">	</span>struct net *net = xp_net(pol);</p><p><span class="Apple-tab-span" style="white-space:pre">	</span>unsigned int h, h_wildcard;</p><p><span class="Apple-tab-span" style="white-space:pre">	</span>struct hlist_node *entry;</p><p><span class="Apple-tab-span" style="white-space:pre">	</span>struct xfrm_state *x, *x0, *to_put;</p><p><span class="Apple-tab-span" style="white-space:pre">	</span>int acquire_in_progress = 0;</p><p><span class="Apple-tab-span" style="white-space:pre">	</span>int error = 0;</p><p><span class="Apple-tab-span" style="white-space:pre">	</span>struct xfrm_state *best = NULL;</p><p><span class="Apple-tab-span" style="white-space:pre">	</span>u32 mark = pol-&gt;mark.v &amp; pol-&gt;mark.m;</p><p><span class="Apple-tab-span" style="white-space:pre">	</span>unsigned short encap_family = tmpl-&gt;encap_family;</p><p><br  /></p><p><span class="Apple-tab-span" style="white-space:pre">	</span>to_put = NULL;</p><p><span class="Apple-tab-span" style="white-space:pre">	</span>/*SA操作前要进行加锁*/</p><p><span class="Apple-tab-span" style="white-space:pre">	</span>spin_lock_bh(&amp;xfrm_state_lock);</p><p><span class="Apple-tab-span" style="white-space:pre">	</span>/*计算出目的地址Hash值，然后进行遍历Hash表，比较协议簇、序列号、地址、SPI等字段，如果均相等再进一步查找*/</p><p><span class="Apple-tab-span" style="white-space:pre">	</span>h = xfrm_dst_hash(net, daddr, saddr, tmpl-&gt;reqid, encap_family);</p><p><span class="Apple-tab-span" style="white-space:pre">	</span>hlist_for_each_entry(x, entry, net-&gt;xfrm.state_bydst+h, bydst) {</p><p><span class="Apple-tab-span" style="white-space:pre">		</span>if (x-&gt;props.family == encap_family &amp;&amp; x-&gt;props.reqid == tmpl-&gt;reqid &amp;&amp; (mark &amp; x-&gt;mark.m) == x-&gt;mark.v &amp;&amp; &nbsp;!(x-&gt;props.flags &amp; XFRM_STATE_WILDRECV) &amp;&amp; xfrm_state_addr_check(x, daddr, saddr, encap_family) &amp;&amp; tmpl-&gt;mode == x-&gt;props.mode &amp;&amp; tmpl-&gt;id.proto == x-&gt;id.proto &amp;&amp; (tmpl-&gt;id.spi == x-&gt;id.spi || !tmpl-&gt;id.spi))</p><p><span class="Apple-tab-span" style="white-space:pre">			</span>/*根据SA的状态以及选择子进一步查找SA*/</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;xfrm_state_look_at(pol, x, fl, encap_family, &amp;best, &amp;acquire_in_progress, &amp;error);</p><p><span class="Apple-tab-span" style="white-space:pre">	</span>}</p><p><span class="Apple-tab-span" style="white-space:pre">	</span>if (best)</p><p><span class="Apple-tab-span" style="white-space:pre">		</span>goto found;</p><p><span class="Apple-tab-span" style="white-space:pre">	</span>/*将源地址置空再进行查找*/</p><p><span class="Apple-tab-span" style="white-space:pre">	</span>h_wildcard = xfrm_dst_hash(net, daddr, &amp;saddr_wildcard, tmpl-&gt;reqid, encap_family);</p><p><span class="Apple-tab-span" style="white-space:pre">	</span>hlist_for_each_entry(x, entry, net-&gt;xfrm.state_bydst+h_wildcard, bydst) {</p><p><span class="Apple-tab-span" style="white-space:pre">		</span>if (x-&gt;props.family == encap_family &amp;&amp;</p><p><span class="Apple-tab-span" style="white-space:pre">		</span> &nbsp; &nbsp;x-&gt;props.reqid == tmpl-&gt;reqid &amp;&amp;</p><p><span class="Apple-tab-span" style="white-space:pre">		</span> &nbsp; &nbsp;(mark &amp; x-&gt;mark.m) == x-&gt;mark.v &amp;&amp;</p><p><span class="Apple-tab-span" style="white-space:pre">		</span> &nbsp; &nbsp;!(x-&gt;props.flags &amp; XFRM_STATE_WILDRECV) &amp;&amp;</p><p><span class="Apple-tab-span" style="white-space:pre">		</span> &nbsp; &nbsp;xfrm_state_addr_check(x, daddr, saddr, encap_family) &amp;&amp;</p><p><span class="Apple-tab-span" style="white-space:pre">		</span> &nbsp; &nbsp;tmpl-&gt;mode == x-&gt;props.mode &amp;&amp;</p><p><span class="Apple-tab-span" style="white-space:pre">		</span> &nbsp; &nbsp;tmpl-&gt;id.proto == x-&gt;id.proto &amp;&amp;</p><p><span class="Apple-tab-span" style="white-space:pre">		</span> &nbsp; &nbsp;(tmpl-&gt;id.spi == x-&gt;id.spi || !tmpl-&gt;id.spi))</p><p><span class="Apple-tab-span" style="white-space:pre">			</span>xfrm_state_look_at(pol, x, fl, encap_family,</p><p><span class="Apple-tab-span" style="white-space:pre">					</span> &nbsp; &amp;best, &amp;acquire_in_progress, &amp;error);</p><p><span class="Apple-tab-span" style="white-space:pre">	</span>}</p><p><br  /></p><p>found:</p><p><span class="Apple-tab-span" style="white-space:pre">	</span>x = best;</p><p><span class="Apple-tab-span" style="white-space:pre">	</span>/*没找到SA、没错误、也没ACQ标志*/</p><p><span class="Apple-tab-span" style="white-space:pre">	</span>if (!x &amp;&amp; !error &amp;&amp; !acquire_in_progress) {</p><p><span class="Apple-tab-span" style="white-space:pre">		</span>/*根据地址、SPI、协议进行查找*/</p><p><span class="Apple-tab-span" style="white-space:pre">		</span>if (tmpl-&gt;id.spi &amp;&amp; (x0 = __xfrm_state_lookup(net, mark, daddr, tmpl-&gt;id.spi,</p><p><span class="Apple-tab-span" style="white-space:pre">			</span>tmpl-&gt;id.proto, encap_family)) != NULL) {</p><p><span class="Apple-tab-span" style="white-space:pre">			</span>/*如果找到则说明SPI被使用，释放些SA*/</p><p><span class="Apple-tab-span" style="white-space:pre">			</span>to_put = x0;</p><p><span class="Apple-tab-span" style="white-space:pre">			</span>error = -EEXIST;</p><p><span class="Apple-tab-span" style="white-space:pre">			</span>goto out;</p><p><span class="Apple-tab-span" style="white-space:pre">		</span>}</p><p><span class="Apple-tab-span" style="white-space:pre">		</span>/*此时重新分配一个SA，并对其进行初始化*/</p><p><span class="Apple-tab-span" style="white-space:pre">		</span>x = xfrm_state_alloc(net);</p><p><span class="Apple-tab-span" style="white-space:pre">		</span>xfrm_init_tempstate(x, fl, tmpl, daddr, saddr, family);</p><p><span class="Apple-tab-span" style="white-space:pre">		</span>memcpy(&amp;x-&gt;mark, &amp;pol-&gt;mark, sizeof(x-&gt;mark));</p><p><span class="Apple-tab-span" style="white-space:pre">		</span>/*调用安全钩子函数分配ACQ状态的SA*/</p><p><span class="Apple-tab-span" style="white-space:pre">		</span>error = security_xfrm_state_alloc_acquire(x, pol-&gt;security, fl-&gt;flowi_secid);</p><p><span class="Apple-tab-span" style="white-space:pre">		</span>if (error) {</p><p><span class="Apple-tab-span" style="white-space:pre">			</span>x-&gt;km.state = XFRM_STATE_DEAD;</p><p><span class="Apple-tab-span" style="white-space:pre">			</span>to_put = x;</p><p><span class="Apple-tab-span" style="white-space:pre">			</span>x = NULL;</p><p><span class="Apple-tab-span" style="white-space:pre">			</span>goto out;</p><p><span class="Apple-tab-span" style="white-space:pre">		</span>}</p><p><span class="Apple-tab-span" style="white-space:pre">		</span>/*将新状态发送给用户空间程序, 在其中调用pfkey_acquire()函数让用户空间进程进行IKE协商生成新SA*/</p><p><span class="Apple-tab-span" style="white-space:pre">		</span>if (km_query(x, tmpl, pol) == 0) {</p><p><span class="Apple-tab-span" style="white-space:pre">			</span>/*SA状态设置为ACQ，并回到相关的链表和Hash表中*/</p><p><span class="Apple-tab-span" style="white-space:pre">			</span>x-&gt;km.state = XFRM_STATE_ACQ;</p><p><span class="Apple-tab-span" style="white-space:pre">			</span>list_add(&amp;x-&gt;km.all, &amp;net-&gt;xfrm.state_all);</p><p><span class="Apple-tab-span" style="white-space:pre">			</span>hlist_add_head(&amp;x-&gt;bydst, net-&gt;xfrm.state_bydst+h);</p><p><span class="Apple-tab-span" style="white-space:pre">			</span>h = xfrm_src_hash(net, daddr, saddr, encap_family);</p><p><span class="Apple-tab-span" style="white-space:pre">			</span>hlist_add_head(&amp;x-&gt;bysrc, net-&gt;xfrm.state_bysrc+h);</p><p><span class="Apple-tab-span" style="white-space:pre">			</span>if (x-&gt;id.spi) {</p><p><span class="Apple-tab-span" style="white-space:pre">				</span>h = xfrm_spi_hash(net, &amp;x-&gt;id.daddr, x-&gt;id.spi, x-&gt;id.proto, encap_family);</p><p><span class="Apple-tab-span" style="white-space:pre">				</span>hlist_add_head(&amp;x-&gt;byspi, net-&gt;xfrm.state_byspi+h);</p><p><span class="Apple-tab-span" style="white-space:pre">			</span>}</p><p><span class="Apple-tab-span" style="white-space:pre">			</span>/*设置生命期，定时器等*/</p><p><span class="Apple-tab-span" style="white-space:pre">			</span>x-&gt;lft.hard_add_expires_seconds = net-&gt;xfrm.sysctl_acq_expires;</p><p><span class="Apple-tab-span" style="white-space:pre">			</span>tasklet_hrtimer_start(&amp;x-&gt;mtimer, ktime_set(net-&gt;xfrm.sysctl_acq_expires, 0), HRTIMER_MODE_REL);</p><p><span class="Apple-tab-span" style="white-space:pre">			</span>net-&gt;xfrm.state_num++;</p><p><span class="Apple-tab-span" style="white-space:pre">			</span>xfrm_hash_grow_check(net, x-&gt;bydst.next != NULL);</p><p><span class="Apple-tab-span" style="white-space:pre">		</span>} else {</p><p><span class="Apple-tab-span" style="white-space:pre">			</span>x-&gt;km.state = XFRM_STATE_DEAD;</p><p><span class="Apple-tab-span" style="white-space:pre">			</span>to_put = x;</p><p><span class="Apple-tab-span" style="white-space:pre">			</span>x = NULL;</p><p><span class="Apple-tab-span" style="white-space:pre">			</span>error = -ESRCH;</p><p><span class="Apple-tab-span" style="white-space:pre">		</span>}</p><p><span class="Apple-tab-span" style="white-space:pre">	</span>}</p><p>out:</p><p><span class="Apple-tab-span" style="white-space:pre">	</span>…</p><p><span class="Apple-tab-span" style="white-space:pre">	</span>return x;</p><p>}</p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">李廷、张超</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Perl 语言在分子生物学领域的应用——洪峰老师讲创客道（二十八）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=417019384&amp;idx=1&amp;sn=328f923b4a0496be988962ca0a5a9a61&amp;chksm=7644181d4133910b88e10cb2ee39a1a6f5202c63a36ff24872173333ed96bfef829ffd8f8444&amp;scene=27#wechat_redirect&cpage=74' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Perl 语言在分子生物学领域的应用——洪峰老师讲创客道（二十八）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        洪峰
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-04-09</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="line-height: 23.8px;font-size: 14px;white-space: normal;text-indent: 28px;background-color: rgb(255, 255, 255)"><span style="font-size: 16px;"></span></p><p><mpvoice frameborder="0" class="res_iframe js_editor_audio audio_iframe" src="/cgi-bin/readtemplate?t=tmpl/audio_tmpl&amp;name=%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9328&amp;play_length=23:21" name="%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9328" play_length="1401000" voice_encode_fileid="MzI3NzA5MzUxNF80MTcwMTkzODI="></mpvoice></p><p style="line-height: 23.8px;font-size: 14px;white-space: normal;text-indent: 28px;background-color: rgb(255, 255, 255)"><span style="font-size: 16px;"></span><br  /></p><p style="line-height: 23.8px;font-size: 14px;white-space: normal;text-indent: 28px;background-color: rgb(255, 255, 255)"><span style="font-size: 16px;">在上一讲，我给大家介绍了Perl语言的主要特点，Perl语言的主要的应用战场在系统管理领域。Perl语言兴起后，又广泛应用于其它领域，从航天工程到分子生物学、数学、语言学、图形处理、文档处理、数据库操作、网络管理，包括现在的大数据，在这些领域都可以看到Perl语言活跃的身影。在这一讲，我想借此机会向大家介绍Perl语言在分子生物学中的应用。</span></p><p style="line-height: 23.8px;font-size: 14px;white-space: normal;text-indent: 28px;background-color: rgb(255, 255, 255)"><span style="font-size: 16px;">在当今世界，21世纪，科技增长，新的方向很多。我们创客道所鼓吹的基于人工智能的财富生产新方式是其中之一。除此之外，还有新的一些方向，比如生物技术、新能源技术、新材料技术等等。在生物技术里，基因工程还有基于基因工程的转基因工程是一个非常热门的方向。转基因工程是生物技术或其他领域技术融合发展起来的新技术。转基因食品在大众媒体中已经出现的非常多，目前学术界和市场上还存在很大的争议。从长远来看，利用转基因技术工厂化大规模生产食物是完全可能的。现阶段在转基因食品对人体副作用尚未明确之前，我们可以尝试转基因技术在其它领域的应用。使用转基因生产玉米，转基因玉米是一种很好的塑料原料，就是一项很有创意或很实用的技术。玉米是非常高产的农作物，而且种植面积很大，而且玉米对土壤环境的要求不高。一旦推广种植，就可以利用此项技术使塑料工业摆脱对石油原料的依赖。类似的基因工程还可以无穷无尽的做下去，唯一的限制就是人类的想象力。在转基因技术研究中，计算机编程的重要性日欲上升。</span></p><p style="line-height: 23.8px;font-size: 14px;white-space: normal;text-indent: 28px;background-color: rgb(255, 255, 255)"><span style="font-size: 16px;">&nbsp;我以前跟一个兰州大学的教授讨论过。在转基因技术的基础上，我们研发出一种新的草，它可以耐寒，在低温下可以存活、可以生长，而且耐旱，在干旱地区也可以生长。如果有这种草籽之后，可以在我们西北大规模的种植搞绿化。因为我们中国西部生态环境非常脆弱，不宜居住的地方特别多。如果用这种技术在西北地区，特别是沙漠地区大规模的搞绿化，很多土地就可以逐渐变得宜居，对于我国的人口压力和资源压力是非常具有战略意义的。</span></p><p style="line-height: 23.8px;font-size: 14px;white-space: normal;text-indent: 28px;background-color: rgb(255, 255, 255)"><span style="font-size: 16px;">这里有必要解释一下什么是转基因技术，英文叫做Transgenic Technology。理解转基因的概念之前理解什么是基因，而理解什么是基因之前又有几个生物学方面的术语需要解释清楚。第一个是染色体，我们知道无论是动物细胞还是植物细胞都有细胞核。生物生长的本质就是靠细胞的分裂、增长来完成的。在细胞分裂的过程中，细胞核扮演了重要的作用。细胞生长到一定阶段，就会发生分裂，即每一个细胞会变成两个细胞。在发生细胞分裂之前，细胞核它会进行自我复制，也就是在细胞内部首先产生两个细胞核，然后这两个细胞核会分割原来细胞的细胞质的营养成分，然后独立出来。这个过程相当复杂，至今还有很多细节问题还没搞清楚。一致的事实或细节是这样的，细胞核在自我复制的时候，会复制细胞核中携带的生物特征信息。染色体，英文叫做Chromosome是细胞内具有遗传性质的遗传物质，由这种物质深度压缩而形成的聚合体。它容易被碱性染料染成深色，所以得名为染色体(染色质)。染色体或染色质是同一物质在细胞分裂期间（或分裂期）不同的形态表现。染色质出现在分裂期间，显丝状。其本质都是脱氧核糖核酸，也就是DNA和蛋白质的组合。它们不均匀的分布在细胞核中，它是遗传信息的主要载体。当然不是遗传的唯一载体，细胞质内的线粒体也可以携带遗传信息。这些染色体通常以细丝状存在于细胞核内部。如果将人体单一细胞内的一条染色体拉成一条直线，它的总长度有1.8米，相当于我国人的身高。在无性繁殖的物种中，生物体内所有细胞的染色体数目是一样的。而在有性繁殖的大部分物种中，生物体体细胞染色体是成对分布的，在学术领域称之为二倍体，以这种方法分类无性繁殖和有性繁殖是科学的，不会产生歧义。而性细胞，如精子或卵子都是单倍体，所以它的染色体数目只是体细胞的一半。每个人都有23对染色体，也就是46个。而人类作为一个物种，拥有24种不同的染色体，其中有22个属于体染色体，变化从1号到22号，大致符合由大到小的排列。另外还有两种决定人的性别的性染色体，分别是X染色体和Y染色体。男性个体细胞性染色体为XY，女性为XX，所以从分子生物学的研究可以得出结论。男女交够以后，女人到底生男孩还是女孩，是由基于女人卵细胞的男人的精子细胞中的性染色体决定的，也就是男人决定的，到底是生男还是生女，如果精子携带了X染色体，女人生女孩，如果精子携带了Y染色体，女人生男孩。其它哺乳动物对性别也是这样决定的。我们发现鸟类和蟾的性染色体和哺乳动物不同，它们的雄性个体是ZZ,雌性个体是ZW。这是要搞清楚的第一个概念，染色体的概念。<span style="font-size: 16px; line-height: 1.5; text-indent: 28px;">&nbsp;</span></span></p><p style="line-height: 23.8px;font-size: 14px;white-space: normal;text-indent: 28px;background-color: rgb(255, 255, 255)"><span style="font-size: 16px;">第二个概念是DNA，碱基和碱基对。进一步研究染色体发现，染色体的脱氧核糖核酸就是DNA具有双螺旋结构。在生物学领域，这是一项划时代的研究成果，双螺旋的发现是在1953年完成的。这表明人类对生命活动的规律从那个时代开始进入了分子层次。所以两位发现者，一位叫James Watson，还有一位叫Francis Crick，他们一起和Maurice Wikins一道获得了1962年的诺贝尔医学奖。这个细胞核的复制工作，具体到分子层次，就是复制细胞核中的DNA，脱氧核糖核酸组成的双螺旋结构。分子生物学家发现DNA的双螺旋结构，每条螺旋线上的蛋白质的基本类型只有四种碱基对。分别是A—腺嘌呤（ADENINE）、G—鸟嘌呤（GUANINE），核酸的基本成分、C—胞嘧啶（CYTOSINE）、T—胸腺嘧啶（THYMINE）。由A、G、C、T这些基本成分都是基于碳原子组成的大分子结构。分子生物学还发现胸腺嘧啶和胞嘧啶可以组成嘧啶的单环结构。地区上的生物千千万万，但是到了分子生物学层次，细胞核中的DNA的基本物质都是由这四种组成的，没有任何区别。现在有一个说法，外太空中的生物是否由这四种物质组成，科学家还没有定论。有些科幻小说的作者虚构了非碳原子组成的生命，这是一个有趣的科学讲座，当然现在还没有证实。</span></p><p style="line-height: 23.8px;font-size: 14px;white-space: normal;text-indent: 28px;background-color: rgb(255, 255, 255)"><span style="font-size: 16px;">有了这个发现以后，我们就可以从语言学的角度来看待分子生物学了。A、G、C、T相当于我们续写生命秘密的语言中的字母，和数字计算机中0和1组成的数据很类似。而生物物种信息的数据可以用四个字母续写。DNA两条螺旋线上的碱基以氢键结合成含N的碱基对，其中A与T之间由两个氢键连接，G与C之间由三个氢键连接。碱基对的排列在DNA中只能是A—T、G—C，这些规律都已经被分子生物学家掌握了。DNA的双螺旋非常长，每一种物种长度不一样，上面四种类型的基本碱基对排列顺序也不一样。人类的DNA双螺旋结构最大的染色体含有二亿伍仟万个碱基对，最小的染色体也有三千八百万个碱基对。所以人类细胞核里23对染色体上的DNA，共有三十亿个碱基对的序列，这个数字是非常大的。</span></p><p style="line-height: 23.8px;font-size: 14px;white-space: normal;text-indent: 28px;background-color: rgb(255, 255, 255)"><span style="font-size: 16px;">有了这个感念之后，我们来谈谈基因。基因就是DNA分子上具有遗传效应的特定的核苷酸序列的总称。它是具有遗传效应的特定的DNA分子片段，基因位于染色体上，并在染色体上显线性排列。基因不仅可以通过复制把遗传信息传递给下一代，还可以使遗传信息得到表达，每一个染色体皆含有数百个基因。在基因与基因之间会有一段含有调控序列和非编码DNA的基因间的区间。不同人种之间具有头发、肤色、眼睛、鼻子不同，就是因为基因所致。在基因的层次上，一些基因的组合也可以使生物表现出新的生物特征。这就如同把相对固定的词语按照不同的方式组合起来形成新的句子或更大的段落一样，实际上，在人体基因的研究中表现的很清楚，性染色体上的基因组就可以使人有性别上的差异，所以在分子生物学的研究中基因组包括它的结构和功能才是他们的主要研究对象。<span style="font-size: 16px; line-height: 1.5; text-indent: 28px;">&nbsp;</span></span></p><p style="line-height: 23.8px;font-size: 14px;white-space: normal;text-indent: 28px;background-color: rgb(255, 255, 255)"><span style="font-size: 16px;">有了这些概念之后，我们可以看出，在分子生物学中体现出了一种层次结构。从四种最基本的碱基开始，先在DNA的双螺旋上组成碱基对，碱基对是基因的载体。具有遗传效应的碱基对序列就是基因，而基因存在于染色体上。所以人体细胞中有23对染色体，对于其它生物，不同物种，它的细胞核中的DNA碱基对序列是不一样的，进而就可以说它们的基因不同或者基因组不同。这就是对物种的新的认识，这种认识相比达尔文时代的进化学说，那是一个巨大的进步。要想在分子生物学层次研究生物的特征，首先第一步要完成对碱基对序列的测量，找出相关的基因序列，这个工作叫做基因测序。对于我们人类自身的基因测序项目已经经过全球多个国家的科学家的共同努力，已经完成了。这是在分子生物学领域的一个了不起的进展，当然这还只是第一步。第二部就是要搞清楚基因序列中各种排列组合的含义是什么，也就是它们的语义是什么，从语言学的角度来看待生物学的问题，也就是某一种结构所对应的功能是什么。刚才我提到DNA双螺旋结构非常长，利用人脑来研究这些数据当然是不行。这个时候必须要利用高性能计算机以及计算机程序才能进行分析。这实际上是个大数据、海量数据，因此我们现在可以在计算机科学，编译原理中发展起来的词法分析技术、句法分析技术、语义计算技术，都是编译原理中的内容，它们都可以平行推广到生物基因的研究中来。我们前面在讲Racket语言的时候，我提到过计算的本质以及计算本质在编译原理中的应用都可以平行到这个里面来。换句话讲，现在的分子生物学如果不懂计算机科学的编译原理或者更广意义的说不懂现代语言学的理论，那我估计他是做不出任何具有原创性的成果，这是一个全新的认识。目前，全球在这一方面的研究也才刚刚开始，不过它的进展很快，有很多创新点，掌握了基因的表达，也就是它的结构之后，就会开始研究基因功能，因为结构和功能是有表里关系的。现在已经开始发现生物进化中有些基因的组合是稳定的，有些是比较稳定的，有些是亚稳定的，有些是不稳定的，还有些是很不稳定的，那就可以分成很多层次。这里我说的关于稳定性的概念都是基于概率还有统计意义上而言的。这就意味着搞分子生物学的研究，还必须懂这些数学工具的用法，因为用数学语言来讲，大量的基因和基因组的功能明确以后，DNA上的碱基对将被商化成一个图。这是我们数学的做法，那么到了这一步，分子生物学的研究绝大部分内部就可以用纯数学的方法。比如说图论的方法来进行研究，那我们就可以在这个数学模型上推广我们的人工智能技术。把模式识别、模式聚类、专家系统技术应用到分子生物学领域。从创新的角度看，只要发现了其中的一个模式，就算找到了一只可以下金蛋的鸡。要进行这种创业，科技进展对于现代分子生物学要求是非常高的，因为他们需要掌握的知识和本领实在是太多了。理解基因和基因组的功能非常重要，这是发展新的生物技术的核心。对于人类的基因组的研究的意义是显然的。因为可以通过对基因组在细胞的新陈代谢中复制过程中人为的干预或控制，发展新医学上的治疗技术。新的医疗技术帮助病人恢复或修复人体的器官。甚至某种意义上可以改变人类的进化过程。当然，这种技术不是万能的。但是可以肯定，这些办法会对许多类的疑难杂症形成有效的治疗手段。</span></p><p style="line-height: 23.8px;font-size: 14px;white-space: normal;text-indent: 28px;background-color: rgb(255, 255, 255)"><span style="font-size: 16px;">从现在开始向未来展望，分子生物学的第三步就是在第二步的基础上把不同物种的基因按照需求组合起来形成新的物种。我前面讲过，在大西北种一种耐寒、耐旱的草种去绿化大西北。具体怎么搞，专家们应该是有办法的。比如说：有些鱼能在寒冷的海水中生存，所以它肯定有耐寒的基因。还有一些耐旱的生物，它肯定有耐旱的基因。所以你把这两中基因组合起来发明出一种新的物种，这个技术就是转基因技术。转基因技术从本质上讲就是构造新的生物物种的高新技术。这个技术的创意是无穷无尽的，从这个意义上讲，我们去读我国古代的山海经，里面有很多奇怪的生物，我们就会有全新的观点。也许书里面描述的奇怪的生物可能不完全都是无稽之谈，这是我的一个想法。当然，和许多伟大的技术一样，转基因技术还有新的生物技术，它使人类面对越来越大的能力方面的挑战。因为有了这个技术，现在可以从分子生物层次对人类自身进行物种改造，这会引发许多社会伦理学方面的问题。实际上，这种技术与伦理之间的对峙在历史上已经出现了很多次了。比如最近一次就是核能技术，原子能既可以被和平利用，也可以用于制造原子弹、氢弹，这些武器可能毁灭人类，当然这个技术我认为是中性的，如何去利用技术为人类更好的服务，这是需要专门花另外的时间去讨论的，我这里不去涉及了。</span></p><p style="line-height: 23.8px;font-size: 14px;white-space: normal;text-indent: 28px;background-color: rgb(255, 255, 255)"><span style="font-size: 16px;">回到我们刚才讲的主题上面来，有了四种A、G、C、T碱基对的表达以后，我们可以把Perl语言用到基因序列的分析中去。在我刚才说到的分子生物学和新的转基因工程里，Perl语言就有非常重大的应用。我希望通过这个例子的解说，我们可以看出当今时代要搞原创性的发明，需要多个领域，精通至少两个领域的人才有可能做出原创性的发现。所以对于在座的诸位创客道的践行者而言，我希望大家在学习的阶段，具有广阔的视野，至少对两个领域达到专家的水平，我想这对于创新来讲是一个非常有帮助的新的观点。</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">洪峰</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

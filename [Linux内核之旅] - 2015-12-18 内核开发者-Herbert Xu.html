@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		内核开发者-Herbert Xu
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=412316336&amp;idx=1&amp;sn=5b9363ec163f53d05c4a14184afeeeac&amp;chksm=760c5f55417bd6435a7c95210328865276d67e2ba7609e22353f3f9426487ed35def944aa3dc&amp;scene=27#wechat_redirect&cpage=83' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">内核开发者-Herbert Xu</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        陈莉君
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2015-12-18</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="word-wrap: break-word;"><span style="line-height: 1.6;">    “who’s Herbert Xu?”，当我收到Xu要来西安的邮件时，这是我的第一反应。当得知他愿意来我院进行一次内核开发方面的讲座时，喜悦从心底蔓延。</span><br  /></p><p style="word-wrap: break-word;">先回答“他是谁，从何处来，到底干什么？”。 “Xu是旅居澳洲的华人，也是一个资深的内核开发者。他负责维护Linux内核的Crypto API部分”。这就是他的主要信息了。</p><p style="word-wrap: break-word;">   当我看到xu时，他正在滔滔不绝的与我们兴趣小组的同学们聊天。流利的普通话，年轻的面孔，亲切的态度，使学生们在牛人面前没有了距离。当他来到讲座的大教室时，教室已经坐无空席了。</p><p style="word-wrap: break-word;">十几年在Linux方面的侵泡，使得他讲起Linux内核来，就像说自家的事情，娓娓道来。关于Linux，他告诉学生们，首先，要参与进社区来，不一定先进内核，可以先参与发布版的查错，报告bug，修订小错误，熟悉社区的潜规则，然后参与应用程序的开发，最后再找自己感兴趣的内核部分进行钻研，报告bug，阅读源代码，修订bug，如此等等。当然，在讲述这些事例的过程中，他列举了很多身边的具体事情，听起来有趣而具有说服力。</p><p style="word-wrap: break-word;"><img data-s="300,640" data-type="png" src="data:image/JPG;base64,/9j/4AAQSkZJRgABAQIAJgAmAAD/4QAIRXhpZgAA/9sAQwAKBwcIBwYKCAgICwoKCw4YEA4NDQ4dFRYRGCMfJSQiHyIhJis3LyYpNCkhIjBBMTQ5Oz4+PiUuRElDPEg3PT47/9sAQwEKCwsODQ4cEBAcOygiKDs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7/8AAEQgAwwEEAwEiAAIRAQMRAf/EABsAAAEFAQEAAAAAAAAAAAAAAAQAAgMFBgcB/8QAShAAAgEDAwICBgYHBAYKAwAAAQIDAAQRBRIhBjFBURMiYXGBkQcUFTKxwSNCUpKh0eEWU2JyJDM0Q0SyFyY2c4KDosLS8EZUY//EABkBAAMBAQEAAAAAAAAAAAAAAAABAgMEBf/EACURAAICAgICAwACAwAAAAAAAAABAhESIQMxQVETIjIEYVNxgf/aAAwDAQACEQMRAD8AxaLUqrXirwKlVa5RiVakVaSrUirQMSrUirSVaeooA9VakVKSinhaBDkGDWn07rLULUGNysq7UVQ3ZAvGB7x3rNKtOXiXGf1fzosC+1jqe61W3NvKAqNJvAHhx291UNyS6qP8YpzMAy5NMldWC4PZwTSYj3ZS2U70iHxpwwwyO1IZHsrzbUuKWKAItte7aftr3bQMYqZNSpEWPAr2NMsBV3pOkz3shWOMtz39lL/QioezzHlxxkVDJEVNdLh6XsLe0Zr9w3HrHdtVaw+uJYRXrJp8jSRAcsw8fZ7KbjJdjspXSoXTFEtzUbLmkAJt9enBal9CN+SeKlVkQerHk+Zp2BEkLt2GB5mphEicyOKa8rtwDt91RMCQSTmkBK86geqM0M8rE08rTGWnYEfpDubimmSlt9Zvf+VNZaAFvFKoyvNKloCFU8C6/OpVQ/tL86iG18MhBHmKlVOBVWSSKh81+dPCHzX501U9apFSiws9AI8vnUyIzDgr+9UDALtJOORj30kdXLbedpwaYWGLE/ht/eqRYZPJf3hQqLUqITU2KwpLeQ+C/vCiLfTHkUTNIoUkjbt5+9gfn8qDSFyRgc1ZxXd1KjR+jUDtkJj9r82P8Klslt+CqCP9dmV+AoXGfdQFzZO23fC8q5f1UbBBJ4Na3T1W0t5h9VWSWTPrue3l4UWjxqoDWuTySSF9/lTTE5SXgxdvaXCtAXVvVVd3Pbv/AEq0SCRkBCk+eB41ohLCrFjYqwHYFRzx48VXMkjsXA2bjnagwB8KTY4yb7RXmFx3RvlS9G3ip+VHski43ORk45NSCBz4miyys2HypFCKt1tXbPBPwoee3kCHaeadjBLdQJFLD1c81uY+p9M06yEdlbtuA7NgZPmT41kQhQdhx7K89Yryq/KmpV0IK1XXrvUmPpZDt8FHCj4VTOSxJot1HjGtRMifsD5mk5DBSKYRRRSMfqH500pH5MKLGDEU0iiikR/WYfCmGOP+8PxWiwB8V4w9U1OY08JF+INMeMbTh0PxosCEimEVKU9bbkE++kYXP6ufdRYAu3lvfTWWiDE/PqHv5VG6EdwaCgcjmlTyOe1KgAKCMhFzjnJ4GKLVOBXkafokOPOpuBgHgk8VUtNmS2keBOe9PCH9o1IEZWwUI94p23/CaQA7xhiC2SBzjNDgySXv1aw06aaQpvKwnPHAJNHMOOxo7onnrBxj/g3/AOdaTdJsicnGLaAEsdYxz0/qBPsFTJZaxn/s9qfwWusxJ2otFqYyb8HOuWTOTQ2mqKwLdPatx5LV1DFqF6qQHRdRtSo4eSI7fd6uTXSEWp17VuuNSN43Ls51Ho2oKo/RTfuyj/21J9nX6945x8JP/hXQsUqfwr2Vi/ZztrC+/ZmHv3//AAqCSOSyRfrIu2U8D6vCZD8RtGBXS6VP4V7HT9nMY4pNQnRLdGY53Kk6mNyBjJxjtzV7BpV+5G6xgUeZm/pV3eKrdSWIOP8AZp/+aOrH9GnBKj3mofGk6saKyKzj0+39KlqJ5yMlQwwD7M1m9ZXUdQfJ014iOMoQeM58K27NDjmRR8RTNsLH1WU+4im42qsZgvsq/dlWS3WIH9bhx+NSfYsnowTyceVbO70y3vofRS525z6pwc1Wt0nCv+ovbqLy2vxUOD8AZWXSpE/VoOWzZMZWtZN03foD6LV5SPJ0DVV3WkaxGebmCQD9pMVLi14GZ94SCOKjeI7TxWkttI+stiWeGEqBuLnAJ9lTvoulRj9Pqie0ImaWLYWZBo8Co2Sra/treKcpazGaPH3ym34YoB4/ZS6GBslQsowaLeP2V7HYz3JxFGz8+FAFa+DJt8RSRWBODitJB0nqs6qy2u1SeC1TT9B6tJEyqUSRuzDJxTxfodozKkgH1z386jkuo4x68yr72p/U/RWsaLp7Xk1wZIUxuw2MZwPP21gZncucsTVx42+2Jyo2DaxaKcG4TPvpVi/jSrT4V7JyN5An+jx8edTehV8bkBx2yKfAmbdPeanCVEv2yY/lEaocdzjyzXu3ipQleleKVADOnBorosY6zx52j/8AMlROvFTdH8dax+22kH8VpNaZE/yzqMQohWCkDxNQR+FEKgLEnxGKUEvJzRRKrjI9ozRCsMUOigAewYqVe1dMWjoiyXNKmg06tDWz2lSrygZhPpFuZLe7014pGRtkoypwe6VntK1G4kN4XmdyLZiMuTg1cfSi2250z/JL+KVlNKkwLzn/AIZq5uRbZg39yU39y64NzMR5FzTodQu4H3R3EinzDGq5ZMCnrNg0UjHJ+y8j6h1NAP8ATJfi1GQ9T6irDddOfjWa9OPOl6bHjSpDyl7NPfdVXzwFVuXyR5CsndatqTOSLqX980pJ9wxmhZGBOadIpTl7PH1nU1H+0Mfia9sNT1C61GKB52KuecE5qB2BUjFT6GB9tW+O++k0qNIyd9m0W0cxKWGTioXtSPCtOlqPRrx4Ux7ND+rWdG9mTe3PlU1hf3ml7jayGPfjd6oOce+rqaxB7LQxsAD92haAltLvqHVIzJHfBVBwS0qp/CotS0zWZrQrJr0EBLDLvdfw70x7ADsMVnOsYWh06BAxBaTPyU/zrSP2aRMnSspOrNKk0+JZJNctb9nOCkU29l47msa+Sxq5+rb0ZmJPJFCG3UmT2KMfFq6lCjLNMA2mlV0lgjDOPGlTon5EbG3TNsv+Y1ME4ptqubUf56IC8VyT/TNo/lEYWvGWpgteMvFAAzrwa96UO3rW39sEo/CpHXg1F06dnW1l7UlH/poJl0zqUZ4olG4oSJqnRsGoicyClapAaHVqfubwNbJmiZOGpwNRKePGvePM/OrUjRSJc0s1ECB+t/Gn7qMilI579J8M1xe6akETSMI5SQi5OMpWRsLe5hF0skEiFoCqhkIya0v0rSsl7phViD6OXkHHilY+wuXEdzl2JMRxk1lO2Z6zPRbXQP8As8n7hpwtrr/9eX9w0J6W4CLIVkCMSA5PfFIXMn7bfvGjvozca7DPq10P+Hl/cNefVbs9raY+5DQn1mX+9f8AeNPW8nT7szj3OaNipEkkFynDwSr70NQPHL/dt+6ac93M/wB6aQn2uaiNxKT/AK1/3jRsdIjdJPFG+Ro3Qkf7ZtsqwG7vihvTSkf65/3jR/T7yPrdujSMV39ie9KTdMuNZI60i+qKDvrv6s6oIjIWUscHtgj+dHJ9yq+/GZ2IxlY+M+1qzleOjoB0v/SzpG1uyb225J7fwop4h5VGI/Xt2JBO/wD9rUUwqI5V9hgrRDyqn13p064sKJOIjEWPK5znH8qvmFNYskbMmNw7Z7VcZOLtCaTVMyafRi7QhU1FdxJJyntz51CfomuQrMNRjLNt42EDgn21YR9f3ENxLBJpquYm2llkxn5ijI/pFtWbZJp1yh/wkNWy5ZeWQoRXgqX+jW7iYpHeQuo/WYEE/ClW5sNTS/so7uFXVJckBl5HOPypUfLIPjh6OcWg/wBEP+eiAvFRWIzbMPJv5USBxU8v7Y4/lEe2kwqTFeMKgYO68GhtF9TrTTj5+kH/AKDRrrkVXB5rDW7TUI7ZphA7FkUgEgqR4++mmJrR1BGohHyKwMv0gParvfRpwP8AvFqBfpT/AGdCuD/5g/lSSZhjL0dLVqkVvbXNU+lKY8LoE5/80fyp5+lG6X/8elHvm/pVpjUZejpQalyf2flXND9Kd4p/7PsPfP8A0pf9KmoH7vT4+M/9KdlJM6YAf8Pyp4IFcxH0oaq33dAX4zU9PpG1yU4TQYs/99Rkh0/Qz6XHxe6YP/5yfitZ/pHSjrN9Na7vRx+jy8mM7R/OpepbvWeq5IJ5dNWAWysoCuDncQfE+yndKvqOlfXIiVhWVAcsAckeGfDgmplJVsUYtzNd/YTTzC1vJdz+iHMZBGQQD34wa55qtjJpWpTWUvLRNgHH3h4H4iuiv1roKWrI+pwLchGUoCT62OADjnmsprel3mptDd5d7koqybzgHjw8seVO1FFTjl12ZrNebs1Y/wBndSzgxL+9SbpzUlAyiDPYb+aMo+zHCXortx+FebqsG6e1Fe6L86b9g35/VX5n+VGUfY8JegHeAKtOmfX6gth/iFDtoN8vcL8z/KrXpjSLuDW4ZZFG1WGceHNTKSa7LjGSe0dQU+rQlzbPLMXV1AKhSrAnsc+ftohW4pFqmzcDW1kE8bvIu2Mk7VB54I8/bRDGkzVGzVNgImo5jtgY17u5qG7fbbMff+FKwMZBDHLJOWQHLnn/AO++vfs1BLneduO3jSsTxIfNz+VF7xuAzye1USa7SALfS4IwTgLSqK3bbawjyjX8KVKxmQsopEhcvGyq4BUkYzRGKMu7j60vpD3C4oVa0nLKTYKOKobivCtSkUFqep22mWktxM4OwZ2KRuPgABSAn2UvR5qq6e6ij1z0wEBhaPBClt24UVrWsxaJYi5kRpCzbUReMnv38BxTp3QEs1jHcth1yB2pi6Lbf3f8ag6a137dimdoPRNEwUgNkEHOKvVAqWqdMZXLo9uOyH51HLoZkuYHjlMcUZJdMZ9JxwM+FXAx5VIvalSArRpNv+x/Gvfsq3X/AHf8ashz2FeFT5UUgK77Oh8E/jTWhNmyyw5RgeDmrNlIXOKDvQwgBIx6wpNIGOOq3kmCSnH+AU1724dSjiJlPcFAQa5xNqOrz9TNHDJKCJyqICQu0HxHbFdAB4FEouNEURfVrZ5DIbS1Lbs7vQJnPyqwW/u1XaJcAeG0ViNb6pu9P1z6nDGuyMrnIyZM8/0rS3Oo2lkE+tTpEX+6GPJpOMklfkC7soXvkaSQ7mDYz2/CixpSk5KgnzpdPMk1g0iOrKzkhgcgjArzqDqbTumrSOe8dnMhxGkYBZ/M+720KNlod9lIf1RUNn0/FZW4hQs4DM25zk5Jz3+NY/qH6TnC2j6KVRZELS+lTLK2cbfL2/EVa2v0n6QLW2F4JBcPGGm9GmVRvLv8fjV4SoLNF9lx/sr8qmt7FIGyqjOe+Kg0jqLTdcs5LmymLLH99WXDJ7xVTpn0gaNqmprYwmZGc7Ud1AVz5eypwY7NUG4rxmqJriNI2kdwiqu4sxwAPOqiw6t0XVL5rK1vFeYfdBUgP7ie9GxFwzVGzVR9TdW2XTYjWdHlmlBZETjgeJJqHTes9K1TTprsSGEQLulR+6j880qlV0MPl1/S4NRXT5b2JLkkAITzk9h5A1WdX9TwaDbxRPC8rzhtu04AA4Jz8a5rrc8Oqa3NqUEjIkr7sHuMYxWsn6w0C/ZW1q1ysS4jiUbyxPcnwxwOK0cGqdWNU2TaTcpc2S3CZ2yEkZ70YMM6tnlayz9VWEk5s7C0FrbybljcNgKT2OMcc1TaNq1zpV87OzTqwKlN+cnwNPB7IxO3x8QoPJQKVc7T6UtoxJpwznja/GPlSqMZeiimuevbsBks7ZEQnhpeWPwB4qlfWNZv7wyi5m3Id21Gwq+4ChriWG+1LfBALeKQj1FPA45x8atra4trC8lhRAyZwHz7MZ/Gt26Wo7KjG9s3dlqKTpudxjYuGOOWxzXKdUlnfVLk3LlpfSMGJPtq3stTv9Multbj14A/rsBk4PY/nQF7NLdyvI+1izkgACqhF3bJlV6CunddbRpppvRelX0ZG3OOSRjmvNX1276gMaThVEZOxEBAyff3quH3DDkBWIzgeIqxsbD6veRTkh1Vs7T4USxj9gW9Gm6Ht7nToLn6xGF9KVKDeDnGf51rhcOP9386pLC5jfBTHtFe3uqyROGTDY4Kt4e2uabf6Y0rdIvvrDlSAg+deiaQ4BUfOs19uXOeETkeRr1NavGA2xj4Iaw+RFYM06yyBwBjnsDUki3ToQEAzWUn1XUGhbAZMD7wQgj25ohLDU47Jb2bXJZYiithHbnPurSCU+mTK4lBrfXWpW+q3FvaGOOOFynKbtxHBPPtzQlh1nqUrhL2X0kZJYnaARxRa9JW2qL9ajv/AFpnZnd03ZGT7e9P1Hpaw0nRrq4FzJLKiepwAAcgfnXYoxqjPI81bqGOCFVs5P00g9Z1xlR5Z86qD1RqElp9XedlBP31PrfOqeXJRZASVztPHbyqAZZgF5JNKMIpFSt9lkJpBdrdtIzyxncrNz299eXup3WpXIlu2DkDaDjGB7KFikKzZ8M9z40Qr2wXYY+x7huat78CSo6JpGsf2e6Flk3b5oslE3j1ixGD545/hWN1DqCbqe4tY9UcBYiyoYxggHHfPhxUUd5G8TWrzCSGVMFWyCp8MGqyaA20rIqsVHZsd6hqOTrtjV1ss9W+p28UVtDArYG7fzn8aq8CRy4Ubu+0DivLaGXULyG0jI9JK4VNx4BJxVhq2iX3TU6JeBQ0ikoyPuBHj+NVGOKDK3sK0DqF9EW8nihy0sYUDsM54PuqC3trU6bLqL3qw3QfEUKIdzeJOR278VUCUr4nHlmk8xYbvGlju0Fh1xrV9dIFmvJ5Aq7QC5xjyxUmiSPY6za3ZZSscittVhnzxirTpyG1tI/rbwtK8qAAk/d88VZ6poGnfV2ubOMJdAbkRZMBj7qlp3ikXCUb+wN15KL69hmdi5aAMhHgDzgjw/rWQW4kgiaJGwshBceZGcfiamuEvEkaO4jk9IfAgkmory3ZJQy52sB345xyKOOLisWXyqKrEN0oNd3P1aMZZgT2OOKI1rSFtoI2jbLRp+kPtJzz5cEUHpV42mTPPDJtuGQqj9gme59tTnU7q59JFe7ZEkbLOAAc+fFaU/Bgu7A7a6SCF4hbRS7yPXdcsvuPh3ociQSkLkkHg0emiXEr/onXaSNu5sGhrpJEuGgA2mI7W58R3pKSfRo4tdm4s9K6ae0iNxIZZQoDsjhRnHlmlWCEcuOJFxSrif8AFl/kZWf9Gg0fpQSaoy3tyBbREHKjDSewDuKG6nmt01y4S1hWKNCAFVceA8KanVF0rHbuRM/dDGq+8dr+4kmDDdI2cN4V1RUsrkS68EbSswHgD3xSRhkBSe/evJLaaGFXeNgrcbscU62jaSQKqk+fFaNpKyUm3Qbp1pNqGsQ28EYeWQHhu3Y5PyrUXHT99YQmR4CypwWTmpunYrXS5FvfQkTSJt5bsPMCtM+pRzQZQsyj7yleawnlSlWgbp42YnRNU9Hq6xFWdWYKVx/GitF6hF/1G0YtQq3BIAJzt2g8j5UZq99YC3iOmLFFK7uZnRAGBAI28jvyflVPolnHYa1ZTQlpNytvD4yuQBuGPDJpXFp2hG+WJcg7V+VSLEPZQwuBxzTWvNp5PFc4ye+gV7CdWOAUbt7q59rmranbiTQ7aV/qSPtCqvLk84JHJ5Patnd3zNayInLMhXn21k9Snjjma6A2ync2487SG/pWvHLF3QNWWPTkd1b6bGk0E8bKSMPGR4+2m9Q3N1eQtptrbvLJLjeqKSVHf4VrdK6iuOpLRmsNMV2iCh2eYKMkZ44zigTazaLqE0k8YVr1yx9bcOPD3c10Kd+DOtmR0roy9uG236MtvyTFGdzE/DgfjVxB0NZW+52VoyQVDSuARkY4rTfXQ0YDlQv+bbVJe9R2dpOyRW0lwQD64AK58sn8aLpWVtujBdQaHcaGYhJtZXZirq24MPD+FUwkx2rV6zcpqcTNdhmdiGQK/wBwY7c1X9PWWnfaqtqEhWEA43LuXPtxRGbUW5LZclHJJMrljkt1jdwMyLuUZzxSeaSRwxznNWXUxiOsMLMq8W1VT0a4BAHgKr2s7w8hR7gaqLcoqTVClUXRd9F2xfqSK5yimBGc7zgE9vzq369jt7+CO5ST0lxGCp2g7VHfjPfsaqOjEdNakM6cJGQwYcc+Nah7e0X69FetIbeYAwvGjOUB77sDA9lEpYxbJSuSs5dyO/FWWk6NPqr7kBMSOquV5Khs848hitLc6P0rFIW+sTuuP2SOflTrfX9L0EldMtzKWTazMdqtzkZHjULly0kU40a2+0e3tOibS1kULPaquHGN2SfWGfLmshqOtQ2sDRpGfS4wrF84PnjFSzdf3VxtEltAyDnYc4P8azmqbdUuJryN9srHcYSOMeSn8q043SpkSjuxHUJJ23SOST45oG+dzMGOdpX1fzojTLGe9PqoyqPvOw9UfzovWtOSCzQozSNEcFiuMg+yqk6SHFW6KDec0fpRikuCk24qFJABxzQCgswVQSxOABWos+ktU9FDLFZyMcgy7yFA+Z8qako7ZUackpdHSultCtNP0dXuY1aadQ7s4B2AjhRnyrjuqEJf3Cr/AHjAnz5rpWt9TPbRGN41RVACKjBi58PhXMdVQJettJKthgT457/xrng7lTdmkracgTeaVNz7aVbUZEoMbJ6x2t+NephX78VEADRUNrLIodI2ZdwXOOMntSdLsatm00PT1udMidNpV8kqy+NXEehR+iZSijcPAU3SB9S02GB8AIOKON7GBknFYPYm6Z5pM9nolo0eozLF6wVDIO/uNHr1XoK+qmoQu5+6i5yx8u1VUmo2dypgu40lTydciq/W4dJK2rWlrBCFZGZ40wS3Ixn5VOKiqY23J2UE5gnczSbmlklkJYHjc3J/GpGaRGsJ4mOPTqjcY9Uhc/xWn2iJ6BiYypRxgNyeSP5Ve6fA+yNfV9Sk5UwXQWm7yNDyGYuVVCceOKtMDIzUTOd2FFZIlspbhpwGOxgAPKs/dmSSKVGXuG7+01tLmNpImXPgR2rIarE0EcrEkNtxirj2NMsumupf7PTzSpbmRJIR6gbAwFBB9/hV7cavr3VdjBNa6CI4WfckxnXIwcHj51gEfGqzFEDLHBwnn6o4rofQ+rQWGnzWl1KsUaH0iF2xjPcVq1W6Gyr6hurvRbX0bxGJ5RhWLqWIHc8Hiskb937nNW3Xs8dzrbXVveLcxyqAqoQfR4GMfn8azUKyOQiIWYnAVRkk1tF5IlKgiaYO3jUltYT3EqJHGd0hAUeLE+yo5LaW2kVZxsY87c5I9/lW+6C0rER1aZC7MSsAxnA7Fvj2+dOTUI2xLb0QW30ezpLbSS3UJViPSpyGQeOD2JrT6lptra2CTWsaQNb+rvGCSp4yfcSD8D51ZMFk+9GwPu4oO/sXnspoosbpEKgHgZrlycmrNcaR7DZaNe2qXAtFiklQFmiXac+PbvzWc6ottQs91zFNvtXUI+wbTjw3Dx99aPSYZ7TTooLgKXTO7byO5P51Pcxx3UElvIoMcilWGPCiTV14FG+ziOqXRe4Ea8bRz7zQTORxRPUFs9hrU9u/3o22588cZoASHiumMaWhXYTCsb7mk3DjjB8a8EzQOHjcgocgjwNDmQk+QqMsSe9NR2DZ1UarNrnT9rJY3jWVwVAm9HGrBiOD37UBfaQtzHsub26kIGNzy/kBQnSen6kdDEsCqI5XZgSSCQOPlxWjtdAurhcTXKRN+xt7+400+OK2ZPK9GOg0G0sdQhuEuJ3aKRWAVRyQc4roF9rqfU1gjgaEyAEhiCfcar20I2N1HI8geQg4Ddh7ajeOGCYSTkSsrZTAwo+Fc/NOMnUTSEWtsoL/AEa9uL/0lvbsY2zyVOF9oqvvej9RlYN+jXCgKufCtu1/6RdqOFPmRxQ0k0sfJA2eO09vaB+VZKUo7Ro23pnOpOndRicoYhke2lXQvXl9dJoip7EgZpVp88hYHNbeykZgzoQB4HjNXdtcJb2ao4A2HOB4mqf7RkMARslhxu9lRLcFjljVuEpv7DUlFVE2thrtrdlYWDRsF+93FEzekZSUYOp7MvOaoOmLywg1Fpb9oxCEI9dN2TxW8XXNPguIYIrRhHJg+lZAqc+XiT8KucoxXRkoyb0Yd5XErJuIPhUjlHRbqaTaqEKqeb54P/3yq76mtG1O9W4iVohGoVAYzsPxHnVMNKlu7Iekdo5UcMkZH3iAeDWMZJ7LcXFbC4reR7q5iJQYZWUjyq9tBsYA+IqutYZTdGQoQrJ39uat4LdwwJHFYtg+goJkg5pbEAwDk0mD59UV4sUmeTSRmIoGGDVHrenwPgsrOG5Kk4zitGkJ4ywzQmpWDSQl/SABBnGKpOtjj2c/9GlvNd3JAztUKoPYZwfwoyGT0kbfddVZGUN2bnOPjivNXsRZ2sjmTc0jbcY8zn8qrrQyrpcrmMsokXZkcNjJPyrpTuH/AEH+rNPZ9JwdSTy7JYrF0AbakedwPjjNXVj9HyadG3or0mVvvOYxk+wc8Cst031IIdctpPSMNxKup7bT3rqj3K7cgg5HFS5Ti+waTOI3cj/X5YGG+QSFc+3OK6/pkAs7CC2QDbEirge6ue9UaEltqi3djGyMz72y2QWznjyroNsysihy27A8cZo5ZZJFwVByyFh6p3DxU16JARwSPYfCogEznBz7TzXp2E5I599YUUyTcT401mwCa83IB3wPfQWoX9rbW0krzj1BwgYZJ8qpRfYrOWfSCv8A1llYKANq5x54FZbNaTX9RfUJJvSKp3vuBA5BHA/hxVGLG52hxGxU9mx3rp45LHYSRBSHf31K1vKpHqE57YFFJpd16Jp3hKpGNx3DvVtpEUdf6Ot4oukbFHLfcLAt3GWJ+VGSTRrlWZfia5TY/bV4Fjl1NrWJAAqF8NjwAQf0q2j023hIMjT3TftzSEj90HHzzULhcvIpSSLzWLhYpDJBdKXJyyvKTn2cniqA6zPK7I0sIXsQ5ouNyq4jRYx4BEC/hT/SOVwzsQe4Jql/GXsXyteD22unwNkisvswRVlHMXXmqkXMELru2gE4yABRqSoFLZ9VRk8VzT43GVGsZJqx72kbuW3Yz4ZpUG+qyhyIrGdl8CUbmlVfBL2ic0c9VqeURhkcH2V7cWdzaH9NGVHgw5U/EVDu9tdVE6fQ5WZRxkgGrltbFwqgbo3jwVBORxVMuG3EjIxnvikhRWPOM9jUSipdlxk49HRtK6ztZoBbXKNG4X75OQSB/Cq291SHcvLn0jh1xySKyO8jHNXNm/pbf0krFpCuAT7KwfFGDtDc21TNfpkyz2ylcjHYHyq3jf1RzWN0fUDbyRKVZkZtr/4RWguNZsrO7W2fezHG51HqpnzNYyi70Jotw6g8+VIypnuKhVd5bK4A4HPcedNEa+IqBUFrPGP1xUV1co0DIpzuGKbtQL90ZqNgp8BTsKMp1KN9iABht4OPGqe3uJI9GjZGKFJiA3mPH863dxbRTxMjqpDDHasnq2mpEiWoJ2liyjyFawnrH+x1uyr05UbVFZUUHDHI/wApoq71bWYnMbXs4A4UIM8VPpljCkU0p3eljHq88YIxQckc88W26jUOqgxO7EK6nwJHj2rXbll2LSVFZeanfyyqkl1P/wCJiK7Fp8uLSKNmL7UC5zycCua6J0nJ1DeywrdWts0SBsKd+efYa6kulXENmkS3WJAgUuqeQ7gUptOkOLoZc6lbWa4Zst+wO9VVxr905IhCxL5/eNOfpXLF3vJmYnJJxk0wdNxIfWlnb/x1rF8Uf7MpOciunuZ5QWmndh3OW4qlvBc3CmSCOYRZ2q+wbWPsJq2vpLa2meKFc+j9UliTz496B1G/Sa0Me8OCF2Jg5jYDDHPt9nnWfLz5fWPRcIY7ZRppFzLchptojByxDVaPcpvCejZFHAJXAoOG/kVhG55/VJ/W/rSuXZ0JGQfKsJNt0zVBeSrAYQeQC5qeCdllCu+RjjaMCqiO4LxDdksnB5+VO9IwO8tyOQAaVMA+5fc8khA3NyCR41JaX8j2oYKrNnaVbsaqJpyY1QE5PFTW0mxAgyBVU0gNNaW0FzEXG4MO657VP9k27/eRj72NC9Lzb7ySNhkMmfiD/WtQVUeAFaLkk1tmTikyph0i0TBNshI81zR6IoGNoA8MDFSnFNJqW77GkRlDn7qt7aVRyXlvE5V5kUjwzSpUwMCfX/RtyjDkedZy9jSO6dUUAA9qVKvT5DGHZGnY164GO3hSpVgaCB9QGrWxJwBnhRx7KVKpn0Adbkhjz+tTYjts7zbxmQc+PelSrnZR0RO3wFentSpVzgMrylSoAjeqDVAG1BQRnEbfjSpULspDLeNPs6d9o3AgZqmuL+5WBEWTC+jHG0eVKlXZwdszmG9JXMydTW219u7IOAOeK6w5OzvSpVPN+gj0QseKGuiVt5WBwVVsHy4pUqzQ/JzOV2aSUlicvQ7knxpUqhGwFcDKtT7GR5bYl2LY7ZpUq0f5J8jV4uGA4yPzFPBO3v4r+NKlQxojb/XfA/jRK8H4UqVKXQi+6VY/ajc/7tvxFbBjSpUkS+xhpjnAPupUqYjBzsfrEpz3c/jSpUqZR//Z " src="SeWfibBcBT0H2lkViay9xOiaJpOh8XNVCtTkdOeuicE31bM3Fkiae2yOlDezytEwosbVIibaeFFbbUhKyDODmm2Tfa6w"  data-ratio="0.75" data-w="260"  /><br  /></p><p style="word-wrap: break-word;">   讲座之后，在饭桌上，依然是他的滔滔不绝，大家静心倾听。内核社区的现状是，像Liuns这样第一代Linux的兴趣者和开发者（60年代末生人），主要在做方向的定位和全局的把握。第二代70年代末生人在主战场上战斗（他就是其中之一），但是，内核的发展依然面临人才短缺的局面，像现在就读的大学生，应当成为下一代内核开发和维护的主力军。</p><p style="word-wrap: break-word;">我们的谈话话题涉及到软件开发的各个方面，除了内核，关于发布版，关于数据库，关于人工智能，关于世界史，Xu都能侃侃而谈。这使得我们大家不得不承认他的CPU（大脑）具有超线程工作能力，他的memory也是存储了海量信息。说起这些，他才承认。从14岁开始接触Linux，这一路走来，耳濡目染，工作和兴趣已经难以分开。曾经供职于debain，现虽然为red hat工作，但是开源社区自由的工作氛围，使得他的工作没有时间和地点的限制，那种因兴趣而工作着的快乐，全然消除了一般人看到的因工作而工作的IT人形象。</p><p style="word-wrap: break-word;"><br  /></p><p style="word-wrap: break-word;">后记：此文写于2009年，关于内核开发者，脑子里忽然想起他的形象。他的主页：http://gondor.apana.org.au/~herbert/。</p><p style="word-wrap: break-word;"><br  /></p><table cellpadding="0" cellspacing="0" class="atd"><tbody style="word-wrap: break-word;"><tr style="word-wrap: break-word;"></tr></tbody></table><p>收藏分享邀请</p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">陈莉君</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Linux多安全策略和动态安全策略框架模块详细分析之函数实现机制中重要函数的分析(4)
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664603498&amp;idx=1&amp;sn=d3135bf183eecb2ef933ad806476ac31&amp;chksm=f04db28fc73a3b99b0bf08dfdc5dd7a04f3a02c8c70a88993e2cf0e88df4ca7f6df9e9365999&amp;scene=27#wechat_redirect&cpage=54' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Linux多安全策略和动态安全策略框架模块详细分析之函数实现机制中重要函数的分析(4)</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        苗磊
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-11-27</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="text-indent:28px;line-height:200%"><span style="font-size: 16px;"><span style="line-height: 200%;">5</span><span style="font-family: 宋体; line-height: 200%;">.</span><span style="line-height: 200%;">&nbsp;convert_context()</span></span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:28px;text-autospace:ideograph-numeric;text-align:justify;text-justify:inter-ideograph;line-height:24px"><span style="font-family: 宋体; font-size: 14px;"><span style="font-size: 16px; font-family: 宋体;">当调用</span>security_load_policy()<span style="font-size: 16px; font-family: 宋体;">函数加载了一个新的策略之后，就需要对客体的安全上下文进行修改。在</span>Linux<span style="font-size: 16px; font-family: 宋体;">中，通过</span><span style=" font-size: 16px ; ;; ">convert_context()</span><span style="font-size: 16px; font-family: 宋体;">函数来实现该功能，</span>convert_context()<span style="font-size: 16px; font-family: 宋体;">函数将安全上下文</span><span style=" font-size: 16px ; ;; ">c</span><span style="font-size: 16px; font-family: 宋体;">中的值由</span><span style=" font-size: 16px ; ;; ">p-&gt;oldp</span><span style="font-size: 16px; font-family: 宋体;">指定的值转化为</span><span style=" font-size: 16px ; ;; ">p-&gt;newp</span><span style="font-size: 16px; font-family: 宋体;">指定的值，并基于新策略确定安全上下文的有效性。其函数头如下所示：</span></span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:28px;text-autospace:ideograph-numeric;text-align:justify;text-justify:inter-ideograph;line-height:24px"><span style="font-family: 宋体; font-size: 16px;"><br  /></span></p><p style="text-align: center;"><span style="font-family: Calibri; font-size: 16px;">static int convert_context(u32&nbsp;key, struct context&nbsp;*c,void *p)</span></p><p style="text-align: left;"><br  /></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;text-autospace:ideograph-numeric;text-align:justify;text-justify:inter-ideograph;line-height:24px"><span style="font-size: 16px;"><span style="font-family: 宋体; font-size: 14px;">该函数包含3个参数：</span><span style=" font-size: 14px ; ;; ">key</span><span style="font-family: 宋体; font-size: 14px;">表示待转换的安全上下文对应的</span><span style=" font-size: 14px ; ;; ">SID</span><span style="font-family: 宋体; font-size: 14px;">；</span><span style=" font-size: 14px ; ;; ">c</span><span style="font-family: 宋体; font-size: 14px;">表示待转换的安全上下文；</span><span style=" font-size: 14px ; ;; ">p</span><span style="font-family: 宋体; font-size: 14px;">表示策略载入前后所使用的策略库。下面对该函数的主要执行步骤进行说明：</span><br  /></span></p><p><br  /></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:27px;text-autospace:ideograph-numeric;text-align:justify;text-justify:inter-ideograph;line-height:24px"><span style="font-family: 宋体; font-size: 14px;">①　<span style="font-size: 16px; font-family: 宋体;">判断</span>key<span style="font-size: 16px; font-family: 宋体;">是否小于等于</span><span style=" font-size: 16px ; ;; ">SECINITSID_NUM</span><span style="font-size: 16px; font-family: 宋体;">，如果是，表示该</span><span style=" font-size: 16px ; ;; ">SID</span><span style="font-size: 16px; font-family: 宋体;">为初始</span><span style=" font-size: 16px ; ;; ">SID</span><span style="font-size: 16px; font-family: 宋体;">，函数直接返回。</span></span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:27px;text-autospace:ideograph-numeric;text-align:justify;text-justify:inter-ideograph;line-height:24px"><span style="font-family: 宋体; font-size: 14px;">②　<span style="font-size: 16px; font-family: 宋体;">判断待转换的安全上下文的字符串表示形式是否存在。若存在，则先复制该字符串，接着调用</span>string_to_context_struct()<span style="font-size: 16px; font-family: 宋体;">函数将该字符串转化为相应的</span><span style=" font-size: 16px ; ;; ">context</span><span style="font-size: 16px; font-family: 宋体;">结构体，最后根据</span><span style=" font-size: 16px ; ;; ">string_to_context_struct()</span><span style="font-size: 16px; font-family: 宋体;">函数进行不同的处理，并返回。</span></span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:27px;text-autospace:ideograph-numeric;text-align:justify;text-justify:inter-ideograph;line-height:24px"><span style="font-family: 宋体; font-size: 14px;">③　<span style="font-size: 16px; font-family: 宋体;">调用</span>context_cpy()<span style="font-size: 16px; font-family: 宋体;">函数复制待转换的安全上下文到</span><span style=" font-size: 16px ; ;; ">oldc</span><span style="font-size: 16px; font-family: 宋体;">中。</span></span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:27px;text-autospace:ideograph-numeric;text-align:justify;text-justify:inter-ideograph;line-height:24px"><span style="font-family: 宋体; font-size: 14px;">④　<span style="font-size: 16px; font-family: 宋体;">调用</span>hashtab_search()<span style="font-size: 16px; font-family: 宋体;">函数从新策略的用户符号表中查找待转换的安全上下文在旧策略中的用户符号串对应的安全属性，然后根据相应的值设置待转换的安全上下文</span><span style=" font-size: 16px ; ;; ">c</span><span style="font-size: 16px; font-family: 宋体;">中的用户标识。</span></span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:27px;text-autospace:ideograph-numeric;text-align:justify;text-justify:inter-ideograph;line-height:24px"><span style="font-family: 宋体; font-size: 14px;">⑤　<span style="font-size: 16px; font-family: 宋体;">使用同用户转换同样的方法来实现角色、类型、</span>MLS<span style="font-size: 16px; font-family: 宋体;">域的转换。对于</span><span style=" font-size: 16px ; ;; ">MLS</span><span style="font-size: 16px; font-family: 宋体;">域的转换根据新旧策略是否启动了</span><span style=" font-size: 16px ; ;; ">MLS</span><span style="font-size: 16px; font-family: 宋体;">进行不同的处理。</span></span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:27px;text-autospace:ideograph-numeric;text-align:justify;text-justify:inter-ideograph;line-height:24px"><span style="font-family: 宋体; font-size: 14px;">⑥　policydb_context_isvalid()<span style="font-size: 16px; font-family: 宋体;">函数根据新策略判断安全上下文的有效性。如果某个域无效，则调用</span><span style=" font-size: 16px ; ;; ">convert_context_handle_invaild_context()</span><span style="font-size: 16px; font-family: 宋体;">函数对待转换的安全上下文进行处理。</span></span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:27px;text-autospace:ideograph-numeric;text-align:justify;text-justify:inter-ideograph;line-height:24px"><span style="font-family: 宋体; font-size: 14px;">⑦　<span style="font-size: 16px; font-family: 宋体;">调用</span>context_destroy()<span style="font-size: 16px; font-family: 宋体;">函数释放</span><span style=" font-size: 16px ; ;; ">oldc</span><span style="font-size: 16px; font-family: 宋体;">所占有的空间。</span></span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:27px;text-autospace:ideograph-numeric;text-align:justify;text-justify:inter-ideograph;line-height:24px"><span style="font-family: 宋体; font-size: 14px;">⑧　<span style="font-size: 16px; font-family: 宋体;">结束并返回。</span></span></p><p style="text-align: left;"><span style="font-family: Calibri; font-size: 16px;"><br  /></span></p><p style="text-indent:28px;line-height:200%"><span style="line-height: 200%; font-size: 16px;">6 security_genfs_sid()</span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:28px;text-autospace:ideograph-numeric;text-align:justify;text-justify:inter-ideograph;line-height:24px"><span style="font-family: 宋体; font-size: 14px;">security_genfs_sid()<span style="font-size: 16px; font-family: 宋体;">函数用于为不支持扩展属性的文件系统、基于转换的或基于任务的标记行为的文件系统中的文件生成一个</span><span style=" font-size: 16px ; ;; ">SI</span>D<span style="font-size: 16px; font-family: 宋体;">，函数头如下所示：</span></span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;text-autospace:ideograph-numeric;text-align:justify;text-justify:inter-ideograph;line-height:24px"><br  /></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;text-autospace:ideograph-numeric;text-align:justify;text-justify:inter-ideograph;line-height:24px"><span style="font-family: 宋体; font-size: 14px;">该函数包含4个参数：<span style=" font-size: 16px ; ;; ">fstype</span>表示文件系统的类型；<span style=" font-size: 16px ; ;; ">path</span>表示从文件系统的挂载点开始的路径；<span style=" font-size: 16px ; ;; ">orig_class</span>表示客体类别；<span style=" font-size: 16px ; ;; ">sid</span>表示路径对应的<span style=" font-size: 16px ; ;; ">SID</span>。对于该函数，其函数调用流程图如图2-15所示，下面结合源码对该函数的主要执行步骤进行说明：<br  /></span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:0;text-autospace:ideograph-numeric;text-align:justify;text-justify:inter-ideograph;line-height:24px"><span style="font-family: 宋体; font-size: 16px;"><br  /></span></p><p style="text-align: center;"><span style="font-family: Calibri; font-size: 16px;">int security_genfs_sid(const char *fstype,char *path, u16&nbsp;orig_sclass,u32&nbsp;*sid)</span></p><p style="text-align: center;"><span style="font-family: Calibri; font-size: 16px;"><br  /></span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:27px;text-indent:0;text-autospace:ideograph-numeric;text-align:justify;text-justify:inter-ideograph;line-height:24px"><span style="font-family: 宋体; font-size: 14px;">①　<span style="font-size: 16px; font-family: 宋体;">调用</span>unmap_class()<span style="font-size: 16px; font-family: 宋体;">函数获得类别映射值对应的策略内部的类别值。</span></span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:27px;text-autospace:ideograph-numeric;text-align:justify;text-justify:inter-ideograph;line-height:24px"><span style="font-family: 宋体; font-size: 14px;">②　<span style="font-size: 16px; font-family: 宋体;">通过</span>for<span style="font-size: 16px; font-family: 宋体;">循环来判断策略库是否支持目标文件对应的文件系统，如果策略库不支持目标文件所属的文件系统，则该函数直接返回。</span></span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:27px;text-autospace:ideograph-numeric;text-align:justify;text-justify:inter-ideograph;line-height:24px"><span style="font-family: 宋体; font-size: 14px;">③　<span style="font-size: 16px; font-family: 宋体;">通过</span>for<span style="font-size: 16px; font-family: 宋体;">循环查找目标文件对应的安全上下文，并将结果存放到</span><span style=" font-size: 16px ; ;; ">c</span><span style="font-size: 16px; font-family: 宋体;">中。如果没有找到，则该函数直接返回。</span></span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:27px;text-autospace:ideograph-numeric;text-align:justify;text-justify:inter-ideograph;line-height:24px"><span style="font-family: 宋体; font-size: 14px;">④　<span style="font-size: 16px; font-family: 宋体;">判断目标文件的安全上下文对应的</span>SID<span style="font-size: 16px; font-family: 宋体;">是否存在。如果不存在，则调用</span><span style=" font-size: 16px ; ;; ">sidtab_context_to_sid()</span><span style="font-size: 16px; font-family: 宋体;">函数获取指定的安全上下文对应的</span><span style=" font-size: 16px ; ;; ">SID</span><span style="font-size: 16px; font-family: 宋体;">。</span></span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:27px;text-autospace:ideograph-numeric;text-align:justify;text-justify:inter-ideograph;line-height:24px"><span style="font-family: 宋体; font-size: 14px;">⑤　<span style="font-size: 16px; font-family: 宋体;">将目标文件的</span>SID<span style="font-size: 16px; font-family: 宋体;">存放到</span><span style=" font-size: 16px ; ;; ">sid</span><span style="font-size: 16px; font-family: 宋体;">中。</span></span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:27px;text-autospace:ideograph-numeric;text-align:justify;text-justify:inter-ideograph;line-height:24px"><span style="font-family: 宋体; font-size: 14px;">⑥　<span style="font-size: 16px; font-family: 宋体;">结束并返回。</span></span></p><p style="text-align: left;"><br  /></p><p style="text-align: center;"><img data-s="300,640" data-type="png" src="http://mmbiz.qpic.cn/mmbiz_png/SeWfibBcBT0HVIWYoiczagS8IVsBJWKhwQy20GbcXRfM5es4nn14UeB3cWVXFTJpkfjq5AZ40qNlJkLIYVRJwfwQ/0?wx_fmt=png" data-ratio="2.283464566929134" data-w="381"  /></p><p style="margin-right:0;margin-left:0;text-indent:0;text-align:center"><span style=";font-family:宋体;font-size:12px"><span style="font-family:宋体">图</span>2-15 security_genfs_sid()<span style="font-family:宋体">函数调用流程图</span></span></p><p style="text-align: center;"><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">苗磊</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		领域专用语言（DSL）概说——洪峰老师讲创客道（三十八）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664601829&amp;idx=1&amp;sn=1203c0d4a07cdbb967bd209cf1e71311&amp;chksm=f04db500c73a3c1620234e84246a7992433185e109116296d945ba08a106c1bc57674a9818d8&amp;scene=27#wechat_redirect&cpage=73' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">领域专用语言（DSL）概说——洪峰老师讲创客道（三十八）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        洪峰
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-04-27</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="text-indent: 28px;margin-top: 7px;margin-bottom: 7px;line-height: 24px"><span style=""></span></p><p><mpvoice frameborder="0" class="res_iframe js_editor_audio audio_iframe" src="/cgi-bin/readtemplate?t=tmpl/audio_tmpl&amp;name=%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9338&amp;play_length=22:02" name="%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9338" play_length="1322000" voice_encode_fileid="MzI3NzA5MzUxNF8yNjY0NjAxODI4"></mpvoice></p><p style="text-indent: 28px;margin-top: 7px;margin-bottom: 7px;line-height: 24px"><span style=""></span><br  /></p><p style="text-indent: 28px;margin-top: 7px;margin-bottom: 7px;line-height: 24px"><span style="">前面我们已经介绍了许许多多的计算机编程语言，而且我们已经看到正如奥地利的哲学家维特根斯坦所说的，人类交流思想需要语言，而一旦选择了某一种语言之后，那么人类的思想行为又受到语言本身的约束。我认为这个观点是非常正确的。</span></p><p style="text-indent: 28px;margin-top: 7px;margin-bottom: 7px;line-height: 24px"><span style="">前面我介绍了那么多的语言，绝大多数都是通用计算机编程语言，然而在我们创业活动中，特别是设计大中型软件项目的时候，我们往往需要针对某个特定的领域开发计算机程序，我在本书的第二章讲山水鱼鸟的时候，已经介绍了大量的关于如何选择一个特定的领域进行创业活动的内幕，大量的创业实践活动表明，任何一个通用的计算机语言实际上都与创客们所选择的创业方向和创业项目的背景相去甚远，那么这个时候，往往创客们需要打造自己的领域专用语言，来用于创业项目的开发。</span></p><p style="text-indent: 28px;margin-top: 7px;margin-bottom: 7px;line-height: 24px"><span style="">俗话讲得好，隔行如隔山。那么是什么东西让不同行业之间的人交流起来如此困难呢，首先我认为任何一个成熟的行业都有大量的规范，名词概念的俗语，还有约定俗成的一些规范，造成圈外人士的不了解，一旦交流的背景情况缺失，那么这个时候，不同领域的人交流的时候是非常困难的。就如我们中国人跟某个讲某种外语的人讲话的时候，&nbsp;&nbsp;不懂对方讲的那种语言，而老外也不懂中国话，这时，这个交流就是非常难进行的，跟这个道理是一样的。从另外一个方面来说，如果你已经是某个领域的专家，而且你也遇到了这个领域的另外一个专家，那么你们两人进行思想交流，就是非常高效率的。我们有的时候跟黑客内部之间的谈话，为什么创意那么多，可以碰撞出那么多的思想火花呢？那就是因为我们对于这个计算机创客活动或者计算机开发业务的本质有共同的理解，在这个时候，我们是站在一个特定的领域内来讨论问题，而且是使用我们双方都熟悉的语言来讨论问题，那么这个时候，我们产生非常丰富的成果，那是很自然的。</span></p><p style="text-indent: 28px;margin-top: 7px;margin-bottom: 7px;line-height: 24px"><span style="">实际上，对于任何一个特定的领域，一旦你找到了一种领域专用语言去描述这个领域的某一个特定的问题，那么在许许多多的情况下，实际上这个问题已被解决了一大半，比方说，对于搞财务管理的人来讲，在欧洲在美国都有通用的标准，在美国加拿大用的比较多的是GAAP（</span><span style="">Generally&nbsp;Accepted&nbsp;Accounting&nbsp;Principles</span><span style="">）；在欧洲又有IFRS（</span><span style="">International&nbsp;Financial&nbsp;ReportingStandards），</span><span style="">所以说在欧美，你要是搞会计的话，如果你精通这两个标准中所定义的俗语，当然我刚才说的这两个规范都是非常厚的，打印成书的话，都有上千页。所以说如果你熟悉这样的专用俗语的话，那这个时候，财务人员之间就某个公司的财务状态进行汇整，那是非常容易达成一致意见的。</span></p><p style="text-indent: 28px;margin-top: 7px;margin-bottom: 7px;line-height: 24px"><span style="">现在有许多中国的企业要走出国门，走向海外去拓展市场，甚至在海外上市，那么在这种情况下，你到海外去经营，特别是在欧美国家经营的话，除了法律、语言方面的障碍之外，你还要解决财务方面的问题，那你首先就要按照国外通行的国际标准，比如说GAAP，或者是IFRS来进行工作，没有这样的专用人才帮助你求解决财务方面的问题的话，那么你的公司运转起来那么很难想象的。</span></p><p style="text-indent: 28px;margin-top: 7px;margin-bottom: 7px;line-height: 24px"><span style="">在这一讲中，我要向大家介绍这个DSL（</span><span style="">Domain&nbsp;Specific&nbsp;Language）</span><span style="">，就是领域专用语言，或者是领域特定语言。那么语言是针对某个特定领域使用受限表达型的计算机设计语言，这是在这一讲我的定义。那么在下一讲我会将这个定义稍微扩展一下，然后提出自己的一些思想观点。</span></p><p style="text-indent: 28px;margin-top: 7px;margin-bottom: 7px;line-height: 24px"><span style="">在欧美发达国家，对于这个领域专用语言的研究已经比较深入，这个地方我想提一下英国的一位专家，叫Martin&nbsp;Fowler，他写过一本书，就叫做《领域特定语言》或者是《领域专用语言》，在这个书里面，他把领域专用语言分成三大类，分别叫做内部DSL、外部DSL和语言工作平台。他的这个定义已经在国际计算机界得到了广泛的认可。所以我在这一讲谈论领域特定语言的时候，我也会按照他的分类来进行解说。</span></p><p style="margin-top: 7px;margin-bottom: 7px;line-height: 24px"><strong><span style="">内部DSL</span></strong></p><p style="text-indent: 28px;margin-top: 7px;margin-bottom: 7px;line-height: 24px"><span style="">首先我们来看看内部领域专用语言，这个含义就是说你需要在一个给定的语言或者平台上去设计你的DSL，这个平台的语言叫做Host&nbsp;Language，我们可以把Host&nbsp;Language翻译成为宿主语言，那么在打造内部领域专用语言的时候，你首先要用Host&nbsp;Language来进行开发。这里我可以举几个例子来说明一下什么是内部领域专用语言。</span></p><p style="text-indent: 28px;margin-top: 7px;margin-bottom: 7px;line-height: 24px"><span style="">第一个例子就是对于使用过Emacs的用户来讲，在定制Emacs时，就需要使用一种Emacs提供的语言Emacs&nbsp;Lisp，这个语言我在前面已经提到过，在定制Emacs的时候，有许许多多的工作，最最典型的工作就是你在设计自己的大模式（Major&nbsp;Mode）和小模式（Minor&nbsp;Mode）。在设计大模式的时候，运用某个方面，前面都讲过，一旦你设计出了这个大模式，实际上这时你所使用Emacs是在一个特定的模式下来进行的文本编辑的工作，一旦你引用Emacs&nbsp;Lisp开发出了一个Major&nbsp;Mode，那么你在使用Major&nbsp;Mode的时候，实际上你就是在使用领域专用语言来工作。这就是一个典型的内部领域专用语言使用的案例。</span></p><p style="text-indent: 28px;margin-top: 7px;margin-bottom: 7px;line-height: 24px"><span style="">第二个例子我们知道现代浏览器里面都有Javascript语言嵌入进去，这个我前面已经提到过了。在开发客户端的网络应用程序的时候，需要使用Javascript去进行程序的开发活动。在过去，已经有很多的社团组织开发了基于Javascript的各种Web应用程序开发框架，比方说比较有名的J</span><span style="">query</span><span style="">，</span><span style="">&nbsp;Jquery就是</span><span style="">在Javascript基础上开发的一种领域专用语言，它在设计页面客户端应用的时候是非常高效的。更复杂一点的有</span><span style="">Dojo，Dojo是使用Javascript开发的一个功能非常丰富的一个库，你可以运用Dojo开发观感像桌面应用的Web应用程序的客户端。</span><span style="">Google公司所支持的GWT甚至走的更远，你可以使用Java来写网络客户端的应用，然后一旦你用Java程序写好之后，可以用GWT这个工具把你的Java代码编译成Javascript代码，&nbsp;Javascript代码是可以运行在所有的浏览器上。这个是巧妙的利用了编译器的技术来使用宿主语言Host&nbsp;Language，也就是Javascript。</span></p><p style="text-indent: 28px;margin-top: 7px;margin-bottom: 7px;line-height: 24px"><span style="">第三个例子的规模更加庞大，是用</span><span style="">TEX</span><span style="">语言在Pascal语言作为Host&nbsp;Language的基础上开发出的一种排版系统。这是由斯坦福大学计算机系的</span><span style="">高德纳（Donald&nbsp;Ervin&nbsp;Knuth）教授开发的。这里是我第三次提到高德纳教授，我在讲自底向上的编译的算法的时候提到过高德纳教授，</span><span style="">然后第二次提到他是讲Java虚拟机的时候，他开发了自己的MMIX系统然后在自己定义的计算机体系结构上写他的计算机编程艺术的著作。这个TEX系统最初的开发语言是Pascal,用Pascal语言开发了大概300个叫做control&nbsp;sequence（控制序列），在control&nbsp;sequence的基础上，又利用宏的机制定义了大概900个命令，用了900个命令之后就构成一个叫做P</span><span style="">dflatex系统，在Tex和Pdflatex的基础上又出现了Latex，是一个宏，那么这个Latex实际上就是在Tex这个领域专用语言里面再一次进行抽象，得到了更高一个层次的领域专用语言，那么用Latex去进行排版写数学论文，效率是非常高的，比你直接用&nbsp;Tex要高很多。</span></p><p style="text-indent:28px;margin-top:7px;margin-bottom:7px;text-align:justify;line-height:24px"><span style="">前面我还提到的一个荷兰的黑客Hans&nbsp;Hagen，他开发了ConText，是另外一种类似于Latex的宏，但是设计比Latex更好一些，他聪明的利用了Perl语言的许多特性。从严格的意义上讲，ConText已经不是一个内部的DSL，因为它使用了Perl语言。类似的情况在makefile里面也有，makefile有自己的语法，是由Make这个工具支持的。而这个makefile的底层必须要使用到Shell，我前面已经讲过，没有Shell，那么makefile跑不起来的。最后，我还说就前面我已经提到了，这个Prolog语言，我在讲Prolog语言的时候，曾经专门花了一节的内容解说它。以Prolog语言为基础，利用Prolog开发的人工智能专家系统的已经很多了，那么这些人工智能系统实际是针对不同领域的问题开发出来的Prolog上面的领域专用语言的系统。Prolog语言可以视为逻辑编程领域的一门领域专用语言，然后你又可以利用这个领域专用语言去打造各种各样的形形色色的专家系统，那么这些系统在开发的时候，实际上你也要更进一步的缩小这个范围，成为更小领域的领域专用语言。关于内部领域专用语言就谈这么多，现在我们来看看这个外部的领域专用语言是什么样子的。</span></p><p style="margin-top: 7px;margin-bottom: 7px;line-height: 24px"><strong><span style="">外部DSL</span></strong></p><p style="text-indent: 28px;margin-top: 7px;margin-bottom: 7px;line-height: 24px"><span style="">和内部DSL使用数据语言开发不同，外部DSL有自己的语法。这个用自己的语法来贴近领域所针对的问题，实际上这已经是在设计新的语言。利用已有的某种语言去设计一个新语言的实践是在计算机界非常普遍的，比方说Java的虚拟机就是使用C语言去写的，还有Racket也是用C语言开发的。而我说的这个领域专用语言，往往是跟通用的计算机语言不一样，它是针对某个特定的领域开发的一种语言。大家记住这个特点。</span></p><p style="text-indent: 28px;margin-top: 7px;margin-bottom: 7px;line-height: 24px"><span style="">前面我在介绍Java语言的构建系统的时候，我曾经提到过Gradle，这个Gradle是用Groovy语言开发的一种领域专用语言，这个语言的用途是用于构建Java的应用程序。一般而言，开发一个外部DSL，它所采用的技术与编译原理是没有什么重大的差异，唯一的重大差异就是外部DSL语言所针对的问题是受限定的，而不像通用计算机编程语言那样可以用来干任何事情。我在前面花了很多时间介绍Racket语言，这一中Lisp语言因为支持宏的功能，所以可以非常方便的用于设计DSL，因为在符号计算领域，Lisp语言的特点是非常突出的。前面提到的Haskell语言作为现代的Lisp的变种，它也可以广泛的用于编译系统的设计，当然也包括外部DSL的设计。</span><span style="">&nbsp;</span></p><p style="margin-top: 7px;margin-bottom: 7px;line-height: 24px"><strong><span style="">DSL语言工作平台</span></strong></p><p style="text-indent: 28px;margin-top: 7px;margin-bottom: 7px;line-height: 24px"><span style="">最后我们来看一看DSL语言工作平台，这个平台实际上是一种IDE，也就是集成的开发环境。我前面在讲Java语言的时候，向大家提到过Eclipse、Netbeans、IntelliJ，这都是一些非常优秀的IDE。那么在设计领域专用语言的时候，也有些专用的IDE，用于定义和构建DSL，在这方面最有名的一个尝试成功的案例，就是Paul&nbsp;Graham和Robert&nbsp;Morris当年设计的Viaweb的项目，在这里我可以把他们开发的细节从机学的角度跟大家简要的说明。Paul&nbsp;Graham是一个Lisp天才，Robert&nbsp;Morris&nbsp;是MIT（麻省理工）的教授，是Perl方面的专家，当然他也知道Lisp，他们两人都同时知道Common&nbsp;Lisp和Perl语言。在创业团队开始的时候，Paul&nbsp;Graham&nbsp;负责设计领域专用语言，Robert&nbsp;Morris协同Paul&nbsp;Graham设计各种模板。他们开发的这个项目实际上是设计一个网络商店，就是说让一个普通的计算机用户在他的浏览器里面，通过键盘还有鼠标在浏览器内部进行操作，来设计出一个网上商店。Paul&nbsp;Graham设计的Lisp宏就是把用户的输入事件翻译成后台的一些程序。等这个网络商店设计好之后，最终的网络商店的成型作品使用Perl脚本生成，所以在这个项目里面，Paul&nbsp;Graham和Robert&nbsp;Morris聪明的利用了当时刚刚兴起的Web浏览器图形用户界面来进行开发，所以说他们的Viaweb就是一个领域专用语言的工作台，实际上他们设计了这么一个工作平台，来给Web浏览器的用户使用，让他们能够很快速的开发出一个网络商店。然后有了网络商店，你就可以在网络商店上销售你的产品和服务。</span></p><p style="text-indent: 28px;margin-top: 7px;margin-bottom: 7px;line-height: 24px"><span style="">Lisp的思想嵌入在很多的软件项目里，比如说Scilab，这是为了替代专有的Matlab而设计的一个软件包，这个软件包提供了自己的一种语言，你也可以利用这个语言在Scilab提供的IDE环境下来设计数学建模的脚本，然后利用这个脚本去进行数学建模或数学仿真。这个Scilab相比最初的情况，功能已经得到了长足的发展，不过相比Matlab来讲，它还没有那么多丰富的功能。</span></p><p style="text-indent: 28px;margin-top: 7px;margin-bottom: 7px;line-height: 24px"><span style="">如果在座的各位创客道学员听了我前面介绍的Java语言和Haskell语言，那么我们今天就可以利用Java去设计一个IDE，然后内部的数学建模功能是不是可以用Haskell语言去实现呢？前面我已经说了，关于大量的Haskell的特性，以及Haskell语言是如何贴近数学家的思维，那么把Java图形界面和Haskell语言的数学功能特点结合起来创造一种新的DSL语言工作台。这个设计产品甚至可以是分布式的，也就是说它真正的工作引擎可以位于服务器上，这是Haskell语言写的那些代码，而用户可以分布式在整个互联网上通过Java语言编写的图形用户界面来进行操作。我认为这种方向是一个很好的创业方向，如果在座的各位有兴趣参加这个项目的话，可以和我联系，我可以和大家一起工作，或者资助大家启动这个项目。除此之外，还有许许多多其他的创业项目，比方说，在金融投资市场高频交易领域，已经有大量的实践证明高频交易的效率，因为计算机代替人去从事交易，它的速度是非常快的。在美国投资市场上，我知道已经有将近三分之一的交易量，是由这个高频交易，也就计算机程序代替人完成的。那么对于投资者而言呢，可能每位投资者都有自己的投资总和，按照自己的投资总和开发自己的交易策略，然后把交易策略交给计算机去进行从事金融产品的买和卖，那么这种软件也是可以通过DSL语言的工作平台来设计。</span><span style="">&nbsp;</span></p><p style="text-indent: 28px; margin-top: 7px; margin-bottom: 7px; line-height: 24px;"><span style="">在这一讲的最后，我想介绍一下Sapir&nbsp;Whorf假说，让他和我在这一讲刚开始提到的关于</span><span style="">维特根斯坦</span><span style="">的观点相呼应。Sapir&nbsp;Whorf假说是由语言学家Edward&nbsp;Sapir和他的学生Benjamin&nbsp;Whorf提出来的。那么Sapir是在1929年以书面的形式提出来的，后来他的学生Benjamin&nbsp;Whorf在上个世纪30年代加以完善，最终形成以他们两个人的姓氏命名的这个假说，它的核心观点就是人的思想和行为是由语言决定的，至少部分是这样。那么这一点就和</span><span style="">维特根斯坦</span><span style="">的思想是不谋而合的。有了</span><span style="">维特根斯坦</span><span style="">的观点和Sapir&nbsp;Whorf假说，我们回过头来看待Lisp的特点，这个时候我们会看的更清楚一些。Lisp语言，特别是Racket语言关于计算机本质（即</span><span style="">“识局整、判形影、辨异同、排泛序、显运转、度生克”这十八个字）</span><span style="">有它具体的操作，那么这一套具体关于计算的操作可以随着不同的领域而变化，就像变色龙一样会随着环境的变化而变化，这样就可以产生出形形色色的领域专用语言，在这一个语言设计的活动中，Lisp或者Racket扮演的角色实际上是一个叫做元语言编程（Metaprograming）这种角色，从这个意义上讲，学习Lisp语言或者是学习Racket语言是一种以不变应万变的可操作的一种工具。我认为每一个创客道的践行者都应该学习使用Lisp、Racket或者是Haskell语言，并且在你的创客道项目里运用它。</span></p><p style="text-indent: 28px; margin-top: 7px; margin-bottom: 7px; line-height: 24px;"><span style="color: rgb(0, 82, 255);">编者说：前面由于小编自己没看清，第三十八讲和三十九讲发重复了，这重新发送一个三十八讲。实在抱歉！</span></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">洪峰</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

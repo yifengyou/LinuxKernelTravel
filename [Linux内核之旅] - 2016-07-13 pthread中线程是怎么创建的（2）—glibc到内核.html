@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		pthread中线程是怎么创建的（2）—glibc到内核
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664602551&amp;idx=1&amp;sn=dc8d058c100128f7efbefbcda064780b&amp;chksm=f04db652c73a3f44a0e9af0493a6adf719dffc33c92bb9da04f416a82ffa1c5f127f56fa4042&amp;scene=27#wechat_redirect&cpage=67' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">pthread中线程是怎么创建的（2）—glibc到内核</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        许振文
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-07-13</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                <div class="rich_media_thumb_wrp" id="media">
+                    
+                                        
+                                    </div>
+                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style=""><span style="font-size: 16px;">在glibc中线程创建是这个文件种来定义的：nptl/pthread_create.c<br style="box-sizing: border-box;"  />创建过程为，pthread_create 调用__pthread_create_2_0， __pthread_create_2_0调用__pthread_create_2_1， 或者pthread_create直接调用__pthread_create_2_1，在由__pthread_create_2_1调用create_thread来创建。</span></p><p style=""><span style="font-size: 16px;">在create_thread中，首先是设置了很多内核clone的标志，因为对内核来说每次创建都是创建一个内核级的线程或是内核级进程。<br style="box-sizing: border-box;"  /></span><code style=""><span style="font-size: 16px; color: rgb(2, 30, 170);">/* We rely heavily on various flags the CLONE function understands:</span></code></p><p><code style=""><p style="box-sizing: border-box; margin-bottom: 10px;"><span style="font-size: 16px; color: rgb(2, 30, 170);">CLONE_VM, CLONE_FS, CLONE_FILES<br style="box-sizing: border-box;"  />These flags select semantics with shared address space and<br style="box-sizing: border-box;"  />file descriptors according to what POSIX requires.</span></p><p style="box-sizing: border-box; margin-bottom: 10px;"><span style="font-size: 16px; color: rgb(2, 30, 170);">CLONE_SIGNAL<br style="box-sizing: border-box;"  />This flag selects the POSIX signal semantics.</span></p><p style="box-sizing: border-box; margin-bottom: 10px;"><span style="font-size: 16px; color: rgb(2, 30, 170);">CLONE_SETTLS<br style="box-sizing: border-box;"  />The sixth parameter to CLONE determines the TLS area for the<br style="box-sizing: border-box;"  />new thread.</span></p><p style="box-sizing: border-box; margin-bottom: 10px;"><span style="font-size: 16px; color: rgb(2, 30, 170);">CLONE_PARENT_SETTID<br style="box-sizing: border-box;"  />The kernels writes the thread ID of the newly created thread<br style="box-sizing: border-box;"  />into the location pointed to by the fifth parameters to CLONE.</span></p><p style="box-sizing: border-box; margin-bottom: 10px;"><span style="font-size: 16px; color: rgb(2, 30, 170);">Note that it would be semantically equivalent to use<br style="box-sizing: border-box;"  />CLONE_CHILD_SETTID but it is be more expensive in the kernel.</span></p><p style="box-sizing: border-box; margin-bottom: 10px;"><span style="font-size: 16px; color: rgb(2, 30, 170);">CLONE_CHILD_CLEARTID<br style="box-sizing: border-box;"  />The kernels clears the thread ID of a thread that has called<br style="box-sizing: border-box;"  />sys_exit() in the location pointed to by the seventh parameter<br style="box-sizing: border-box;"  />to CLONE.</span></p></code></p><p style=""><code style=""><span style="font-size: 16px; color: rgb(2, 30, 170);">The termination signal is chosen to be zero which means no signal<br style="box-sizing: border-box;"  />is sent. */<br style="box-sizing: border-box;"  />int clone_flags = (CLONE_VM | CLONE_FS | CLONE_FILES | CLONE_SIGNAL<br style="box-sizing: border-box;"  />| CLONE_SETTLS | CLONE_PARENT_SETTID<br style="box-sizing: border-box;"  />| CLONE_CHILD_CLEARTID | CLONE_SYSVSEM<br style="box-sizing: border-box;"  />| 0);</span><span style="font-size: 16px;"><br style="box-sizing: border-box;"  /></span></code><br style="box-sizing: border-box;"  /><span style="font-size: 16px;">然后调用线程函数种的do_clone函数来发起系统调用，进行线程的创建。</span></p><p style=""><code style=""><span style="font-size: 16px; color: rgb(2, 30, 170);">int rc = ARCH_CLONE (fct, STACK_VARIABLES_ARGS, clone_flags,<br style="box-sizing: border-box;"  />pd, &amp;pd-&gt;tid, TLS_VALUE, &amp;pd-&gt;tid);</span></code></p><p><code style=""></code></p><p style=""><code style=""><span style="font-size: 16px; color: rgb(2, 30, 170);">#ifndef ARCH_CLONE<br style="box-sizing: border-box;"  /># define ARCH_CLONE __clone<br style="box-sizing: border-box;"  />#endif</span></code></p><p style=""><span style="font-size: 16px;">__clone 在这个文件中，是一个汇编程序</span></p><p style=""><span style="font-size: 16px;">./sysdeps/unix/sysv/linux/i386/clone.S</span></p><p style=""><code style=""><span style="font-size: 16px; color: rgb(2, 30, 170);">ENTRY (BP_SYM (__clone))</span></code></p><p style=""><span style="font-size: 16px;">在__clone函数中会调用__NR_clone</span></p><p style=""><code style=""><span style="font-size: 16px; color: rgb(2, 30, 170);">movl $SYS_ify(clone),%eax</span></code></p><p><code style=""></code></p><p style=""><code style=""><span style="font-size: 16px; color: rgb(2, 30, 170);">#define SYS_ify(syscall_name)__NR_##syscall_name</span></code></p><p style=""><span style="font-size: 16px;">__NR_clone 在这个clone会变文件中也做了定义：</span></p><p style=""><code style=""><span style="font-size: 16px; color: rgb(2, 30, 170);">#define __NR_clone 120<br style="box-sizing: border-box;"  />#define SYS_clone 120</span></code></p><p style=""><span style="font-size: 16px;">从这里开始便发起了系统调用走向了内核了，在内核系统调用表中可以看到120对应的系统调用函数，arch/x86/kernel/syscall_table_32.S</span></p><p style=""><code style=""><span style="font-size: 16px; color: rgb(2, 30, 170);">.long ptregs_sigreturn<br style="box-sizing: border-box;"  />.long ptregs_clone /* 120 */<br style="box-sizing: border-box;"  />.long sys_setdomainname</span></code></p><p style=""><span style="font-size: 16px;">在这个文件中可以看到ptregs_clone的定义，arch/x86/kernel/entry_32.S</span></p><p style=""><code style=""><span style="font-size: 16px; color: rgb(2, 30, 170);">#define PTREGSCALL(name) \<br style="box-sizing: border-box;"  />ALIGN; \<br style="box-sizing: border-box;"  />ptregs_##name: \<br style="box-sizing: border-box;"  />leal 4(%esp),%eax; \<br style="box-sizing: border-box;"  />jmp sys_##name;</span></code></p><p><code style=""></code></p><p style=""><code style=""><span style="font-size: 16px; color: rgb(2, 30, 170);">PTREGSCALL(clone)</span></code></p><p style=""><span style="font-size: 16px;">./arch/x86/kernel/process_32.c 中定义了 sys_clone</span></p><p style=""><code style=""><span style="font-size: 16px; color: rgb(2, 30, 170);">int sys_clone(struct pt_regs *regs)</span></code></p><p style=""><span style="font-size: 16px;">看看sys_clone其实还是调用do_fork函数，所以创建的也就是内核种的进程，这样也就和前几分析的gettid和[thread_self的区别联系到了一起</span></p><p style="box-sizing: border-box; margin-bottom: 10px;"><span style="font-size: 16px;">No related posts.</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">许振文</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

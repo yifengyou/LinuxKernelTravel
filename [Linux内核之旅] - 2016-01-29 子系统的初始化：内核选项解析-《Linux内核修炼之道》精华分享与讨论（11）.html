@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		子系统的初始化：内核选项解析-《Linux内核修炼之道》精华分享与讨论（11）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=415868934&amp;idx=1&amp;sn=d301f4875e00f553138f6d0438578f54&amp;chksm=765685e341210cf51445ede83083b6b1a28c9b013a0d70209b9fda381aa456e37643dd4fe2ce&amp;scene=27#wechat_redirect&cpage=79' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">子系统的初始化：内核选项解析-《Linux内核修炼之道》精华分享与讨论（11）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        fudan_abc
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-01-29</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">首先感谢国家。其次感谢上大的钟莉颖，让我知道了大学不仅有校花，还有校鸡，而且很多时候这两者其实没什么差别。最后感谢清华女刘静，让我深刻体会到了素质教育的重要性，让我感到有责任写写子系统的初始化。</p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">各个子系统的初始化是内核整个初始化过程必然要完成的基本任务，这些任务按照固定的模式来处理，可以归纳为两个部分：内核选项的解析以及那些子系统入口（初始化）函数的调用。</p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><strong><span style="font-size: medium;">内核选项</span></strong></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">Linux允许用户传递内核配置选项给内核，内核在初始化过程中调用parse_args函数对这些选项进行解析，并调用相应的处理函数。</p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">parse_args函数能够解析形如“变量名=值”的字符串，在模块加载时，它也会被调用来解析模块参数。</p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">内核选项的使用格式同样为“变量名=值”，打开系统的grub文件，然后找到kernel行，比如：</p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="color: rgb(0, 0, 255);">&nbsp;&nbsp;&nbsp; kernel&nbsp;&nbsp;/boot/vmlinuz-2.6.18 root=/dev/sda1 ro splash=silent vga=0x314 pci=noacpi<br  /></span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">其中的“pci=noacpi”等都表示内核选项。</p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">内核选项不同于模块参数，模块参数通常在模块加载时通过“变量名=值”的形式指定，而不是内核启动时。如果希望在内核启动时使用模块参数，则必须添加模块名做为前缀，使用“模块名.参数=值”的形式，比如，使用下面的命令在加载usbcore时指定模块参数autosuspend的值为2。</p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: rgb(0, 0, 255);">$ modprobe usbcore autosuspend=2</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">若是在内核启动时指定，则必须使用下面的形式：</p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: rgb(0, 0, 255);">usbcore.autosuspend=2</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">从Documentation/kernel-parameters.txt文件里可以查询到某个子系统已经注册的内核选项，比如PCI子系统注册的内核选项为：<br  /><span style="color: rgb(0, 0, 255);">&nbsp;pci=option[,option...]&nbsp;[PCI] various PCI subsystem options:<br  />&nbsp;&nbsp;&nbsp; off&nbsp;&nbsp;[X86-32] don&#39;t probe for the PCI bus<br  />&nbsp;&nbsp;&nbsp; bios&nbsp;&nbsp;[X86-32] force use of PCI BIOS, don&#39;t access<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; the hardware directly. Use this if your machine<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; has a non-standard PCI host bridge.<br  />&nbsp;&nbsp;&nbsp; nobios&nbsp;&nbsp;[X86-32] disallow use of PCI BIOS, only direct<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; hardware access methods are allowed. Use this<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if you experience crashes upon bootup and you<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; suspect they are caused by the BIOS.<br  />&nbsp;&nbsp;&nbsp; conf1&nbsp;&nbsp;[X86-32] Force use of PCI Configuration<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Mechanism 1.<br  />&nbsp;&nbsp;&nbsp; conf2&nbsp;&nbsp;[X86-32] Force use of PCI Configuration<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Mechanism 2.<br  />&nbsp;&nbsp;&nbsp; nommconf&nbsp;[X86-32,X86_64] Disable use of MMCONFIG for PCI<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Configuration<br  />&nbsp;&nbsp;&nbsp; nomsi&nbsp;&nbsp;[MSI] If the PCI_MSI kernel config parameter is<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; enabled, this kernel boot option can be used to<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; disable the use of MSI interrupts system-wide.<br  />&nbsp;&nbsp;&nbsp; nosort&nbsp;&nbsp;[X86-32] Don&#39;t sort PCI devices according to<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; order given by the PCI BIOS. This sorting is<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; done to get a device order compatible with<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; older kernels.<br  />&nbsp;&nbsp;&nbsp; biosirq&nbsp;&nbsp;[X86-32] Use PCI BIOS calls to get the interrupt<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; routing table. These calls are known to be buggy<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; on several machines and they hang the machine<br  />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; when used, but on other computers it&#39;s the only<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; way to get the interrupt routing table. Try<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this option if the kernel is unable to allocate<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IRQs or discover secondary PCI buses on your<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; motherboard.<br  />&nbsp;&nbsp;&nbsp; rom&nbsp;&nbsp;[X86-32] Assign address space to expansion ROMs.<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Use with caution as certain devices share<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; address decoders between ROMs and other<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; resources.<br  />&nbsp;&nbsp;&nbsp; irqmask=0xMMMM&nbsp;[X86-32] Set a bit mask of IRQs allowed to be<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; assigned automatically to PCI devices. You can<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; make the kernel exclude IRQs of your ISA cards<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this way.<br  />&nbsp;&nbsp;&nbsp; pirqaddr=0xAAAAA&nbsp;[X86-32] Specify the physical address<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; of the PIRQ table (normally generated<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; by the BIOS) if it is outside the<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; F0000h-100000h range.<br  />&nbsp;&nbsp;&nbsp; lastbus=N&nbsp;[X86-32] Scan all buses thru bus #N. Can be<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; useful if the kernel is unable to find your<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; secondary buses and you want to tell it<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; explicitly which ones they are.<br  />&nbsp;&nbsp;&nbsp; assign-busses&nbsp;[X86-32] Always assign all PCI bus<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; numbers ourselves, overriding<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; whatever the firmware may have done.<br  />&nbsp;&nbsp;&nbsp; usepirqmask&nbsp;[X86-32] Honor the possible IRQ mask stored<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; in the BIOS $PIR table. This is needed on<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; some systems with broken BIOSes, notably<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; some HP Pavilion N5400 and Omnibook XE3<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; notebooks. This will have no effect if ACPI<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IRQ routing is enabled.<br  />&nbsp;&nbsp;&nbsp; noacpi&nbsp;&nbsp;[X86-32] Do not use ACPI for IRQ routing<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; or for PCI scanning.<br  />&nbsp;&nbsp;&nbsp; routeirq&nbsp;Do IRQ routing for all PCI devices.<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; This is normally done in pci_enable_device(),<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; so this option is a temporary workaround<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for broken drivers that don&#39;t call it.<br  />&nbsp;&nbsp;&nbsp; firmware&nbsp;[ARM] Do not re-enumerate the bus but instead<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; just use the configuration from the<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bootloader. This is currently used on<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IXP2000 systems where the bus has to be<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; configured a certain way for adjunct CPUs.<br  />&nbsp;&nbsp;&nbsp; noearly&nbsp;&nbsp;[X86] Don&#39;t do any early type 1 scanning.<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; This might help on some broken boards which<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;machine check when some devices&#39; config space<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; is read. But various workarounds are disabled<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; and some IOMMU drivers will not work.<br  />&nbsp;&nbsp;&nbsp; bfsort&nbsp;&nbsp;Sort PCI devices into breadth-first order.<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; This sorting is done to get a device<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; order compatible with older (&lt;= 2.4) kernels.<br  />&nbsp;&nbsp;&nbsp; nobfsort&nbsp;Don&#39;t sort PCI devices into breadth-first order.<br  />&nbsp;&nbsp;&nbsp; cbiosize=nn[KMG]&nbsp;The fixed amount of bus space which is<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; reserved for the CardBus bridge&#39;s IO window.<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The default value is 256 bytes.<br  />&nbsp;&nbsp;&nbsp; cbmemsize=nn[KMG]&nbsp;The fixed amount of bus space which is<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; reserved for the CardBus bridge&#39;s memory<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; window. The default value is 64 megabytes.<br  /></span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><strong><span style="font-size: medium;">注册内核选项</span></strong></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">就像我们不需要明白钟莉颖是如何走上校鸡的修炼之道，我们也不必理解parse_args函数的实现细节。但我们必须知道如何注册内核选项：模块参数使用module_param系列的宏注册，内核选项则使用__setup宏来注册。</p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">__setup宏在include/linux/init.h文件中定义。</p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="color: rgb(0, 0, 255);">171 #define __setup(str, fn)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/<br  />172&nbsp; &nbsp;__setup_param(str, fn, fn, 0)<br  /></span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">__setup需要两个参数，其中str是内核选项的名字，fn是该内核选项关联的处理函数。__setup宏告诉内核，在启动时如果检测到内核选项str，则执行函数fn。str除了包括内核选项名字之外，必须以“=”字符结束。</p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">不同的内核选项可以关联相同的处理函数，比如内核选项netdev和ether都关联了netdev_boot_setup函数。</p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">除了__setup宏之外，还可以使用early_param宏注册内核选项。它们的使用方式相同，不同的是，early_param宏注册的内核选项必须要在其他内核选项之前被处理。</p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><strong><span style="font-size: medium;">两次解析</span></strong></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">相应于__setup宏和early_param宏两种注册形式，内核在初始化时，调用了两次parse_args函数进行解析。</p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="color: rgb(0, 0, 255);">parse_early_param();<br  />parse_args(&quot;Booting kernel&quot;, static_command_line, __start___param,<br  />&nbsp;&nbsp;&nbsp;&nbsp;__stop___param - __start___param,<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &amp;unknown_bootoption);<br  /></span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">parse_args的第一次调用就在parse_early_param函数里面，为什么会出现两次调用parse_args的情况？这是因为内核选项又分成了两种，就像现实世界中的我们，一种是普普通通的，一种是有特权的，有特权的需要在普通选项之前进行处理。</p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);">现实生活中特权的定义好像很模糊，不同的人有不同的诠释，比如哈医大二院的纪委书记在接受央视的采访“老人住院费550万元”时如是说：“我们就是一所人民医院……就是一所贫下中农的医院，从来不用特权去索取自己身外的任何利益……我们不但没有多收钱还少收了。”<br  />人生就是如此的复杂和奇怪。内核选项相对来说就要单纯得多，特权都是阳光下的，不会藏着掖着，直接使用early_param宏去声明，让你一眼就看出它是有特权的。使用early_param声明的那些选项就会首先由parse_early_param去解析。</p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">fudan_abc</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

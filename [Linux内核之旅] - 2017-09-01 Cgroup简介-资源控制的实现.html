@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Cgroup简介-资源控制的实现
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664604612&amp;idx=1&amp;sn=a9164cb36b5e0c018e56de6aad54f392&amp;chksm=f04d8e21c73a0737a4c7948e1a77c80b84b1b3800777c53957df47e0a5427db7f9d240abb39c&amp;scene=27#wechat_redirect&cpage=32' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Cgroup简介-资源控制的实现</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        武特
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2017-09-01</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="margin: 0px 0px 1.2em !important;">Cgroup自身通过文件系统的形式在内核中实现，通过对子系统配置文件的读写即可完成对进程组资源的控制。不过，cgroup对各种资源的实际控制则分布到整个内核代码中。下面从CPU、内存和I/O三个方面说明Cgroup对资源的控制过程。</p><h1 style="margin: 1.3em 0px 1em; padding: 0px; font-weight: bold;font-size: 1.6em; border-bottom: 1px solid rgb(221, 221, 221);">1 CPU控制</h1><p style="margin: 0px 0px 1.2em !important;">Cgroup对进程组使用CPU的限制是通过cpu和cpuset两个子系统来完成的。cpu子系统主要限制进程的时间片大小，cpuset子系统可为进程指定cpu和内存节点。</p><h2 style="margin: 1.3em 0px 1em; padding: 0px; font-weight: bold;font-size: 1.4em; border-bottom: 1px solid rgb(238, 238, 238);">1) cpu子系统</h2><p style="margin: 0px 0px 1.2em !important;">cpu子系统主要分布在内核的调度系统中，通过该子系统中的cpu.shares文件可对进程组设置权重。<br  />根据CFS的原理，一个进程的权重越大，那么它的被调度的可能性就越大。那么进程组的权重如何在CFS中体现？CFS将进程和进程组视为同一个调度体，并用sched_entity结构来表示，每个结构中包含该调度体的权重以及虚拟运行时间等。<br  />因此，用户可通过CPU子系统中的cpu.shares文件来控制进程组对CPU的使用。</p><h2 style="margin: 1.3em 0px 1em; padding: 0px; font-weight: bold;font-size: 1.4em; border-bottom: 1px solid rgb(238, 238, 238);">2) cpuset子系统</h2><p style="margin: 0px 0px 1.2em !important;">通过cpuset子系统中的cpuset.cpus和cpuset.mems可对进程组设定可访问的CPU和内存节点。内核使用cpuset结构来描述cpuset子系统的属性信息，其中该结构中的cpus_allowed和mems_allowed两个字段分别保存上述两个文件的值。同时，进程描述符中也有cpus_allowed和mems_allowed两个字段，其值与cpuset结构保持同步。<br  />cpuset限制进程所能访问的CPU主要通过两方面。首先体现在进程的创建，如果父进程新建子进程时没有指定CLONE_STOPPED标志，则父进程将调用wake_up_new_task()将子进程状态设置为TASK_RUNNING，并将其加入就绪队列。为子进程选择就绪队列的具体工作则由select_task_rq()完成，其内部实现将涉及CPU的检查操作，即在cpus_allowed所指定的cpu范围内为当前进程分配CPU。<br  />其次，当调度器在调度一个进程时，也要通过select_task_rq()进行同样的对比选择。这样就可以保证cgroup实例中的进程只在cpus_allowed所限定的cpu中运行。<br  />cpuset进程所能访问内存节点的限制表现在物理内存的分配过程中。Linux内核将物理内存在逻辑上分为node、zone和page，内核通过alloc_pages()来实现物理内存的分配工作。alloc_pages()的主要工作是在所有物理内存中选择node，再在当前node中选择zone，最终在zone中分配一个物理页框。其中，在选择node的过程中会进行mems_allowed的判断过程。</p><h1 style="margin: 1.3em 0px 1em; padding: 0px; font-weight: bold;font-size: 1.6em; border-bottom: 1px solid rgb(221, 221, 221);">2 内存控制</h1><p style="margin: 0px 0px 1.2em !important;">cgroup对内存的控制通过memory子系统完成，其控制作用主要体现在对内存使用量的限制，同时为当前cgroup生成一份内存使用情况报告。<br  />在具体实现的过程中，cgroup通过内核中的resource counter机制实现内存的限制。resource counter相当于一个通用的资源计数器，在内核中通过res_counter结构来描述。该结构可用于记录某类资源的当前使用量、最大使用量以及上限等信息。具体描述如下：</p><pre style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace; margin: 0px 0.15em; background-color: rgb(248, 248, 248); white-space: pre; overflow: auto; border-radius: 3px; border-width: 1px; border-style: solid; border-color: rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important;">1 &nbsp; &nbsp;struct res_counter {
+
+2 &nbsp; &nbsp;/*
+
+3 &nbsp; &nbsp; &nbsp; the current resource consumption level
+
+4 &nbsp; &nbsp; */
+
+5 &nbsp; &nbsp;unsigned long long usage;
+
+6 &nbsp; &nbsp;/*
+
+7 &nbsp; &nbsp; &nbsp; the maximal value of the usage from the counter creation
+
+8 &nbsp; &nbsp; */
+
+9 &nbsp; &nbsp;unsigned long long max_usage;
+
+10 &nbsp; &nbsp;/*
+
+11 &nbsp; &nbsp; &nbsp; the limit that usage cannot exceed
+
+12 &nbsp; &nbsp; */
+
+13 &nbsp; &nbsp;unsigned long long limit;
+
+14 &nbsp; &nbsp;/*
+
+15 &nbsp; &nbsp; &nbsp; the limit that usage can be exceed
+
+16 &nbsp; &nbsp; */
+
+17 &nbsp; &nbsp;unsigned long long soft_limit;
+
+18 &nbsp; &nbsp;/*
+
+19 &nbsp; &nbsp; &nbsp; the number of unsuccessful attempts to consume the resource
+
+20 &nbsp; &nbsp; */
+
+21 &nbsp; &nbsp;unsigned long long failcnt;
+
+22 &nbsp; &nbsp;/*
+
+23 &nbsp; &nbsp; &nbsp; the lock to protect all of the above.
+
+24 &nbsp; &nbsp; &nbsp; the routines below consider this to be IRQ-safe
+
+25 &nbsp; &nbsp; */
+
+26 &nbsp; &nbsp;spinlock_t lock; &nbsp; &nbsp;/*
+
+27 &nbsp; &nbsp; &nbsp; Parent counter, used for hierarchial resource accounting
+
+28 &nbsp; &nbsp; */
+
+29 &nbsp; &nbsp;struct res_counter *parent;
+
+30};</code></pre><p style="margin: 0px 0px 1.2em !important;">内核使用mem_cgroup结构描述cgroup中内存的使用信息，其内部嵌入了res_counter结构。因此res_counter中的每个字段则表示对内存使用量的记录。用户态下memory子系统所导出的配置文件与该结构中的字段互相对应，比如mem.limit_in_bytes表示当前cgroup可使用内存的最大上线，该文件与res_counter结构中的limit字段对应。也就是说，当用户在用户态向mem.limit_in_bytes文件写入值后，则res_counter中的limit字段相应更新。<br  />内核对res_counter进行操作时有三个基本函数：res_counter_init()对res_counter进行初始化；当分配资源时，res_counter_charge()记录资源的使用量，并且该函数还会检查使用量是否超过了上限，并且记录当前资源使用量的最大值；当资源被释放时，res_counter_uncharge()则减少该资源的使用量。<br  />cgroup对内存资源的限制主要是将上述三个函数分布到内存的分配单元中，比如，系统发生缺页异常时，由于页表项未分配而申请内存时，由于页缓存而分配内存等。</p><h1 style="margin: 1.3em 0px 1em; padding: 0px; font-weight: bold;font-size: 1.6em; border-bottom: 1px solid rgb(221, 221, 221);">3 块I/O控制</h1><p style="margin: 0px 0px 1.2em !important;">Cgroup中通过blkio子系统完成对块设备I/O的控制。具体的控制主要通过blkio.weight文件在用户态设定当前进程组访问块I/O的权重，也就是控制进程组占有I/O的时间。<br  />blkio子系统对块I/O的控制代码主要分布在I/O调度算法中，目前内核中默认的调度算法为CFQ（完全公平队列），该算法与进程调度算法CFS比较类似。</p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">武特</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                <div class="reward_qrcode_area reward_area tc" id="js_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                                        <p class="reward_tips"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" id="js_reward_qrcode_img"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

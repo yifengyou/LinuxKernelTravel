@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		内核模块编程之入门（一）-话说模块
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=416285546&amp;idx=1&amp;sn=7d48881277d5273f3ab32fec0e8429e8&amp;chksm=764f2e8f4138a799acf9d3c98bf935f3f98336cd2447e4ee30177b170011036dbb3dd2e8d757&amp;scene=27#wechat_redirect&cpage=78' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">内核模块编程之入门（一）-话说模块</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        陈莉君
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-02-27</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="box-sizing: border-box;color: rgb(107, 107, 107);font-size: 14px;line-height: 23.8px;white-space: normal;background-color: rgb(255, 255, 255)"><span style="box-sizing: border-box; font-size: 18px;">内核模块是Linux内核向外部提供的一个插口，其全称为动态可加载内核模块（Loadable Kernel Module，LKM），我们简称为模块。Linux内核之所以提供模块机制，是因为它本身是一个单内核（monolithic kernel）。单内核的最大优点是效率高，因为所有的内容都集成在一起，但其缺点是可扩展性和可维护性相对较差，模块机制就是为了弥补这一缺陷。</span></p><p style="box-sizing: border-box;font-family: 0 0 0 28px;color: rgb(107, 107, 107);font-size: 14px;line-height: 23.8px;white-space: normal;background-color: rgb(255, 255, 255)"><span style="font-size: 18px;"><span style="font-size: 18px; box-sizing: border-box;"><span style="">一、</span><span style="font-stretch: normal;">&nbsp;</span></span><span style="box-sizing: border-box; font-size: 18px;">什么是模块</span></span></p><p style="box-sizing: border-box;color: rgb(107, 107, 107);font-size: 14px;line-height: 23.8px;white-space: normal;text-indent: 28px;background-color: rgb(255, 255, 255)"><span style="font-family: 宋体; box-sizing: border-box; font-size: 18px;">模块是具有独立功能的程序，它可以被单独编译，但不能独立运行。它在运行时被链接到内核作为内核的一部分在内核空间运行，这与运行在用户空间的进程是不同的。模块通常由一组函数和数据结构组成，用来实现一种文件系统、一个驱动程序或其他内核上层的功能。</span></p><p style="box-sizing: border-box;font-family: 0 0 0 28px;color: rgb(107, 107, 107);font-size: 14px;line-height: 23.8px;white-space: normal;background-color: rgb(255, 255, 255)"><span style="font-size: 18px;"><span style="font-size: 18px; box-sizing: border-box;"><span style="">二、</span><span style="font-stretch: normal;">&nbsp;</span></span><span style="box-sizing: border-box; font-size: 18px;">编写一个简单的模块</span></span></p><p style="box-sizing: border-box;color: rgb(107, 107, 107);font-size: 14px;line-height: 23.8px;white-space: normal;text-indent: 28px;background-color: rgb(255, 255, 255)"><span style="font-family: 宋体; box-sizing: border-box; font-size: 18px;">模块和内核都在内核空间运行，模块编程在一定意义上说就是内核编程。因为内核版本的每次变化，其中的某些函数名也会相应地发生变化，因此模块编程与内核版本密切相关。以下例子针对2.6内核</span></p><p style="box-sizing: border-box;margin-bottom: 10px;color: rgb(107, 107, 107);font-size: 14px;line-height: 23.8px;white-space: normal;background-color: rgb(255, 255, 255)"><span style="box-sizing: border-box; font-size: 18px;">1<span style="font-size: 18px;">．程序举例</span></span></p><p style="box-sizing: border-box;margin-bottom: 10px;color: rgb(107, 107, 107);font-size: 14px;line-height: 23.8px;white-space: normal;background-color: rgb(255, 255, 255)"><span style="font-size: 16px;"><span style="box-sizing: border-box; color: rgb(153, 51, 0);">hellomod.c<br style="box-sizing: border-box"  /></span><span style="box-sizing: border-box; color: rgb(153, 51, 0);">001<br style="box-sizing: border-box"  />// hello world driver for Linux 2.6<br style="box-sizing: border-box"  />004<span style="box-sizing: border-box;">&nbsp;</span>#include &lt;linux/module.h&gt;<br style="box-sizing: border-box"  />005<span style="box-sizing: border-box;">&nbsp;</span>#include &lt;linux/kernel.h&gt;<br style="box-sizing: border-box"  />006<span style="box-sizing: border-box;">&nbsp;</span>#include &lt;linux/init.h&gt;<br style="box-sizing: border-box"  />/* 必要的头文件*/<br style="box-sizing: border-box"  /></span></span></p><p style="box-sizing: border-box;margin-bottom: 10px;color: rgb(107, 107, 107);font-size: 14px;line-height: 23.8px;white-space: normal;background-color: rgb(255, 255, 255)"><span style="font-size: 16px;"><span style="font-size: 16px; box-sizing: border-box; color: rgb(153, 51, 0);">009<span style="font-size: 16px; box-sizing: border-box;">&nbsp;</span>static int __init lkp_init( void )<br style="box-sizing: border-box"  /></span><span style="box-sizing: border-box; font-size: 14px; color: rgb(153, 51, 0);">{<br style="box-sizing: border-box"  />printk(“&lt;1&gt;Hello,World! from the kernel space…\n”);<br style="box-sizing: border-box"  />return 0;<br style="box-sizing: border-box"  />013<span style="font-size: 16px; box-sizing: border-box;">&nbsp;</span>}<br style="box-sizing: border-box"  /></span></span></p><p style="box-sizing: border-box;margin-bottom: 10px;color: rgb(107, 107, 107);font-size: 14px;line-height: 23.8px;white-space: normal;background-color: rgb(255, 255, 255)"><span style="font-size: 16px;"><span style="box-sizing: border-box; font-size: 14px; color: rgb(153, 51, 0);">015<span style="font-size: 16px; box-sizing: border-box;">&nbsp;</span>static void __exit lkp_cleanup( void )<br style="box-sizing: border-box"  />{<br style="box-sizing: border-box"  />printk(“&lt;1&gt;Goodbye, World! leaving kernel space…\n”);<br style="box-sizing: border-box"  /><span style="font-size: 16px; box-sizing: border-box;">018<span style="font-size: 16px; box-sizing: border-box;">&nbsp;</span><br style="box-sizing: border-box"  />}<br style="box-sizing: border-box"  /></span></span><span style="font-size: 16px; box-sizing: border-box; font-family: NSimsun; color: rgb(153, 51, 0);">020<span style="font-size: 16px; box-sizing: border-box;">&nbsp;</span>module_init(lkp_init);</span><span style="font-size: 16px; box-sizing: border-box; color: rgb(153, 51, 0);"><br style="box-sizing: border-box"  />021<span style="font-size: 16px; box-sizing: border-box;">&nbsp;</span>module_exit(lkp_cleanup);<br style="box-sizing: border-box"  />022 MODULE_LICENSE(“GPL”);</span></span></p><pre style="box-sizing: border-box;overflow: auto;font-size: 13px;padding: 9.5px;margin-top: 0px;margin-bottom: 10px;line-height: 1.42857;color: rgb(51, 51, 51);word-wrap: break-word;border: 1px solid rgb(204, 204, 204);border-radius: 4px;background-color: rgb(245, 245, 245)"><pre style="box-sizing: border-box;overflow: auto;padding: 9.5px;margin-top: 0px;margin-bottom: 10px;line-height: 1.42857;word-wrap: break-word;border: 1px solid rgb(204, 204, 204);border-radius: 4px;background-color: rgb(245, 245, 245)"><span style="box-sizing: border-box;font-family: 宋体"><span style="box-sizing: border-box; color: rgb(153, 51, 0);"></span><span style="">．说明 &nbsp;第<span style="font-size: small; box-sizing: border-box;">4</span>行：<span style="font-size: 18px; box-sizing: border-box;"></span>所有模块都要使用头文件<span style="font-size: small; box-sizing: border-box;">module.h</span>，此文件必须包含进来。第<span style="font-size: small; box-sizing: border-box;">5</span>行：<span style="font-size: 18px; box-sizing: border-box;"></span>头文件<span style="font-size: small; box-sizing: border-box;">kernel.h</span>包含了常用的内核函数。第<span style="font-size: small; box-sizing: border-box;">6</span>行：<span style="font-size: 18px; box-sizing: border-box;"></span>头文件<span style="font-size: small; box-sizing: border-box;">init.h</span>包含了宏<span style="font-size: small; box-sizing: border-box;">_init</span>和<span style="font-size: small; box-sizing: border-box;">_exit</span>，它们允许释放内核占用的内存。建议浏览一下该文件中的代码和注释。第<span style="font-size: small; box-sizing: border-box;">9-12</span>行：<span style="font-size: 18px; box-sizing: border-box;"></span>这是模块的初始化函数，它必需包含诸如要编译的代码、初始化数据结构等内容。第<span style="font-size: small; box-sizing: border-box;">11</span>行使用了<span style="font-size: small; box-sizing: border-box;">printk()</span>函数，该函数是由内核定义的，功能与<span style="font-size: small; box-sizing: border-box;">C</span>库中的<span style="font-size: small; box-sizing: border-box;">printf()</span>类似，它把要打印的信息输出到终端或系统日志。字符串中的<span style="font-size: small; box-sizing: border-box;">&lt;1&gt;</span>是输出的级别，表示立即在终端输出。<span style="font-size: small; box-sizing: border-box;"></span>第<span style="font-size: small; box-sizing: border-box;">15-18</span>行：<span style="font-size: 18px; box-sizing: border-box;"></span>这是模块的退出和清理函数。此处可以做所有终止该驱动程序时相关的清理工作。第<span style="font-size: small; box-sizing: border-box;">20</span>行：<span style="font-size: 18px; box-sizing: border-box;"></span>这是驱动程序初始化的入口点。对于内置模块，内核在引导时调用该入口点；对于可加载模块则在该模块插入内核时才调用。第<span style="font-size: small; box-sizing: border-box;">21</span>行：<span style="font-size: 18px; box-sizing: border-box;"></span>对于可加载模块，内核在此处调用module_<span style="font-size: small; box-sizing: border-box;">cleanup</span>（）函数，而对于内置的模块，它什么都不做。第<span style="font-size: 18px; box-sizing: border-box;">22</span>行：<span style="font-size: 18px; box-sizing: border-box;"></span>提示可能没有<span style="font-size: 18px; box-sizing: border-box;">GNU</span>公共许可证。有几个宏是在<span style="font-size: 18px; box-sizing: border-box;">2.4</span>版的内核中才开发的（详情参见<span style="font-size: 18px; box-sizing: border-box;">modules.h</span>）。<span style="font-size: 18px; box-sizing: border-box;"></span>函数<span style="font-size: small; box-sizing: border-box;">module_init()</span>和<span style="font-size: small; box-sizing: border-box;">cleanup_exit()</span>是模块编程中最基本也是必须的两个函数。<span style="font-size: small; box-sizing: border-box;">module_init()</span>向内核注册模块所提供的新功能，而<span style="font-size: small; box-sizing: border-box;">cleanup_exit()</span>注销由模块提供的所有功能。</span></span></pre></pre><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">陈莉君</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

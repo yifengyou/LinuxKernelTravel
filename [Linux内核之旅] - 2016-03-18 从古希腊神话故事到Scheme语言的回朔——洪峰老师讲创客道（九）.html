@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		从古希腊神话故事到Scheme语言的回朔——洪峰老师讲创客道（九）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=416684163&amp;idx=1&amp;sn=f40644bcdc81fd60c28da4ba92cdf0c0&amp;chksm=76493566413ebc70e057bf8a568c27b0c97207884be7a19d107f59562c19f94d90ae58359148&amp;scene=27#wechat_redirect&cpage=76' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">从古希腊神话故事到Scheme语言的回朔——洪峰老师讲创客道（九）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        洪峰
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-03-18</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p><mpvoice frameborder="0" class="res_iframe js_editor_audio audio_iframe" src="/cgi-bin/readtemplate?t=tmpl/audio_tmpl&amp;name=%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9310&amp;play_length=25:12" name="%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9310" play_length="1512000" voice_encode_fileid="MzI3NzA5MzUxNF80MTY2ODQxNjE="></mpvoice></p><p><br  /></p><p style="text-indent:28px"><span style="font-size: 16px;">第二种对于<span style="">eval</span><span style="font-family: 宋体;">和</span><span style="">apply</span><span style="font-family: 宋体;">这两个高阶旋子构成的基本求值器的修改，我们称之为非确定性计算（Non&nbsp;</span>D<span style="font-family: 宋体;">eterministic&nbsp;</span>C<span style="font-family: 宋体;">omput</span>ing）。这也是紫皮书第四章第三节的主要内容。为了讲解这个变形，我这里先给大家讲一个古希腊神话故事。</span></p><p style="text-indent:28px"><span style="font-size: 16px;">&nbsp;</span></p><p style="text-indent:28px"><span style="font-size: 16px;">古希腊神话故事脍炙人口，在欧洲的文学宝库里面是非常有名的。这个故事的名字叫做，<span style="">Zeus&nbsp;and&nbsp;the&nbsp;Threat&nbsp;of&nbsp;</span><span style="font-family: 宋体;">Ariadne</span>。故事篇幅比较长，我只给大家讲解与我们课程有关的片段。故事的开头是，希腊有一个岛叫<span style="">Crete</span><span style="font-family: 宋体;">（克里特岛），岛上的国王叫</span><span style="">Minos</span><span style="font-family: 宋体;">，他的儿子被雅典人杀死了，所以</span><span style="">Minos</span><span style="font-family: 宋体;">就率领他的部队进攻雅典，发动了战争。众神在战争开始之后为双方调停，众神命令雅典人满足国王</span><span style="">Minos</span><span style="font-family: 宋体;">提出的条件。什么条件呢？每年雅典人要向克里特国王进贡九对童男童女，</span><span style="">Minos</span><span style="font-family: 宋体;">国王收到童男童女之后，拿他们作为食物喂养一个半牛半人的怪物，叫做</span><span style="">Minotaur</span><span style="font-family: 宋体;">。这个条件达成以后，双方就议和成功了。但是这个条件给雅典人带来了深重的灾难，我们故事的主人公特修斯（</span><span style="">Theseus</span><span style="font-family: 宋体;">）决定了要终止这个购和的条件。到了第三次进贡的时候，特修斯自告奋勇把自己作为贡品前往克里特岛。他的爸爸埃勾斯（</span>Aegeus）听说儿子的决定以后就急忙找他，再三说服他要他改变主意。但是特修斯意志非常坚定态度非常的坚决，他安慰他的父亲说保证自己一定能杀死<span style="">Minotaur</span><span style="font-family: 宋体;">，不会让其他的童男童女受到伤害。以前，装满童男童女的帆船挂的都是黑帆；现在埃勾斯听到儿子自信的话以后，就把一张白帆交给舵手。埃勾斯嘱咐说，如果特修斯平安的回来，就把船上的黑帆换成是白帆。如果回来的时候仍然挂的是黑帆，就意味着营救的活动失败了。营救活动是非常难的，因为半人半牛的怪物</span><span style="">Minotaur</span><span style="font-family: 宋体;">被关在了一个迷宫（</span><span style="">L</span>abyrinth）里，这个迷宫有非常多的岔口，人进去以后分不清岔口所以很快就会迷失方向，所以只能进去不能出来。雅典人在选九对童男童女的时候，通过抽签的方式决定的。出发之前，年轻的特修斯带着其他被选中的童男童女来到了阿波罗神庙，以众人的名义向阿波罗神进献祭品，祈求得到保护的礼物。特尔菲的神谕告诉特修斯他应该选择爱情女神作为他的向导，特修斯不理解什么意思，但是他仍然向爱情女神进献祭品，结果很有效。特修斯带着这些童男童女们登上了大船前往克里特岛。到了克里特岛之后，他们被带到了<span style="">Minos</span><span style="font-family: 宋体;">国王面前。</span></span></p><p style="text-indent:28px"><span style="font-family: 宋体; font-size: 16px;"><br  /></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style="font-size: 16px;">神奇的是<span style="">Minos</span><span style="font-family: 宋体;">国王有一位美丽动人的女儿，名字叫做阿里阿德涅（</span><span style="font-family: 宋体;">Ariadne</span>）。她与英俊潇洒的特修斯一见钟情，双双迅速坠入爱河。这就是古代版的帅哥和美女的故事。阿里阿德涅偷偷向特修斯透露了爱慕之意，她知道他要来干什么。阿里阿德涅就交给了特修斯一卷线团，叫特修斯把线团的一端拴在迷宫的入口，然后拿着滚动的线团一直往前走，直到找到怪物<span style="">Minotaur</span><span style="font-family: 宋体;">。然后阿里阿德涅又交给特修斯一把利剑，帮助他斩杀</span><span style="">Minotaur</span><span style="font-family: 宋体;">。</span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style="font-size: 16px;"><span style="font-family: 宋体;"><br  /></span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style="font-size: 16px;">大家看，我刚才的故事里面提到了一个线团，还有利剑。接着国王<span style="">Minos</span><span style="font-size: 16px; font-family: 宋体;">把特修斯和其他的童男童女送到了迷宫，特修斯利用阿里阿德涅给他的两件宝物（线团和宝剑）找到了怪物</span><span style="">Minotaur</span><span style="font-size: 16px; font-family: 宋体;">并且用剑刺死了怪物，特修斯带着童男童女们顺着线团幸运的离开了迷宫。等他们出来以后阿里阿德涅决定跟他们一起出逃，而且特修斯听从了阿里阿德涅的建议，把克里特人船的船底都凿穿了，这样</span><span style="">Minos</span><span style="font-size: 16px; font-family: 宋体;">的船队就无法追上他们了。出色的完成了营救任务以后，他们非常高兴的上船回去了，但是特修斯忘记了出发之前父亲埃勾斯讲的成功了以后要把黑帆换成白帆的话。埃勾斯一直站在悬崖边等待儿子的归来。他眺望到了帆船上挂的是黑帆，父亲以为营救活动失败了，非常悲痛得跳海自杀了。后来人们为了纪念特修斯的父亲埃勾斯，把这片海成为爱琴海。</span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style="font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;"><br  /></span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style="font-size: 16px;">这是一个非常美丽的同时带有悲剧色彩的故事，在这个故事里面出现了线团（特修斯利用线团进入了迷宫，然后又顺着线团的指示走出了迷宫）。</span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style="font-size: 16px;"><br  /></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style="font-size: 16px;">在<span style="">Scheme</span><span style="font-family: 宋体;">求值器的第二种变形里，就是对非确定性的计算里面也采用了一个类似的思想。非确定性计算，通俗的说就叫回</span>朔（<span style="">B</span>acktracking）。回朔思想非常有用，在许许多多的算法中都用了非常多。他还有一个名字叫做<span style="">Amb</span><span style="font-family: 宋体;">旋子或叫做歧义旋子</span>Ambiguity&nbsp;Operator。在计算机编程里面，<span style="">Amb</span><span style="font-family: 宋体;">旋子往往用于对回朔的处理。比如说第一章介绍的形式语言里面，诺姆·乔姆斯基</span>（<span style="font-family: 宋体;">Noam&nbsp;Chomsky</span>）原创的形式语言中有产生式。作为四元组之一（除了根和叶子之外有产生式）。而产生式可以表示成为一棵树或者多棵树（<span style="">tree</span><span style="font-family: 宋体;">）。</span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style="font-size: 16px;"><span style="font-family: 宋体;"><br  /></span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style="font-size: 16px;">在计算机工业早期，有两位学者对产生式的写法进行了工作而且制作了一个约定，叫做<span style="font-family: 宋体;">&nbsp;</span>Backus-Naur&nbsp;Form&nbsp;<span style="font-family: 宋体;">（巴克斯范式，</span><span style="">BNF</span><span style="font-family: 宋体;">）。也就是说可以用巴克斯范式来描述产生式，来描述乔姆斯基理论的产生式。</span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style="font-size: 16px;"><span style="font-family: 宋体;"><br  /></span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style="font-size: 16px;">我前面提到<span style="">Scheme</span><span style="font-size: 16px; font-family: 宋体;">语言的规范（</span><span style="">R5RS</span><span style="font-size: 16px; font-family: 宋体;">）的定义里面，对它的语法的定义里面就大量的采用了对于扩展的巴克斯诺尔范式（</span><span style="">E-BNF</span><span style="font-size: 16px; font-family: 宋体;">）。扩展的巴克斯诺尔范式从我们形式语言的角度来看就是一棵树或者是多棵树构成的集合。众所周知，从集合论的角度来看，一棵树是不是典型的偏序结构（</span><span style="">Partial&nbsp;Orderly&nbsp;Set</span><span style="font-size: 16px; font-family: 宋体;">）？如果我要在树里面寻找匹配我表达式类型的话，我是不是要对这个树的许多的节点进行搜索和遍历（</span><span style="">Iteration</span><span style="font-size: 16px; font-family: 宋体;">）呢？你必须看看你给定的这个类型是不是在你语法定义的</span><span style="">Backus-Naur</span><span style="font-size: 16px; font-family: 宋体;">范式中。如果你给的定义是在句法定义的</span><span style="">Backus-Naur</span><span style="font-size: 16px; font-family: 宋体;">范式表里面，那么你给的句子我们认为是合法的句子，是满足这个语言语法要求的句子。在编译原理中，也就是计算机科学的核心理论中，当编译器完成了对源程序的词法分析以后，就开始进入句法分析的阶段。什么叫做句法分析呢？就是说你把从词法分析产生的这些符号变成一句合法的句子，我们知道语言是由句子组成的。这个句子是不是合法呢？你要检查语言的语法，利用语言的语法来检查产生的句子是不是合法的。在中学学语文的时候就知道有些语句的语法是错误的，叫病句。</span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style="font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;"><br  /></span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style="font-size: 16px;">在编译预言中，有两种方法来检查一句话是不是合乎语法的语句。一个叫做<span style="">Top-Down</span><span style="font-size: 16px; font-family: 宋体;">（从顶向下）分析法；还有一种方法叫做</span><span style="">Bottom-Up</span><span style="font-size: 16px; font-family: 宋体;">（从底向上）分析法。对于自顶向下的分析方法，我们可以把它的特点归纳为深层匹配。比如说：对于一个给定的句子，可以把它看成一棵树。一个语法树从根开始下面有很多的分支。从根开始，向下有它的子节点，再向下又有子节点，一直到叶子节点，序的结构就是典型的树。在语法树里面，我们可以先从根开始，这也是这个算法的由来。从根开始找一棵子树，这个子树又有很多的分叉，我们找这棵子树的过程就是深层查找。找到了以后看看这个子树跟我的句子的各个语法要素是否匹配。如果匹配成功了，这个句子就是合法的；如果匹配失败了，再去比对其他的的分支，看能不能判定给定句子是否合法。在算法中，会产生递归下降的计算。对于某一岔口的一棵子树，当孙子重孙等都匹配失败以后，会跳转到该岔口的另外一个分支进行匹配。这个方法叫自顶向下分析，也叫做深层匹配算法。至此，我们已经知道了这个算法里面用到了回朔（刚才说的，在一个分叉的一个节点匹配失败了以后要回到该分叉的另外一个分支上）。</span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style="font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;"><br  /></span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style="font-size: 16px;">句法分析的第二种方法叫做，自底向上的分析。自底向上的分析就是说，会把输入的句子和语法树的一个由最底下的叶子构成的子树进行匹配。如果匹配失败，就把这一棵由叶子构成的子树剪掉，然后去匹配另外的由叶子构成的子树，这个过程我们称为移茎归约。最终这样一级一级从底部向上走，如果剪到了根部，还没有判定句子是否合法，则这个计算失败。否则，当其中的某一棵子树和给定句子匹配成功，计算被认为成功了。这就是这两种算法的粗略描述。</span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style="font-size: 16px;"><br  /></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style="font-size: 16px;">我前面提到的计算机科学理论大师，高德纳教授（<span style="">Donald&nbsp;Knuth</span><span style="font-size: 16px; font-family: 宋体;">），他对于句法分析这块内容写过很多介绍。在他的</span><span style="">DCP</span><span style="font-size: 16px; font-family: 宋体;">的巨著里面也有很多的介绍。在自底向上分析算法（</span><span style="">LR</span><span style="font-size: 16px; font-family: 宋体;">算法）的构造过程中，高德纳教授是做了非常显著的工作的。</span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style="font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;"><br  /></span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style="font-size: 16px;">在这一类的计算里面，无论是自顶向下还是自底向上都有一个类似的问题，在计算中的一个节点求值的时候会有很多的分叉，可以被比喻为十字路口、三岔路口或者是多岔路口。算法会先沿着一个分叉前进，如果这个分叉失败了，算法会控制回到刚才出发的节点，选择另外一个分叉进行计算；如果这一个分叉所有的可能形都尝试了也失败了，算法还是会回到刚才的节点进行后续的计算。如果树里面所有的节点都已经被匹配，仍然没有成功，那么整个求值是失败的。这就是我们说的回朔的本质。</span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style="font-size: 16px;"><br  /></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style="font-size: 16px;"><span style="font-size: 19px;">在<span style="">Scheme</span><span style="font-size: 16px; font-family: 宋体;">语言里面我们如何实现语言对回朔的支持呢？我们先比较一下前面我们讲的第一种求值器的变形式：把函数和相关的环境一起打包到</span><span style="">Lambda</span><span style="font-size: 16px; font-family: 宋体;">表达式里，然后构造一个承诺。在第二种变形里，环境会有非常多的可能性出现，除此之外，还要有两个函数（两个函数分别是：当匹配成功时候可以跳出算法并且结束计算函数和当匹配失败时的回朔或者报错函数）一并传递给求值器，这也是我们需要在第二种变形中实现的要点。在这个情况下，大家注意，一定有一个环境伴随着表达式、同时还有两个函数一并传递给求值器，也就是说，一共有四个参数可以传递给求值器。在</span><span style="">Scheme</span><span style="font-size: 16px; font-family: 宋体;">语言中，我们把</span><span style="">Lambda</span><span style="font-size: 16px; font-family: 宋体;">表达式参数表为空的情况叫一个</span><span style="">thunk</span><span style="font-size: 16px; font-family: 宋体;">。</span><span style="">thunk</span><span style="font-size: 16px; font-family: 宋体;">是怎么来的呢？这个问题我曾经问过</span><span style="">Stallman</span><span style="font-size: 16px; font-family: 宋体;">院士，</span><span style="">Stallman</span><span style="font-size: 16px; font-family: 宋体;">院士是这样告诉我的，在英文里面</span><span style="">thunk</span><span style="font-size: 16px; font-family: 宋体;">这个单词是原来不存在的是杜撰出来的，大家模仿了英文里面的不规则动词的变化。比如说饮这个动词，英文是</span><span style="">drink</span><span style="font-size: 16px; font-family: 宋体;">，它的过去式是</span><span style="">drank</span><span style="font-size: 16px; font-family: 宋体;">，过去分词是</span><span style="">drunk</span><span style="font-size: 16px; font-family: 宋体;">。对于</span><span style="">thunk</span><span style="font-size: 16px; font-family: 宋体;">，是由</span><span style="">think</span><span style="font-size: 16px; font-family: 宋体;">这个动词杜撰出来的。我在翻译</span><span style="">thunk</span><span style="font-size: 16px; font-family: 宋体;">的时候把它翻译成了悟空，悟就是想的意思，空表示</span><span style="">Lambda</span><span style="font-size: 16px; font-family: 宋体;">表达式的形参表是空的，这是我的杜撰的。从许多方面来讲，处理回朔的</span><span style="">Amb</span><span style="font-size: 16px; font-family: 宋体;">旋子和我们硬件里的硬件中断、软中断的概念是非常相似的。我们可以用</span><span style="">Amb</span><span style="font-size: 16px; font-family: 宋体;">旋子在程序内存里面构造出一种跳转的机制，让程序从内存的一个地方跳转到另外一个地方去。有了这个机制就可以把</span><span style="">Scheme</span><span style="font-size: 16px; font-family: 宋体;">的运行时系统，按照你的算法任意的组织起来。有了这个</span><span style="">Amb&nbsp;Operator</span><span style="font-size: 16px; font-family: 宋体;">之后，</span><span style="">Scheme</span><span style="font-size: 16px; font-family: 宋体;">程序的抽象能力又会提升到一个新的高度。为什么，因为你不用管任何一棵树里面各个节点的计算遍历，而是把这些很复杂的细节交给计算机自动完成，这是一个非常显著的对抽象能力的提升。我马上要讲到</span><span style="">Haskll</span><span style="font-size: 16px; font-family: 宋体;">语言的时候，还会回到这个专题上来。有了这个</span><span style="">Amb&nbsp;operator</span><span style="font-size: 16px; font-family: 宋体;">之后，我们可以用它去处理</span></span><span style="font-size: 19px; font-family: 宋体;">&nbsp;</span><span style="font-size: 19px;">Backus-Naur<span style="font-size: 16px; font-family: 宋体;">范式。这给我们提供了一个很强大的工具，来完成编译器原理的设计。对于</span><span style="">thunk</span><span style="font-size: 16px; font-family: 宋体;">来讲，要掌握一个回朔需要花大量的时间。我见过很多的学生在学习这个主题的时候，遇到了挫折，进而放弃了</span><span style="">Lisp</span><span style="font-size: 16px; font-family: 宋体;">的学习。这说明这个主题是有相当大的难度的。</span></span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style="font-size: 16px;"><span style="font-size: 19px;"><span style="font-size: 16px; font-family: 宋体;"><br  /></span></span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style="font-size: 16px;">不管怎么样，有了这个<span style="">Amb</span><span style="font-size: 16px; font-family: 宋体;">旋子之后，我们可以做很多计算的工作。在这里我想让大家轻松一下，大家知道三国演义这本小说刚开始的时候有一首非常有名的词，词牌名叫临江仙。这首临江仙不是三国演义的作者罗贯中写的，是明朝的一位名叫杨慎的官员写的。这首词非常有名，而且作者在这首词里面表达出对我们的</span><span style="">Amb</span><span style="font-size: 16px; font-family: 宋体;">旋子的理解。滚滚长江东逝水，浪花淘尽英雄。是非成败转头空，青山依旧在，几度夕阳红。这是词的上半部分。这个滚滚长江东逝水是不是描述了一个流，类似的诗句还有君不见黄河之水天上来，奔流到海不复回；而第二句浪花淘尽英雄是不是某种程度上的回朔；是非成败转头空，这个是与非，成与败是不是我们刚才讲</span><span style="">Amb</span><span style="font-size: 16px; font-family: 宋体;">旋子要向求值器传递两个函数，两个悟空（</span><span style="">thunk</span><span style="font-size: 16px; font-family: 宋体;">），一个叫成功一个叫失败；青山依旧在，几度夕阳红，这个青山依旧在是指阴阳泛导的框架，几度夕阳红说的是在这个框架里面完成计算，然后抽象出来。抽象之后可以减少很多对计算细节的关注，把时间用于真正的高效的算法上去。</span></span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">洪峰</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		netlink通信和设备管理的三种机制简介
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664605527&amp;idx=1&amp;sn=f9f47b3ff4d2e26ac0b2cc058a7d6257&amp;chksm=f04d8ab2c73a03a40c801104b57304fa724bd9dba6d427320bb289f6f9824111937438512ea4&amp;scene=27#wechat_redirect&cpage=18' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">netlink通信和设备管理的三种机制简介</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        作者 李植
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2018-07-18</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p data-source-line="1" style="font-size: 14px;white-space: normal;box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">netlink socket是linux特有的一种socket，其主要用于用户应用程序与内核之间的交互，同时，也是网络应用程序与内核通信的最常用的接口。</p><p data-source-line="3" style="font-size: 14px;white-space: normal;box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">netlink是一种在内核和用户应用程序之间进行双向数据传输的非常好的方式，用户态应用程序使用标准的socket API就能使用netlink提供的强大功能，而内核态需要使用专门的内核API来使用netlink。</p><p data-source-line="5" style="font-size: 14px;white-space: normal;box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">netlink的特点：</p><ol data-source-line="6" style="" class=" list-paddingleft-2"><li><p>用户态采用socket风格的API</p></li><li><p>除了预定义的协议类型之外，支持自定义协议类型</p></li><li><p>异步通讯</p></li><li><p>支持消息组播</p></li><li><p>全双工（特别是支持内核主动发起会话）</p></li></ol><p data-source-line="12" style="font-size: 14px;white-space: normal;box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">先看一下与netlink相关的数据结构体，其中主要的是netlink设置地址的结构体，以及netlink接收和发送数据时所需要的结构体。如图：</p><p data-source-line="14" style="font-size: 14px;white-space: normal;box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);"><br  /></p><p data-source-line="16" style="font-size: 14px;white-space: normal;box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">图中可以看到有4个结构体，但是这些结构体主要用于数据的发送与接收，并且不同的结构体对应着不同的系统调用。其中有三个结构体都被struct msghdr结构体所包含。结构体之间的关系是依靠socket消息的发送和接收函数所联系的。</p><p data-source-line="18" style="font-size: 14px;white-space: normal;box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">比如recv/send、readv/writev、recvfrom/sendto、recvmsg/sendmsg。前面三对函数各有各的特点功能，而recvmsg/sendmsg就是要囊括前面三对的所有功能，当然还有自己特殊的用途。msghdr的前两成员就是为了满足recvfrom/sendto的功能，中间两个成员msg_iov和msg_iovlen则是为了满足readv/writev的功能，而最后的msg_flags则是为了满足recv/send中flags的功能，剩下的msg_control和msg_controllen则是满足recnmsg/sendmsg特有的功能。</p><p data-source-line="20" style="font-size: 14px;white-space: normal;box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">上述结构体中，struct sockaddr_nl以及struct nlmsghdr这两个结构体是neilink中最主要的结构体。</p><p data-source-line="22" style="font-size: 14px;white-space: normal;box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">其中，struct sockaddr_nl结构体 为netlink的地址，和通常socket编程中的sockaddr_in作用一样，结构的对比如下：</p><p data-source-line="24" style="font-size: 14px;white-space: normal;box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);"><br  /></p><pre data-source-line="26" style="white-space: pre-wrap;word-wrap: normal;width: 1146.640625px;box-sizing: border-box;font-stretch: normal;font-size: 11.9px;line-height: 1.45;"><code class="hljs" style="box-sizing: border-box;display: inline;overflow: visible;color: rgb(51, 51, 51);background-color: transparent;"><span class="hljs-class" style="box-sizing: border-box;"><span class="hljs-keyword" style="box-sizing: border-box;font-weight: 700;">struct</span> <span class="hljs-title" style="box-sizing: border-box;color: rgb(68, 85, 136);font-weight: 700;">sockaddr_nl</span>{</span>
+ &nbsp; &nbsp;<span class="hljs-keyword" style="box-sizing: border-box;font-weight: 700;">sa_family_t</span> nl_family; <span class="hljs-comment" style="box-sizing: border-box;color: rgb(153, 153, 136);font-style: italic;">/*该字段总是为AF_NETLINK*/</span>
+ &nbsp; &nbsp;<span class="hljs-keyword" style="box-sizing: border-box;font-weight: 700;">unsigned</span> <span class="hljs-keyword" style="box-sizing: border-box;font-weight: 700;">short</span> nl_pad; <span class="hljs-comment" style="box-sizing: border-box;color: rgb(153, 153, 136);font-style: italic;">/*目前未用到，填充为0*/</span>
+ &nbsp; &nbsp;__u32 nl_pid; <span class="hljs-comment" style="box-sizing: border-box;color: rgb(153, 153, 136);font-style: italic;">/*process pid*/</span>
+ &nbsp; &nbsp;__u32 nl_groups; <span class="hljs-comment" style="box-sizing: border-box;color: rgb(153, 153, 136);font-style: italic;">/*multicast groups mask*/</span>};</code></pre><ol data-source-line="36" style="" class=" list-paddingleft-2"><li><p style="box-sizing: border-box;margin-top: 16px;margin-bottom: 16px;">nl_pid：在netlink规范里，PID全称是port-ID（32bits）其主要作用是用于唯一的标识一个基于netlink的socket通道。通常情况下nl_pid都设置为当前进程的进程号。前面说过，netlink不仅可以实现用户-内核空间的通信还可实现用户空间两个进程之间，或内核空间两个进程之间的通信。该属性为0时指代内核。</p></li><li><p style="box-sizing: border-box;margin-top: 16px;margin-bottom: 16px;">nl_groups：如果用户空间的进程希望加入某个多播组，则必须执行bind()系统调用。该字段指明了调用者希望加入的多播组号的掩码。如果该字段为0则表示调用者不希望加入任何多播组。对于每个隶属于netlink协议域的协议，最多可支持32个多播组（因为nl_groups的长度为32比特），每个多播组用一个比特来表示。</p></li></ol><p data-source-line="40" style="font-size: 14px;white-space: normal;box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">另外，关于netlink中发送和接收的报文，该报文由消息头和消息体构成，struct nlmsghdr即为消息头。消息头定义在文件里，由结构体nlmsghdr表示，而消息体紧接着该消息头。</p><pre data-source-line="42" style="white-space: pre-wrap;word-wrap: normal;width: 1146.640625px;box-sizing: border-box;font-stretch: normal;font-size: 11.9px;line-height: 1.45;"><code class="hljs" style="box-sizing: border-box;display: inline;overflow: visible;color: rgb(51, 51, 51);background-color: transparent;"><span class="hljs-class" style="box-sizing: border-box;"><span class="hljs-keyword" style="box-sizing: border-box;font-weight: 700;">struct</span> <span class="hljs-title" style="box-sizing: border-box;color: rgb(68, 85, 136);font-weight: 700;">nlmsghdr</span></span>{
+ &nbsp; &nbsp;__<span class="hljs-built_in" style="box-sizing: border-box;color: rgb(0, 134, 179);">u32</span> nlmsg_len; <span class="hljs-comment" style="box-sizing: border-box;color: rgb(153, 153, 136);font-style: italic;">/*length of message including header*/</span>
+ &nbsp; &nbsp;__<span class="hljs-built_in" style="box-sizing: border-box;color: rgb(0, 134, 179);">u16</span> nlmsg_type; <span class="hljs-comment" style="box-sizing: border-box;color: rgb(153, 153, 136);font-style: italic;">/*message content*/</span>
+ &nbsp; &nbsp;__<span class="hljs-built_in" style="box-sizing: border-box;color: rgb(0, 134, 179);">u16</span> nlmsg_flags; <span class="hljs-comment" style="box-sizing: border-box;color: rgb(153, 153, 136);font-style: italic;">/*additional flags*/</span>
+ &nbsp; &nbsp;__<span class="hljs-built_in" style="box-sizing: border-box;color: rgb(0, 134, 179);">u32</span> nlmsg_seq; <span class="hljs-comment" style="box-sizing: border-box;color: rgb(153, 153, 136);font-style: italic;">/*sequence number*/</span>
+ &nbsp; &nbsp;__<span class="hljs-built_in" style="box-sizing: border-box;color: rgb(0, 134, 179);">u32</span> nlmsg_pid; <span class="hljs-comment" style="box-sizing: border-box;color: rgb(153, 153, 136);font-style: italic;">/*sending process PID*/</span>};</code></pre><p data-source-line="53" style="font-size: 14px;white-space: normal;box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">其中，各个字段分别代表着：</p><ol data-source-line="54" style="" class=" list-paddingleft-2"><li><p>nlmsg_len：整个消息的长度，按字节计算，包括了netlink消息头本身。</p></li><li><p>nlmsg_type：消息的类型，既是数据还是控制消息。目前（内核版本2.6.21）netlink仅支持四种类型的控制消息，如下：</p></li><ul style="" class=" list-paddingleft-2"><li><p>NLMSG_NOOP：空消息，什么也不做；</p></li><li><p>NLMSG_ERROR：指明该消息中包含一个错误；</p></li><li><p>NLMSG_DONE：如果内核通过netlink队列返回了多个消息，那么队列的最后一条消息的类型为NLMSG_DONE，其余所有消息的nlmsg__flags属性都被设置BLM_F_MULTI位有效。</p></li><li><p>NLMSG_OVERRUN：暂时没用到。</p></li></ul><li><p>nlmsg_flags：附加在消息上的额外说明信息，如NLM_F_MULIT。</p></li></ol><p data-source-line="62" style="font-size: 14px;white-space: normal;box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">以上，就是netlink所需要掌握的结构体，接下来，看一下netlink在内核中提供的独特的API。</p><p data-source-line="64" style="font-size: 14px;white-space: normal;box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">创建netlink socket</p><pre data-source-line="65" style="white-space: pre-wrap;word-wrap: normal;width: 1146.640625px;box-sizing: border-box;font-stretch: normal;font-size: 11.9px;line-height: 1.45;"><code class="hljs" style="box-sizing: border-box;display: inline;overflow: visible;color: rgb(51, 51, 51);background-color: transparent;"><span class="hljs-keyword" style="box-sizing: border-box;font-weight: 700;">struct</span> sock *netlink_kernel_create(<span class="hljs-keyword" style="box-sizing: border-box;font-weight: 700;">struct</span> net *net, <span class="hljs-keyword" style="box-sizing: border-box;font-weight: 700;">int</span> unit, <span class="hljs-keyword" style="box-sizing: border-box;font-weight: 700;">unsigned</span> <span class="hljs-keyword" style="box-sizing: border-box;font-weight: 700;">int</span> groups, <span class="hljs-keyword" style="box-sizing: border-box;font-weight: 700;">void</span> (*<span class="hljs-keyword" style="box-sizing: border-box;font-weight: 700;">input</span>)(<span class="hljs-keyword" style="box-sizing: border-box;font-weight: 700;">struct</span> sk_buff *skb), <span class="hljs-keyword" style="box-sizing: border-box;font-weight: 700;">struct</span> mutex *cb_mutex, <span class="hljs-keyword" style="box-sizing: border-box;font-weight: 700;">struct</span> <span class="hljs-keyword" style="box-sizing: border-box;font-weight: 700;">module</span> *<span class="hljs-keyword" style="box-sizing: border-box;font-weight: 700;">module</span>);</code></pre><p data-source-line="69" style="font-size: 14px;white-space: normal;box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">参数说明：</p><ol data-source-line="70" style="" class=" list-paddingleft-2"><li><p>net：是一个网络名字空间namespace，在不同的名字空间里面可以有自己的转发信息库。有自己的一套net_device等等。默认情况下都是使用init_net这个全局变量。</p></li><li><p>unit：表示netlink协议类型，如NETLINK_TEST、NETLINK_SELINUX。</p></li><li><p>groups：多播地址</p></li><li><p>input：为内核模块定义的netlink消息处理函数，当有消息到达这个netlink socket时，该input函数指针就会被引用，且只有此函数返回时，调用者的sendmsg才能返回。</p></li><li><p>cb_mutex：为访问数据时的互斥信号量。</p></li><li><p>module：一般为THIS_MODULE。</p></li></ol><p data-source-line="77" style="font-size: 14px;white-space: normal;box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">发送单播消息netlink_unicast</p><pre data-source-line="78" style="white-space: pre-wrap;word-wrap: normal;width: 1146.640625px;box-sizing: border-box;font-stretch: normal;font-size: 11.9px;line-height: 1.45;"><code class="hljs" style="box-sizing: border-box;display: inline;overflow: visible;color: rgb(51, 51, 51);background-color: transparent;">int netlink_unicast(<span class="hljs-class" style="box-sizing: border-box;"><span class="hljs-keyword" style="box-sizing: border-box;font-weight: 700;">struct</span> <span class="hljs-title" style="box-sizing: border-box;color: rgb(68, 85, 136);font-weight: 700;">sock</span></span> *ssk, <span class="hljs-class" style="box-sizing: border-box;"><span class="hljs-keyword" style="box-sizing: border-box;font-weight: 700;">struct</span> <span class="hljs-title" style="box-sizing: border-box;color: rgb(68, 85, 136);font-weight: 700;">sk_buff</span></span> *skb, <span class="hljs-built_in" style="box-sizing: border-box;color: rgb(0, 134, 179);">u32</span> pid, int nonblock)</code></pre><p data-source-line="82" style="font-size: 14px;white-space: normal;box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">参数说明：</p><ol data-source-line="83" style="" class=" list-paddingleft-2"><li><p>ssk：为函数netlink_kernel_create()返回的socket。</p></li><li><p>skb：存放消息，它的data字段指向要发送的netlink消息结构，而skb的控制块保存了消息的地址信息，红NETLINK_CB(skb)就用于方便设置该控制块。</p></li><li><p>pid：为接收此消息进程的pid，即目标地址，如果目标为组或内核，它设置为0。</p></li><li><p>nonblock：便是该函数是否为非阻塞，如果为1，该函数将在没有接收缓存可利用时立即返回；而如果为0，该函数在没有接受缓存可利用定时睡眠。</p></li></ol><p data-source-line="88" style="font-size: 14px;white-space: normal;box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">发送广播消息</p><pre data-source-line="89" style="white-space: pre-wrap;word-wrap: normal;width: 1146.640625px;box-sizing: border-box;font-stretch: normal;font-size: 11.9px;line-height: 1.45;"><code class="hljs" style="box-sizing: border-box;display: inline;overflow: visible;color: rgb(51, 51, 51);background-color: transparent;">int netlink_broadcast(<span class="hljs-class" style="box-sizing: border-box;"><span class="hljs-keyword" style="box-sizing: border-box;font-weight: 700;">struct</span> <span class="hljs-title" style="box-sizing: border-box;color: rgb(68, 85, 136);font-weight: 700;">sock</span></span> *ssk, <span class="hljs-class" style="box-sizing: border-box;"><span class="hljs-keyword" style="box-sizing: border-box;font-weight: 700;">struct</span> <span class="hljs-title" style="box-sizing: border-box;color: rgb(68, 85, 136);font-weight: 700;">sk_buff</span></span> *skb, <span class="hljs-built_in" style="box-sizing: border-box;color: rgb(0, 134, 179);">u32</span> pid, <span class="hljs-built_in" style="box-sizing: border-box;color: rgb(0, 134, 179);">u32</span> group, gfp_t allocation)</code></pre><p data-source-line="93" style="font-size: 14px;white-space: normal;box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">前面的三个参数与netlink_unicast相同，参数group为接收消息的多播组，该参数的每一个位代表一个多播组，因此如果发送给多个多播组，就把该参数设置为多个多播组，就把该参数设置为多个多播组ID的位或。参数allocation为内核内存分配类型，一般的为GFP_ATOMIC或GFP_KERNEL，GFP_ATOMIC用于原子的上下文（即不可以睡眠），而GFP_KERNEL用于非原子上下文。</p><p data-source-line="95" style="font-size: 14px;white-space: normal;box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">释放netlink socket</p><pre data-source-line="96" style="white-space: pre-wrap;word-wrap: normal;width: 1146.640625px;box-sizing: border-box;font-stretch: normal;font-size: 11.9px;line-height: 1.45;"><code class="hljs" style="box-sizing: border-box;display: inline;overflow: visible;color: rgb(51, 51, 51);background-color: transparent;">void netlink_kernel_release(<span class="hljs-class" style="box-sizing: border-box;"><span class="hljs-keyword" style="box-sizing: border-box;font-weight: 700;">struct</span> <span class="hljs-title" style="box-sizing: border-box;color: rgb(68, 85, 136);font-weight: 700;">sock</span> *<span class="hljs-title" style="box-sizing: border-box;color: rgb(68, 85, 136);font-weight: 700;">sk</span>)</span></code></pre><p data-source-line="100" style="font-size: 14px;white-space: normal;box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">以上，就是内核中会用到的netlink相关的API函数。</p><p data-source-line="103" style="font-size: 14px;white-space: normal;box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">另外，关于netlink中的客户端使用bond()函数，在这里分析一下socket中的客户端是否需要使用bind()函数，且在何时使用。</p><p data-source-line="105" style="font-size: 14px;white-space: normal;box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">无连接的socket的客户端和服务端以及面向连接socket的服务端通过调用bind函数来配置本地信息。使用bind函数时，通过将my_addr.sin_port置为0，函数会自动为你选择一个未占用的端口来使用。</p><p data-source-line="107" style="font-size: 14px;white-space: normal;box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">bind()函数在成功被调用时返回0；出现错误时返回“-1”并将errno置为相应的错误号。需要注意的是，在调用bind函数时一般不要将端口号置为小于1024的值，因为1到1024是保留端口号，你可以选择大于1024中的任何一个没有被占用的端口号。</p><p data-source-line="109" style="font-size: 14px;white-space: normal;box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">有链接的ocket客户端通过调用connect函数在socket数据结构中保存本地和远端信息，无需调用bind()，因为这种情况下只需知道目的及其的IP地址，而客户通过哪个端口与服务器建立连接并不需要关心，socket执行体为你的程序自动选择一个未被占用的端口，并通知你的程序数据什么时候打开端口。（当然也有特殊情况，linux系统中rlogin命令应当调用bind函数绑定一个魏永的保留端口号，还有当客户端需要用指定的网络设备接口和端口号进行通信等等）</p><p data-source-line="111" style="font-size: 14px;white-space: normal;box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">总之：</p><ol data-source-line="113" style="" class=" list-paddingleft-2"><li><p>需要在建连接前就知道端口的话，需要bind；</p></li><li><p>需要通过只懂得端口来通讯的话，需要bind。</p></li></ol><p data-source-line="116" style="font-size: 14px;white-space: normal;box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">首先，服务器和客户端都可以bind，bind并不是服务器的专利</p><p data-source-line="118" style="font-size: 14px;white-space: normal;box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">客户端进程bind端口：由进程选择一个端口去连接服务器，（如果默认情况下，调用bind函数时，内核指定的端口是同一个，呢么运行多个调用了bind的client程序，会出现端口被占用的错误）注意这里的端口是客户端的端口。如果不分配就表示交给内核去选择一个可用端口。</p><p data-source-line="120" style="font-size: 14px;white-space: normal;box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">客户端进程bind IP地址：相当于为发送出去的IP数据报分配了源IP地址，但交给进程分配IP地址时候（就是这样写明了bind IP地址的时候）这个IP地址必须是主机的一个接口，不能分配一个不存在的IP。如果不分配就表示由内核根据所使用的输出接口来选择源IP地址。</p><p data-source-line="122" style="font-size: 14px;white-space: normal;box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">一般情况下客户端是不用调用bind函数的，一切都交给内核搞定！</p><p data-source-line="124" style="font-size: 14px;white-space: normal;box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">服务端进程bind端口：基本是必须要做的事情，比如一个服务器启动时（比如freebsd），它会一个一个的捆绑众所周知的端口来提供服务，同样，如果bind了一个端口就表示我这个服务器会在这个端口提供一些“特殊服务”。</p><p data-source-line="126" style="font-size: 14px;white-space: normal;box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">服务端进程bind IP地址：目的是限制了服务地段进程创建的socket只接收那些目的地为此IP地址的客户链接，一般一个服务器程序里都有</p><pre data-source-line="127" style="white-space: pre-wrap;word-wrap: normal;width: 1146.640625px;box-sizing: border-box;font-stretch: normal;font-size: 11.9px;line-height: 1.45;"><code class="hljs" style="box-sizing: border-box;display: inline;overflow: visible;color: rgb(51, 51, 51);background-color: transparent;">servaddr.sin_addr.s_addr = htonl(INADDR_ANY); <span class="hljs-comment" style="box-sizing: border-box;color: rgb(153, 153, 136);font-style: italic;">//只是针对IP4，IP6代码不太一样</span></code></pre><p data-source-line="130" style="font-size: 14px;white-space: normal;box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">这样一句话，意思就是：我不指定客户端的IP，随便连，来者不拒！</p><p data-source-line="132" style="font-size: 14px;white-space: normal;box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">总之只要你bind时候没有指定哪一项（置为0），内核会帮你选择。</p><ol data-source-line="134" style="" class=" list-paddingleft-2"><li><p>采用TCP通信时，客户端不需要bind()它自己的IP和端口，而服务器必须要bind()自己本机的IP和端口号</p></li><li><p>若采用UDP通信时（这里有客户端和服务器之分才这么说的，若是指定特定端口的UDP对等通信则不一样了），客户端也可以不需要bind()它自己的IP和端口号，而服务器需要bind自己IP地址和端口号。</p></li></ol><p><span style="color:#24292e;font-family:-apple-system, BlinkMacSystemFont, 微软雅黑, PingFang SC, Helvetica, Tahoma, Arial, Hiragino Sans GB, Microsoft YaHei, SimSun, 宋体, Heiti, 黑体, sans-serif;"><br  /></span></p><p><span style="color:#24292e;font-family:-apple-system, BlinkMacSystemFont, 微软雅黑, PingFang SC, Helvetica, Tahoma, Arial, Hiragino Sans GB, Microsoft YaHei, SimSun, 宋体, Heiti, 黑体, sans-serif;">理解devfs、sysfs、udev</span></p><p data-source-line="1" style="box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">Linux下有专门的文件系统用来对设备进行管理，devfs和sysfs就是其中两种。</p><p data-source-line="3" style="box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">一、devfs</p><p data-source-line="5" style="box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">devfs是在2.4内核就出现了，它是用来解决linux设备管理混乱的问题，查看一下/dev下的设备文件就知道其中有许多是空的（也就是没有对应的硬件的），但是它们却必须存在，所以这给Linux设备管理带来了很多麻烦，为了解决这个问题，Linux内核开发人员开发了devfs，并用一个守护进程devfsd来做一些与以前硬件驱动兼容的事情。</p><p data-source-line="7" style="box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">devfs和sysfs都是和procfs一样，是一个虚拟的文件系统，向devfs注册的驱动程序，devfs将会在/dev下建立相应的设备文件；但是为了兼容，devfsd这个守护进程将会在某个设定的目录中建立以主设备号为索引的设备文件，如果不这么做，以前的许多应用将不能运行。</p><p data-source-line="9" style="box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">在2.6内核以前一直使用的是devfs，devfs挂载于/dev目录下，提供了一种类似于文件的方法来管理位于/dev目录下的所有设备，/dev目录下的每一个文件都对应的是一个设备，至于当前该设备存在与否先且不论，而且这些特殊文件是位于根文件系统上的，在制作文件系统的时候就已经建立了这些设备文件，因此通过操作这些特殊文件，可以实现与内核进行交互。</p><p data-source-line="11" style="box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">但是devfs文件系统有一些缺点，例如：不确定的设备映射，有时一个设备映射的设备文件可能不同，当设备过多的时候，就会造成问题；/dev目录下文件太多而且不能表示当前系统上的实际设备；命名不够灵活，不能任意指定等等.</p><p data-source-line="13" style="box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">二、sysfs</p><p data-source-line="15" style="box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">sysfs是Linux2.6所提供的一种虚拟文件系统。这个文件系统不仅可以把设备和驱动程序的相关的信息从kernel space输出到user space，也可以直接对设备以及驱动程序做设定。它把实际连接到系统上的设备和总线组织成一个分组的文件，用户空间的程序同样可以利用这些信息已实现和内核的交互。</p><p data-source-line="17" style="box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">sysfs的目的是把一些原本在procfs中关于设备的部分独立出来，以设备树的形式呈现。sysfs文件系统中，寻找文件路径的方法为”sysfs backing store path“，降低在大型系统中内存的需求量。它挂载在/sys目录下。</p><p data-source-line="19" style="box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">sysfs是当前系统上实际设备树的一个直观反应，它是通过kobject子系统来建立这个信息的，当一个kobject被创建的时候，对应的文件盒目录也就被创建了，位于/sys的相关目录下，既然每个设备在sysfs中都有唯一对应的目录，那么也就可以被用户读写了。</p><p data-source-line="21" style="box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">三、udev</p><p data-source-line="23" style="box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">udev是用户空间下的一种工具，udev就是利用了sysfs提供的信息来实现所有devfs的功能的，udev机制能够根据系统中的硬件设备的状况动态更新设备文件，包括文件的创建，删除等。设备文件通常放在/dev目录下，使用udev后，在/Dev下面只包含系统中真实存在的设备，它与硬件平台无关，位于用户空间，需要内核sysyfs和tmpfs的支持，sysfs为udev提供设备入口和uevent通信，tmpfs为udev设备文件提供存放空间。</p><p data-source-line="25" style="box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">Linux udev（Linux userspace device management）：Linux用户空间设备管理</p><p data-source-line="27" style="box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">libudev为内核中使用udev所能使用的库函数，该库函数分为六类，分别是：udev、udev_init、udev_device、udev_monitor、udev_enumerate、udev_queue。</p><p data-source-line="29" style="box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">关于udev的结构体，主要包括了以下几个结构体：</p><p data-source-line="31" style="box-sizing: border-box;margin-bottom: 16px;color: rgb(36, 41, 46);">struct udev：主要保存从配置文件读取的默认值。 struct udev_list_entry：设备链表入口。 struct udev_device：udev设备链表。 struct udev_monitor：udev设备事件源。 struct udev_enumerate：查找和排序sys。 struct udev_queue：存取当前活动事件。</p><p data-source-line="38" style="box-sizing: border-box;color: rgb(36, 41, 46);">以上，就是设备管理三种机制的简单介绍。</p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">作者 李植</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

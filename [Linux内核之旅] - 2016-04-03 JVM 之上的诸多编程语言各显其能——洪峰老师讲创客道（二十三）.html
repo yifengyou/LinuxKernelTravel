@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		JVM 之上的诸多编程语言各显其能——洪峰老师讲创客道（二十三）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=416916265&amp;idx=1&amp;sn=ec7e06197b448e0f7acac09cb59b1b30&amp;chksm=76468ecc413107daef324dbe38159833320ca8e8416535731e71f043dc90f2aed95b135a6a51&amp;scene=27#wechat_redirect&cpage=75' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">JVM 之上的诸多编程语言各显其能——洪峰老师讲创客道（二十三）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        洪峰
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-04-03</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="text-indent:28px"><span style=""></span></p><p><mpvoice frameborder="0" class="res_iframe js_editor_audio audio_iframe" src="/cgi-bin/readtemplate?t=tmpl/audio_tmpl&amp;name=%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9323&amp;play_length=16:10" name="%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9323" play_length="970000" voice_encode_fileid="MzI3NzA5MzUxNF80MTY5MTYyNjM="></mpvoice></p><p style="text-indent:28px"><span style=""></span><br  /></p><p style="text-indent:28px"><span style="">上一讲中给大家介绍了Java虚拟机JVM，有了Java虚拟机这个规范之后，出现了一个有趣的局面，换句话说，我们可以用非Java语言来编写Java程序。也就是把其他语言写出的代码通过编译技术将代码转换为.Class文件，也就是Java虚拟机能够接受的文件格式，这样用其他语言编写的程序便可以在Java虚拟机上运行，因此开发出了许多基于Java虚拟机的语言。在这里我列举几个语言，例如：第一个是Clojure(Lisp现代的一个版本)；第二个是Scala,由瑞士的威尔逊教授的博士生马丁.</span><span style="">奥德斯基（</span><span style="">Martin&nbsp;Odersky</span><span style="">）来开发的；第三个是</span><span style="">Python，用Java</span><span style="">的虚拟机写了一个</span><span style="">Python的Java</span><span style="">实现，称为</span><span style="">Jython</span><span style="">；第四个是</span><span style="">javascript，它在发明阶段，和Java</span><span style="">并未有任何关系，只是在名称上有所不同，目前为止，在</span><span style="">Java</span><span style="">虚拟机上已经实现了</span><span style="">Javascript&nbsp;</span><span style="">，而且在</span><span style="">Oracle&nbsp;</span><span style="">公司发布的</span><span style="">JDK</span><span style="">中也有</span><span style="">Javascript&nbsp;</span><span style="">的实现，叫做</span><span style="">JJS</span><span style="">；第五个是</span><span style="">Groovy，Groovy被用于Java</span><span style="">应用程序的构建系统去替代像写</span><span style="">Makefile</span><span style="">这样的工具；第六个是</span><span style="">Ruby，它是由</span><span style="">日本人松本行弘(</span><a><span style="">Yukihiro&nbsp;Matsumoto</span></a><span style="">)所开发的，在Ruby</span><span style="">流行一段时间以后，</span><span style="">Ruby</span><span style="">社团也用</span><span style="">Java</span><span style="">虚拟机来实现</span><span style="">Ruby</span><span style="">，被称作</span><span style="">JRuby</span><span style="">。当然还有许多语言也是工作在</span><span style="">Java虚拟机上。在这里就不去一一列举了。</span></p><p style="text-indent:28px"><span style="">美国一家计算机图书出版商曼宁,在2013</span><span style="">年的时候出版一本书叫做《</span><span style="">The&nbsp;well-grounded&nbsp;java&nbsp;developer</span><span style="">》，在这本书的第三个部分提到了一个有趣的概念说</span><span style="">Polyglot&nbsp;programming&nbsp;on&nbsp;JVM，Polyglot是一个能够讲多种语言的虚拟机。在Java虚拟机上诞生了如此之多的语言之后，出现了新的一种编程形式就是基于Java虚拟机的多种语言编程，现在我可以把我的关于用哪种语言来开发应用程序的观点和盘托出。前面我粗略的讲过，用java</span><span style="">语言来设计大规模的应用程序，现在有了</span><span style="">Java语言和Java虚拟机之后，我们可以围绕Java虚拟机去选择最合适的语言去开发应用程序。下面我向大家介绍编程范式下的一些语言，包括Clojure，Scala,Groovy，Javascript</span><span style="">，关于</span><span style="">Jsthon</span><span style="">会在讲</span><span style="">Python语言的时候回到这个主题。</span></p><p><span style="">我们首先来介绍下Clojure，关于Clojure我们可以从5个方面来看待。第一个点是Lisp的一个实现，所有Lisp的优势在我前面所讲的Racket</span><span style="">，</span><span style="">Commom&nbsp;Lisp</span><span style="">，</span><span style="">Emacs&nbsp;Lisp</span><span style="">在</span><span style="">Clojure中能够找到其对应的特点。第二点Clojure支持函数式的编程，函数式编程实际上在Lisp</span><span style="">早期就已经有了，</span><span style="">Clojure将函数式的编程抬到一个高度,</span><span style="">用</span><span style="">Clojure去开发java</span><span style="">应用的时候会非常的安全，发</span><span style="">挥了函数式编程的好处。第三点Clojure工作在成熟的，有效率的运行式java虚拟机上，这也是其迅速流行的原因。与此相关的第四点是Java和Clojure的互操作非常容易，在Clojure中调用Java</span><span style="">当中的类库，反过来在</span><span style="">Java</span><span style="">程序中调用</span><span style="">Clojure中的代码，双方的互操作是极为流畅的。最后一点是Clojure为并发和平行计算提供了很好的支持。在这里比较一下Java和Clojure的开发环境，在Clojure里面有REPL（Read&nbsp;Evaluate&nbsp;print&nbsp;loop）即读取用户的输入程序，求值，打印，再一次循环等待用户的下一次操作。这种开发模式对程序员提高生产力是十分有益的，相比Java的编程模式先用编辑器编写源代码，再用Javac编译器来生成.Class文件，然后运行，运行过程出现问题了再回过头来进行修改，相比Clojure工作模式慢多了。原来的Lisp</span><span style="">程序员为什么会傲视其他程序员呢？是因为他们已经在</span><span style="">REPL</span><span style="">这个环境下工作了许久。</span><span style="">Pual&nbsp;Graham</span><span style="">这个程序员是</span><span style="">Viaweb</span><span style="">创业项目的合作人之一，后来在黑客与画家《</span><span style="">Hackers&nbsp;and&nbsp;Painters</span><span style="">》这本书中写道，写程序的过程和画家作画的过程极为相似，画家在作画的过程中先要打草稿，反复修改，最终得到一个作品。软件开发人员在开发软件的时候也不是一次到位的，也存在反复修改，调试，改进的过程。与画家作画的过程极为相似。在这种模式下，通过解释的方式去开发程序是非常快的，因为程序的对错计算机会马上告诉结果，然后根据计算机返回的结果进行矫正，那么这种模式在</span><span style="">Clojure出现后对Java程序来说是一个大大的改进，由于时间和篇幅的限制，用Clojure来编写Java</span><span style="">应用程序的细节在此不一一赘述，具体的细节请大家参加黑客道的培训。这样才能获得更多的详细情况和系统的训练。总之利用</span><span style="">Clojure让广大的Java</span><span style="">程序员编写出安全的，高效的支持并发的，以函数式编程的方式去开发</span><span style="">Java</span><span style="">应用程序。</span><span style="">对于应用程序开发是一个巨大的利益。现在我们对于运行在Java</span><span style="">虚拟机上的语言</span><span style="">Scala来做如下叙述。</span></p><p><span style="">&nbsp;Scala语言将函数式编程的风格和面向对象编程结合的很好，Twitter公司当年为了提高服务器的效率把他们用Ruby语言开发的程序用Scala语言替换掉了，这说明在性能上Scala比原来的Ruby要好，这个特点也在于JVM给它带来性能上的提升，前面讲过java提供了多线程的支持，对于高并发，高负载的应用提供Java&nbsp;NIO这样的支持，这些特性都被Scala的设计者所采用，Scala语言和Java语言的互操作是非常好的。我发现凡是工作在JVM上的语言和Java语言的互操作都是非常流畅的，只是互操作的形式在语法上有差异而已。这点请大家毋庸置疑。</span></p><p style="text-indent:28px"><span style="">现在我们来看第三种工作在JVM</span><span style="">上的</span><span style="">Groovy语言，Groovy语言发明的一个很大用途就是构建脚本，什么叫做构建脚本呢？在写了C，C++程序后，需要使用Makefile脚本，把所有文件编译得到一个可执行文件。在Java</span><span style="">的社团里面曾经有很多的技术，最初的</span><span style="">Actor</span><span style="">利用</span><span style="">XML</span><span style="">语言来写构建系统，后来的</span><span style="">Maven</span><span style="">构建系统，现在有了</span><span style="">Groovy语言以后，这些语言显得有些过时。</span></p><p><span style="">实际上在现在的Java</span><span style="">语言的构建系统中</span><span style="">Groovy语言的流行度在急剧上升。原来的构建系统技术我认为只有Makefile能够留下来，它留下来的场合也仅仅用于大规模的Java</span><span style="">应用</span><span style="">程序构建脚本。这些应用程序才会使用Makefile</span><span style="">。而其他的，新的</span><span style="">Java</span><span style="">应用程序的开发，它的构建系统会越来越多的使用</span><span style="">Groovy语言来进行编写，当然了Groovy语言可以让Java语言变得动态这也是非常有吸引力的，也就是说Groovy语言可以当做Java语言的脚本来用。这一点在工程实践上是非常有吸引力的。</span></p><p style="text-indent:28px"><span style="">现在我们来看看第四种工作在JVM</span><span style="">上的语言</span><span style="">Javascript，Javascript语言曾经被Larry&nbsp;Wall</span><span style="">先生推荐为最流行的一种编程语言，倡导大家学习和使用。每一个现代的浏览器都有</span><span style="">Javascript的实现。曾几何时Java和Javascript的互操作性不是那么流畅，<a name="OLE_LINK2"></a><a name="OLE_LINK1">java8</a>中发布的javascript引擎Nashorn,这个javascript是构建在JVM之上的，因此他们的互操作性很好，可以用javascript为java应用程序写脚本。由于javascript在所有客户端都已经内置了，所以在web应用程序的开发上面，他们的互操作会有更多新的创意。这一点请广大的创客们引起足够的重视。</span></p><p><span style="">从我刚才介绍的Clojure，Scala,Groovy，Javascript</span><span style="">语言来看，现在工作在</span><span style="">JVM上的语言不止Java一种，而且新诞生的语言和原来的Java</span><span style="">程序互操作非常好。这就意味着</span><span style="">Java的许多类库可以被重用。对于提高创客道的成员去开发新的创业项目是极有吸引力的。从这些年计算机工业的飞速发展，新的进展中可以看到，黑客道中讲解计算的本质，编译原理。编译原理作为计算的本质，它的应用的价值是十分巨大的。尽管计算机发展飞速，但是内核却没有变化。那么从Java</span><span style="">虚拟机诞生的这些语言来说，编译技术在其中发挥了巨大的作用。而要理解编译原理，对于黑客道初段的课程要有精准的理解。理解并能熟练的应用到编译原理和编译器的构造中去，这样才能以不变应万变。</span></p><p style="text-indent:28px"><span style="">毫无疑问，Java技术不是计算机工业发展的终点。将来还会有更强大的技术出现，将来新技术的进展我们必须本着编译原理，计算的本质的理解来看待，这样才能够从新技术中获得利益。关于java</span><span style="">语言，</span><span style="">Java</span><span style="">语言相关的技术以及创客道学员的学习暂且说到这里。前面我说过</span><span style="">Java</span><span style="">语言的语法形式是</span><span style="">C</span><span style="">系列。也就是说学过</span><span style="">C</span><span style="">或</span><span style="">C++</span><span style="">的学员，再去学习和使用</span><span style="">Java</span><span style="">的话，相对来说难度降低。那么实际上在历史上</span><span style="">C</span><span style="">语言的扩充和变形，除了</span><span style="">C++</span><span style="">和</span><span style="">Java</span><span style="">以外，还有其他的一些常识，那么在下一讲我会讲一个非常有趣的常识，即</span><span style="">Go</span><span style="">语言。</span></p><p><span style="">&nbsp;</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">洪峰</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

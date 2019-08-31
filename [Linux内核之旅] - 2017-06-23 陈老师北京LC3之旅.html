@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		陈老师北京LC3之旅
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664604244&amp;idx=1&amp;sn=2169f1ba660e14a63ef10b3f4c558748&amp;chksm=f04d8fb1c73a06a72c680c5b8d5d972aeb8f1d64ef4d8998c3711698367c20f0e489c623e0e9&amp;scene=27#wechat_redirect&cpage=36' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">陈老师北京LC3之旅</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        陈莉君
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2017-06-23</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <section class="xmteditor" style="display:none;" data-tools="新媒体管家" data-label="powered by xmt.cn"></section><section class="editor selected" style=" padding-right: 4px; padding-left: 4px; border-width: 1px; border-style: dashed; border-color: rgb(255, 102, 0) ; ;; font-size: 15px; white-space: normal; box-sizing: border-box !important; word-wrap: break-word !important; "><section style="margin-top: 20px; border-width: 0px; border-style: none; border-color: initial; box-sizing: border-box !important; word-wrap: break-word !important;"><section style="box-sizing: border-box; text-align: center; margin-top: -12px; color: inherit; word-wrap: break-word !important;"><section class="96wx-bgc" style="box-sizing: border-box; display: inline-block; padding: 5px 10px; color: rgb(255, 255, 255); background-color: rgb(226, 86, 27); word-wrap: break-word !important;"><section class="96wx-color" style="box-sizing: border-box !important; word-wrap: break-word !important; color: inherit; font-size: 16px;">陈老师北京LC3会议之旅</section></section></section><section class="96wx-bdc" style="width: 50px; height: 50px; border-radius: 50%; border-width: 2px; border-style: solid; border-color: rgb(226, 86, 27); padding: 9px; margin-left: 15px; margin-top: -60px; color: inherit; box-sizing: border-box !important; word-wrap: break-word !important;"><section class="96wx-bdc" style="width: 30px; height: 30px; border-radius: 50%; border-width: 2px; border-style: solid; border-color: rgb(226, 86, 27); padding: 7px; color: inherit; box-sizing: border-box !important; word-wrap: break-word !important;"><section class="96wx-bgc" style="box-sizing: border-box !important; word-wrap: break-word !important; width: 10px; height: 10px; border-radius: 50%; color: rgb(255, 255, 255); background-color: rgb(226, 86, 27);"></section></section></section><section class="96wx-bdc" style="width: 35px; height: 35px; border-radius: 50%; border-width: 2px; border-style: solid; border-color: rgb(226, 86, 27); padding: 6px; margin-top: -20px; color: inherit; background-color: rgb(254, 254, 254); box-sizing: border-box !important; word-wrap: break-word !important;"><section class="96wx-bdc" style="width: 20px; height: 20px; border-radius: 50%; border-width: 2px; border-style: solid; border-color: rgb(226, 86, 27); padding: 5px; color: inherit; box-sizing: border-box !important; word-wrap: break-word !important;"><section class="96wx-bgc" style="box-sizing: border-box !important; word-wrap: break-word !important; width: 6px; height: 6px; border-radius: 50%; color: rgb(255, 255, 255); background-color: rgb(226, 86, 27);"></section></section></section></section></section><p><br  /></p><section class="editor" style=" padding: 1px 5px ; ;; font-size: 15px; white-space: normal; box-sizing: border-box !important; word-wrap: break-word !important; "><section class="96wx-bdc" style="margin-top: 5px; margin-bottom: 5px; padding: 1em 2em; border-style: none; box-sizing: border-box !important; word-wrap: break-word !important;"><span class="96wx-bdc" style="box-sizing: border-box !important; word-wrap: break-word !important; max-width: 100%; float: left; margin-left: -7px; margin-top: 15px; display: block;"><section class="96wx-bgc" style="max-width: 100%; min-height: 33px; color: rgb(255, 255, 255); text-align: center; line-height: 1.5; margin-right: 10px; padding: 5px 8px; min-width: 75px; background: rgb(255, 29, 107); box-sizing: border-box !important; word-wrap: break-word !important;">今日话题</section><img class="96wx-bdc 96wx-img" data-ratio="0.8333333333333334" src="data:image/JPG;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAUABgDASIAAhEBAxEB/8QAGAABAQEBAQAAAAAAAAAAAAAAAAgHBQb/xAAoEAAABQIFAwUBAAAAAAAAAAAAAQIDBAURBgcSIVExQWEiMmJxodH/xAAUAQEAAAAAAAAAAAAAAAAAAAAA/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8A0PNPKZNTU9WMMkhqfY1uxCKyXfkjhfjoe3Te89SmXIspxiQ24h9s9LjbpWUlXcjSLpIZ3mXlvT8WRFyo5JiVhJel8isT1uzn96l+AJT+gHRrtGnUKpOwKnHWxIb2NKi93lPKfIALhAAAeLzOw5TcQ4VmKqTOp6K0t1h5B6VtmXB8HYrl3AAAf//Z " src="SeWfibBcBT0Fef6jzmziaXv98fWQaCWXeOaZiaT1dZbtkrgr2wQHvqmRE06x7NKhiaxKj5HicwsPicfGPGE2yTWicMfEQ"  data-type="jpeg" data-w="24" style="display: block; box-sizing: border-box !important; word-wrap: break-word !important; width: 7px !important; visibility: visible !important;"  /></span><p style="margin-top: 5px; margin-bottom: 5px; max-width: 100%; padding: 16px; box-shadow: rgba(0, 0, 0, 0.498039) 0px 0px 4px; width: 560px; font-size: 14px; line-height: 1.4; box-sizing: border-box !important; word-wrap: break-word !important;">6.19 ~ 6.22，这四天，陈老师前往北京的国家会议中心参加了盛大的LC3会议，以及和创业者之间深刻的交流。</p><p style="margin-top: 5px; margin-bottom: 5px; max-width: 100%; padding: 16px; box-shadow: rgba(0, 0, 0, 0.498039) 0px 0px 4px; width: 560px; font-size: 14px; line-height: 1.4; box-sizing: border-box !important; word-wrap: break-word !important;">下面附上陈老师的独到的个人观点，欢迎阅读。</p></section></section><section class="editor" style=" padding: 1px 5px ; ;; font-size: 15px; white-space: normal; transform: rotateZ(0deg); box-sizing: border-box !important; word-wrap: break-word !important; "><section style=" font-size: 14px ; ;; margin: 5px auto; box-sizing: border-box !important; word-wrap: break-word !important; "><section style="margin-top: 10px; margin-bottom: 10px; box-sizing: border-box !important; word-wrap: break-word !important;"><section class="96wx-bdc 96wx-color" style="box-sizing: border-box; padding: 10px 10px 25px; border-width: 2px; border-style: solid; border-color: rgb(95, 170, 255); border-radius: 10px; color: rgb(95, 170, 255); word-wrap: break-word !important;"><p style="word-wrap: break-word; text-align: justify; text-indent: 2em; line-height: 30px; box-sizing: border-box !important;"><span style="color: rgb(0, 0, 0); box-sizing: border-box !important; word-wrap: break-word !important;"></span></p><pre class="js_message_plain ng-binding" ng-bind-html="message.MMActualContent" style="margin-top: 0px; margin-bottom: 0px; background-color: rgb(178, 226, 129); font-family: inherit; white-space: pre-wrap; word-break: normal; box-sizing: border-box !important; word-wrap: break-word !important;"><span style="box-sizing: border-box !important; word-wrap: break-word !important; color: rgb(0, 0, 0);"> 北京之行4天，两场开源盛会，手机第二天就罢工，让自己回归清净状态，全程密集的业界大牛中英文演讲，你甚至来不及消化和吸收，即使竖起耳朵认真去听，依然是挂一漏十。开源是大势所趋，你若不在趋势中随波逐流，就坐等大浪淘沙。容器技术势不可挡，在各大企业生根发芽。GPU虚拟化技术逐渐登场，硬件加速也成为一种趋势。共享经济触手可及，开源领军大伽章文嵩从阿里到滴滴一年后，在开源高峰论坛的讨论中回答了滴滴未来的构想，一站式出行。从共享汽车，到自动驾驶、公交、高铁、飞机，甚至共享单车，都将纳入到大统一框架下，共享共赢，让用户的出行效率提升30%。</span><br style="box-sizing: border-box !important; word-wrap: break-word !important;"  /></pre><p style="word-wrap: break-word; text-align: justify; text-indent: 2em; line-height: 30px; box-sizing: border-box !important;"><span style="color: inherit; box-sizing: border-box !important; word-wrap: break-word !important;"></span><br style="box-sizing: border-box !important; word-wrap: break-word !important;"  /></p></section><section style="margin-top: -20px; box-sizing: border-box !important; word-wrap: break-word !important;"><section style="margin-bottom: -25px; display: inline-block; width: 482.773px; box-sizing: border-box !important; word-wrap: break-word !important;"><section style="margin-left: 20px; float: left; box-sizing: border-box !important; word-wrap: break-word !important;"><section style="margin-bottom: -3px; width: 25px; height: 7px; background-color: rgb(51, 51, 51); border-radius: 5px; box-sizing: border-box !important; word-wrap: break-word !important;"></section><section style="margin-left: 9px; width: 6px; height: 40px; background-color: rgb(204, 204, 204); border-radius: 5px; transform: rotate(0deg); box-sizing: border-box !important; word-wrap: break-word !important;"></section><section style="margin-top: -3px; width: 25px; height: 7px; background-color: rgb(51, 51, 51); border-radius: 5px; box-sizing: border-box !important; word-wrap: break-word !important;"></section></section><section style="margin-right: 20px; float: right; box-sizing: border-box !important; word-wrap: break-word !important;"><section style="margin-bottom: -3px; width: 25px; height: 7px; background-color: rgb(51, 51, 51); border-radius: 5px; box-sizing: border-box !important; word-wrap: break-word !important;"></section><section style="margin-left: 9px; width: 6px; height: 40px; background-color: rgb(204, 204, 204); border-radius: 5px; transform: rotate(0deg); box-sizing: border-box !important; word-wrap: break-word !important;"></section><section style="margin-top: -3px; width: 25px; height: 7px; background-color: rgb(51, 51, 51); border-radius: 5px; box-sizing: border-box !important; word-wrap: break-word !important;"></section></section></section><section class="96wx-bdc 96wx-color" style="box-sizing: border-box; padding: 25px 10px 10px; border-width: 2px; border-style: solid; border-color: rgb(95, 170, 255); border-radius: 10px; color: rgb(95, 170, 255); word-wrap: break-word !important;"><p style="word-wrap: break-word; text-align: justify; text-indent: 2em; line-height: 30px; box-sizing: border-box !important;"><span style="color: inherit; box-sizing: border-box !important; word-wrap: break-word !important;"></span></p><pre class="js_message_plain ng-binding" ng-bind-html="message.MMActualContent" style="margin-top: 0px; margin-bottom: 0px; background-color: rgb(178, 226, 129); font-family: inherit; white-space: pre-wrap; word-break: normal; box-sizing: border-box !important; word-wrap: break-word !important;"><span style="box-sizing: border-box !important; word-wrap: break-word !important; color: rgb(0, 0, 0);"> 昨天晚上晚饭后，与完全自主研发操作系统SylixOS的韩辉交流，他侃侃而谈2多小时，从他身上看到80后创业者的专注、决心和工匠精神。周二晚上与小组创业的李磊以及团队交流，你感受到他们在用生命拼命，创业路上的九九八十一难他们在不断遇见并跨越着。4天的全息信息太多，以至于不知从何写起，有时间再继续分享。</span><br style="box-sizing: border-box !important; word-wrap: break-word !important;"  /></pre><p style="word-wrap: break-word; text-align: justify; text-indent: 2em; line-height: 30px; box-sizing: border-box !important;"><span style="color: inherit; box-sizing: border-box !important; word-wrap: break-word !important;"></span><br style="box-sizing: border-box !important; word-wrap: break-word !important;"  /></p></section></section></section></section><span style="box-sizing: border-box !important; word-wrap: break-word !important; font-family: 微软雅黑; text-indent: 28px;"></span><br style="box-sizing: border-box !important; word-wrap: break-word !important;"  /></section><section class="editor" style=" padding: 1px 5px ; ;; font-size: 15px; white-space: normal; box-sizing: border-box !important; word-wrap: break-word !important; "><section style="box-sizing: border-box !important; word-wrap: break-word !important;"><section style="box-sizing: border-box; word-wrap: break-word !important;"><section class="96wx-bgpic" data-wxsrc="http://mmbiz.qpic.cn/mmbiz/QKDxrVYehicf27M4rxn3UQyRre9x3YXgLlmPPz8D5BLpyCUsjoTb89rYrUBKiaZqDV2YicWvWVLricFueTnqIyUxHQ/0?wx_fmt=jpeg" style="box-sizing: border-box; display: inline-block; vertical-align: top; height: 1.8em; color: rgba(249, 110, 87, 0); width: 1.8em; border-radius: 50%; border-width: 0px; border-style: solid; border-color: rgb(249, 110, 87); font-size: 1.6em; font-family: inherit; font-weight: inherit; text-align: center; text-decoration: inherit; background-image: url(&quot;http://mmbiz.qpic.cn/mmbiz_jpg/SeWfibBcBT0Fef6jzmziaXv98fWQaCWXeOu5Hl7V51Qh2lbYxxfhr6OSkDxub1jKgibVnMjaqjCqK6N5JmXLTueWg/0?wx_fmt=jpeg&quot;); background-size: cover; background-position: 50% 50%; background-repeat: no-repeat; word-wrap: break-word !important;"><section style="box-sizing: border-box; line-height: 1.6em; word-wrap: break-word !important;"><section style="box-sizing: border-box; word-wrap: break-word !important;"></section></section></section></section></section><section style="box-sizing: border-box; border-width: 0px; border-style: none; border-color: initial; font-size: 14px; word-wrap: break-word !important;"><section class="96wx-bdlc" style="box-sizing: border-box; word-wrap: break-word !important; color: inherit; font-size: 16px; padding-top: 10px; padding-right: 10px; padding-left: 15px; margin-left: 27px; border-left: 1px dotted rgb(0, 0, 0);"><section style="box-sizing: border-box; padding-bottom: 10px; color: inherit; word-wrap: break-word !important;"><p style="margin-top: 5px; margin-bottom: 5px; line-height: 2em; font-size: 14px; color: inherit; text-align: justify; box-sizing: border-box !important; word-wrap: break-word !important;">欢迎大家为我们的公众平台提出更好的建议。</p></section></section></section></section><p><br  /></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">陈莉君</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                <div class="reward_qrcode_area reward_area tc" id="js_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                                        <p class="reward_tips"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" id="js_reward_qrcode_img"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		创客要知道的C语言机理——洪峰老师讲创客道（四）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=416571525&amp;idx=1&amp;sn=66b300a0c937763bcf79a3fd7a2a7d0a&amp;chksm=764b4d60413cc476ea3634e6b5de92c386beef6503a13982b9c8d3378905dbb9b9f9d48e0e7e&amp;scene=27#wechat_redirect&cpage=77' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">创客要知道的C语言机理——洪峰老师讲创客道（四）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        洪峰
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-03-13</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p><mpvoice frameborder="0" class="res_iframe js_editor_audio audio_iframe" src="/cgi-bin/readtemplate?t=tmpl/audio_tmpl&amp;name=%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%934&amp;play_length=17:58" name="%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%934" play_length="1078000" voice_encode_fileid="MzI3NzA5MzUxNF80MTY1NzE1MjM="></mpvoice></p><p><br  /></p><p style=" text-indent:28px;text-autospace:ideograph-numeric;text-autospace:ideograph-other;text-align:justify;line-height:150% "><span style="">C</span><span style="">程序的运行时系统是基于堆栈的</span><span style="">，堆栈英文名叫做</span><span style="">Stack</span><span style="">。</span><span style="">那么堆栈数据结构有什么特点呢？它是一种先进后出（first&nbsp;in&nbsp;last&nbsp;out</span><span style="">）、后进先出</span><span style="">(last&nbsp;in&nbsp;first&nbsp;out)</span><span style="">，除了基于</span><span style="">Stack</span><span style="">的运行时系统以外，还有其他的一些语言是基于另外的运行时系统。</span><span style="">例如fortran&nbsp;77</span><span style="">，它的运行时系统是静态的。一个</span><span style="">fortran77</span><span style="">程序编译出来是多大，运行时就是多大，它不会变大也不会缩小</span><span style="">。</span></p><p style=" text-indent:28px;text-autospace:ideograph-numeric;text-autospace:ideograph-other;text-align:justify;line-height:150% "><span style="">相比静态的运行时系统，基于堆栈的运行时系统，像C</span><span style="">语言这种运行时系统，</span><span style="">它有一些可</span><span style="">取</span><span style="">的地方</span><span style="">。</span><span style="">函数把它放在堆栈中，如果有很多函数要计算的话，那我就把整个程序的堆栈段划分成很多区间，每个区间我们把它叫做</span><span style="">Stack</span><span style="">&nbsp;</span><span style="">Frame</span><span style="">。</span><span style="">这样的</span><span style="">话，</span><span style="">在堆栈段里就有很多的</span><span style="">Stack</span><span style="">&nbsp;</span><span style="">Frame</span><span style="">，</span><span style="">这个概念大家要建立起来</span><span style="">。</span><span style="">这个</span><span style="">Stack</span><span style="">&nbsp;</span><span style="">Frame</span><span style="">我们把它</span><span style="">叫做帧框，或者叫做运行时活动过程记录，这两个概念在编译原理里边是同义词。</span></p><p style=" text-indent:28px;text-autospace:ideograph-numeric;text-autospace:ideograph-other;text-align:justify;line-height:150% "><span style="">有了这个帧框以后，函数嵌套就成为可能了，有了函数嵌套就可以编译一些非常复杂的逻辑。在各种计算机体系上，我这里是基于寄存器的CPU</span><span style="">，</span><span style="">都不难实现C</span><span style="">的运行时系统。</span><span style="">比方说在X86</span><span style="">上</span><span style="">有堆栈寄存器、栈顶寄存器、基址寄存器，通过移动基址寄存器就可以把当前的指令或者是数据移动到堆栈的某一部分，然后从那个地方通过移动栈顶寄存器来获得函数的内容。这套机制在其它的非</span><span style="">Intel</span><span style="">的芯片上，基于寄存器的CPU</span><span style="">上都是可以实现的。所以从这个意义上讲，</span><span style="">C</span><span style="">的移植性为什么</span><span style="">那么好，也与它的运行时系统有关系，因为它的运行时系统是非常容易在某一种基于堆栈的寄存器上去实现的。</span></p><p style=" text-indent:28px;text-autospace:ideograph-numeric;text-autospace:ideograph-other;text-align:justify;line-height:150% "><span style="">明白我刚才说的这套机制，关于帧框的结构以及它移动的这个机制，对于我们使用GDB</span><span style="">（</span><span style="">GNU&nbsp;Debugger</span><span style="">）调试器来调试</span><span style="">C</span><span style="">程序是</span><span style="">极为重要的，而且在调试时要设置断点，从一个框基于另一个框，也就是从一个函数基于另外一个函数的时候，那你理解这个概念会有助于你把程序中的概念给处理掉。</span></p><p style=" text-indent:28px;text-autospace:ideograph-numeric;text-autospace:ideograph-other;text-align:justify;line-height:150% "><span style="">有了函数嵌套还是不够的，需要在一个函数调用的时候，我们要传递一个函数，把一个函数当作参数进行传递，但是很遗憾，C</span><span style="">语言做不到这一点。</span><span style="">不能把一个函数直接当成参数传递，语言规范里边是不支持这一点的，但是C</span><span style="">语言提供了指针，提供了函数指针，或者说指向函数的指针，这个指针本身，我前边讲过它的尺寸非常小，它是</span><span style="">可以被当作参数来传递，请大家注意这一点</span><span style="">。</span><span style="">也就是说虽然C</span><span style="">语言不能直接把函数当作参数进行传递，但是它有一种机制可以绕过去这个限制。</span><span style="">通过指向函数的指针达到类似的效果，当我们去使用函数指针的时候，当一个函数指针被传递到一个函数里去的时候，我们去执行这个函数指针指向的那个函数，实际这个时候是通过什么完成的？实际上是通过我们的代码段，然后通过一些通用寄存器的帮助来完成，这是C</span><span style="">语言里一个很重要的细节。</span></p><p style=" text-indent:28px;text-autospace:ideograph-numeric;text-autospace:ideograph-other;text-align:justify;line-height:150% "><span style="">到此为止，我们已经讲解了C</span><span style="">的运行时系统是基于堆栈的，但是请大家不要忘了，在</span><span style="">C</span><span style="">语言</span><span style="">里边可以通过指针去分配和管理内存，还有回收内存</span><span style="">。</span><span style="">这种内存不在堆栈</span><span style="">（Stack）</span><span style="">上边，通过</span><span style="">malloc</span><span style="">函数分配的内存存放在堆</span><span style="">（Heap）</span><span style="">上。</span><span style="">这个</span><span style="">Heap</span><span style="">和</span><span style="">Stack</span><span style="">有区别，我们知道</span><span style="">Stack</span><span style="">一定是后进先出这么个结构，英文叫</span><span style="">LIFO</span><span style="">。堆不一定，</span><span style="">堆可以是后进先出的也可以不是，所以有指针这个工具以后，我们可以去找系统要新的内存，就像我们找银行借钱一样，我们可以在金融活动发生的时候，流动资金不够的时候，我们可以向银行借一笔钱用于我们的生产，生产完了之后可以把钱再还给银行</span><span style="">。</span><span style="">与银行不同的是，在C</span><span style="">里边不用还本付息，它是零利息的，用多少就可以还多少，那么这个程序就不会发生问题。</span></p><p style=" text-indent:28px;text-autospace:ideograph-numeric;text-autospace:ideograph-other;text-align:justify;line-height:150% "><span style="">当然你也要注意在C</span><span style="">语言编程的时候，对于动态内存的分配使用回收机制，要特</span><span style="">别小心。第一个就是说你要的内存究竟要多大，这个你要搞清楚，这个是与类型有关的；第二个就是什么时候把内存还给系统。你什么时候还钱很重要，因为你还的太早了，那么程序里边还有一些指向堆上边的数据，这时候指针</span><span style="">变</span><span style="">成非法的指针，变成一个悬挂的指针；如果没有及时还钱，没有把内存收回，那么内存，如果是程序老是调用这个函数，老是不断的向系统要这个内存，那寄存器系统上的内存资源</span><span style="">虽然</span><span style="">很大，</span><span style="">但毕竟</span><span style="">还是有限的，终究有一天钱会花光的，资源多也会花光，那么这个时候会出现很大问题。</span></p><p style=" text-indent:28px;text-autospace:ideograph-numeric;text-autospace:ideograph-other;text-align:justify;line-height:150% "><span style="">特别是对于我们搞创客道，要写</span><span style="">Daemon&nbsp;&nbsp;Process</span><span style="">，</span><span style="">这样的创客而言，你将来写的这个程序可能是服务器，这个服务器可能要作为一个</span><span style="">Daemon&nbsp;&nbsp;Process</span><span style="">在服务器上长期运行。</span><span style="">而你写的这个程序里边 有个bug</span><span style="">，老是找系统要内存要内存，那么最终计算机系统的全部内存被你消耗光了，那这个时候系统就死机了。</span><span style="">因为没有内存可用了，所以这个问题要引起大家的足够关注。</span></p><p style=" text-indent:28px;text-autospace:ideograph-numeric;text-autospace:ideograph-other;text-align:justify;line-height:150% "><span style="">刚才我提到的这两类问题，是经常在C</span><span style="">编程中出问题的两个地方。一个叫做非法指针的使用，一个叫做内存泄露</span><span style="">。非法指针的使用是因为你指chuabg针指向发生悬空，而内存泄漏（memory&nbsp;leak）是因为你没有及时的把使用过的内存交还给系统。这是两大类问题，希望引起大家的高度关注。</span></p><p style=" text-indent:28px;text-autospace:ideograph-numeric;text-autospace:ideograph-other;text-align:justify;line-height:150% "><span style="">那么有了这个堆栈，还有帧框以后，有同学会问，</span><span style="">这</span><span style="">帧框里边究竟是干些什么事情？在C</span><span style="">语言里边通常情况下，我们认为堆栈里它有一些专门的用途，我在</span><span style="">《黑客道三字经》里边曾经这样写过“堆栈里，名堂多。四大类：参数表、返回址、表达式、局部值。”四大类的用途</span><span style="">，</span><span style="">更详细的划分，我们可以把一个帧框分成七个区间，包括函数返回值；第二就是实参，把参数传递到函数中去，还有两个是动态链和静态链（待会再讲），还有保存的机器状态，还有两个就是局部数据和临时变量。</span></p><p style=" text-indent:28px;text-autospace:ideograph-numeric;text-autospace:ideograph-other;text-align:justify;line-height:150% "><span style="">这七个区间是一般我们在写C</span><span style="">程序的时候，或其他语言的时候会用到</span><span style="">关于帧框的结构，关于这个帧框的结构，计算机科学家花了很长的时间探索，而最终成型是在</span><span style="">Algol</span><span style="">语言里边</span><span style="">。</span><span style="">Algol</span><span style="">语言对计算机上几乎所有的现代的语言都有重大的影响，可以看成是所有语言的共同祖先</span><span style="">。</span><span style="">我们可以这样看，它在编程语言的发展历史上，它的地位是非常重大的，虽然</span><span style="">Algol</span><span style="">现在已经没有了，但是它在这个语言探索过程中产生的思想、概念、学语一直沿用到今天。所以大家对</span><span style="">Algol</span><span style="">语言要引起足够的重视，我们后边讲的</span><span style="">Scheme</span><span style="">语言就是从早期的</span><span style="">lisp</span><span style="">和</span><span style="">Algol</span><span style="">中吸收了语言的基因，待会我们在将</span><span style="">Scheme</span><span style="">语言的时候再详细讲解这个问题。</span></p><p style=" text-indent:28px;text-autospace:ideograph-numeric;text-autospace:ideograph-other;text-align:justify;line-height:150% "><span style="">刚才我提到了帧框（或者叫做活动过程记录）有七个区间，可以把一个帧框细分出来，而且我已经讲到C</span><span style="">语言</span><span style="">的帧框里边没有动态链与静态链。有了这个框架以后，我们就可以解释：为什么C</span><span style="">函数是不能直接传递的</span><span style="">，不能被直接返回的？</span></p><p style=" text-indent:28px;text-autospace:ideograph-numeric;text-autospace:ideograph-other;text-align:justify;line-height:150% "><span style="">在计算机科学里边有个学语，叫做低等对象，什么叫低等对象呢？低等对象是满足四个要求的数据，我们叫做低等对象或者低等值（first&nbsp;class&nbsp;value</span><span style="">或者叫做</span><span style="">first&nbsp;class&nbsp;object</span><span style="">）</span><span style="">，哪四个方面的要求呢？</span></p><p style=" text-indent:28px;text-autospace:ideograph-numeric;text-autospace:ideograph-other;text-align:justify;line-height:150% "><span style="">第一个，这个对象可以被返回；</span></p><p style=" text-indent:28px;text-autospace:ideograph-numeric;text-autospace:ideograph-other;text-align:justify;line-height:150% "><span style="">第二个，这个对象可以被传递，我指在函数之间进行传递；</span></p><p style=" text-indent:28px;text-autospace:ideograph-numeric;text-autospace:ideograph-other;text-align:justify;line-height:150% "><span style="">第三个，这个对象可以被命名，起个名字，使用名字调用它；</span></p><p style=" text-indent:28px;text-autospace:ideograph-numeric;text-autospace:ideograph-other;text-align:justify;line-height:150% "><span style="">最后一个，是这个对象可以和其他对象一起组成一个数据结构，把它变成数据结构中的一个成员被使用。</span></p><p style=" text-indent:28px;text-autospace:ideograph-numeric;text-autospace:ideograph-other;text-align:justify;line-height:150% "><span style="">满足这四个要求的对象叫做低等对象。按照这个定义，C函数不是低等对象，因为它不满足这四个要求，不能被直接传递也不能被直接返回，当然了C</span><span style="">函数是可以命名的，C</span><span style="">函数也可以放在</span><span style="">C</span><span style="">的struct</span><span style="">里边</span><span style="">做为一个字段，用函数指针指向它，这个也是可以的。但是它不能被直接传递也不能被直接返回，那么这样就会给我们的编程工作增加很多额外的工作量，因为我们有时是确确实实需要传递一个函数，这种需求在很多很多的编程场景下是经常会用到的。</span></p><p style=" text-indent:28px;text-autospace:ideograph-numeric;text-autospace:ideograph-other;text-align:justify;line-height:150% "><span style="">那么我们来检查下，为什么C</span><span style="">函数不能被直接传递呢</span><span style="">？我们利用帧框和活动记录进行思考，这个里边最为关键的一个问题就是，如果是C</span><span style="">函数里边的自由变量，它会指向</span><span style="">一个外部环境中的数据的时候，那么我们不能把它的外部环境也一起跟这个函数进行传递</span><span style="">。</span><span style="">我刚才这个说法要多做些解释大家才会听的懂，什么意思呢？就是说动态链和静态链是什么意思？就是说，静态链是指数据的嵌套，而动态链是指函数的嵌套，这个帧框里边所指的这个数据会在我的环境</span><span style="">。</span><span style="">我刚才讲了，有了帧框以后，我们是不是就可以在堆栈里边把函数进行嵌套？这样函数嵌套就形成了一个顺序，一个层次结构，那么在当前这个活动记录中，我们的数据也好函数也好，它会引用上一层，更上一层，乃至更上一层一直到顶层</span><span style="">。</span><span style="">这样的一些函数或者数据的定义的时候，它会形成一个链条，那么对数据的链条我们叫做静态链，对于函数的引用链条我们叫做动态链。</span></p><p style=" text-indent:28px;text-autospace:ideograph-numeric;text-autospace:ideograph-other;text-align:justify;line-height:150% "><span style="">而在C</span><span style="">语言里边对于函数的动态链和静态链</span><span style="">，在活动过程记录或者帧框里边是不被支持的，从好的方面来讲的话，这样的话，语言的设计就简单了</span><span style="">。</span><span style="">因为帧框的七个字段被简化了，减少了动态链与静态链。但是从不好的角度看，就是C</span><span style="">函数不能被直接传递也不能被直接返回，所以说</span><span style="">要解决这个问题，我们必须从编译原理，从活动记录的改造上边动脑筋。</span></p><p style="text-indent: 28px; text-align: justify; line-height: 150%;"><span style="">在C</span><span style="">语言</span><span style="">之后被发明的许许多多的语言，包括它之前的许多语言，已经在它之前做了很多有益</span><span style="">的</span><span style="">尝试，此时对语言的运行时环境会产生一些影响，把C</span><span style="">语言当作一个起点的话，实际上</span><span style="">要对C</span><span style="">语言</span><span style="">进行某些扩展，通过对C</span><span style="">语言的扩展，追求低等对象，把函数作为低等对象，达到这个目的</span><span style="">。我们下边看看lisp</span><span style="">语言是如何实现这个目标的。</span></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">洪峰</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		略说C语言——洪峰老师讲创客道（三）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=416560310&amp;idx=1&amp;sn=94217f8d9cbcffd8b0d23dcb976cd34c&amp;chksm=764b1953413c9045312037e9679299080f1dce204b4c38138f27f04f33b39cd2fd71d6a6d23b&amp;scene=27#wechat_redirect&cpage=77' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">略说C语言——洪峰老师讲创客道（三）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        洪峰
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-03-12</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p><mpvoice frameborder="0" class="res_iframe js_editor_audio audio_iframe" src="/cgi-bin/readtemplate?t=tmpl/audio_tmpl&amp;name=%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%933&amp;play_length=17:51" name="%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%933" play_length="1071000" voice_encode_fileid="MzI3NzA5MzUxNF80MTY1NjAzMDg="></mpvoice></p><p><br  /></p><p><span style=";font-size:16px;font-family:宋体">&nbsp; &nbsp;</span><span style="">&nbsp;从技术的角度来说，C语言相比于汇编语言，之所以被称为高级语言，是因为它已经运用了函数作为基本抽象单位。在C语言中，一个函数可以封装成千上万条汇编指令，从此角度上来讲，人们使用C语言开发的效率会比用汇编语言开发程序要高效很多，这也是当年要开发C的主要原因。一开始UNIX系统是用汇编语言写的，后来D.M.</span><span style="">R</span><span style="">itchie用C语言改写原来的汇编代码于是得到了UNIX系统。</span></p><p><span style="">&nbsp;&nbsp;&nbsp;&nbsp;正因为C语言中提供了函数作为基本编程单元，所以我们要对C语言中的函数做一番详尽的考察，看看它有何特点，这里要注意</span><span style="">C</span><span style="">语言的函数和数学中的函数有相近之处，不过也有其不同之处。C语言的函数有一个函数名、形参表、函数体，整个函数会返回一个值，这是它的语法形式。在定义这个函数时，需要提供一个形参表，在这个形参表中，声明每一个参数时必须要说明参数的类型，有些人因此将</span><span style="">C</span><span style="">称为强类型的编程语言。在阅读过许多其他材料后，会发现强类型的说法有时会产生歧义，因此将其说成为manifest&nbsp;type，即显式类型声明。有了显式类型声名后，C语言可以在参数的类型方面做一些较少的工作，这是C语言很重要的一个特点。</span></p><p><span style="">&nbsp;&nbsp;&nbsp;&nbsp;注意，当C语言的参数显示声明类型以后，参数是如何传递给函数呢？这时就涉及到了传值的概念。举个例子：你写了某个函数fullbar，函数名为full，形参是某种类型的bar，如果想调用这个函数，就会把一个实际的参数传给fullbar，当把这个实际参数传给函数的形参bar时，真正在做的事情是把实际参数先做一个拷贝，将这个拷贝传递给这个函数形参表中的bar</span><span style="">，</span><span style="">然后函数的函数体对这个bar进行操作，因此函数体实际是对函数外部的那个变量的拷贝进行操作，而不是对变量本身进行操作。如果想要对外部的变量进行直接的操作，那么使用传值的方法是行不通的，必须要采用C指针，通过其来引用函数体外部变量，即获得变量的地址，对这个地址上的数据进行操作，就可以实现修改函数体外部的变量，这也是C语言中很重要的一个特点。</span></p><p><span style="">&nbsp;&nbsp;&nbsp;&nbsp;刚刚说到了C语言的参数必须在声明函数时显式地声明它的类型，要注意类型这个概念在我们黑客道教学里非常重要的。这里引用一下我在黑客道中的一些讲法，在C语言中一个类型到底代表什么意思呢？它至少有3方面的含义：第一，数据在内存里有多大，即数据的长度，可以用sizeof运算符来获取数据的长度；第二，如果是一个</span><span style="">复合</span><span style="">类型的数据，那么它里面就会有许多字段，它的字段是如何排列的；第三，对于两个类型，它们都有相同的字段，但是它们字段所指向的数据可能不同，导致实际的两个字段所形成的对象在内存里的类型是不一样的，即数据排列的密度有很大的差距。因此C语言中，对一个类型的考察我们应从三个方面去思考，一个是数据的长度，一个是它字段排列的顺序，第三就是字段所指向的东西所导致的对象的密度的变化。</span></p><p><span style="">&nbsp;&nbsp;&nbsp;&nbsp;我们知道C语言是编译性语言，首先要编写源代码，之后要把含有源代码的源文件用C的编译器编译成目标代码，然后进行链接，从而得到可执行程序。所以在C文件可运行之前，必须要经过编译的过程。C文件在被编译器编译的时间段，我们称作程序的编译时，当得到可运行程序，去运行它时，我们称作程序的运行时，这是两个完全不同的阶段。在C程序编译的时候，编译器并不会对C语言中的类型进行太多的检查，所以在业界有一种说法：C语言是显示声明类型，而且是弱检查甚至是不检查的编程语言。C语言之所以称为这种编程语言是有其原因的，受当时的历史条件限制。C语言是七十年代初发明的，那时计算机的硬件水平比较低，所以为了减少开销(进行类型检查在编译时需要提供许多的计算资源)，D.M.</span><span style="">R</span><span style="">itchie在当时设计C语言时就没有对C的类型提供过多的检查机制。</span></p><p><span style="">&nbsp;&nbsp;&nbsp;&nbsp;我们可以在类型方面进行一下比较，在我们学习数学集合论的时候，我们对集合的考察方式也有三种。可以考虑一个集合的基数，即一个集合中元素中的多少，比方说一个家庭家庭成员的多少；还有考察一个集合中元素的序，即顺序，家庭中成员的排列顺序，长幼、体重等等；第三个是考察集合中元素的分布，称其为考察集合的纲，比方说一个实数的集合，我们知道实数系是个连续统，任何一个连续的线段，都可以和零到一之间的连续统是等式的，当集合中连续统排列的顺序不一样时，集合的分布情况就会产生变化。这就是在集合的语言中，我们讨论考察一个集合的三种方法或者说三种方向，在C语言的教学中对类型我们也可以从这三个方面进行思考。当然C语言是一个离散的世界，但是C语言中有指针变量，它指向的东西可以很大很大，甚至是一个无穷的数目，所以可以在计算机上利用某些机制对无穷量进行理化。</span></p><p><span style="">&nbsp;&nbsp;&nbsp;&nbsp;关于C语言的类型就先谈到这里。</span></p><p><span style="">&nbsp;&nbsp;&nbsp;&nbsp;对于C语言的函数我们还要考察它的作用域，所谓作用域就是它起作用的范围。在默认的情况下，C语言会把一个程序中所有的函数当作全局的，即一个应用项目中多个C的源文件写出来以后，C的编译器会把各个文件中的函数提取出来，放到编译器所维护的符号表的某个区域，这个区域我们可以称其为一个子表格。这样程序中的任何文件都可以去调用它，从这个意义上讲，C语言中函数的作用域在默认情况下是全局的，这项工作是由编译器自动帮你完成的。但是C语言中也提供了一些机制让你可以绕过这个限制，比方说可以使用static关键字来修饰一个函数。C语言中的static关键字非常妙，即可用来修饰函数又可用来修饰变量，当用其修饰一个函数时，函数的作用域就发生了变化，从原来全局的作用域被约束到它所在的文件中，我们知道C编译器以文件作为编译的基本单位，所以此时函数作用域的粒度被限制到一个编译单元，这对C语言的使用有重大的影响，这点大家要注意。由于C语言中函数的作用域默认全局，而且在语言层次上只能通过static修饰符来把一个函数的作用域从全局降为文件，所以在C语言中数据结构的重要性就突显出来，因为函数是不能被自由传递的(函数都被放在了一起，不能被传递)，这时数据结构的设计就变成了C语言设计的核心。Linus&nbsp;Torvalds作为Linux&nbsp;Kernel的设计师之一，就曾经在C语言编程中高度突出了数据结构的重要性，实际上C语言结构的设计是整个C编程的灵魂。这样就产生了两个间接的影响：一个是C语言本身并没有提供多少数据结构，包括刚刚提到的文件这个结构，也不是在语言内部提供，而是作为一个库来提供，那么在语言规范没有提供多少数据结构的情况下(甚至连链表这种基本的数据结构都没有)，在C语言中作为程序员必须亲手打造自己的数据结构，从好的方面上来说可以拥有任何自由度，因为有指针可以分配内存、回收内存，可以做任何贴近硬件的事情，但另一方面，C语言本身没有提供数据结构，亲手去打造数据结构是需要时间的。</span></p><p><span style="">&nbsp;&nbsp;&nbsp;&nbsp;从这个意义上讲，用C语言做软件开发，它的开发效率和它的运行效率是极不相称的，C语言的运行效率非常高，但是开发效率即人的工作效率是极为低下的，我前面提到的我的朋友Igor&nbsp;Sysoev，设计Nginx这个世界上跑的最快的Web服务器，也是花了十年的时间才做到了今天这个样子，真可谓十年磨一剑。所以开发一些一般的应用程序，而不是系统级的应用程序的话，我认为使用C不是一个理想的选择，当然也可以用C写，理论上没有问题，但是实际的开发效率是极为低下的，这里我提醒各位创业者密切关注这个特点</span><span style="">。</span></p><p><span style="">&nbsp;</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">洪峰</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

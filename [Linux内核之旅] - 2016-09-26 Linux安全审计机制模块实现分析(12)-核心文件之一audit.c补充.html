@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Linux安全审计机制模块实现分析(12)-核心文件之一audit.c补充
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664603181&amp;idx=1&amp;sn=768c8d832bca4ef744088dd9d9297944&amp;chksm=f04db3c8c73a3ade536a3183f982228a3ea0032750288d41d1b49951f98a230c5aac12dcfd61&amp;scene=27#wechat_redirect&cpage=60' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Linux安全审计机制模块实现分析(12)-核心文件之一audit.c补充</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        吴宪萍
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-09-26</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                <div class="rich_media_thumb_wrp" id="media">
+                    
+                                        
+                                    </div>
+                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <h4><strong><span style="font-size: 16px;"><span style="font-family: 宋体; color: rgb(2, 30, 170);">2.4.1.2主要变量及宏定义</span></span></strong></h4><p style=";line-height:24px"><span style="font-family: 宋体; font-size: 14px;">intaudit_enabled; &nbsp;//<span style="font-size: 16px; font-family: 宋体;">审计系统是否已开启的标志</span></span></p><p style=";line-height:24px"><span style="font-family: 宋体; font-size: 16px;">int &nbsp;audit_pid; //审计后台进程<span style=" font-size: 16px ; ;; ">auditd</span>的<span style=" font-size: 16px ; ;; ">pid</span></span></p><p style=";line-height:24px"><span style="font-family: 宋体; font-size: 14px;">static intaudit_backlog_limit = 64; //<span style="font-size: 16px; font-family: 宋体;">审计缓冲区中的最大消息数</span></span></p><p style=";line-height:24px"><span style="font-family: 宋体; font-size: 14px;">static intaudit_backlog_wait_time = 60 * HZ; //<span style="font-size: 16px; font-family: 宋体;">消息等待发送的最大时间</span></span></p><p style=";line-height:24px"><span style="font-family: 宋体; font-size: 16px;">static atomic_t &nbsp;&nbsp;&nbsp;audit_lost = ATOMIC_INIT(0);//丢失的审计消息数目</span></p><p style=";line-height:24px"><span style="font-family: 宋体; font-size: 16px;">static struct sock *audit_sock; //审计系统使用的<span style=" font-size: 16px ; ;; ">netlink</span>套接字</span></p><p style=";line-height:24px"><span style="font-family: 宋体; font-size: 16px;">struct list_head audit_inode_hash[AUDIT_INODE_BUCKETS];//基于节点的规则哈希链表</span></p><p style=";line-height:24px"><span style="font-family: 宋体; font-size: 16px;">static struct sk_buff_head audit_skb_queue;//审计<span style=" font-size: 16px ; ;; ">netlink</span>套接字缓冲区链表</span></p><p style=";line-height:24px"><span style="font-family: 宋体; font-size: 16px;">DECLARE_WAIT_QUEUE_HEAD(kauditd_wait) //kauditd的等待队列</span></p><p style=";line-height:24px"><span style="font-family: 宋体; font-size: 16px;">DECLARE_WAIT_QUEUE_HEAD(audit_backlog_wait);//消息发送进程的等待队列</span></p><p style=";line-height:24px"><span style="font-family: 宋体; font-size: 16px;">#define AUDIT_BUFSIZ 1024 //审计消息缓冲区的大小</span></p><p style=";line-height:24px"><span style="font-family: 宋体; font-size: 14px;">#define AUDIT_OFF0</span></p><p style=";line-height:24px"><span style="font-family: 宋体; font-size: 14px;">#define AUDIT_ON1</span></p><p style=";line-height:24px"><span style="font-family: 宋体; font-size: 14px;">#define AUDIT_LOCKED2</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">//<span style="font-size: 16px; font-family: 宋体;">以上三个宏是审计系统的三种模式，其中第三个模式是不允许修改审计规则和审计系统的状态</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 14px;">#define AUDIT_DISABLED-1</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 14px;">#define AUDIT_UNINITIALIZED0</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 14px;">#define AUDIT_INITIALIZED1</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">//<span style="font-size: 16px; font-family: 宋体;">以上三个宏表示审计系统的状态。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;"><br  /></span></p><h4><span style="font-size: 16px;"><strong><span style="font-size: 16px; font-family: 宋体; color: rgb(2, 30, 170);">2.4.1.3结构体定义</span></strong></span></h4><p><span style="font-family: Calibri; font-size: 16px;">struct audit_buffer { &nbsp;&nbsp;//<span style="font-size: 16px; font-family: 宋体;">审计缓冲区</span></span></p><p style="margin-left:28px"><span style="font-family: Calibri; font-size: 16px;">struct list_head &nbsp;&nbsp;&nbsp;list;</span></p><p style="text-indent:28px"><span style="font-family: Calibri; font-size: 16px;">struct sk_buff *skb; //<span style="font-size: 16px; font-family: 宋体;">格式化的</span>netlink<span style="font-size: 16px; font-family: 宋体;">套接字缓冲区</span>,<span style="font-size: 16px; font-family: 宋体;">准备用于发送审计消息 </span></span></p><p><span style="font-family: Calibri; font-size: 16px;">/*<span style="font-size: 16px; font-family: 宋体;">每个进程的审计上下文</span>,<span style="font-size: 16px; font-family: 宋体;">包括进程的状态、时间和 </span>uid <span style="font-size: 16px; font-family: 宋体;">等</span>,<span style="font-size: 16px; font-family: 宋体;">与进程上下文相关</span>,<span style="font-size: 16px; font-family: 宋体;">可以为空 </span>*/</span></p><p style="text-indent:28px"><span style="font-family: Calibri; font-size: 16px;">struct audit_context *ctx;</span></p><p style="text-indent:28px"><span style="font-family: Calibri; font-size: 16px;">gfp_t &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gfp_mask; &nbsp;//<span style="font-size: 16px; font-family: 宋体;">为缓冲区分配内存所使用的标识</span>,<span style="font-size: 16px; font-family: 宋体;">如</span>:__GFP_WAIT</span></p><p><span style="font-family: Calibri; font-size: 16px;">};</span></p><p><span style="font-family: Calibri; font-size: 16px;">struct audit_reply { &nbsp;//<span style="font-size: 16px; font-family: 宋体;">审计应答信息</span></span></p><p><span style="font-family: Calibri; font-size: 16px;">int pid; &nbsp;&nbsp;&nbsp;//<span style="font-size: 16px; font-family: 宋体;">审计消息的目标进程</span></span></p><p><span style="font-family: Calibri; font-size: 16px;">struct sk_buff *skb; // <span style="font-size: 16px; font-family: 宋体;">存放应答信息的</span>skb.</span></p><p><span style="font-family: Calibri; font-size: 16px;">};</span></p><p><span style="font-family: Calibri; font-size: 16px;"><br  /></span></p><p><span style="font-family: Calibri; font-size: 16px;"></span></p><h4><span style="font-size: 16px;"><strong><span style="font-size: 16px; font-family: 宋体; color: rgb(2, 30, 170);">2.4.1.4外部函数</span></strong></span></h4><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">int netlink_unicast(struct sock *ssk, struct sk_buff *skb, u32 pid, int nonblock)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能：利用</span>netlink<span style="font-size: 16px; font-family: 宋体;">套接字实际发送消息的函数。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">static inline struct sk_buff *__skb_dequeue(struct sk_buff_head *list)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能：从套接字缓冲区队列上取一个</span>skb<span style="font-size: 16px; font-family: 宋体;">。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">void netlink_ack(struct sk_buff *in_skb, struct nlmsghdr *nlh, int err)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">功能：发送一个套接字应答。</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">int audit_filter_type(int type)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能：按照</span>type<span style="font-size: 16px; font-family: 宋体;">规则链表进行消息过滤。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">static inline __u32 skb_queue_len(const struct sk_buff_head *list_)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">功能：求缓冲区队列的长度。</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">void add_wait_queue(wait_queue_head_t *q, wait_queue_t *wait)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能：把</span>wait<span style="font-size: 16px; font-family: 宋体;">加入等待队列。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">void remove_wait_queue(wait_queue_head_t *q, wait_queue_t *wait)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能：把</span>wait<span style="font-size: 16px; font-family: 宋体;">从等待队列移出。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">void skb_queue_tail(struct sk_buff_head *list, struct sk_buff *newsk)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能：把</span>skb<span style="font-size: 16px; font-family: 宋体;">添加到队列</span><span style=" font-size: 16px ; ;; ">list</span><span style="font-size: 16px; font-family: 宋体;">的尾部。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">struct sock *netlink_kernel_create(struct net *net, int unit, struct module *module,</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;struct netlink_kernel_cfg *cfg)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能：创建一个</span>netlink<span style="font-size: 16px; font-family: 宋体;">套接字。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;"><br  /></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;"></span></p><h4><span style="font-size: 16px;"><strong><span style="font-size: 16px; font-family: 宋体; color: rgb(2, 30, 170);">2.4.1.5内部函数</span></strong></span></h4><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">static int audit_set_rate_limit(int limit, uid_t loginuid, u32 sessionid, u32 sid) </span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">功能：设置消息发送的最大速率。</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">static int audit_set_backlog_limit(int limit, uid_t loginuid, u32 sessionid,u32 sid)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">功能：设置消息缓冲区的最大消息数。</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">static int audit_set_enabled(int state, uid_t loginuid, u32 sessionid, u32 sid)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">功能：开启内核审计功能。</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">static void audit_printk_skb(struct sk_buff *skb)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能：通过</span>printk<span style="font-size: 16px; font-family: 宋体;">发送审计消息给日志文件。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">static void kauditd_send_skb(struct sk_buff *skb)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能：</span>kauditd<span style="font-size: 16px; font-family: 宋体;">线程通过</span><span style=" font-size: 16px ; ;; ">netlink</span><span style="font-size: 16px; font-family: 宋体;">机制发送</span><span style=" font-size: 16px ; ;; ">skb</span><span style="font-size: 16px; font-family: 宋体;">中的审计消息。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">static int kauditd_thread(void *dummy)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能：</span>kauditd<span style="font-size: 16px; font-family: 宋体;">线程的线程函数。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">static int audit_prepare_user_tty(pid_t pid, uid_t loginuid, u32 sessionid)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能：为用户准备</span>tty.</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">struct sk_buff *audit_make_reply(int pid, int seq, int type, int done, int multi, const void *payload, int size)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能</span>:<span style="font-size: 16px; font-family: 宋体;">给用户空间返回一个审计应答消息。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">static int audit_send_reply_thread(void *arg)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能：</span>audit_send_reply<span style="font-size: 16px; font-family: 宋体;">线程的线程函数</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">static void audit_send_reply(int pid, int seq, int type, int done, int multi, const void *payload, int size)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能：经由</span>netlink<span style="font-size: 16px; font-family: 宋体;">套接字发送一个审计消息应答。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">static int audit_netlink_ok(struct sk_buff *skb, u16 msg_type)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能：判断</span>skb<span style="font-size: 16px; font-family: 宋体;">中是否是合法的审计消息。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">static int audit_receive_msg(struct sk_buff *skb, struct nlmsghdr *nlh)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能：</span><span style="font-family: 宋体; font-size: 14px;"><span style="font-size: 16px; font-family: 宋体;">从</span>netlink<span style="font-size: 16px; font-family: 宋体;">套接字缓冲区接收一条消息并处理消息。</span></span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">static void audit_receive_skb(struct sk_buff *skb)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能：从</span>skb<span style="font-size: 16px; font-family: 宋体;">接收一条消息。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">static void audit_receive(struct sk_buff &nbsp;*skb)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能：从</span>skb<span style="font-size: 16px; font-family: 宋体;">接收一条消息</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">static int __init audit_init(void)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">功能</span>:<span style="font-size: 16px; font-family: 宋体;">内核审计系统初始化。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">static int __init audit_enable(char *str)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">功能：根据内核引导时传入的命令行参数设置审计系统的状态。</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">static void audit_buffer_free(struct audit_buffer *ab)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">功能：释放审计缓冲区。</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">static struct audit_buffer * audit_buffer_alloc(struct audit_context *ctx, gfp_t gfp_mask, int type)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">功能：分配一个审计缓冲区。</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">unsigned int audit_serial(void)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">功能：分配一个审计消息序列号。</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">static inline void audit_get_stamp(struct audit_context *ctx, struct timespec *t, unsigned int *serial)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">功能：获得时间戳。</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">struct audit_buffer *audit_log_start(struct audit_context *ctx, gfp_t gfp_mask, int type)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">功能：审计消息发送函数</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">static inline int audit_expand(struct audit_buffer *ab, int extra)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">功能：扩展审计缓冲区的空间。</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">static void audit_log_vformat(struct audit_buffer *ab, const char *fmt, va_list args)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">功能：格式化一个审计消息，并放入审计缓冲区。</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">void audit_log_format(struct audit_buffer *ab, const char *fmt, ...)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">功能：格式化一个审计消息，并放入审计缓冲区。</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">void audit_log_end(struct audit_buffer *ab)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">功能：发送审计缓冲区中的消息。</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;">void audit_log(struct audit_context *ctx, gfp_t gfp_mask, int type, const char *fmt, ...)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">功能：生成并发送审计消息。</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px; font-family: 宋体;"><br  /><br  /></span></p><p><span style="font-family: Calibri; font-size: 14px;"><br  /><br  /></span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">吴宪萍</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

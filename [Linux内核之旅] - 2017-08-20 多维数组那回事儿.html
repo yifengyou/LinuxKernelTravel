@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		多维数组那回事儿
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664604591&amp;idx=1&amp;sn=6d7605dc9aa2d89c779dada263317453&amp;chksm=f04d8e4ac73a075ce5313c212063712eb89ac5cb4165c3460fb6371092b874bf0a54c80d1606&amp;scene=27#wechat_redirect&cpage=33' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">多维数组那回事儿</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        武特
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2017-08-20</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <h2 style="margin: 1.3em 0px 1em; padding: 0px; font-weight: bold;font-size: 1.4em; border-bottom: 1px solid rgb(238, 238, 238);">多维数组那回事儿</h2><p style="margin: 0px 0px 1.2em !important;">我们可以将多维数组抽象的看作是具有某种类型的一维数组。当“某种类型”为基本的数据类型时，多维数组就退化成普通的一维数组；当“某种类型”仍然为数组时，那么就形成了多维数组。也就是说任何一个多维数组都可以分解成几个一维数组。</p><p style="margin: 0px 0px 1.2em !important;">下面通过示例程序来深入了解多维数组ma[2][3]的构成。</p><pre style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace; margin: 0px 0.15em; background-color: rgb(248, 248, 248); white-space: pre; overflow: auto; border-radius: 3px; border-width: 1px; border-style: solid; border-color: rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important;">#include &lt; stdio.h &gt;
+
+int main()
+{
+ &nbsp; &nbsp;int ma[2][3];
+ &nbsp; &nbsp;int (*r)[2][3];
+ &nbsp; &nbsp;int (*p)[3];
+ &nbsp; &nbsp;int *t;
+
+ &nbsp; &nbsp;/*代码段1*/
+ &nbsp; &nbsp;p = ma;
+ &nbsp; &nbsp;printf("sizeof(ma[0])=%d\n",sizeof(ma[0]));
+ &nbsp; &nbsp;printf("ma &nbsp; &nbsp; &nbsp;=%p\tp &nbsp; =%p\n",ma,p);
+ &nbsp; &nbsp;printf("p+1 =%p\n",p+1);
+ &nbsp; &nbsp;/*代码段2*/
+ &nbsp; &nbsp;r = &amp;ma;
+ &nbsp; &nbsp;printf("sizeof(ma)=%d\n",sizeof(ma));
+ &nbsp; &nbsp;printf("&amp;ma &nbsp; &nbsp; =%p\tr &nbsp;=%p\n",&amp;ma,r);
+ &nbsp; &nbsp;printf("&amp;ma+1 &nbsp; =%p\tr+1=%p\n",&amp;ma+1,r+1);
+ &nbsp; &nbsp;/*代码段3*/
+ &nbsp; &nbsp;t = ma[0];
+ &nbsp; &nbsp;printf("sizeof(ma[0][0])=%d\n",sizeof(ma[0][0]));
+ &nbsp; &nbsp;printf("ma[0] &nbsp; =%p\tt &nbsp; =%p\n",ma[0],t);
+ &nbsp; &nbsp;printf("ma[0]+1 =%p\tt+1 =%p\n",ma[0]+1,t+1);
+ &nbsp; &nbsp;return 0;
+}</code></pre><p style="margin: 0px 0px 1.2em !important;">由多维数组ma最左维的长度2可知，ma数组包含两个元素ma[0]和ma[1]。数组名ma在表达式中是数组ma首元素的首地址。在代码段1中将ma赋值给数组指针p，则p指向多维数组ma的首元素ma[0]，则p+1指向第二个元素ma[1]。其中p是一个数组指针，它指向一个长度为3的数组，则指针p每次移动的偏移量为12。可参考下图：</p><p><img data-s="300,640" data-type="jpeg" src="data:image/JPG;base64,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 " src="SeWfibBcBT0FmUqWdF3vflTWVdK3LzsRYdDGzBWcIyVx8LLyQTCuFP6Q095dnrJxJrLNddufwkWXMXBv5aHxStw"  class="" data-ratio="0.33658536585365856" data-w="410"  /></p><p style="margin: 0px 0px 1.2em !important;">在代码2中对ma取地址并将其赋值给指针r。r现在指向一个“第一维的大小为2，第二维的大小为3的数组”，则r+1将指向下一个这样的数组（尽管这样的数组并不存在）。由此也可得知r每次的偏移量为24。</p><p><img data-s="300,640" data-type="jpeg" src="data:image/JPG;base64,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 " src="SeWfibBcBT0FmUqWdF3vflTWVdK3LzsRYqnqibopHrLo5HuPjF6oT3wPrvyQclHZUvfpeerxKiassUlbcyHJjh6tA"  class="" data-ratio="0.2727272727272727" data-w="495"  /></p><p style="margin: 0px 0px 1.2em !important;">ma[0]和ma[1]都是一个长度为3的整型数组，现在以ma[0]为例进行说明。ma[0]中包含三个元素ma[0][0]，ma[0][1]和ma[0][2]。在代码段3中将ma[0]赋值给t，则t指向数组ma[0]的第一个元素a[0][0]，则t+1和t+2则依次指向第二个元素和第三个元素。</p><p><img data-s="300,640" data-type="jpeg" src="data:image/JPG;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCABtAZkDASIAAhEBAxEB/8QAHAABAAIDAQEBAAAAAAAAAAAAAAYHAQUIBAMC/8QAShAAAAQEAgMNBQUGBAYDAAAAAAECAwQFBhEHEhchVggTFBgxN1d1lbPS09QiQZKUpDJRYYS0FSMnM4GRFkJGUiQlNmJxckVlof/EABQBAQAAAAAAAAAAAAAAAAAAAAD/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwC3d0TMo2UYO1BHSyLiIOLa4Pkfh3DbcTeIbI7KLWVyMy/qK3pXCitagpeTzgsXajhf2hBMxe8mp9eTfEEvLfhBXte17FyCe7p/mLqb8r+qaErwmK+FlG9TQfcIAVZoOrbpmqP4X/UhoOrbpmqP4X/Ui/7BYBQGg6tumao/hf8AUhoOrbpmqP4X/Ui/wAUBoOrbpmqP4X/UhoOrbpmqP4X/AFIv8AFAaDq26Zqj+F/1IgGHVJ1tWNU1nJtKNRwf+HY3gm/b8+5wj23UZsu/Fl/lXtc+Xl1a+vrCgNzkd8UsZuuS7+KANB9b9M1S/wBn/UhoPrfpmqX+z/qRf4AKA0H1v0zVL/Z/1IaD636Zql/s/wCpF/gAoDQfW/TNUv8AZ/1IaD636Zql/s/6kX+ACgNB9b9M1S/C/wCpEAxmpOtcNKXhZwrFGpJnv8YmEJrfn2cuZC1Zr78q/wBi1re8dfCgd2mX8LZV1y13D4DGg+t+mWo/hf8AUhoPrbplqP4X/Ui/wsAoDQdW3TLUfwv+pDQdW3TLUfwv+pF/3C4CgNB1bdMtR/C/6kNB1bdMtR/C/wCpF/3C4CgNB1bdMtR/C/6kRfE7DutaFoaZ1ErFeophwPe/+H3x9rPncSj7W/qtbNfk9w6nFV7qHmMqX8t+qaAV9SmFVbT+l5POE4uVHD/tCDZi95zPr3vfEErLffyva9r2LkG1LA6tz5cZajL+j/qRaeExfwso7qaD7hAlgCgNBtbdMtR/C/6kNBtbdMtR/C/6kdAWCwCgNB1bdMtR/C/6kNB1bdMtR/C/6kX8ACgNBtbdMtR/C/6kNBtbdMtR/C/6kdAWCwCgNB1bdMtR/C/6kNB1bdMtR/C/6kX8ACgNBtbdMtR/C/6kNBtbdMtR/C/6kdAWCwCgNB1bdMtR/C/6kNB1bdMtR/C/6kX8ACgNBtbdMtR/C/6kNBtbdMtR/C/6kdAWCwCgNB1bdMtR/C/6kNB1bdMtR/C/6kX8ACgNBtbdMtR/C/6kNBtbdMtR/C/6kdAWCwCgNB1bdMtR/C/6kNB1bdMtR/C/6kX8ACgNBtbdMtR/C/6kNBtbdMtR/C/6kdAWCwDkPGek61w0peFnKsUKjmm/xiYQmt+fZy5kLXmzb8r/AGWtb3jrrKX3EKC3afNdKtf/AMy13D4v+wCqt0/zF1N+V/VNCVYS81dG9TQfcIEV3T/MXU35X9U0JVhLzV0b1NB9wgBKwAAAAAAAAABQG5y50sZuuS7+KF/igNzlzpYzdcl38UAv8AAAAaqbzeXSlht6bR8JAtOOE02uJeS0S3DuZJIzMiM7Eer8AjJ1K4OYQsBGTOBh46K/kQz0QlDjvu9hJndX9AG1uA0z09lDMdFQb01gW4uFZOJiGFPoJbLRWM3Fle5J1lrPVrHzfqiQQ0sh5jETyVsy6IOzMU7Ftpad/wDVZnlV/QwG9FA7tPmtlfXLXcPi7JvN5dJYXhU3mEJAw2Yk77FPpaRc/ddRkVxSO7S5rZV1y13D4DoAwAwAAAaVmo5JESp2asziWuSto7Li0xSDZTycq75S5S9/vAboBpnKlkjMoamr04lqJW6dkRi4pBMqPXyLvlPkP3+4fpM8lZxsXB/tGDKMhEb7EQ5vo3xluxHnWm90psZHc/vAbcVXuoeYypfy36poT+TT6UzttxcmmcDMEtnlWcJEIeJJ/ceUz1ir90RNpfNsB6rdlMdCRzTbkO045DPpdShZRLJmkzIzIjIjLV7rgJ1hLzV0d1NB9wgSsRTCXmro7qaD7hAlYAAAAAAAAAAAAAAAAAADSHPIBFQFJN8fVMTYKKNCYdxSUNmaySpbhJyIuaFkRGojOw+MkqmUz2Mj4SVxDzkRL8m/oXDOtWz5iQZZ0lmI8itZXLUAkIDTyKfQM7ailS9TyuCvnDPJeh3GVIcJKVWNK0krkWk72trG4AAAAAAAAAAAAMAMBz/u0+a6Vdctdw+OgBz/ALtTmulfXLXcPjoABVW6f5i6m/K/qmh8ZXGTKGwywsh5PHKgXI5uAhHXibQsyaOCWpViUkyzewVj++3KV0n9t0/zF1N+V/VNDfYaQjEXhjRCohht1TEqg3WjWkjNCuDpLMV+Q7GZX/EwEScnFSwEBOYx2oXnkyOdMy8mzhWS4YytTNzdMk6l2esRoyF7JGZHmHpjKrmEPUsriIGLmkRKoucnKl8IbhEwilZ1tqJqxlEZkrSrWeYjyn7tYsg5ZAuMxDS4KEWiIcJ51Jsps44WWy1Fb2lFlTrPX7KfuHl/wxI/2gcecnl3DlOE6cTwVG+GstZLzWvm1FrAVbEstweHdVRLKEQvDKmebmES2ne1KhzmW9uZ1lrsTSlFf3JuNzASaUw9Q1hIZfAwZyApXDPuQJNkcO3Emb+ayOQjUlLKj1f7T94mcipmHlLcyZTEREVCx8Q/EqhonIpCDeWpbiSskjNJms9SjUPqVNwMLJIiWSRlmSMP3ucuh2m8pnqNRJNJpuZarmkwFcYZQjDs5kcQthh2Kh6LlRMOONka2zM3yOyuUr8h2HipFqCaYw1mkD/1BNn3DmrpanYouDOLfN4+U8jyW7X+wZEkrCxpJRsLJ4+AiYGNjUphJYxKt5UbZodaZzZFL9nNmLOesjIvwG3hpHKoSYvzCElkCxHxH8+Jbh0Jdd/9lEVz/qAi9LwkPB4oVjwZllo34OXuuG2gkm44aom6jtymf3ivNzgX8UsZ+uS7+KFwSuQIgZ7NpsqNi4qJmKWkLJ/JlbQ2azQhJJSnUW+K5bn+IqDc4c6WM/XJd/FAPe6UwXBrmaZ/OG4ldWLlpZI1w20Qy4s2TbJBnl1EZ2MyNSTtYyIiIfeYzM5JET6TREZMXoJubMMwrsXOXoUmEuQhOmTsXdThIzEdtZnmUSeQXSB8gCj6amkVNYSmCiog4hMJVrrDLnCVRJm0ULEGm7q0oU4XtalGm5ll5ftDFaPwcOWJ0ujyQU8nCG0yplRXdii4I2hneC5Tyvks9X2T1na9xbNQSKCnjcKiYIdVwZ4ohlTT62VIcJKk5iUhRGXsrUXL7xt/cAqLFFC+GTUnj9sqJmpKP8bsXHsxli5ZC4QzEpjEwjL70uNqGJ9xCFLWaC1N35VfgkTKYUnKZjGxsXHMOvPRcG5AO5ol3LvDls6EpzZU5sqbmkiPVyjZS+Cal0G1Cw2+my2WVO/OrdVb8VLMzP8AuAheJE0gpvg9UkdKoyHjYN2AfyPsOkttdiMjyqLUesjLl9wgW7TL+Fsr65a7h8XPUEigKglq5fNW3nYN4yJxtD7jWcvuUaDIzL8D1CmN2odsLZV1y13D4Cf1gw7H13TEtVHx8NAvQsc4+zCRbkPvxp3jLdSDJWrOZ3SZGX/gzvF5A9HQsDSU2iJvNouIfnL8sfJ6KWpt1hJxKEpNr7Bq/dIVmy5zO9z12FzoKxDICj6HqR2Jranjl8Q6UHNWn1REM7Ono91B73viSdaWnJDOEaVFkSr/AHFbV7P0lTiIfDDC+Nj/AGZRCREK7GrUm6EJ3h1La1/cknTaO56i1H7hdg0sikcBIJc3L5S28zCN/Ybcfceyl9xGtRnb8C1AKrmbqInDvFaPgbKk8Y867BOIL926XBmkuONnyGk3Sc1lqM8x+8SyTvwcHPMSoiZqQmBaimlxBul7JNJgGDWZl91riVVBI4CoJa5L5qy87Bu6nG0PuNZy+5RoURmX4HqGIKRQEHNo2ZQyHkRkaaTfVv6zQs0oSgj3u+QjypSVyIj1AINh5N5RVlYRlRwMfLUvrgShYWXw0S24+iGS4Z76+STPKZmabJ/ylqP2jURQnGG2iTF7r5j3f9sCOhyKxCld0HJIKR4E1ciXodLhL0PEPKdeW8pxw32EZjUszV9lKS5fcAsDCXmro7qaD7hAlYimEvNXR3U0H3CBKwAAAAAAAAAAARnERp+KoKpIeGZcefelsS2202k1LWo2lESSIuUzP3CTDBAKkgqDlSqrlbERJCVKnpMo4xtbClMvRKHGiQp6+pbpEt2xquesz/y6ovMYCaR1JS2AmUh3yOhpIgoeKi5NER0Sp794W9oWhSeDrRZB51HdWYj9w6EDkAVtRa4p6us8xJZRy6Xlxv74k0q3zfYjNf8AHNcKZmKXcVKlc4FOG2I2Hg2WXnpXEtNKWzwg3CzqbJBEWdNjM7KvquJwuUwDk0bmTkFDLmLSN7bilNJN1CNfsku1yLWeq/vMbAgEMw/t+1656+V+khhNCGslUql8pbcZlUDCwLLjhurah2ktkpZ8qjJJFrOxa/wGyI9QDIAAAAAAAAAAGAGA5/3anNdK+uWu4fHQA5/3anNdK+uWu4fHQACqt0/zF1N+V/VNCVYTlfC6jj/+lgu4QIrun+Yupvyv6poSrCY/4WUb1NB9wgBKwsAAFgsAAFgsAAFhz/ub+dHGfrku/ih0AOf9zfzo4z9cl38UA6AAAALAAAFgsAAFhz/u1ua6Vdctdw+OgBz/ALtbmulXXLXcPgOgAAAAAAACwAACqd1FzF1N+V/VNC1hVO6hP+BVT/lv1TQCV4S81dHdTQfcIErEUwl5rKO6mg+4QJWAAAAAAAAAAAAAAAAABYAAAAAAAAAAAAAAAAAMAMBz/u1Oa6V9ctdw+OgBz/u1Oa6V9ctdw+OgAFVbp/mLqb8r+qaEfoPG/D6U0LTcujqg3uLg5bDQ77fA4hWRaGkpUVybMjsZHyGY826nqFxVPS2hpUhuInVQxLSN5zJNSW0uJNGs1FlNTuQiMyymSXOS1x89zlC0TXGHcLwulqdcnMstBRueXMKWuxfu3TuSlHmSRXUdrrS5YrEAlnGAwzT/AKl+gifLGeMFhltL9BE+WJUWG9D7HU52Yz4Q0cUPsbTnZjHhARTjB4ZbSfQRPlhxg8MtpPoInyxKtG9D7G052Yz4Q0b0PsbTnZjPhARXjB4ZbSfQRPlhxg8MtpPoInyxKtG9D7G052Yz4QPDeh/dR1OdmM+EBFeMHhltJ9BE+WKhwXxNpGmq+xMmM5m3B4OcTIomCc4M6vfUb7EKvZKTNOpaeW3KLkrqQ0BRtITWfxtG04pmCZNaW/2YyW+OGdm27k2dsyjSV7GRXueohzpg5CMyKu5CeINPy2KldYNGuD4TLEmht5TqibNCTasm52LIjKgkvNLPURWDoUt0DhntL9BFeUM8YPDLaX6CK8oSnRzRJf6PpvstjwjGjiitj6b7LY8ICL8YPDLaX6CK8oOMHhltL9BFeUJUWHNE2/6PpvstjwjOjmidj6c7LY8ICKcYPDLaX6CK8oOMHhltL9BFeUJXo5onY+nOy2PCGjmidj6c7LY8ICJ8YPDLaX6CK8oVFumcTqPregYKX0zNyjoxmZNxCm+DutWQTTqTO60kXKsv7jojR1ROyFN9lseEc24/SSAnlbM0Vh7TkthouVwbsxmC4CXJQtaib3xLV22s32cpJseVS30JOxkQC6eMDhltL9BFeWHGBwy2l+givLGmwOgKJrzD2AmkRSNOKmTV4WO/5WwV30EV1fyyL2kmldiKxZ7e4WBo5ojY6m+y2PAAi3GBwy2l+givKDjA4ZbS/QRXlCV6OaI2Opvstjwho5ojY6m+y2PCAinGBwy2l+givKDjA4ZbS/QRXlCV6OaI2Opvstjwho5ojY6m+y2PCAi3GBwy2l+givLFf454u0NVmFM9k0inpRMxiSYNpk4V9vNkfbWr2loIi1JM9Zi6tHNEbHU32Wx4Rg8OKJvf/B1N9lseEBWtAY3YfSehablsfUG9xkHLIWHfb4FEHkWlpJKK5NmR6yPkMb/jBYZF/qUvkIryhKtHFEbHU32Wx4RjRxROx1N9lseEBFuMHhltKXyEV5QcYPDLaUvkIryhKtHFE7HU32Wx4Q0cUTsdTfZbHhARXjB4ZbSl8hFeUHGDwy2lL5CK8oSrRxROx1N9lseENHFE7HU32Wx4QEV4weGW0pfIRXlBxg8MtpS+QivKEq0cUTsdTfZbHhDRxROx1N9lseEBFeMHhltKXyEV5QcYPDLaUvkIryhKtHFE7HU32Wx4Q0cUTsdTfZbHhARXjB4ZbSl8hFeUHGDwy2lL5CK8oSrRxROx1N9lseENHFE7HU32Wx4QEV4weGW0pfIRXlBxg8MtpS+QivKEq0cUTsdTfZbHhDRxROx1N9lseEBFeMHhltKXyEV5QcYPDLaUvkIryhKtHFE7HU32Wx4Q0cUTsdTfZbHhARXjB4ZbSl8hFeUHGDwy2lL5CK8oSrRxROx1N9lseENHFE7HU32Wx4QEV4weGW0pfIRXlBxg8MtpS+QivKEq0cUTsdTfZbHhDRxROx1N9lseEBFeMHhltKXyEV5QcYPDLaUvkIryhKtHFE7HU32Wx4Q0cUTsdTfZbHhARXjB4ZbSl8hFeUHGDwy2lL5CK8oSrRxROx1N9lseENHFE7HU32Wx4QHPG6axNo+tqBgZfTM4KOjGZk3EKb4O61ZBNOpM7rSRcqy/uOsxE9HFE5r/AODqb7LY8IllwHIVeqxJpzEGaYoR9Mw6YOCM2YM4+KS4mEZUZMos20+Z5jJZ3IjUnM4s7chlusE5XiFDYklWDtONs09U6SejShIts2iJxO+JiCbU+ar5jzHe5klbhJLWRCy91BzF1N+W/UtCW4S81dHdTQfcIASvV94DxxMZDwy2ExD7bRvOb00S1EnOrKZ5U35TslR2/Ax672AZAAAAPkAAFMboSgKpxFhpVLJFFymFlUKs4l4ox5ZKdfsaU2JLSrElJq/za853IspGKRg6XxDxYipvTMTN5AtNIxJQZodhkMIbO7jeVk2mM29/uvsnlLUnVqK3athQG5x50sZ+uU99FALjpNubNU5LkVGthycoZS3FOsLzIdWWo1l7KbZvtWyla9tdrjeEItOawksinsvlM2jWISJjmlutqeebbQRJNJa8yiO5mrVYtdj+4biIjoeDiIJiJcyPRjptMJMj9tRIUsy+FCj/AKANiAjFa1O1SUlemkTLpjHQrKTW9wNDZm2guVR51JK39biT8gAAAA8UWcSmFeVCNNPRBIM20LWbaVKtqI1ESjIjP32O1+Qxx3VtPYk4NcOrFc9kfDZ1G7zEPwjCXnlrc3x1X81kiSkzSZmSbXMk6tRW7QIUBu0dWGEq66a7l8B9MDsMa0oCq5nGzWMkT8pmaP8AimYJSkGl0jNTa0J3kiIizKTlSaSsq+vKRC+tVtRjAitHVdD1M/MWGYSMh3YOKeh7uwzyULJDhpvnUgkXO18pGZkAlgDWS2aMTKJmcPD588viuCu5it7e9tuavws4n/8ARHpjVE2lc3g25rJGWZZGxxQDEQzHb49mUZkhSmshESTy31LMyLlLUYCagAAAAAAFgAAsFgAAsFgAAsFgAAsFgAAsFgAAsFgAAsFgAAsFgAAsFgAAsFgAAsFgAAsAAAqfdQcxdTflv1LQlmEvNXR3U0H3KBsqnkEtqmSREmnkPwmXROXfWc6kZsqiWWtJkZe0kj1GPVJ5fCyqUwcvl7W8wcGylhhvMasiEFlSVzMzOxF7zAQjF1mENFMRcziXYSBh5whUQ+mLXDIZQbTpZlLSpOUr5SvfVf3XMTmXG0cIwqFdN6HNtJtub6bmdFrpVnMzzXIy13O49hchDJEAyXIAAAAAAAoDc5asUsZ+uU99FC/xGKfpCSU9NZvMJPBcHjZw8URHOb6tZPLupV8qlGRa1q5CLlAeOqoSYN1ZTs3gpc/MIeEREw77cO40lxO+71lX+8WkjSRoO+u+srEY1tWUSiZ1PIo5p6cm0mNedjFNziIbSylUM6kjbSThZPbNBewXIZ+4zFiGMgIDiZK493DmYSKQyyOmsRFQq4VszikGpBmWpbjjzhGf/m5mJZK4t6Mg0PREBES91V80PEG2biNZlr3tSk6+XUo+UbKwxYBkAAAFA7tLmvlPXTXcvi/gAYEKkNORLJTyVzqDlkdI42Lfi298Wa1OG85vhocaUjLYjM9eY72L2SE2GLAIJSeHclkc7m0xTJJQ065HcIgVsQ6CXDtby0jKk8pZfbQ4di1e1+JjzQknqdVcOTebwcmi4Vp9TcAopg6k4OHPUpSWd4NJvKK91Gv/ALSMk3vYtgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAf/Z " src="SeWfibBcBT0FmUqWdF3vflTWVdK3LzsRYFVpdsFZ9Vb1S9ldaa7iaUmRgfKaib6KmS0yVcd2zamlsIMJR8CKw57oQ"  class="" data-ratio="0.2665036674816626" data-w="409"  /></p><p style="margin: 0px 0px 1.2em !important;">对多维数组ma的结构有了一定了解后，现在再看上述程序的运行结果：</p><pre style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace; margin: 0px 0.15em; background-color: rgb(248, 248, 248); white-space: pre; overflow: auto; border-radius: 3px; border-width: 1px; border-style: solid; border-color: rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important;">edsionte@edsionte-laptop:~/code/expertC$ gcc array.c -o array
+edsionte@edsionte-laptop:~/code/expertC$ ./array
+sizeof(ma[0])=12
+ma &nbsp; =0xbfdfaa6c &nbsp; &nbsp;p=0xbfdfaa6c
+p+1 &nbsp;=0xbfdfaa78
+sizeof(ma)=24
+&amp;ma &nbsp;=0xbfdfaa6c &nbsp; &nbsp;r=0xbfdfaa6c
+r+1 &nbsp;=0xbfdfaa84
+sizeof(ma[0][0])=4
+ma[0]=0xbfdfaa6c &nbsp; &nbsp;t=0xbfdfaa6c
+t+1 &nbsp;=0xbfdfaa70</code></pre><p style="margin: 0px 0px 1.2em !important;">注意在结果中，p，r和t的值均相同，但是所指向的数据却不同。更具体的说，这三个指针每次移动时的偏移量不同。</p><h2 style="margin: 1.3em 0px 1em; padding: 0px; font-weight: bold;font-size: 1.4em; border-bottom: 1px solid rgb(238, 238, 238);">多维数组的初始化</h2><p style="margin: 0px 0px 1.2em !important;">数组的初始化只能在对数组进行声明（具体为定义型声明）时进行。一维数组的初始化很简单，只要将所有初始值放在一个大括号中即可。如果声明数组时未指定数组的长度，则编译器会根据初始值的个数来确定数组的长度。</p><pre style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace; margin: 0px 0.15em; background-color: rgb(248, 248, 248); white-space: pre; overflow: auto; border-radius: 3px; border-width: 1px; border-style: solid; border-color: rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important;">#include &lt; stdio.h &gt;
+
+int main()
+{
+ &nbsp; &nbsp;int m[] = {1,2,3};
+ &nbsp; &nbsp;int n[] = {1,2,3,};
+
+ &nbsp; &nbsp;printf("length(m)=%d\n",sizeof(m)/sizeof(m[0]));
+ &nbsp; &nbsp;printf("length(n)=%d\n",sizeof(n)/sizeof(n[0]));
+ &nbsp; &nbsp;return 0;
+}
+
+/* 编译并运行 */
+edsionte@edsionte-laptop:~/code/expertC$ gcc init_array.c -o init_array
+edsionte@edsionte-laptop:~/code/expertC$ ./init_array
+length(m)=3
+length(n)=3</code></pre><p style="margin: 0px 0px 1.2em !important;">注意，在最后一个初始值后面可以继续加一个逗号也可以省略，这并不影响数组的长度。</p><p style="margin: 0px 0px 1.2em !important;">对于多维数组而言，通常使用嵌套的大括号进行多维数组的初始化。由于多维的数组其实是有若干个一维数组构成的，则每个大括号都代表一个一维数组。对于多维数组而言只能省略最左边 下标的长度。</p><pre style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace; margin: 0px 0.15em; background-color: rgb(248, 248, 248); white-space: pre; overflow: auto; border-radius: 3px; border-width: 1px; border-style: solid; border-color: rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important;">#include &lt; stdio.h &gt;
+
+int main()
+{
+ &nbsp; &nbsp;int b[][3] = {1,2,1,1};
+ &nbsp; &nbsp;int c[][3] = {{1,2,1},{1,2,3},};
+
+ &nbsp; &nbsp;printf("length(b)=%d\n",sizeof(b)/sizeof(b[0]));
+ &nbsp; &nbsp;printf("length(c)=%d\n",sizeof(c)/sizeof(c[0]));
+ &nbsp; &nbsp;return 0;
+}
+
+/* 编译并运行 */
+edsionte@edsionte-laptop:~/code/expertC$ gcc init_array.c -o init_array
+edsionte@edsionte-laptop:~/code/expertC$ ./init_array
+length(b)=2
+length(c)=2</code></pre><p style="margin: 0px 0px 1.2em !important;">可以看到，不使用大括号也可以对多维数组进行初始化，只不过代码可读性较差。</p><p style="margin: 0px 0px 1.2em !important;"><span style="font-size: 18px;"><strong>它总是迷惑你！</strong></span></p><p style="margin: 0px 0px 1.2em !important;">一旦涉及到多维数组，总有些让你迷惑的地方。比如：</p><pre style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace; margin: 0px 0.15em; background-color: rgb(248, 248, 248); white-space: pre; overflow: auto; border-radius: 3px; border-width: 1px; border-style: solid; border-color: rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important;"> &nbsp; &nbsp;char ma[2][3][2]={
+ &nbsp; &nbsp; &nbsp; &nbsp;{{1,2},{2,3},{3,4}},
+ &nbsp; &nbsp; &nbsp; &nbsp;{{3,5},{4,5},{3,3}}
+ &nbsp; &nbsp;};
+
+sizeof(ma[0,1,1])=？</code></pre><p style="margin: 0px 0px 1.2em !important;">对于上面的代码，我们最后的迷惑点都可能落在ma[0,1,1]上。难道多维数组可以这样使用吗？如果ma[0,1,1]和ma[0][1][1]等价，那么sizeof(ma[0,1,1])的值就是1。很可惜这样的猜测是不正确的，正确答案为6。再比如下面的代码：</p><pre style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace; margin: 0px 0.15em; background-color: rgb(248, 248, 248); white-space: pre; overflow: auto; border-radius: 3px; border-width: 1px; border-style: solid; border-color: rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important;"> &nbsp; &nbsp; &nbsp; &nbsp;char ma[3][2] = {
+ &nbsp; &nbsp; &nbsp; &nbsp;(1,2),(3,4),(5,3)
+ &nbsp; &nbsp;};
+
+ma[0][0]=？</code></pre><p style="margin: 0px 0px 1.2em !important;">上述代码是为数组ma进行初始化，那么ma[0][0]的值是多少？恐怕很多人都会认为是1。不过正确答案是2。</p><p style="margin: 0px 0px 1.2em !important;">这两个问题都涉及到了逗号表达式。如果你对逗号表达式有基本的了解，那么也就没有上述那种莫名其妙的迷惑了。根据逗号表达式的运算，对于举例1中的ma[0,1,1]实际上等价于ma[1]；对于举例2中的初始化其实等价为char ma[3][2] = {2,4,3}。</p><p style="margin: 0px 0px 1.2em !important;"><strong>参考：</strong></p><p style="margin: 0px 0px 1.2em !important;"><strong>《C专家编程》 人民邮电出版社；（美）林登（LinDen.P.V.D） 著，徐波 译；</strong></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">武特</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                <div class="reward_qrcode_area reward_area tc" id="js_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                                        <p class="reward_tips"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" id="js_reward_qrcode_img"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

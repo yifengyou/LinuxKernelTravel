@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Linux强制访问控制机制模块代码分析报告（四）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664603968&amp;idx=1&amp;sn=f8d73b39f4c93fae7f5ce491c8a8325b&amp;chksm=f04d8ca5c73a05b38592185b07135af89e3e36a6ae8ea9ab6c979618338b930fddbb68399eee&amp;scene=27#wechat_redirect&cpage=41' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Linux强制访问控制机制模块代码分析报告（四）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        苗磊
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2017-04-26</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <h2><strong><span style="font-size: 20px; color: rgb(0, 128, 255);">核心文件分析</span></strong></h2><h2><span style="font-size: 18px; color: rgb(0, 128, 255);">mls.c文件</span><br  /></h2><h3><a name="_Toc5488"></a><span style="color: rgb(255, 169, 0);">文件描述</span></h3><h3>对于mls.c文件，其完整文件名为security/selinux/ss/mls.c，该文件实现了MLS策略相关操作函数。</h3><h4><span style="color: rgb(255, 169, 0);">主要变量及宏定义</span></h4><h4><a name="_Toc11073"></a>在该文件中涉及到的主要变量为policydb，其用来表示SELinux所使用的安全策略，它是一个struct policydb类型的结构体，该文件频繁的调用了ebitmap_for_each_positive_bit()宏，该宏实际上是一个for循环，用于处理位图中所有设置的位。</h4><p><span style="color: rgb(255, 169, 0);">内部函数</span><br  /></p><p>对于该文件中定义的各内部函数，其解释如下所示：</p><p>①　mls_compute_context_len()</p><p>函数原型：</p><p><br  /></p><p>int <a>mls_compute_context_len</a>(struct<a>context</a> *<a>context</a>)；</p><p><br  /></p><p>参数含义：context表示待计算的安全上下文。</p><p>函数功能：计算字符串形式的安全上下文中MLS域的长度。</p><p>返回值：成功执行时返回MLS域的字节长度；反之返回0。</p><p>②　mls_sid_to_context()</p><p>函数原型：</p><p><br  /></p><p>void <a>mls_sid_to_context</a>(struct<a>context</a> *<a>context</a>,char **<a>scontext</a>)；</p><p><br  /></p><p>参数含义：context表示待操作的安全上下文；scontext用于存放表示安全上下文的字符串。</p><p>函数功能：将参数context中代表MLS域的字符串拷贝到scontext中。</p><p>返回值：无。</p><p>③　mls_level_isvalid()</p><p>函数原型：</p><p><br  /></p><p>int <a>mls_level_isvalid</a>(struct<a>policydb</a> *<a>p</a>, struct <a>mls_level</a> *<a>l</a>)；</p><p><br  /></p><p>参数含义：p表示SELinux所使用的策略库；l表示待检查的安全级别。</p><p>函数功能：根据指定的安全策略判断安全级别是否有效。</p><p>返回值：，若有效，返回真；反之返回假。</p><p>④　mls_range_isvalid()</p><p>函数原型：</p><p><br  /></p><p>int <a>mls_range_isvalid</a>(struct<a>policydb</a> *<a>p</a>, struct <a>mls_range</a> *<a>r</a>)；</p><p><br  /></p><p>参数含义：p表示SELinux所使用的策略库；r表示待检查的安全域。</p><p>函数功能：判断安全上下文中的MLS域是否有效。</p><p>返回值：若有效则返回真；反之返回假。</p><p>⑤　mls_context_isvalid()</p><p>函数原型：</p><p><br  /></p><p>int <a>mls_context_isvalid</a>(struct<a>policydb</a> *<a>p</a>, struct <a>context</a> *<a>c</a>)；</p><p><br  /></p><p>参数含义：p表示SELinux所使用的策略库；c表示待检查的安全上下文结构。</p><p>函数功能：根据指定的安全策略判断安全上下文中的MLS域是否有效。</p><p>返回值：若有效则返回真。</p><p>⑥　mls_context_to_sid()</p><p>函数原型：</p><p><br  /></p><p>int <a>mls_context_to_sid</a>(struct<a>policydb</a> *<a>pol</a>,char <a>oldc</a>,char **<a>scontext</a>,</p><p>struct <a>context</a> *<a>context</a>,struct <a>sidtab</a> *<a>s</a>,<a>u32</a> <a>def_sid</a>)；</p><p><br  /></p><p>参数含义：pol表示SELinux所使用的策略库；oldc表示scontext中是否设置了MLS域；scontext用于存放字符串形式的安全上下文；context表示待修改的安全上下文；s表示相应的SID表；def_sid表示默认的SID。</p><p>函数功能：根据scontext字符串设置参数context指定的安全上下文结构体中的MLS域。</p><p>返回值：成功时返回0；失败时返回相应的错误码。</p><p>⑦　mls_from_string()</p><p>函数原型：</p><p><br  /></p><p>int <a>mls_from_string</a>(char*<a>str</a>, struct <a>context</a> *<a>context</a>, <a>gfp_t</a> <a>gfp_mask</a>)；</p><p><br  /></p><p>参数含义：str表示修改之后的值；context表示相应的安全上下文；gfp_mask表示内存分配的标志。</p><p>函数功能：根据字符串str设置context安全上下文中的MLS域。</p><p>返回值：成功时返回0；失败时返回相应的错误码。</p><p>⑧　mls_range_set()</p><p>函数原型：</p><p><br  /></p><p>int <a>mls_range_set</a>(struct <a>context</a> *<a>context</a>,struct <a>mls_range</a> *<a>range</a>)；</p><p><br  /></p><p>参数含义：context表示待修改的安全上下文；range表示待设置的安全域的值。</p><p>函数功能：将参数range指定的安全域拷贝到相应的安全上下文结构体中。</p><p>返回值：成功时返回0；失败时返回相应的错误码。</p><p>⑨　mls_setup_user_range()</p><p>函数原型：</p><p><br  /></p><p>int <a>mls_setup_user_range</a>(struct<a>context</a> *<a>fromcon</a>, struct <a>user_datum</a> *<a>user</a>,</p><p>struct <a>context</a> *<a>usercon</a>)；</p><p><br  /></p><p>参数含义：fromcon表示修改之前的安全上下文；user表示表示用户的属性；usercon表示用户的安全上下文。</p><p>函数功能：根据指定的参数修改用户安全上下文中的安全级别的相关信息。</p><p>返回值：成功时返回0；失败时返回相应的错误码。</p><p>⑩　mls_convert_context()</p><p>函数原型：</p><p><br  /></p><p>int <a>mls_convert_context</a>(struct<a>policydb</a> *<a>oldp</a>,struct <a>policydb</a> *<a>newp</a>,</p><p>struct <a>context</a> *<a>c</a>)；</p><p><br  /></p><p>参数含义：oldp表示旧的策略库；newp表示新的策略库；c表示待修改的安全上下文。</p><p>函数功能：将安全上下文结构体c中的MLS域由oldp中指定的值转换为newp中指定的值。</p><p>返回值：成功时返回0；失败时返回相应的错误码。</p><p>11　mls_compute_sid()</p><p>函数原型：</p><p><br  /></p><p>int <a>mls_compute_sid</a>(struct<a>context</a> *<a>scontext</a>,struct <a>context</a> *<a>tcontext</a>,<a>u16</a> <a>tclass</a>,<a>u32</a> <a>specified</a>,struct <a>context</a> *<a>newcontext</a>,<a>bool</a> <a>sock</a>)；</p><p><br  /></p><p>参数含义：scontext表示源安全上下文；tcontext表示目标安全上下文；tclass表示客体类别；specified表示访问向量的类型；newcontext表示新生成的安全上下文；sock表示一个标志。</p><p>函数功能：根据访问向量的类型来设置新的安全上下文中的安全级别。</p><p>返回值：成功时返回0；失败时返回相应的错误码。</p><p>12　mls_export_netlbl_lvl()</p><p>函数原型：</p><p><br  /></p><p>void <a>mls_export_netlbl_lvl</a>(struct<a>context</a> *<a>context</a>,</p><p>struct <a>netlbl_lsm_secattr</a>*<a>secattr</a>)；</p><p><br  /></p><p>参数含义：context表示一个安全上下文；secattr表示网络标记安全属性。</p><p>函数功能：将MLS的敏感级别导出到网络标记中。</p><p>返回值：无。</p><p>13　mls_import_netlbl_lvl()</p><p>函数原型：</p><p><br  /></p><p>void <a>mls_import_netlbl_lvl</a>(struct<a>context</a> *<a>context</a>,</p><p>&nbsp;struct <a>netlbl_lsm_secattr</a>*<a>secattr</a>)；</p><p><br  /></p><p>参数含义：context表示一个安全上下文；secattr表示网络标记安全属性。</p><p>函数功能：将网络标记的MLS敏感级别拷贝到安全上下文中。</p><p>返回值：无。</p><p>14　mls_export_netlbl_cat()</p><p>函数原型：</p><p><br  /></p><p><a></a>int <a>mls_export_netlbl_cat</a>(struct<a>context</a> *<a>context</a>,</p><p>struct <a>netlbl_lsm_secattr</a>*<a>secattr</a>)；</p><p><br  /></p><p>参数含义：context表示一个安全上下文；secattr表示网络标记安全属性。</p><p>函数功能：拷贝安全上下文中的低MLS类别到网络标记的MLS类别域中。</p><p>返回值：成功时返回0；失败时返回相应的错误码。</p><p>15　mls_import_netlbl_cat()</p><p>函数原型：</p><p><br  /></p><p>int <a>mls_import_netlbl_cat</a>(struct<a>context</a> *<a>context</a>,&nbsp;&nbsp;</p><p>struct <a>netlbl_lsm_secattr</a>*<a>secattr</a>)；</p><p><br  /></p><p>参数含义：context表示一个安全上下文；secattr表示网络标记安全属性。</p><p>函数功能：拷贝网络标记的安全属性到selinux的安全上下文中。</p><p>返回值：成功时返回0；失败时返回相应的错误码。</p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">苗磊</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Linux网络子系统安全性模块代码详细分析之文件esp4.c中内部函数和核心代码注释
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664603684&amp;idx=1&amp;sn=ef108d89770f65c2cb27a8cd9d3899de&amp;chksm=f04d8dc1c73a04d713ddb90a9c771fefa4cabb28137b8c197ba1a1533f1a348bdf9ddccda3fa&amp;scene=27#wechat_redirect&cpage=49' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Linux网络子系统安全性模块代码详细分析之文件esp4.c中内部函数和核心代码注释</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        李廷，张超
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2017-02-07</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <h4><span style="color: rgb(2, 30, 170); font-size: 16px;"><strong><span style="color: rgb(2, 30, 170); font-family: 宋体;">2.4.6.5 </span></strong><strong><span style="color: rgb(2, 30, 170); font-family: 宋体;">内部函数</span></strong><strong><span style="color: rgb(2, 30, 170); font-family: 宋体;"></span></strong></span></h4><h4><span style="font-size: 16px;"><strong><span style="color: rgb(2, 30, 170);"><span style="line-height: 24px;">1.&nbsp;esp_init_state</span><span style="line-height: 24px; font-family: 宋体;">&nbsp;( )</span></span></strong><strong><span style="color: rgb(2, 30, 170); line-height: 24px; font-family: 宋体;"></span></strong></span></h4><p style="line-height:24px"><span style="font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">函数原型：</span><span style="font-size: 14px;">static int esp_init_state(struct xfrm_state *x)</span></span></p><p style="line-height:24px"><span style="font-family: 宋体; font-size: 16px;">函数参数：参数x为安全关联。</span></p><p style="line-height:24px"><span style="font-size: 16px;"><span style="font-family: 宋体; font-size: 14px;">函数功能：初始化SA中用于</span><span style="font-size: 14px; font-family: &#39;Times New Roman&#39;;">ESP</span><span style="font-family: 宋体; font-size: 14px;">处理的相关字段，主要初始化认证加密算法和协议头的长度，在初始化认证加密算法中。</span></span></p><p style="line-height:24px"><span style="font-family: 宋体; font-size: 16px;">返回值：返回算法初始化函数的返回值。</span></p><p style="line-height:24px"><span style="color: rgb(2, 30, 170);"><strong><span style="font-size: 16px;">2.&nbsp;esp_init_aead<span style="font-family: 仿宋;">&nbsp;( )</span></span></strong></span></p><p style="line-height:24px"><span style="font-size: 16px;"><span style="font-family: 宋体; font-size: 14px;">函数原型：</span><span style="font-size: 14px;">static int esp_init_aead(struct xfrm_state *x)</span></span></p><p style="line-height:24px"><span style="font-family: 宋体; font-size: 16px;">函数参数：参数x为安全关联。</span></p><p style="line-height:24px"><span style="font-family: 宋体; font-size: 16px;">函数功能：分配认证加密算法结构，并设置算法密钥和认证向量的长度。</span></p><p style="line-height:24px"><span style="font-family: 宋体; font-size: 16px;">返回值：正确则返回0，否则返回错误码。</span></p><p style="line-height:24px"><span style="color: rgb(2, 30, 170);"><strong><span style="font-size: 16px;">3.&nbsp;esp_input<span style="font-family: 仿宋;">&nbsp;( )</span></span></strong></span></p><p style="line-height:24px"><span style="font-size: 16px;"><span style="font-family: 宋体; font-size: 14px;">函数原型：</span><span style="font-size: 14px;">static int esp_input(struct xfrm_state *x, struct sk_buff *skb)</span></span></p><p style="line-height:24px"><span style="font-family: 宋体; font-size: 16px;">函数参数：参数x为SA结构，skb为套接字缓冲区。</span></p><p style="line-height:24px"><span style="font-family: 宋体; font-size: 16px;">函数功能：ESP协议封装的数据包的进入链处理，首先进行身份认证，认证通过后则调用解密算法进行数据包的解密，如果经过了UDP封装还要修改端口等字段。</span></p><p style="line-height:24px"><span style="font-family: 宋体; font-size: 16px;">返回值：返回下一头标号。</span></p><p style="line-height:24px"><span style="color: rgb(2, 30, 170);"><strong><span style="font-size: 16px;">4.&nbsp;esp_input_done2<span style="font-family: 仿宋;">&nbsp;( )</span></span></strong></span></p><p style="line-height:24px"><span style="font-size: 16px;"><span style="font-family: 宋体; font-size: 14px;">函数原型：</span><span style="font-size: 14px;">static int esp_input_done2(struct sk_buff *skb, int err)</span></span></p><p style="line-height:24px"><span style="font-family: 宋体; font-size: 16px;">函数参数：参数skb为套接字缓冲区，err为加密的结果。</span></p><p style="line-height:24px"><span style="font-family: 宋体; font-size: 16px;">函数功能：进入数据包的第二阶段处理,主要是判断是否需要进行UDP封装和重新设置传输层头。</span></p><p style="line-height:24px"><span style="font-family: 宋体; font-size: 16px;">返回值：查找到的SA。</span></p><p style="line-height:24px"><span style="color: rgb(2, 30, 170);"><strong><span style="font-size: 16px;">5.&nbsp;esp_output<span style="font-family: 仿宋;">&nbsp;( )</span></span></strong></span></p><p style="line-height:24px"><span style="font-size: 16px;"><span style="font-family: 宋体; font-size: 14px;">函数原型：</span><span style="font-size: 14px;">static int esp_output(struct xfrm_state *x, struct sk_buff *skb)</span></span></p><p style="line-height:24px"><span style="font-family: 宋体; font-size: 16px;">函数参数：参数x为SA结构，skb为套接字缓冲区。</span></p><p style="line-height:24px"><span style="font-family: 宋体; font-size: 16px;">函数功能：进行输出链ESP协议处理，主要完成了认证向量的初始化，数据包的加密，以及UDP封装等操作。</span></p><p style="line-height:24px"><span style="font-family: 宋体; font-size: 16px;">返回值：解密的结果。</span></p><p style="text-indent:0"><span style="font-size: 16px; color: rgb(2, 30, 170);"><strong style="font-size: 16px; line-height: 1.6;"><span style="font-size: 16px; font-family: 宋体;">2.4.6.6 核心代码注释</span></strong><strong style="font-size: 16px; line-height: 1.6;"><span style="font-size: 16px; font-family: 宋体;"></span></strong></span><span style="font-size: 16px;"><strong style="font-size: 16px; line-height: 1.6;"></strong><strong style="font-size: 16px; line-height: 1.6;"><span style="font-family: 宋体;"></span></strong></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">esp_input( )和esp_output( )函数是本文件的核心函数，分别是数据包进入链和发送链的ESP处理，其执行逻辑参见2.3.2节，由于进入和发送处理正好是相反的操作，此处主要分析esp_output( )函数的代码。</span></p><p style="line-height:24px"><span style=";font-size:14px">static int esp_output(struct xfrm_state *x, struct sk_buff *skb)</span></p><p style="line-height:24px"><span style=";font-size:14px">{</span></p><p style="line-height:24px"><span style=";font-size:14px">int err;</span></p><p style="line-height:24px"><span style=";font-size:14px">struct ip_esp_hdr *esph;</span></p><p style="line-height:24px"><span style=";font-size:14px">struct crypto_aead *aead;</span></p><p style="line-height:24px"><span style=";font-size:14px">struct aead_givcrypt_request *req;</span></p><p style="line-height:24px"><span style=";font-size:14px">struct scatterlist *sg;</span></p><p style="line-height:24px"><span style=";font-size:14px">struct scatterlist *asg;</span></p><p style="line-height:24px"><span style=";font-size:14px">struct esp_data *esp;</span></p><p style="line-height:24px"><span style=";font-size:14px">struct sk_buff *trailer;</span></p><p style="line-height:24px"><span style=";font-size:14px">void *tmp;</span></p><p style="line-height:24px"><span style=";font-size:14px">u8 *iv;</span></p><p style="line-height:24px"><span style=";font-size:14px">u8 *tail;</span></p><p style="line-height:24px"><span style=";font-size:14px">int blksize;</span></p><p style="line-height:24px"><span style=";font-size:14px">int clen;</span></p><p style="line-height:24px"><span style=";font-size:14px">int alen;</span></p><p style="line-height:24px"><span style=";font-size:14px">int plen;</span></p><p style="line-height:24px"><span style=";font-size:14px">int tfclen;</span></p><p style="line-height:24px"><span style=";font-size:14px">int nfrags;</span></p><p style="line-height:24px"><span style=";font-size:14px">int assoclen;</span></p><p style="line-height:24px"><span style=";font-size:14px">int sglists;</span></p><p style="line-height:24px"><span style=";font-size:14px">int seqhilen;</span></p><p style="line-height:24px"><span style=";font-size:14px">__be32 *seqhi;</span></p><p style="line-height:24px"><span style=";font-size:14px">&nbsp;</span></p><p style="line-height:24px"><span style=";font-size:14px">err = -ENOMEM;</span></p><p style="line-height:24px"><span style=";font-family:宋体;font-size:14px">//<span style="font-family:宋体">从</span><span style="font-family:Times New Roman">SA</span><span style="font-family:宋体">中获取进行</span><span style="font-family:Times New Roman">esp</span><span style="font-family:宋体">处理的数据、认证加密算法，并计算认证长度</span></span></p><p style="line-height:24px"><span style=";font-size:14px">esp = x-&gt;data;</span></p><p style="line-height:24px"><span style=";font-size:14px">aead = esp-&gt;aead;</span></p><p style="line-height:24px"><span style=";font-size:14px">alen = crypto_aead_authsize(aead);</span></p><p style="line-height:24px"><span style=";font-family:宋体;font-size:14px">//<span style="font-family:宋体">填充数据处理</span></span></p><p style="line-height:24px"><span style=";font-size:14px">tfclen = 0;</span></p><p style="line-height:24px"><span style=";font-size:14px">if (x-&gt;tfcpad) {</span></p><p style="line-height:24px"><span style=";font-size:14px">struct xfrm_dst *dst = (struct xfrm_dst *)skb_dst(skb);</span></p><p style="line-height:24px"><span style=";font-size:14px">u32 padto;</span></p><p style="line-height:24px"><span style=";font-size:14px">&nbsp;</span></p><p style="line-height:24px"><span style=";font-size:14px">padto = min(x-&gt;tfcpad, esp4_get_mtu(x, dst-&gt;child_mtu_cached));</span></p><p style="line-height:24px"><span style=";font-size:14px">if (skb-&gt;len &lt; padto)</span></p><p style="line-height:24px"><span style=";font-size:14px">tfclen = padto - skb-&gt;len;</span></p><p style="line-height:24px"><span style=";font-size:14px">}</span></p><p style="line-height:24px"><span style=";font-family:宋体;font-size:14px">//<span style="font-family:宋体">加密块的大小、加密长度的获取</span></span></p><p style="line-height:24px"><span style=";font-size:14px">blksize = ALIGN(crypto_aead_blocksize(aead), 4);</span></p><p style="line-height:24px"><span style=";font-size:14px">clen = ALIGN(skb-&gt;len + 2 + tfclen, blksize);</span></p><p style="line-height:24px"><span style=";font-size:14px">if (esp-&gt;padlen)</span></p><p style="line-height:24px"><span style=";font-size:14px">clen = ALIGN(clen, esp-&gt;padlen);</span></p><p style="line-height:24px"><span style=";font-size:14px">plen = clen - skb-&gt;len - tfclen;</span></p><p style="line-height:24px"><span style=";font-family:宋体;font-size:14px">//<span style="font-family:宋体">让套接字缓冲区可写</span><span style="font-family:Times New Roman">,</span><span style="font-family:宋体">并获取分片数存放在</span><span style="font-family:Times New Roman">nfrags</span><span style="font-family:宋体">变量中</span></span></p><p style="line-height:24px"><span style=";font-size:14px">err = skb_cow_data(skb, tfclen + plen + alen, &amp;trailer);</span></p><p style="line-height:24px"><span style=";font-size:14px">if (err &lt; 0)</span></p><p style="line-height:24px"><span style=";font-size:14px">goto error;</span></p><p style="line-height:24px"><span style=";font-size:14px">nfrags = err;</span></p><p style="line-height:24px"><span style=";font-size:14px">&nbsp;</span></p><p style="line-height:24px"><span style=";font-size:14px">assoclen = sizeof(*esph);</span></p><p style="line-height:24px"><span style=";font-size:14px">sglists = 1;</span></p><p style="line-height:24px"><span style=";font-size:14px">seqhilen = 0;</span></p><p style="line-height:24px"><span style=";font-size:14px">&nbsp;</span></p><p style="line-height:24px"><span style=";font-size:14px">if (x-&gt;props.flags &amp; XFRM_STATE_ESN) {</span></p><p style="line-height:24px"><span style=";font-size:14px">sglists += 2;</span></p><p style="line-height:24px"><span style=";font-size:14px">seqhilen += sizeof(__be32);</span></p><p style="line-height:24px"><span style=";font-size:14px">assoclen += seqhilen;</span></p><p style="line-height:24px"><span style=";font-size:14px">}</span></p><p style="line-height:24px"><span style=";font-family:宋体;font-size:14px">//<span style="font-family:宋体">分配一个用于认证加密的临时结构，该结构中主要存储了认证向量</span><span style="font-family:Times New Roman">IV</span><span style="font-family:宋体">和分片链表</span><span style="font-family:Times New Roman">SG</span></span></p><p style="line-height:24px"><span style=";font-size:14px">tmp = esp_alloc_tmp(aead, nfrags + sglists, seqhilen);</span></p><p style="line-height:24px"><span style=";font-size:14px">if (!tmp)</span></p><p style="line-height:24px"><span style=";font-size:14px">goto error;</span></p><p style="line-height:24px"><span style=";font-family:宋体;font-size:14px">//<span style="font-family:宋体">从临时结构中获取相应的结构</span></span></p><p style="line-height:24px"><span style=";font-size:14px">seqhi = esp_tmp_seqhi(tmp);</span></p><p style="line-height:24px"><span style=";font-size:14px">iv = esp_tmp_iv(aead, tmp, seqhilen);</span></p><p style="line-height:24px"><span style=";font-size:14px">req = esp_tmp_givreq(aead, iv);</span></p><p style="line-height:24px"><span style=";font-size:14px">asg = esp_givreq_sg(aead, req);</span></p><p style="line-height:24px"><span style=";font-size:14px">sg = asg + sglists;</span></p><p style="line-height:24px"><span style=";font-size:14px">&nbsp;</span></p><p style="line-height:24px"><span style=";font-family:宋体;font-size:14px">//<span style="font-family:宋体">填充套接字缓冲区尾部</span></span></p><p style="line-height:24px"><span style=";font-size:14px">tail = skb_tail_pointer(trailer);</span></p><p style="line-height:24px"><span style=";font-size:14px">if (tfclen) {</span></p><p style="line-height:24px"><span style=";font-size:14px">memset(tail, 0, tfclen);</span></p><p style="line-height:24px"><span style=";font-size:14px">tail += tfclen;</span></p><p style="line-height:24px"><span style=";font-size:14px">}</span></p><p style="line-height:24px"><span style=";font-size:14px">do {</span></p><p style="line-height:24px"><span style=";font-size:14px">int i;</span></p><p style="line-height:24px"><span style=";font-size:14px">for (i = 0; i &lt; plen - 2; i++)</span></p><p style="line-height:24px"><span style=";font-size:14px">tail[i] = i + 1;</span></p><p style="line-height:24px"><span style=";font-size:14px">} while (0);</span></p><p style="line-height:24px"><span style=";font-size:14px">tail[plen - 2] = plen - 2;</span></p><p style="line-height:24px"><span style=";font-size:14px">tail[plen - 1] = *skb_mac_header(skb);</span></p><p style="line-height:24px"><span style=";font-family:宋体;font-size:14px">//<span style="font-family:宋体">增加缓冲区的头部和尾部</span></span></p><p style="line-height:24px"><span style=";font-size:14px">pskb_put(skb, trailer, clen - skb-&gt;len + alen);</span></p><p style="line-height:24px"><span style=";font-size:14px">skb_push(skb, -skb_network_offset(skb));</span></p><p style="line-height:24px"><span style=";font-size:14px">esph = ip_esp_hdr(skb);</span></p><p style="line-height:24px"><span style=";font-size:14px">*skb_mac_header(skb) = IPPROTO_ESP;</span></p><p style="line-height:24px"><span style=";font-size:14px">&nbsp;</span></p><p style="line-height:24px"><span style=";font-family:宋体;font-size:14px">//<span style="font-family:宋体">如果经过了</span><span style="font-family:Times New Roman">NAT</span><span style="font-family:宋体">，则要进行</span><span style="font-family:Times New Roman">UDP</span><span style="font-family:宋体">封装，并修改传输层头中的源端口和目的端口</span></span></p><p style="line-height:24px"><span style=";font-size:14px">if (x-&gt;encap) {</span></p><p style="line-height:24px"><span style=";font-size:14px">struct xfrm_encap_tmpl *encap = x-&gt;encap;</span></p><p style="line-height:24px"><span style=";font-size:14px">struct udphdr *uh;</span></p><p style="line-height:24px"><span style=";font-size:14px">__be32 *udpdata32;</span></p><p style="line-height:24px"><span style=";font-size:14px">__be16 sport, dport;</span></p><p style="line-height:24px"><span style=";font-size:14px">int encap_type;</span></p><p style="line-height:24px"><span style=";font-size:14px">&nbsp;</span></p><p style="line-height:24px"><span style=";font-size:14px">spin_lock_bh(&amp;x-&gt;lock);</span></p><p style="line-height:24px"><span style=";font-size:14px">sport = encap-&gt;encap_sport;</span></p><p style="line-height:24px"><span style=";font-size:14px">dport = encap-&gt;encap_dport;</span></p><p style="line-height:24px"><span style=";font-size:14px">encap_type = encap-&gt;encap_type;</span></p><p style="line-height:24px"><span style=";font-size:14px">spin_unlock_bh(&amp;x-&gt;lock);</span></p><p style="line-height:24px"><span style=";font-size:14px">&nbsp;</span></p><p style="line-height:24px"><span style=";font-size:14px">uh = (struct udphdr *)esph;</span></p><p style="line-height:24px"><span style=";font-size:14px">uh-&gt;source = sport;</span></p><p style="line-height:24px"><span style=";font-size:14px">uh-&gt;dest = dport;</span></p><p style="line-height:24px"><span style=";font-size:14px">uh-&gt;len = htons(skb-&gt;len - skb_transport_offset(skb));</span></p><p style="line-height:24px"><span style=";font-size:14px">uh-&gt;check = 0;</span></p><p style="line-height:24px"><span style=";font-size:14px">&nbsp;</span></p><p style="line-height:24px"><span style=";font-size:14px">switch (encap_type) {</span></p><p style="line-height:24px"><span style=";font-size:14px">default:</span></p><p style="line-height:24px"><span style=";font-size:14px">case UDP_ENCAP_ESPINUDP:</span></p><p style="line-height:24px"><span style=";font-size:14px">esph = (struct ip_esp_hdr *)(uh + 1);</span></p><p style="line-height:24px"><span style=";font-size:14px">break;</span></p><p style="line-height:24px"><span style=";font-size:14px">case UDP_ENCAP_ESPINUDP_NON_IKE:</span></p><p style="line-height:24px"><span style=";font-size:14px">udpdata32 = (__be32 *)(uh + 1);</span></p><p style="line-height:24px"><span style=";font-size:14px">udpdata32[0] = udpdata32[1] = 0;</span></p><p style="line-height:24px"><span style=";font-size:14px">esph = (struct ip_esp_hdr *)(udpdata32 + 2);</span></p><p style="line-height:24px"><span style=";font-size:14px">break;</span></p><p style="line-height:24px"><span style=";font-size:14px">}</span></p><p style="line-height:24px"><span style=";font-size:14px">&nbsp;</span></p><p style="line-height:24px"><span style=";font-size:14px">*skb_mac_header(skb) = IPPROTO_UDP;</span></p><p style="line-height:24px"><span style=";font-size:14px">}</span></p><p style="line-height:24px"><span style=";font-family:宋体;font-size:14px">//<span style="font-family:宋体">修改</span><span style="font-family:Times New Roman">esp</span><span style="font-family:宋体">头中的</span><span style="font-family:Times New Roman">spi</span><span style="font-family:宋体">和序列号</span></span></p><p style="line-height:24px"><span style=";font-size:14px">esph-&gt;spi = x-&gt;id.spi;</span></p><p style="line-height:24px"><span style=";font-size:14px">esph-&gt;seq_no = htonl(XFRM_SKB_CB(skb)-&gt;seq.output.low);</span></p><p style="line-height:24px"><span style=";font-family:宋体;font-size:14px">//<span style="font-family:宋体">设置分片列表</span><span style="font-family:Times New Roman">SG</span></span></p><p style="line-height:24px"><span style=";font-size:14px">sg_init_table(sg, nfrags);</span></p><p style="line-height:24px"><span style=";font-size:14px">skb_to_sgvec(skb, sg,</span></p><p style="line-height:24px"><span style=";font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;esph-&gt;enc_data + crypto_aead_ivsize(aead) - skb-&gt;data,</span></p><p style="line-height:24px"><span style=";font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clen + alen);</span></p><p style="line-height:24px"><span style=";font-size:14px">…</span></p><p style="line-height:24px"><span style=";font-family:宋体;font-size:14px">//<span style="font-family:宋体">设置加密回调函数，设置加密请求结构</span><span style="font-family:Times New Roman">req</span><span style="font-family:宋体">，以及</span><span style="font-family:Times New Roman">IV</span><span style="font-family:宋体">等信息</span></span></p><p style="line-height:24px"><span style=";font-size:14px">aead_givcrypt_set_callback(req, 0, esp_output_done, skb);</span></p><p style="line-height:24px"><span style=";font-size:14px">aead_givcrypt_set_crypt(req, sg, sg, clen, iv);</span></p><p style="line-height:24px"><span style=";font-size:14px">aead_givcrypt_set_assoc(req, asg, assoclen);</span></p><p style="line-height:24px"><span style=";font-size:14px">aead_givcrypt_set_giv(req, esph-&gt;enc_data,</span><span style=";font-family:宋体;font-size:14px">&nbsp;</span><span style=";font-size:14px">XFRM_SKB_CB(skb)-&gt;seq.output.low);</span></p><p style="line-height:24px"><span style=";font-family:宋体;font-size:14px">//<span style="font-family:宋体">加密数据包</span></span></p><p style="line-height:24px"><span style=";font-size:14px">err = crypto_aead_givencrypt(req);</span></p><p style="line-height:24px"><span style=";font-family:宋体;font-size:14px">&nbsp;</span></p><p style="line-height:24px"><span style=";font-size:14px">kfree(tmp);</span></p><p style="line-height:24px"><span style=";font-size:14px">error:</span></p><p style="line-height:24px"><span style=";font-size:14px">return err;</span></p><p style="line-height:24px"><span style=";font-size:14px">}</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">李廷，张超</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

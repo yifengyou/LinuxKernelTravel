@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		内核开发者伍鹏（Bryan Wu）：好奇的旅程
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=405389777&amp;idx=3&amp;sn=e0bbadc15ef9d3478654f2f419708e75&amp;chksm=76b6ec3441c165226c0cf687d3b6d6e8a9ad1c63de78fd38fd8806c9dec3bf859340778bfbf3&amp;scene=27#wechat_redirect&cpage=86' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">内核开发者伍鹏（Bryan Wu）：好奇的旅程</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        伍鹏
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2015-11-15</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                <div class="rich_media_thumb_wrp" id="media">
+                    
+                                        
+                                    </div>
+                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <h1 style="margin: 21px 0px 10.5px; padding: 0px; border: 0px; font-family: inherit; font-size: 2.6em; line-height: 1.1; color: inherit; text-align: center;">好奇的旅程</h1><h2 style="margin: 1.2em 0px 0.6em; padding: 0px; border: 0px; font-family: inherit; font-size: 2.15em; line-height: 1.1; color: inherit;">Just for fun</h2><p style="margin-top: 0px; margin-bottom: 1.1em; padding: 0px; border: 0px; line-height: 1.6;">Linux的创立者大神Linus Torvalds好像很少写书，似乎《Just for fun》是他的唯一著作。可能都不能说是著作，但是却深深的影响了我的好奇心。说实话在此之前，我是比较粉Bill Gates，也看过他的《未来之路》。可是自从我接触到Linux之后，读了《Just for fun》之后，才算是真正开始自己的好奇之旅。在我看来好奇心是一切创造之本源，也是人可以一直坚持做一件事情的初衷。虽然接触Linux很早，研究内核很多年，最近又开始了另外一段好奇之旅，但现在仔细回想起来在有好奇心驱使的时候，一起都是那么美好。</p><h2 style="margin: 1.2em 0px 0.6em; padding: 0px; border: 0px; font-family: inherit; font-size: 2.15em; line-height: 1.1; color: inherit;">Linux来了</h2><p style="margin-top: 0px; margin-bottom: 1.1em; padding: 0px; border: 0px; line-height: 1.6;">我很早开始倒腾电脑，大概高中就学了C语言。可怜我现在还在靠C语言吃饭。在装装Windows之余，记得在《电脑报》啥杂志上面介绍有个啥新的操作系统叫Linux。在自己家里可怜的i386上装过一次Redhat 6.0或者更加老的版本，没啥感觉，图形方面确实没法跟Windows比。其实我一直不赞成说Linux一定要打败Windows。Just for fun嘛，多一种选择嘛。可是在大三还是大四的时候，我记得老师要我给实验室一台老机器升级内核。这个破事情确实改变了我的兴趣，居然把一堆源代码文件编译一下，就可以升级电脑支持更好的硬件，实现更好的功能。而且可以看到所有的源代码。我记得那是2.2内核的时代。当我编译加fix一些小问题，搞定升级之后，看到那个登陆界面，我知道我想好好研究一下这个叫内核的东西，因为感觉这个东西好Cool。换现在流行的话说，Isn’t it amazing? 当每次有这样的感叹的时候，我的好奇心就起来了，我如果坚持研究下去，必然有所收获。</p><h2 style="margin: 1.2em 0px 0.6em; padding: 0px; border: 0px; font-family: inherit; font-size: 2.15em; line-height: 1.1; color: inherit;">Embedded Linux</h2><p style="margin-top: 0px; margin-bottom: 1.1em; padding: 0px; border: 0px; line-height: 1.6;">幸运的是，研究生开始所有的项目就是Linux相关，都是内核相关，都是嵌入式硬件相关。都是我敢兴趣的。记得有把内核跑到ARM720T的一个板子上的事情，ARM720T带MMU所以稍微好点。有在PowerPC上面跑Linux的事情。有在DSP上面跑uCLinux的事情，这个事情也后来成为我工作后的一个主要方向。所有都围绕Linux和嵌入式系统，让我对内核这个方向非常的兴奋。常年混迹于浙大88BBS的嵌入式板，Linux版块。当时浙大还有一个BBS叫66就是我们实验室的大神级老师管理维护。道上人称Fuse，据说是最早一批玩FreeBSD的。我问过他可以把66BBS站改到Linux上面吗？大神说，Linux怎么可能跟FreeBSD比。然后在电脑面前飞快的敲着命令，过了一会跟我说，我刚才重编了系统，现在系统更新了。我觉得我太笨可能FreeBSD我搞不懂，所以回到位置上还是继续倒腾Linux吧。其实我主要是觉得FreeBSD不够cool，not amazing at all！</p><h2 style="margin: 1.2em 0px 0.6em; padding: 0px; border: 0px; font-family: inherit; font-size: 2.15em; line-height: 1.1; color: inherit;">ARM Linux</h2><p style="margin-top: 0px; margin-bottom: 1.1em; padding: 0px; border: 0px; line-height: 1.6;">毕业第一份工作是上海的一家看似很有前途的芯片Startup公司。就我跟一个清华的牛人一起搞搞Linux。现在回想起来，那段日子，基本奠定了我的职场习惯和技术流派。大家都是基本刚毕业，上班猛搞工作，下班狂打星际。虽然我曾经获得我们专业第一届星际比赛的亚军，可是我还是基本不是一些同事的对手。当时我们做的是蛮先进的ARM926EJS的SOC芯片，虽然跟现在没法比，但是所有的芯片公司的流程，流行的开发方式，硅谷的管理和研发模式，我们都完整的经历过几次。从FPGA开发，IP验证开发，驱动开发，OS开发，到Tapout之后的bringup，到真正的产品或者Demo样机的研发，全完整的搞了一遍。不能说搞得多成功，可是我知道当初一起奋斗的小伙伴，基本都已经成为某个方面的领军人物。我当初在我们芯片没有出来之前，在三星的2410那个芯片上面做Linux的2.6内核的尝试。发现很多东西没有实现，包括IRQ的一些功能。我写了个Patch，注册了个Yahoo的信箱，发给了当时的maintainer Ben Dooks。几次修改下来，我的patch就被merge了。这个应该是第一个我被merge的patch。要知道我的第一个patch还是高质量的，至少实现了一个功能嘛，比Ingo Molnar那种好多了，他的第一个patch是修改注释里面的Typo。我只能说，Linux kernel development is so cool, 不是很阿美zing吗？接下来我就经常逛ARM Linux 的mail list，混一些论坛包括China Linux Forum。现在CLF的高手大家都聚集到微信群了。记得也发现过和解决过几个问题，当然我都没有忘记放到我的简历里面。我们的芯片Tape out，内核加入了对MACH_JAZZ的支持，JAZZ这个代号应该被我在ARM内核的machine list里面注册了。可惜这部分代码没有merge到内核，因为芯片商业上基本没有很成功。</p><h2 style="margin: 1.2em 0px 0.6em; padding: 0px; border: 0px; font-family: inherit; font-size: 2.15em; line-height: 1.1; color: inherit;">Blackfin的故事</h2><p style="margin-top: 0px; margin-bottom: 1.1em; padding: 0px; border: 0px; line-height: 1.6;">接下来，我加入了国内当时顶级的Linux开发团队，Analog Devices的Blackfin DSP uClinux team。我在浙大实验室的时候就接触到了Blackfin DSP，但是没有参与具体的项目。DSP跟一般的ARM或者CPU处理器不同，主要是面向信号处理领域，比如音视频编解码，通信。回想当初Blackfin是如此之高贵和强大，高贵在于他是ADI跟Intel联合开发微架构叫MSA。ADI拿来搞了Blackfin，Intel拿来搞了XScale。强大在于，2000年左右的时候Blackfin就有600MHz以上的版本，而且有类SMP多核处理器的版本。这些都甩了ARM好几条街。架构设计非常超前，推出的概念叫融合平台，因为一套架构既可以支持类似CPU的软件也就是通用OS，也可以支持DSP的算法软件，这个跟当时TI的OMAP思路相反。OMAP是用异构核的方式ARM核加DSP核的路线。ADI是一个技术导向的牛哄哄的企业，不希望follow别人的路线。而且确实当时Blackfin的核非常强大。我们部门人数不多，可是包括了从Toolchain，Bootloader，Linux Kernel，uClinux Distribution, auto testing infrastructure所有这些工作。我负责了一些新芯片的和驱动的开发工作，然后就是开始尝试继续推进把我们的内核代码merge到Linux Kernel的upstream mainline。我们的代码量很大，我记得有大概10万行代码的更新，当时来说是一个巨大的Patch。每次发出去，基本没有几个人可以看得完。之前也推进了很多次，可是一直没有merge进入内核。记得大神Andrew Morton还有Arnd Bergmann review了patch几次，我也反复修改了过一些改进，然后提交了好几次代码。必须说我们team的开放精神是我看到的所有芯片公司里面在当时是最open最cool的。因为如果公司内部不能理解upstreaming的理念和好处，就根本没法完成这么大patch的merge工作。就算现在很多芯片公司都是内核开发都是分downstream和upstream。只要分开，merge patch到内核就是一个漫长的过程，很容易就不了了之了。回过来思考，我觉得当初也确实没人有那么多时间和耐心去看review我们的全部代码，但是看到我们有一个完整的team在做这个开源项目，有完整的测试，而且是自动测试，就基本放心了。最终我记得是在2007我们的代码终于被merge进入了mainline内核。这次第一次华人维护开发的体系架构代码被内核接受。我也成为第一个Blackfin架构的内核维护者。当时受邀请参加了AKA在北京的主办的中国Linux内核开发者大会，认识了业界各位大神。基本都是当时内核圈子里面顶级的华人开发者，至今我都是望着他们的背影存在。我觉得维护一个内核新的体系架构还是很cool的，这样的兴趣支持了我很多年，也结识了很多圈内的好朋友。</p><h2 style="margin: 1.2em 0px 0.6em; padding: 0px; border: 0px; font-family: inherit; font-size: 2.15em; line-height: 1.1; color: inherit;">Ubuntu is so amazing</h2><p style="margin-top: 0px; margin-bottom: 1.1em; padding: 0px; border: 0px; line-height: 1.6;">Ubuntu来了，就像给整个世界带来了一道美丽的彩虹。我看到她的时候，眼睛里面一直冒着光。我记得我玩过2005年发行的一套Ubuntu是我GE的一个哥们给我的，还是在工作中开始用Debian比较多，后来还用过Hiweed。Hiweed的团队应该现在做Linux Deepin中国的Linux发行版本，必须点赞。我们team里面有高手是用Gentoo，据说安装一下要3天。我真得没敢尝试，觉得可能装好之后要比我的裸装Debian可能快个5%？还是算了，不够cool。我们Team也有Gentoo的maintainer和core developer，跟神一样存在，24小时似乎都不休息，基本没有什么不懂的技术问题，从toolchain，bootloader，kernel到QT, 服务器架设，PHP都懂。而且是个很年轻的帅哥。我觉得压力太大，还是用我的Debian。不过Debian确实太Geek，好吧我承认我是一个伪Geek，我还是一个实用主义者。这个Linus Torvalds跟Andrew Tanenbaum争论里面体现的很明显，Linux是Monolithic的内核可是Andrew为首的学院派觉得微内核才是OS的未来。其实没啥，就是Linus觉得Monolithic的内核实用简单高效。我喜欢这样的理念和设计，所以我慢慢觉得Ubuntu更加适合我，我彻底从Debian转成了Ubuntu。后来通过好朋友Andy的介绍，我成功加入了Ubuntu背后的公司Canonical的内核开发团队，开始了一段最为美好的回忆。</p><p style="margin-top: 0px; margin-bottom: 1.1em; padding: 0px; border: 0px; line-height: 1.6;">Canonical当时在国内没有公司，我跟另外两位同事一起组成了国内的团队。算是最早的一批员工。由于没有office，我们都是在家上班，remote work。每3，4个月有一次公司的或者部门的sprint。一般上半年在欧洲，下半年在美国。记得我第一次到美国Boston的office跟kernel team的大牛们一起工作，刚开始大家都一言不发的干着活，连讲话都在IRC上面扯。下午3点开始喝啤酒，这一下，开始热闹了，扯谈聊天，然后敲代码的速度更快了。我终于知道了，加入Ubuntu Kernel Team的Rule No 1的要求就是能喝酒。所以我基本跟他们混，喝过蛮多种啤酒，比较喜欢爱尔兰的黑啤Guinness。我们去过爱尔兰几次，参观过他们的酒厂。当一堆人coding或者或者Hackathon的时候，还是要喝点酒的。非常讨厌那种冰箱里面只有可乐的公司，没有文化啊。去了欧洲很多次也去了美国不同的地方很多次，接触到越来越多的内核圈子的外国朋友。算是我睁眼看世界的阶段吧，至今我们都以为Ubuntu工作过而自豪。记得我跟Eric在爱尔兰环岛游的时候，一个天住在一个乡下老太太家，Breakfast and Bed嘛。早上老太太给我们做早饭，聊天。问我们干什么的，我说我们是搞软件的，她说她儿子也是。我就留了我的Ubuntu的名片。后来我回到上海，居然收到她儿子的email说是Ubuntu的忠实粉丝，感谢我们做了Ubuntu。我把email forward给了公司的同事。据说发现这个爱尔兰的哥们是啥银行的主管，不知道最后有没有找他做成生意。还有曾经我们穿着Ubuntu的T-Shirt走在西班牙巴塞罗那的街头，很多人都会问我们是不是搞Ubuntu的。还找我们拍照。</p><p style="margin-top: 0px; margin-bottom: 1.1em; padding: 0px; border: 0px; line-height: 1.6;">我在内核Team开始负责Ubuntu ARM的内核开发，更多的是集成沟通工作。最早做Freescale iMX的Ubuntu ARM。后来是TI OMAP，最后来是ARM server相关的内核发布版本。当然也在国内支持Ubuntu的PC客户，帮他们解决真正的产品bug。我加入Ubuntu的时候，全球公司大概200多人。参过基本是最后一次公司All hands，最为美好的会议。后来公司人多了起来，国内再上海北京深圳都有了同事。到我离开的时候，应该全球有700多人了吧。内核patch也提交过很多次，后来开始maintain一个很小的模块LED驱动。看起来很low，其实要深入下去也是蛮多东西的。</p><h2 style="margin: 1.2em 0px 0.6em; padding: 0px; border: 0px; font-family: inherit; font-size: 2.15em; line-height: 1.1; color: inherit;">出发去硅谷</h2><p style="margin-top: 0px; margin-bottom: 1.1em; padding: 0px; border: 0px; line-height: 1.6;">我其实当初没有那么激烈的移民想法。只是出去跑多了，觉得硅谷挺好的。而且喜欢硅谷的那种创新的氛围和大神牛人聚集的环境。2012年来到硅谷，我还在从事着Linux内核的开发的工作，具体一点还是用这C语言，写着芯片相关的内核代码。虽然我没有当初那么兴奋，但是每次跟内核大牛一起扯谈的时候，我还是会说Linux内核开发依然是那么cool和amazing。</p><p style="margin-top: 0px; margin-bottom: 1.1em; padding: 0px; border: 0px; line-height: 1.6;">好奇心驱使我走了很远的路，虽然有起起伏伏，但是一直走下来还是人生不小的收获。希望每次看到真正很cool的东西，我喊出Isn’t is amazing之后，可以努力坚持下去，收获一次一次的开心和回忆。Just for fun！</p><p style="margin-top: 0px; margin-bottom: 1.1em; padding: 0px; border: 0px; line-height: 1.6;">伍鹏（Bryan Wu &lt;cooloney@gmail.com） <br  />2015年9月8日</p><p>转自Linuxer平台</p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">伍鹏</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		【讨论】Linux kernel 的设计是否已经过时？
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664605408&amp;idx=1&amp;sn=dc4b8f14396d7c7a3e63a0fdb9fd645d&amp;chksm=f04d8b05c73a0213c6075ccb268cf87847bc94fb11b80c0a0b0c17206e6bf4c1be35e197b567&amp;scene=27#wechat_redirect&cpage=20' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">【讨论】Linux kernel 的设计是否已经过时？</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                         陈莉君
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2018-05-28</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="max-width: 100%;min-height: 1em;color: rgb(51, 51, 51);"><span style="max-width: 100%;color: rgb(62, 62, 62);font-size: 18px;box-sizing: border-box !important;word-wrap: break-word !important;">在开源中国看到“Linux kernel 的设计是否已经过时？”这个题目，正好有企业界的朋友问到L4 基于微内核的操作系统怎么样。微内核与宏内核争论似乎是永远的话题，只是看你站在什么角度。依然记得99年带领学生们阅读Minix微内核操作系统设计原理和代码的情景，因为在艰难的跋涉中有清晰的导航图，《操作系统设计与实现》上下册还是被一点一点啃完。</span></p><p style="max-width: 100%;min-height: 1em;color: rgb(51, 51, 51);"><span style="max-width: 100%;color: rgb(62, 62, 62);font-size: 18px;box-sizing: border-box !important;word-wrap: break-word !important;">后来阅读Linux源代码，就像走进一大片森林，在各种复杂的交错关系中摸索着前进，即使手上拿着导航图，但经常因为走进一个岔道而忘了返回的旅途，但是，因为众多的人在森林中探索，你会找到同路人（开源社区的邮件列表和各种文档），于是，在不知所然中也常常会找到帮手，于是，Linux这片森林就在不断扩大面的，走进去能走出来的人更加困难。</span></p><p style="max-width: 100%;min-height: 1em;color: rgb(51, 51, 51);"><span style="max-width: 100%;color: rgb(62, 62, 62);font-size: 18px;box-sizing: border-box !important;word-wrap: break-word !important;">关于L4, 有一段文字描述或许对你有启发：</span></p><p style="max-width: 100%;min-height: 1em;color: rgb(51, 51, 51);"><strong style="max-width: 100%;box-sizing: border-box !important;word-wrap: break-word !important;"><span style="max-width: 100%;font-size: 18px;color: rgb(136, 136, 136);box-sizing: border-box !important;word-wrap: break-word !important;">一般来讲，目前公认的L4系统有2个特点，Fast IPC和Sigma0协议。Sigma0是一种基于IPC的内存管理协议，使用Sigma0，内存管理呈现出一种层次状。举例：有A和B两个程序，如果程序B想使用程序A的内存。如果使用Sigma0，那么很容易实现，只要把A设置为B的pager,并提供B的page fault handler程序就可以。在这种情况下，程序A和程序B依然具有不同的Address Space，A和B之间互相隔离（关于这种层次式的内存管理，请参考The sawmill framework for virtual memory diversity）。 但是如果使用Linux来实现这种模式，除非使用share memory，想不出其它更好的办法，但是share memory使得A和B之间有的Address Space有了交集，从security和safety两个方面来讲，都不是很好的解决方法。近年来，越来越多的L4系统开始支持一种新的特性-Capability, Capability是为了提高操作系统安全性而设计的，Capability和要访问的Resource之间的关系类似于文件描述符号和文件之间的关系一样，要访问一个Resource，必须通过Capability来进行，Capability里面规定了那么资源可以被访问等安全特性，Capability允许被grant（从一个用户转移到另外一个用户），总之，Capability是比Access Control List更好的一种增强系统安全性的方法。</span></strong></p><p style="max-width: 100%;min-height: 1em;color: rgb(51, 51, 51);"><span style="max-width: 100%;color: rgb(62, 62, 62);font-size: 18px;box-sizing: border-box !important;word-wrap: break-word !important;">抛砖引玉，以下是reddit上讨论的部分内容</span></p><p style="max-width: 100%;min-height: 1em;color: rgb(51, 51, 51);"><span style="max-width: 100%;color: rgb(62, 62, 62);font-size: 18px;box-sizing: border-box !important;word-wrap: break-word !important;">—————————————————</span></p><p style="max-width: 100%;min-height: 1em;color: rgb(51, 51, 51);"><span style="max-width: 100%;color: rgb(62, 62, 62);font-size: 18px;box-sizing: border-box !important;word-wrap: break-word !important;">Linux 多年来取得的成绩毋庸多言。但最近，reddit 上有人发起了一个话题，想知道 Linux 的内核设计是否已经过时，并得到了一些有趣的答案。</span></p><p style="max-width: 100%;min-height: 1em;color: rgb(51, 51, 51);"><span style="max-width: 100%;color: rgb(62, 62, 62);font-size: 18px;box-sizing: border-box !important;word-wrap: break-word !important;">这位 Ronis_BR 的用户提问大致如下：</span></p><p style="max-width: 100%;min-height: 1em;color: rgb(51, 51, 51);"><strong style="max-width: 100%;box-sizing: border-box !important;word-wrap: break-word !important;"><span style="max-width: 100%;color: rgb(136, 136, 136);font-size: 18px;box-sizing: border-box !important;word-wrap: break-word !important;">Linux 是在 1992 年启动的，一些特性到现在都没有改变。我猜想最新的操作系统内核设计技术（如果存在…）应该较之前有很大的进步。那 Linux 内核是否已经过时？</span></strong></p><p style="max-width: 100%;min-height: 1em;color: rgb(51, 51, 51);"><strong style="max-width: 100%;box-sizing: border-box !important;word-wrap: break-word !important;"><span style="max-width: 100%;color: rgb(136, 136, 136);font-size: 18px;box-sizing: border-box !important;word-wrap: break-word !important;">与 Windows、macOS、FreeBSD 内核的设计相比，Linux 内核的设计有没有在哪些方面比较先进？（注意，重点是设计的先进，而不是哪一个更好）。</span></strong></p><p style="max-width: 100%;min-height: 1em;color: rgb(51, 51, 51);"><span style="max-width: 100%;color: rgb(62, 62, 62);font-size: 18px;box-sizing: border-box !important;word-wrap: break-word !important;">该话题引起了近 400 条回复，大家纷纷发表了自己对内核设计的看法，节选几条不同的观点：</span></p><p style="max-width: 100%;min-height: 1em;color: rgb(51, 51, 51);"><span style="max-width: 100%;color: rgb(62, 62, 62);font-weight: bold;font-size: 18px;box-sizing: border-box !important;word-wrap: break-word !important;">ExoticMandibles：</span></p><p style="max-width: 100%;min-height: 1em;color: rgb(51, 51, 51);"><span style="max-width: 100%;color: rgb(62, 62, 62);font-size: 18px;box-sizing: border-box !important;word-wrap: break-word !important;">“过时”？不存在的。Linux kernel 对现代内核的设计其实是非常了解的，只是它选择了保持传统的形式。</span></p><p style="max-width: 100%;min-height: 1em;color: rgb(51, 51, 51);"><span style="max-width: 100%;color: rgb(62, 62, 62);font-size: 18px;box-sizing: border-box !important;word-wrap: break-word !important;">内核设计的核心在于“安全/稳定”和“性能”之间的关系。Microkernels（微内核）以性能为代价保证安全。如果你有极小的微内核，那么它将具有相对较小的 API surface，使其难以被攻击。而且当你有一个错误的文件时，驱动程序崩溃而不占用内核，可以无损重启。优越的稳定性！优越的安全性！一切很美好。</span></p><p style="max-width: 100%;min-height: 1em;color: rgb(51, 51, 51);"><span style="max-width: 100%;color: rgb(62, 62, 62);font-size: 18px;box-sizing: border-box !important;word-wrap: break-word !important;">但这种方案的缺点是所有 IPC 永远且不可避免的开销。如果你的程序想从文件加载数据，则必须访问文件系统驱动，这意味着 IPC 要处理进程上下文切换和两次 ring transitions 。然后，文件系统驱动要求内核与硬件通信，这也意味着两次 ring transitions。然后文件系统驱动发送其回复，这意味着又一轮的两次，以及另一次上下文切换。总开销：两次上下文切换，两次 IPC 调用和六次 ring transitions。非常贵！</span></p><p style="max-width: 100%;min-height: 1em;color: rgb(51, 51, 51);"><span style="max-width: 100%;color: rgb(62, 62, 62);font-size: 18px;box-sizing: border-box !important;word-wrap: break-word !important;">宏内核将所有设备驱动合拢到内核中。所以当出现一个错误的图形驱动，就可以占用内核，或者如果它有一个安全漏洞，那么可能被用来危及系统。但是，如果你的程序需要从磁盘加载某些东西，则会调用内核，进行 ring transitions，与硬件通话，计算结果，并返回结果，进行另一个 ring transitions。总开销：两次 ring transitions。便宜得多，也快得多！</span></p><p style="max-width: 100%;min-height: 1em;color: rgb(51, 51, 51);"><span style="max-width: 100%;color: rgb(62, 62, 62);font-size: 18px;box-sizing: border-box !important;word-wrap: break-word !important;">简而言之，微内核是：“放弃性能来提高安全性和稳定性”；宏内核是：“保持性能，只要修复安全和稳定性问题就可以了”。而目前，大家更愿意接受后者。</span></p><p style="max-width: 100%;min-height: 1em;color: rgb(51, 51, 51);"><span style="max-width: 100%;color: rgb(62, 62, 62);font-weight: bold;font-size: 18px;box-sizing: border-box !important;word-wrap: break-word !important;">Scandalousmambo:</span></p><p style="max-width: 100%;min-height: 1em;color: rgb(51, 51, 51);"><span style="max-width: 100%;color: rgb(62, 62, 62);font-size: 18px;box-sizing: border-box !important;word-wrap: break-word !important;">开发一个和 Linux kernel 相同的系统，从本质上决定了它一旦设计出来就会“过时”。</span></p><p style="max-width: 100%;min-height: 1em;color: rgb(51, 51, 51);"><span style="max-width: 100%;color: rgb(62, 62, 62);font-weight: bold;font-size: 18px;box-sizing: border-box !important;word-wrap: break-word !important;">KugelKurt：</span></p><p style="max-width: 100%;min-height: 1em;color: rgb(51, 51, 51);"><span style="max-width: 100%;color: rgb(62, 62, 62);font-size: 18px;box-sizing: border-box !important;word-wrap: break-word !important;">尽管这里讨论的大部分内容都是关于微内核与宏内核的关系，但是最近的研究还涉及到编程语言。如果你今天启动一个全新的内核，那么就可能不会用 C 去写。微软的 Singularity 和 Midori 项目探讨了用 C＃托管代码内核的可行性。</span></p><p style="max-width: 100%;min-height: 1em;color: rgb(51, 51, 51);"><span style="max-width: 100%;color: rgb(62, 62, 62);font-weight: bold;font-size: 18px;box-sizing: border-box !important;word-wrap: break-word !important;">Daemonpenguin：</span></p><p style="max-width: 100%;min-height: 1em;color: rgb(51, 51, 51);"><span style="max-width: 100%;color: rgb(62, 62, 62);font-size: 18px;box-sizing: border-box !important;word-wrap: break-word !important;">有一些概念，在理论上可以提供更好的内核设计。比如，理论上微内核也有一些非常好的设计选择，使得它们具有便携性、可靠性和潜在的自我修正能力。</span></p><p style="max-width: 100%;min-height: 1em;color: rgb(51, 51, 51);"><span style="max-width: 100%;color: rgb(62, 62, 62);font-size: 18px;box-sizing: border-box !important;word-wrap: break-word !important;">然而，无论理论多么好，人们总是会根据实际情况进行设计。Linux 内核拥有如此多的硬件支持，那么多公司支持开发，其他内核（不管设计得多炫酷）都不太可能赶得上。</span></p><p style="max-width: 100%;min-height: 1em;color: rgb(51, 51, 51);"><span style="max-width: 100%;color: rgb(62, 62, 62);font-size: 18px;box-sizing: border-box !important;word-wrap: break-word !important;">例如，MINIX 具有良好的设计和一些很棒的功能，但硬件支持很少，几乎没有人为此平台开发。</span></p><p style="max-width: 100%;min-height: 1em;color: rgb(51, 51, 51);"><strong style="max-width: 100%;box-sizing: border-box !important;word-wrap: break-word !important;"><span style="max-width: 100%;color: rgb(62, 62, 62);font-size: 18px;box-sizing: border-box !important;word-wrap: break-word !important;">欢迎大家就此事在下方回复自己的看法。</span></strong></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name"> 陈莉君</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

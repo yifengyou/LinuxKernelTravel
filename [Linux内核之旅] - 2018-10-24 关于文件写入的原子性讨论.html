@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		关于文件写入的原子性讨论
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664605829&amp;idx=1&amp;sn=152e9f09ad714892869f1cdf4afa4803&amp;chksm=f04d8560c73a0c765ba7418566688d2c992b91ed5812e869ddfbc73e8955627bc3dbac61d604&amp;scene=27#wechat_redirect&cpage=14' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">关于文件写入的原子性讨论</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        张义飞
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2018-10-24</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p>&nbsp; &nbsp; &nbsp; &nbsp; 文件的写入是否是原子的？多个线程写入同一个文件是否会写错乱?多个进程写入同一个文件是否会写错乱？想必这些问题多多少少会对我们产生一定的困扰，即使知道结果，很多时候也很难将这其中的原理清晰的表达给提问者，侯捷曾说过，源码面前,了无秘密，那么本文也希望从源代码的角度分析上述问题。在开始之前我们需要补充一下Linux 文件相关的一些基础原理，便于更好的看懂Linux源代码。<br  /></p><p>   学过Linux的读者想必都应该知道文件的数据分为两个部分，一个部分就是文件数据本身，另外一个部分则是文件的元数据，也就是inode、权限、扩展属性、mtime、ctime、atime等等，inode对于一个文件来说及其的重要，可以唯一的标识一个文件(实际应该是inode + dev号，唯一标识一个文件，更准确来说应该是在同一个文件系统的前提下才成立，不同的文件系统inode是会重复的，不过这不是重点，姑且这里不严谨的认为inode就是用来唯一标识一个文件的吧)，内核中将inode号和文件的元数据构建为一个struct inode对象，该对象结构如下:</p><section class="_135editor" data-tools="135编辑器" data-id="93774" style="font-family: -webkit-standard;white-space: normal;border: 0px none;box-sizing: border-box;"><section style="background-image: url(&quot;https://mmbiz.qpic.cn/mmbiz_jpg/SeWfibBcBT0Fx12FicVVZsic5mvzqwddwKaeQHiaU1MPUwXhbHMJR0bKQPicxoY8foc0EnZRX0NKo68BwfibEp9HM8Wg/640?wx_fmt=jpeg&quot;);background-size: 100%;"><section style="padding: 1em;line-height: 1.75em;font-size: 14px;color: rgb(51, 51, 51);letter-spacing: 1px;text-align: justify;box-sizing: border-box;"><section class="135brush"><p>struct inode {</p><p>&nbsp; &nbsp; umode_t &nbsp; &nbsp; &nbsp; &nbsp; i_mode;</p><p>&nbsp; &nbsp; uid_t &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; i_uid;</p><p>&nbsp; &nbsp; gid_t &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; i_gid;</p><p>&nbsp; &nbsp; unsigned long &nbsp; &nbsp; &nbsp; i_ino;</p><p>&nbsp; &nbsp; atomic_t &nbsp; &nbsp; &nbsp; &nbsp;i_count;</p><p>&nbsp; &nbsp; dev_t &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; i_rdev;</p><p>&nbsp; &nbsp; loff_t &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;i_size;</p><p>&nbsp; &nbsp; struct timespec &nbsp; &nbsp; i_atime;</p><p>&nbsp; &nbsp; struct timespec &nbsp; &nbsp; i_mtime;</p><p>&nbsp; &nbsp; struct timespec &nbsp; &nbsp; i_ctime;</p><p>&nbsp; &nbsp; .......// 省略</p><p>};</p></section></section></section></section><p><span style="font-size: 16px;caret-color: rgb(79, 79, 79);color: rgb(79, 79, 79);font-family: -apple-system, &quot;SF UI Text&quot;, Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;, &quot;WenQuanYi Micro Hei&quot;, sans-serif;background-color: rgb(255, 255, 255);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;通过这个inode对象就可以关联一个文件，然后对这个文件进行读写操作，Linux内核对于文件同样也有一个</span><code style="white-space: normal;box-sizing: border-box;outline: 0px;padding: 2px 4px;font-family: &quot;Source Code Pro&quot;, &quot;DejaVu Sans Mono&quot;, &quot;Ubuntu Mono&quot;, &quot;Anonymous Pro&quot;, &quot;Droid Sans Mono&quot;, Menlo, Monaco, Consolas, Inconsolata, Courier, monospace, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif;font-size: 14px;line-height: 22px;color: rgb(199, 37, 78);background-color: rgb(249, 242, 244);border-top-left-radius: 2px;border-top-right-radius: 2px;border-bottom-right-radius: 2px;border-bottom-left-radius: 2px;word-wrap: break-word;">struct file</code><span style="font-size: 16px;caret-color: rgb(79, 79, 79);color: rgb(79, 79, 79);font-family: -apple-system, &quot;SF UI Text&quot;, Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;, &quot;WenQuanYi Micro Hei&quot;, sans-serif;background-color: rgb(255, 255, 255);">对象来表示，该对象结构如下:</span>&nbsp; &nbsp;&nbsp;</p><section class="_135editor" data-tools="135编辑器" data-id="93774" style="font-family: -webkit-standard;white-space: normal;border: 0px none;box-sizing: border-box;"><section style="background-image: url(&quot;https://mmbiz.qpic.cn/mmbiz_jpg/SeWfibBcBT0Fx12FicVVZsic5mvzqwddwKaeQHiaU1MPUwXhbHMJR0bKQPicxoY8foc0EnZRX0NKo68BwfibEp9HM8Wg/640?wx_fmt=jpeg&quot;);background-size: 100%;"><section style="padding: 1em;line-height: 1.75em;font-size: 14px;color: rgb(51, 51, 51);letter-spacing: 1px;text-align: justify;box-sizing: border-box;"><section class="135brush"><section class="_135editor" data-tools="135编辑器" data-id="93774" style="font-family: -webkit-standard;white-space: normal;border: 0px none;box-sizing: border-box;"><section style="background-image: url(&quot;https://mmbiz.qpic.cn/mmbiz_jpg/SeWfibBcBT0Fx12FicVVZsic5mvzqwddwKaeQHiaU1MPUwXhbHMJR0bKQPicxoY8foc0EnZRX0NKo68BwfibEp9HM8Wg/640?wx_fmt=jpeg&quot;);background-size: 100%;"><section style="padding: 1em;line-height: 1.75em;font-size: 14px;color: rgb(51, 51, 51);letter-spacing: 1px;text-align: justify;box-sizing: border-box;"><section class="135brush"><p>// vfs_read -&gt; do_sync_read</p><p>ssize_t do_sync_read(struct file *filp, char __user *buf, size_t len, loff_t *ppos)</p><p>{</p><p>&nbsp; &nbsp; struct iovec iov = { .iov_base = buf, .iov_len = len };</p><p>&nbsp; &nbsp; struct kiocb kiocb;</p><p>&nbsp; &nbsp; ssize_t ret;</p><p>&nbsp; &nbsp; // 设置要读取的长度和开始的偏移量</p><p>&nbsp; &nbsp; init_sync_kiocb(&amp;kiocb, filp);</p><p>&nbsp; &nbsp; kiocb.ki_pos = *ppos;</p><p>&nbsp; &nbsp; kiocb.ki_left = len;</p><p>&nbsp; &nbsp; kiocb.ki_nbytes = len;</p><p>&nbsp; &nbsp; for (;;) {</p><p>&nbsp; &nbsp; &nbsp; &nbsp; // 实际开始进行读取操作</p><p>&nbsp; &nbsp; &nbsp; &nbsp; ret = filp-&gt;f_op-&gt;aio_read(&amp;kiocb, &amp;iov, 1, kiocb.ki_pos);</p><p>&nbsp; &nbsp; &nbsp; &nbsp; if (ret != -EIOCBRETRY)</p><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; break;</p><p>&nbsp; &nbsp; &nbsp; &nbsp; wait_on_retry_sync_kiocb(&amp;kiocb);</p><p>&nbsp; &nbsp; }</p><p>&nbsp; &nbsp; if (-EIOCBQUEUED == ret)</p><p>&nbsp; &nbsp; &nbsp; &nbsp; ret = wait_on_sync_kiocb(&amp;kiocb);</p><p>&nbsp; &nbsp; // 读完后更新最后的offset</p><p>&nbsp; &nbsp; *ppos = kiocb.ki_pos;</p><p>&nbsp; &nbsp; return ret;</p><p>}</p></section></section></section></section></section></section></section></section><p style="font-family: -webkit-standard;white-space: normal;">&nbsp; &nbsp; &nbsp;&nbsp;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;文件的写入也是如此，拿到offet，调用实际的写入方法，最后更新offset。到此为止一个文件的读和写的大体过程我们是清楚了，很显然上述的过程并不是原子的，无论是文件的读还是写，都至少有两个步骤，一个是拿offset，另外一个则是实际的读和写。并且在整个过程中并没有看到加锁的动作，那么第一个问题就得到了解决。对于第二个问题我们可以简要的分析下，假如有两个线程，第一个线程拿到offset是1，然后开始写入，在写入的过程中，第二个线程也去拿offset，因为对于一个文件来说多个线程是共享同一个struct file结构，因此拿到的offset仍然是1，这个时候线程1写结束，更新offset，然后线程2开始写。最后的结果显而易见，线程2覆盖了线程1的数据，通过分析可知，多线程写文件不是原子的，会产生数据覆盖。但是否会产生数据错乱，也就是数据交叉写入了?其实这种情况是不会发生的，至于为什么请看下面这段代码:</p><section class="_135editor" data-tools="135编辑器" data-id="93774" style="font-family: -webkit-standard;white-space: normal;border: 0px none;box-sizing: border-box;"><section style="background-image: url(&quot;https://mmbiz.qpic.cn/mmbiz_jpg/SeWfibBcBT0Fx12FicVVZsic5mvzqwddwKaeQHiaU1MPUwXhbHMJR0bKQPicxoY8foc0EnZRX0NKo68BwfibEp9HM8Wg/640?wx_fmt=jpeg&quot;);background-size: 100%;"><section style="padding: 1em;line-height: 1.75em;font-size: 14px;color: rgb(51, 51, 51);letter-spacing: 1px;text-align: justify;box-sizing: border-box;"><section class="135brush"><p>ssize_t generic_file_aio_write(struct kiocb *iocb, const struct iovec *iov,</p><p>&nbsp; &nbsp; &nbsp; &nbsp; unsigned long nr_segs, loff_t pos)</p><p>{</p><p>&nbsp; &nbsp; struct file *file = iocb-&gt;ki_filp;</p><p>&nbsp; &nbsp; struct inode *inode = file-&gt;f_mapping-&gt;host;</p><p>&nbsp; &nbsp; struct blk_plug plug;</p><p>&nbsp; &nbsp; ssize_t ret;</p><p>&nbsp; &nbsp; BUG_ON(iocb-&gt;ki_pos != pos);</p><p>&nbsp; &nbsp; // 文件的写入其实是加锁的</p><p>&nbsp; &nbsp; mutex_lock(&amp;inode-&gt;i_mutex);</p><p>&nbsp; &nbsp; blk_start_plug(&amp;plug);</p><p>&nbsp; &nbsp; ret = __generic_file_aio_write(iocb, iov, nr_segs, &amp;iocb-&gt;ki_pos);</p><p>&nbsp; &nbsp; mutex_unlock(&amp;inode-&gt;i_mutex);</p><p>&nbsp; &nbsp; if (ret &gt; 0 || ret == -EIOCBQUEUED) {</p><p>&nbsp; &nbsp; &nbsp; &nbsp; ssize_t err;</p><p>&nbsp; &nbsp; &nbsp; &nbsp; err = generic_write_sync(file, pos, ret);</p><p>&nbsp; &nbsp; &nbsp; &nbsp; if (err &lt; 0 &amp;&amp; ret &gt; 0)</p><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ret = err;</p><p>&nbsp; &nbsp; }</p><p>&nbsp; &nbsp; blk_finish_plug(&amp;plug);</p><p>&nbsp; &nbsp; return ret;</p><p>}</p><p>EXPORT_SYMBOL(generic_file_aio_write);</p></section></section></section></section><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;所以并不会产生数据错乱，只会存在数据覆盖的问题，既然如此我们在实际的进行文件读写的时候是否需要进行加锁呢? 加锁的确是可以解决问题的，但是在这里未免有点牛刀杀鸡的感觉，好在OS给我们提供了原子写入的方法，第一种就是在打开文件的时候添加O_APPEND标志，通过O_APPEND标志将获取文件的offset和文件写入放在一起用锁进行了保护，使得这两步是原子的，具体代码可以看上面代码中的__generic_file_aio_write函数。</p><section class="_135editor" data-tools="135编辑器" data-id="93774" style="font-family: -webkit-standard;white-space: normal;border: 0px none;box-sizing: border-box;"><section style="background-image: url(&quot;https://mmbiz.qpic.cn/mmbiz_jpg/SeWfibBcBT0Fx12FicVVZsic5mvzqwddwKaeQHiaU1MPUwXhbHMJR0bKQPicxoY8foc0EnZRX0NKo68BwfibEp9HM8Wg/640?wx_fmt=jpeg&quot;);background-size: 100%;"><section style="padding: 1em;line-height: 1.75em;font-size: 14px;color: rgb(51, 51, 51);letter-spacing: 1px;text-align: justify;box-sizing: border-box;"><section class="135brush"><p>ssize_t __generic_file_aio_write(struct kiocb *iocb, const struct iovec *iov,</p><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;unsigned long nr_segs, loff_t *ppos)</p><p>{</p><p>&nbsp; &nbsp; struct file *file = iocb-&gt;ki_filp;</p><p>&nbsp; &nbsp; struct address_space * mapping = file-&gt;f_mapping;</p><p>&nbsp; &nbsp; size_t ocount; &nbsp; &nbsp; &nbsp;/* original count */</p><p>&nbsp; &nbsp; size_t count; &nbsp; &nbsp; &nbsp; /* after file limit checks */</p><p>&nbsp; &nbsp; struct inode &nbsp; &nbsp;*inode = mapping-&gt;host;</p><p>&nbsp; &nbsp; loff_t &nbsp; &nbsp; &nbsp;pos;</p><p>&nbsp; &nbsp; ssize_t &nbsp; &nbsp; written;</p><p>&nbsp; &nbsp; ssize_t &nbsp; &nbsp; err;</p><p>&nbsp; &nbsp; ocount = 0;</p><p>&nbsp; &nbsp; err = generic_segment_checks(iov, &amp;nr_segs, &amp;ocount, VERIFY_READ);</p><p>&nbsp; &nbsp; if (err)</p><p>&nbsp; &nbsp; &nbsp; &nbsp; return err;</p><p>&nbsp; &nbsp; count = ocount;</p><p>&nbsp; &nbsp; pos = *ppos;</p><p>&nbsp; &nbsp; vfs_check_frozen(inode-&gt;i_sb, SB_FREEZE_WRITE);</p><p>&nbsp; &nbsp; /* We can write back this queue in page reclaim */</p><p>&nbsp; &nbsp; current-&gt;backing_dev_info = mapping-&gt;backing_dev_info;</p><p>&nbsp; &nbsp; written = 0;</p><p>&nbsp; &nbsp; // 重点就在这个函数</p><p>&nbsp; &nbsp; err = generic_write_checks(file, &amp;pos, &amp;count, S_ISBLK(inode-&gt;i_mode));</p><p>&nbsp; &nbsp; if (err)</p><p>&nbsp; &nbsp; &nbsp; &nbsp; goto out;</p><p>&nbsp; &nbsp; ......// 省略</p><p>}</p><p>inline int generic_write_checks(struct file *file, loff_t *pos, size_t *count, int isblk)</p><p>{</p><p>&nbsp; &nbsp; struct inode *inode = file-&gt;f_mapping-&gt;host;</p><p>&nbsp; &nbsp; unsigned long limit = rlimit(RLIMIT_FSIZE);</p><p>&nbsp; &nbsp; &nbsp; &nbsp; if (unlikely(*pos &lt; 0))</p><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return -EINVAL;</p><p>&nbsp; &nbsp; if (!isblk) {</p><p>&nbsp; &nbsp; &nbsp; &nbsp; /* FIXME: this is for backwards compatibility with 2.4 */</p><p>&nbsp; &nbsp; &nbsp; &nbsp; // 如果带有O_APPEND标志，会直接拿到文件的大小，设置为新的offset</p><p>&nbsp; &nbsp; &nbsp; &nbsp; if (file-&gt;f_flags &amp; O_APPEND)</p><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; *pos = i_size_read(inode);</p><p>&nbsp; &nbsp; &nbsp; &nbsp; if (limit != RLIM_INFINITY) {</p><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (*pos &gt;= limit) {</p><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; send_sig(SIGXFSZ, current, 0);</p><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return -EFBIG;</p><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (*count &gt; limit - (typeof(limit))*pos) {</p><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; *count = limit - (typeof(limit))*pos;</p><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p><p>&nbsp; &nbsp; &nbsp; &nbsp; }</p><p>&nbsp; &nbsp; }</p><p>&nbsp; &nbsp; ......// 省略</p><p>}</p></section></section></section></section><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;通过上面的代码可知，如果带有O_APPEND标志的情况，在文件真正写入之前会调用generic_write_checks进行一些检查，在检查的时候如果发现带有O_APPEND标志就将offset设置为文件的大小。而这整个过程都是在加锁的情况下完成的，所以带有O_APPEND标志的情况下，文件的写入是原子的，多线程写文件是不会导致数据错乱的。另外一种情况就是pwrite系统调用，pwrite系统调用通过让用户指定写入的offset，值得整个写入的过程天然的变成原子的了，在上文说到，整个写入的过程是因为获取offset和文件写入是两个独立的步骤，并没有加锁，通过pwrite省去了获取offset这一步，最终整个文件写入只有一步加锁的文件写入过程了。pwrite的代码如下:</p><section class="_135editor" data-tools="135编辑器" data-id="93774" style="font-family: -webkit-standard;white-space: normal;border: 0px none;box-sizing: border-box;"><section style="background-image: url(&quot;https://mmbiz.qpic.cn/mmbiz_jpg/SeWfibBcBT0Fx12FicVVZsic5mvzqwddwKaeQHiaU1MPUwXhbHMJR0bKQPicxoY8foc0EnZRX0NKo68BwfibEp9HM8Wg/640?wx_fmt=jpeg&quot;);background-size: 100%;"><section style="padding: 1em;line-height: 1.75em;font-size: 14px;color: rgb(51, 51, 51);letter-spacing: 1px;text-align: justify;box-sizing: border-box;"><section class="135brush"><p>SYSCALL_DEFINE(pwrite64)(unsigned int fd, const char __user *buf,</p><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;size_t count, loff_t pos)</p><p>{</p><p>&nbsp; &nbsp; struct file *file;</p><p>&nbsp; &nbsp; ssize_t ret = -EBADF;</p><p>&nbsp; &nbsp; int fput_needed;</p><p>&nbsp; &nbsp; if (pos &lt; 0)</p><p>&nbsp; &nbsp; &nbsp; &nbsp; return -EINVAL;</p><p>&nbsp; &nbsp; file = fget_light(fd, &amp;fput_needed);</p><p>&nbsp; &nbsp; if (file) {</p><p>&nbsp; &nbsp; &nbsp; &nbsp; ret = -ESPIPE;</p><p>&nbsp; &nbsp; &nbsp; &nbsp; if (file-&gt;f_mode &amp; FMODE_PWRITE) &nbsp;</p><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // 直接把offset也就是pos传递进去，而普通的write需要</p><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // 需要先从struct file中拿到offset，然后传递进去</p><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ret = vfs_write(file, buf, count, &amp;pos);</p><p>&nbsp; &nbsp; &nbsp; &nbsp; fput_light(file, fput_needed);</p><p>&nbsp; &nbsp; }</p><p>&nbsp;&nbsp;&nbsp;&nbsp;return ret;</p><p>}</p><p>SYSCALL_DEFINE3(write, unsigned int, fd, const char __user *, buf,</p><p>&nbsp; &nbsp; &nbsp; &nbsp; size_t, count)</p><p>{</p><p>&nbsp; &nbsp; struct file *file;</p><p>&nbsp; &nbsp; ssize_t ret = -EBADF;</p><p>&nbsp; &nbsp; int fput_needed;</p><p>&nbsp; &nbsp; file = fget_light(fd, &amp;fput_needed);</p><p>&nbsp; &nbsp; if (file) {</p><p>&nbsp; &nbsp; &nbsp; &nbsp; // 第一步拿offset</p><p>&nbsp; &nbsp; &nbsp; &nbsp; loff_t pos = file_pos_read(file);</p><p>&nbsp; &nbsp; &nbsp; &nbsp; // 第二步实际的写入</p><p>&nbsp; &nbsp; &nbsp; &nbsp; ret = vfs_write(file, buf, count, &amp;pos);</p><p>&nbsp; &nbsp; &nbsp; &nbsp; // 第三步写回offset</p><p>&nbsp; &nbsp; &nbsp; &nbsp; file_pos_write(file, pos);</p><p>&nbsp; &nbsp; &nbsp; &nbsp; fput_light(file, fput_needed);</p><p>&nbsp; &nbsp; }</p><p>&nbsp; &nbsp; return ret;</p><p>}</p></section></section></section></section><p style="font-family: -webkit-standard;white-space: normal;">&nbsp; &nbsp; &nbsp;&nbsp;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;最后一个问题是多个进程写同一个文件是否会造成文件写错乱，直观来说是多进程写文件不是原子的，这是很显而易见的，因为每个进程都拥有一个struct file对象，是独立的，并且都拥有独立的文件offset，所以很显然这会导致上文中说到的数据覆盖的情况，但是否会导致数据错乱呢?，答案是不会，虽然struct file对象是独立的，但是struct inode是共享的(相同的文件无论打开多少次都只有一个struct inode对象)，文件的最后写入其实是先要写入到页缓存中，而页缓存和struct inode是一一对应的关系，在实际文件写入之前会加锁，而这个锁就是属于struct inode对象(见上文中的mutex_lock(&amp;inode-&gt;i_mutex))的，所有无论有多少个进程或者线程，只要是对同一个文件写数据，拿到的都是同一把锁，是线程安全的，所以也不会出现数据写错乱的情况。</p><p><br  /></p><p><br  /></p><section class="_135editor" data-tools="135编辑器" data-id="92886" style="font-family: -webkit-standard;white-space: normal;border: 0px none;box-sizing: border-box;"><section style="padding: 10px;color: rgb(46, 164, 166);box-sizing: border-box;"><section style="display: flex;justify-content: center;align-items: center;"><section style="font-size: 12px;line-height: 1.6em;text-align: center;">▼</section><section class="135brush" data-brushtype="text" style="font-size: 16px;line-height: 1.6em;letter-spacing: 1px;padding-right: 10px;padding-left: 10px;text-align: center;box-sizing: border-box;">往期精彩回顾</section><section style="font-size: 12px;line-height: 1.6em;text-align: center;">▼</section></section><section style="margin-top: 1em;font-size: 14px;text-align: center;letter-spacing: 1px;line-height: 1.75em;color: rgb(63, 62, 63);"><section class="135brush" data-brushtype="text" style="border-bottom-width: 1px;border-bottom-style: solid;border-bottom-color: rgb(210, 210, 210);box-sizing: border-box;"><a href="https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664605824&amp;idx=1&amp;sn=2129d25620b2f190bd5302170ba2d5c8&amp;scene=21#wechat_redirect"><span style="caret-color: rgb(0, 0, 0);font-size: medium;">张义飞: Container技术之cgroup入门</span></a></section><section class="135brush" data-brushtype="text" style="margin-top: 6px;margin-bottom: 6px;border-bottom-width: 1px;border-bottom-style: solid;border-bottom-color: rgb(210, 210, 210);box-sizing: border-box;"><a href="https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664605819&amp;idx=1&amp;sn=d20dc900931fdbd2211bc44a2d686179&amp;scene=21#wechat_redirect"><span style="caret-color: rgb(0, 0, 0);font-size: medium;">mount namespace和共享子树</span></a></section><section class="135brush" data-brushtype="text" style="border-bottom-width: 1px;border-bottom-style: solid;border-bottom-color: rgb(210, 210, 210);box-sizing: border-box;"><a href="https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664605814&amp;idx=1&amp;sn=f906771d6368f7922f13969414e0db84&amp;scene=21#wechat_redirect"><span style="caret-color: rgb(0, 0, 0);font-size: medium;">Linux身份鉴别机制概述</span></a></section></section></section></section><p style="font-family: -webkit-standard;white-space: normal;"><br  /></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">张义飞</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

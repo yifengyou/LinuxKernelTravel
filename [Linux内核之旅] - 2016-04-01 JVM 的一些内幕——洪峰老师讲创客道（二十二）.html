@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		JVM 的一些内幕——洪峰老师讲创客道（二十二）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=416886882&amp;idx=1&amp;sn=6fdbdea20c6386391971b9115ba0e917&amp;chksm=76461d8741319491707213fc9305e50287afd07d57b82d67092828d51ca39b29897c4e53bfd8&amp;scene=27#wechat_redirect&cpage=75' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">JVM 的一些内幕——洪峰老师讲创客道（二十二）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        洪峰
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-04-01</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p><p><span style="">&nbsp;&nbsp;&nbsp;&nbsp;</span></p><p><mpvoice frameborder="0" class="res_iframe js_editor_audio audio_iframe" src="/cgi-bin/readtemplate?t=tmpl/audio_tmpl&amp;name=%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9322&amp;play_length=21:14" name="%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9322" play_length="1274000" voice_encode_fileid="MzI3NzA5MzUxNF80MTY4ODY4ODA="></mpvoice></p><p><span style="">从前面对</span><span style="">Java</span><span style="">语言各个特点的介绍里面，我曾经提到过</span><span style="">Java</span><span style="">语言向</span><span style="">Lisp</span><span style="">学了很多东西，其中之一就是虚拟机的概念</span><span style="">&nbsp;</span><span style="">，在这一讲中，我会向大家稍微详细的介绍一下</span><span style="">Java</span><span style="">虚拟机，设计</span><span style="">Java</span><span style="">的一个主要目标就是要跨平台，跨平台指硬件方面和操作系统方面的跨平台，为了解决</span><span style="">Java</span><span style="">程序的移植性和跨平台性，</span><span style="">Java</span><span style="">语言设计师动了许多的脑筋，他们殚精竭虑，结果就体现在</span><span style="">Java</span><span style="">虚拟机里面，这里面有必要向大家介绍一下当时设计的一些背景情况，在当时的计算机市场上，主流的一些计算机都是基于寄存器的芯片或体系架构，在讲计算机程序结构与解释的时候，在纸皮书的第五章，我们在基于寄存器的硬件上实现了</span><span style="">Scheme</span><span style="">求值器，在那个地方我们对于基于寄存器的</span><span style="">CPU</span><span style="">留下了深刻的印象，然而也有一个问题，就是说各个硬件厂商之间，比如说</span><span style="">Intel</span><span style="">公司设计的</span><span style="">Intel</span><span style="">架构和</span><span style="">MIPS</span><span style="">架构是完全不一样的，同样都是基于寄存器的</span><span style="">CPU</span><span style="">，但是关于</span><span style="">CPU</span><span style="">的数目、</span><span style="">CPU</span><span style="">的数据长度以及指令集通通都不一样，这是解决移植性的最大的一个难度。那么怎么去解决这个问题呢？</span><br  /></p><p style="text-indent:28px"><span style="">那就有必要设计一种叫做虚拟机的概念，虚拟机的概念有了之后呢，然后映射到各个基于寄存器的体系架构上，这也是</span><span style="">Java</span><span style="">虚拟机诞生的一个背景。这个问题不仅仅是困扰过当时</span><span style="">Java</span><span style="">语言的设计师们，在高德纳教授当年写《计算机编程艺术》的</span><span style="">著作</span><span style="">的时候，他也面临类似的问题，因为他已经意识到，将来所有的芯片在某个时期过时，而他想在他的</span><span style="">著作</span><span style="">里面表达一些关于不变的一些关于计算的思想，所以为了解决这个问题，他比较了当时各个基于寄存器芯片的特点，然后自己首先原创出了一种虚拟的基于寄存器的机器叫做</span><span style="">Mix</span><span style="">系统，这是他的一套做法。所以高德纳教授写的《计算机编程艺术》，他是根据他自己写的</span><span style="">Mix</span><span style="">系统而开发的。关于</span><span style="">Mix</span><span style="">体系结构的详情在《计算机编程艺术》第一卷第</span><span style="">1.3</span><span style="">节有详细的描述，大家可以去读一读这个</span><span style="">著作</span><span style="">。这里我想指出的是智者千虑必有一失，当年被高德纳教授认为非常好的</span><span style="">Mix</span><span style="">架构后来他自己也感到过时了，所以在他的书的新版本中他会把原来基于</span><span style="">Mix</span><span style="">写的代码改写成</span><span style="">Mmix</span><span style="">，</span><span style="">Mmix</span><span style="">应该是面向</span><span style="">90</span><span style="">年代的机器而提出的想法，估计过了若干年后又要过时，而且当时高德纳已经感到在他的生命中完全改写当年基于</span><span style="">Mix</span><span style="">代码的时间是不够的，所以他在网上和其他的场合经常招募志愿者来帮助他来从事这项工作，而且我后面还得知他指导一些博士生利用硬件描述语言来开发出支持</span><span style="">Mmix</span><span style="">的芯片，这反映了他对计算机体系结构的认识在不断加深。相比高德纳教授抽象出新的一种基于寄存器体系结构的做法，</span><span style="">Java</span><span style="">语言设计师们所完成的工程实践更具有原创性，他们的想法是我们已知既然有这么多基于寄存器的</span><span style="">CPU</span><span style="">彼此不兼容，我们采用的方法是干脆不采用基于寄存器体系结构来设计</span><span style="">Java</span><span style="">虚拟机，而是采用一种基于堆栈的机器来完成计算。但是堆栈计算机这个设计思想，在计算机工业的早期实际上就已经有许多的研究，其中最有名的一项进展就是在</span><span style="">1962</span><span style="">年由</span><span style="">Robert&nbsp;Barton</span><span style="">在宝来公司推出世界上第一台堆栈计算机，型号叫</span><span style="">B5000</span><span style="">，推出以后，后续型号性能更好速度更快的堆栈计算机也推了出来。</span><span style="">Robert&nbsp;&nbsp;Barton</span><span style="">曾经在</span><span style="">1980</span><span style="">年获得了计算机先驱奖，与图灵奖分量一样。</span><span style="">Robert&nbsp;&nbsp;Barton</span><span style="">当时设计堆栈计算机是为了支持递归，为了支持递归而设计了堆栈计算机。而且我前面提到过在</span><span style="">60</span><span style="">年代，</span><span style="">ALGOL</span><span style="">算法语言得到了学术界大量深入的研究，进入</span><span style="">70</span><span style="">年代以后，基于堆栈的计算机被基于寄存器的计算机所取代了，这是因为在性能速度方面的考量。当时高德纳教授设计的</span><span style="">Mix</span><span style="">就是针对</span><span style="">70</span><span style="">年代计算机提出的一种基于寄存器的计算机体系架构，然而堆栈计算机所采用的堆栈概念并没有退出历史舞台，实际上它至今仍然被应用着，</span><span style="">C</span><span style="">语言运行时系统基于堆栈的，</span><span style="">C++</span><span style="">也是一样的，现在许许多多的语言他它还使用堆栈。在</span><span style="">Scheme</span><span style="">语言里面它的运行时系统是基于堆的，而堆里面可以安排栈框，通过连续的寄存器把许多的栈框联系起来。</span></p><p style="text-indent:28px"><span style="">像这些思想都还活跃在我们今天计算机领域的核心部分，到了</span><span style="">1989</span><span style="">年的时候，由</span><span style="">Philip&nbsp;J.&nbsp;Koopman,&nbsp;Jr.&nbsp;</span><span style="">，他写了一本书叫《</span><span style="">Stack&nbsp;Computers:&nbsp;the&nbsp;new&nbsp;wave</span><span style="">》</span><span style="">,</span><span style="">（中文名：堆栈计算机新的浪潮），这本书由</span><span style="">Mountain&nbsp;NewPress</span><span style="">出版的。大家可以在网上自由下载这本书的PDF文档。我在前面说过</span><span style="">stack</span><span style="">是一种</span><span style="">LIFO(Last&nbsp;In&nbsp;First&nbsp;Out)</span><span style="">这么一种数据结构。</span></p><p style="text-indent:28px"><span style="">我在前面的讲座里还提到过我当年写的</span><span style="">《黑客道编程三字经》</span><span style="">里面对堆栈的四种用法，</span><span style="">Koopman</span><span style="">教授在他的著作里面，把</span><span style="">Stack</span><span style="">按照用途划分为几种类型，第一种</span><span style="">Stack</span><span style="">用于表达式求值，第二种用于存放返回的地址，第三种堆栈用于储存局部变量，第四种堆栈用于存放参数，当然除此之外，还有许许多多以上四种堆栈的组合，在堆栈机里是非常多的，</span><span style="">Koopman</span><span style="">教授对堆栈机的种类进行仔细的研究，而且提出了一种科学的分类方法。他把硬件的特性按照三个指标进行划分，其中第一个是有多少条硬件堆栈，然后每一条堆栈的深度，第三个指标就是操作数的数量，有</span><span style="">0</span><span style="">个、</span><span style="">1</span><span style="">个、两个，像这种划分的方法，他得到了一种科学的堆栈机的分类体系。那么按照他的分类体系，一种称之为</span><span style="">ML0</span><span style="">的堆栈机被称为标准堆栈机，</span><span style="">M</span><span style="">表示有多条堆栈</span><span style="">(Multi-Stack)</span><span style="">，</span><span style="">L</span><span style="">表示</span><span style="">Large&nbsp;Stack&nbsp;Size</span><span style="">，堆栈深度很深，它有比较浅的和比较深的堆栈之分，</span><span style="">0</span><span style="">表示没有操作数</span><span style="">ML0</span><span style="">就成为规范的堆栈机的名词。在这本书第三章的第</span><span style="">34</span><span style="">页，</span><span style="">Koopman</span><span style="">教授给出了标准堆栈机的功能框图，在这个框图中间有一个数据总线</span><span style="">Data&nbsp;Bus</span><span style="">，然后在左边有</span><span style="">Data&nbsp;Stack</span><span style="">、</span><span style="">Return&nbsp;Stack</span><span style="">，</span><span style="">Data&nbsp;Stack</span><span style="">存放数据，</span><span style="">Return&nbsp;Stack</span><span style="">存放返回地址，左边还有整个芯片的</span><span style="">IO</span><span style="">处理部分，</span><span style="">Control&nbsp;Logic</span><span style="">控制逻辑，以及包括中断这些资源。在这个数据总线右边，从上到下有</span><span style="">ALU</span><span style="">，还有</span><span style="">Top&nbsp;Of&nbsp;Stack</span><span style="">栈顶寄存器。请大家注意，在堆栈机里并不是完全排斥对寄存器的使用，寄存器是数字硬件电路的一部分，它不可能完全消失的，只是说你是否用寄存器存放内存资源，然后还有</span><span style="">Program&nbsp;Counter</span><span style="">，也就是计数器。还有</span><span style="">MAR</span><span style="">，对内存的地址的寄存器，最后还有内存，它们都连接在数据总线上。所以从框图可以看出，我们从对框图分析可以很快的得到这个结论，堆栈计算机的体系架构是非常有优美的，</span><span style="">Koopman</span><span style="">教授在这本书的第三章第</span><span style="">36</span><span style="">页还定义了标准堆栈机的</span><span style="">17</span><span style="">条指令，大家注意，指令集非常的短，只有</span><span style="">17</span><span style="">条指令，我们知道指令集越短它的实现难度也就越小，所以有很多语言在这个堆栈机和它的精简的指令集的启发下就开发出来了，其中最有名的语言应该是</span><span style="">Forth</span><span style="">，这是为了控制天文望远镜的运动，这台仪器而设计出来的语言。堆栈机对实时系统的支持非常好，这也是当时为什么用堆栈机实现</span><span style="">Forth</span><span style="">语言、开发</span><span style="">Forth</span><span style="">语言的一个出发点，除了</span><span style="">Forth</span><span style="">语言之外，还有</span><span style="">Adobe</span><span style="">公司推出的</span><span style="">PostScript</span><span style="">语言，以及自由软件基金会提供的</span><span style="">GhostScript</span><span style="">的语言，他们都支持堆栈机的编程，在这个地方我就不详细介绍了，我在</span><span style="">2005</span><span style="">年受中科院软件所所长李民树的邀请，曾经为当时的也在读的研究生或博士生做过一个讲座，在那个讲座里面，我曾经向大家介绍过关于堆栈机的一些思想，以及用于它来设计虚拟机的工程实践，那么我给出的一个结论就是如果你想追求良好的移植性，堆栈机是值得考虑的一种体系架构。</span><span style="">Java</span><span style="">语言的设计师们在</span><span style="">Java</span><span style="">的实现中，实现了自己的</span><span style="">Java</span><span style="">虚拟机，而这个</span><span style="">Java</span><span style="">虚拟机从我们规范的堆栈机来看，它是它的现代版本，从</span><span style="">JVM</span><span style="">技术规范，它的定义以及它的诸多技术细节来看，这个结论我们是可以做出来的。关于</span><span style="">JVM</span><span style="">规范，有四位作者，分别是</span><span style="">Tim&nbsp;Lindholm</span><span style="">、</span><span style="">Frank&nbsp;Yellin</span><span style="">、</span><span style="">Gilad&nbsp;Bracha</span><span style="">、</span><span style="">Alex&nbsp;Buckley</span><span style="">，这四位作者他们写了一本书《</span><span style="">The&nbsp;Java&nbsp;Virtual&nbsp;Machine&nbsp;Specification,&nbsp;Java&nbsp;SE&nbsp;8&nbsp;Edition</span><span style="">》，基于</span><span style="">Java&nbsp;SE</span><span style="">第</span><span style="">8</span><span style="">版的</span><span style="">Java</span><span style="">虚拟机规范。</span><span style="">Java</span><span style="">虚拟机版本有三个大的分支，一个是针对于嵌入式系统的</span><span style="">Java&nbsp;ME</span><span style="">，一个是标准版</span><span style="">Java&nbsp;SE</span><span style="">，还有一个企业版</span><span style="">Java&nbsp;EE</span><span style="">，这三个分叉对虚拟机的规范是不一样的，这本书是针对与</span><span style="">Java&nbsp;SE8</span><span style="">的，请大家注意一下。</span></p><p style="text-indent:28px"><span style="">我们可以从几个方向考察</span><span style="">Java</span><span style="">虚拟机的技术特点，首先一个就是如何自动的管理内存，我们前面说过，</span><span style="">Java</span><span style="">语言向</span><span style="">Lisp</span><span style="">学来了内存垃圾自动回收管理机制，那么这里面有一套算法需要大家深入的研究。第二个方向是</span><span style="">Java</span><span style="">虚拟机它是要执行</span><span style="">.class</span><span style="">文件，也就是类文件，</span><span style="">Java</span><span style="">编译器</span><span style="">javac</span><span style="">它会把一个</span><span style="">Java</span><span style="">源程序编译成</span><span style="">.class</span><span style="">文件，然后</span><span style="">.class</span><span style="">文件会交给</span><span style="">Java</span><span style="">虚拟机去执行。</span><span style="">.class</span><span style="">文件内部结构是什么，</span><span style="">Java</span><span style="">虚拟机里面它的字节码格式给出了定义。第三个问题就是</span><span style="">.class</span><span style="">文件一旦编译成功之后，它投放到</span><span style="">Java</span><span style="">虚拟机运行时，它有一个编译和代码优化的问题，那么这个问题涉及到</span><span style="">Java</span><span style="">程序的性能，而且现在有许许多多的计算机的科学大师和精英们花了很多的时间去优化</span><span style="">Java</span><span style="">虚拟机的性能，其中有一个技术叫</span><span style="">JIT</span><span style="">（</span><span style="">Just&nbsp;In&nbsp;Time</span><span style="">）被应用到了</span><span style="">Java</span><span style="">虚拟机，有了</span><span style="">JIT</span><span style="">技术后，今天在</span><span style="">Java</span><span style="">虚拟机运行</span><span style="">.class</span><span style="">文件的速度已经和</span><span style="">C++</span><span style="">甚至和</span><span style="">C</span><span style="">已经不相上下，为什么呢，因为它的优化算法是局部的而不是针对全局的，每一次</span><span style="">load</span><span style="">一个文件它的优化方法都不一样，所以在有很多的大量的优化算法</span><span style="">JIT</span><span style="">技术采用以后，</span><span style="">Java</span><span style="">程序今天的运行实际性能非常的好，它唯一的不足是</span><span style="">.class</span><span style="">文件被装载到内存系统中去的时候它的速度可能稍微慢一点，但是今天计算机的速度已经非常快了，所以说今天</span><span style="">Java</span><span style="">语言开发出来的应用程序的性能那是和</span><span style="">C++</span><span style="">、</span><span style="">C</span><span style="">相比是不相上下的，这也是一个非常大的进展。还有一个部分是关于对线程的支持，我们前面讲过</span><span style="">Java</span><span style="">语言是内置的支持多线程的，那么多线程在虚拟机上怎么去支持呢？它与它的内存模型是一个什么样的关系，那么这个需要研究</span><span style="">Java</span><span style="">虚拟机的规范以及具体的实现才能找到答案。自从</span><span style="">Java&nbsp;1995</span><span style="">年推出以后，特别是</span><span style="">Java</span><span style="">虚拟机规范推出以后，在</span><span style="">Java</span><span style="">社团推出了多种</span><span style="">Java</span><span style="">虚拟机的实现，其中最有名的一种就是</span><span style="">Sun</span><span style="">公司提出的</span><span style="">HotSpot</span><span style="">虚拟机到今天</span><span style="">Oracle</span><span style="">推出的官方版本的</span><span style="">Java</span><span style="">虚拟机，还有</span><span style="">Java8&nbsp;se</span><span style="">的</span><span style="">runtime</span><span style="">里面还是使用的</span><span style="">HotSpot</span><span style="">的虚拟机，除了</span><span style="">Sun</span><span style="">公司和</span><span style="">Oracle</span><span style="">公司推出的</span><span style="">hotspot</span><span style="">之外呢，在自由软件社团，有一个</span><span style="">OpenJDK</span><span style="">的实现，</span><span style="">OpenJDK</span><span style="">是自由开放的，它是自由软件，它也有自己的虚拟机的实现，叫</span><span style="">OpenJDK&nbsp;Runtime&nbsp;environment</span><span style="">，这个实现在</span><span style="">freeBSD</span><span style="">、</span><span style="">GNU/Linux</span><span style="">都有支持，当然还有很多其他的一些实现，我这个地方只列举其中一个比较独特的就是</span><span style="">Google</span><span style="">公司在自己的安卓系统上支持一个叫</span><span style="">Dalvik&nbsp;Java</span><span style="">虚拟机，就是说安卓手机的应用程序使用</span><span style="">Java</span><span style="">开发的，但是</span><span style="">Java</span><span style="">程序在安卓手机上跑并不是用</span><span style="">Oracle</span><span style="">或</span><span style="">Sun</span><span style="">公司的</span><span style="">HotSpot</span><span style="">虚拟机，而是用</span><span style="">Dalvik</span><span style="">这个虚拟机，那么你在</span><span style="">freeBSD</span><span style="">、</span><span style="">GNU/Linux</span><span style="">用</span><span style="">Java</span><span style="">开发环境，用</span><span style="">JDK</span><span style="">开发的</span><span style="">Java</span><span style="">应用程序可以通过</span><span style="">USB</span><span style="">线从计算机下载到安卓手机上去，下载的过程中你用</span><span style="">Java</span><span style="">开发的程序会被自动转换为</span><span style="">Dalvik</span><span style="">虚拟机所识别的字节码，这个细节请大家注意，所以说用</span><span style="">Java</span><span style="">语言为安卓手机开发应用程序从技术上来讲是不严谨的，在我刚才提到关于</span><span style="">Java</span><span style="">虚拟机的几个考察方向里面，对于内存的垃圾收集和管理的算法是非常值得研究的，每一位计算机科班出身的人员都应该对内存垃圾管理算法和内存分配策略进行详细的考察，你会从中得到大量的收获。关于</span><span style="">Java</span><span style="">虚拟机的情况我就谈这么多，下面呢我会向大家介绍有了</span><span style="">Java</span><span style="">虚拟机这个规范以及很多实现以后一个非常有趣的局面就出现了，那是什么呢，请听下集分解。</span></p><p><span style="">&nbsp;</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">洪峰</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

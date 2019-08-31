@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Linux信号专题FAQ(1)
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664604875&amp;idx=1&amp;sn=19fac88b1d2de652bc15242a921a4d3a&amp;chksm=f04d892ec73a00385aa32354e418fe556f46e086e349e7312bb04ab6f0814b32e846cd6fbdf8&amp;scene=27#wechat_redirect&cpage=29' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Linux信号专题FAQ(1)</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        张义飞
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2017-11-06</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <div class="markdown-here-wrapper" data-md-url="https://mp.weixin.qq.com/cgi-bin/appmsg?t=media/appmsg_edit&amp;action=edit&amp;type=10&amp;appmsgid=517121226&amp;token=1008175065&amp;lang=zh_CN" markdown-here-wrapper-content-modified="true"><h1 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.6em;border-bottom: 1px solid rgb(221, 221, 221);">信号：基本概念</h1><h2 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.4em;border-bottom: 1px solid rgb(238, 238, 238);">可重入、线程安全以及异步信号安全的区别?</h2><p style="margin: 0px 0px 1.2em !important;"> 参考<a href="http://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664604802&amp;idx=1&amp;sn=ec8638de00d029c3e07f2fb4698a985c&amp;chksm=f04d8967c73a0071f55b22178222dde7025f27169cb9a63fef9e5c81fd4d0c75b9f005cee188&amp;scene=21#wechat_redirect" target="_blank"><strong>可重入、线程安全和异步信号安全</strong></a>，需要强调的是异步信号安全，这个概念知道的人不多，平常大家在编写代码的时候也很少考虑这个因素，也不清楚哪些函数是异步信号安全的，哪些不是，典型的像printf就不是异步信号安全的，内部会加锁，但是平时很多人都喜欢在信号处理函数中调用。大多数情况下都不会出现问题的，所以让使用者错误的认为这是正确的写法。第二个需要注意的是可重入的概念，Linux有很不少系统调用的实现都是不可重入的，会将结果保存在内部的静态数据存储中，同时这类系统调用也提供了可重入版本的实现，其函数名就是尾部添加_r来标识。</p><h2 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.4em;border-bottom: 1px solid rgb(238, 238, 238);">信号的内部实现是怎么样的?</h2><blockquote style="margin: 1.2em 0px;border-left: 4px solid rgb(221, 221, 221);padding: 0px 1em;color: rgb(119, 119, 119);quotes: none;"><p style="margin: 0px 0px 1.2em !important;">如上图所示一个进程/线程就是一个task_struct结构，该结构包含了属于这个进程/线程的阻塞信号集、pending的信号等，所有投递到该进程/线程的信号都会通过双向链表组织在一起，链表的元素是sigqueue，所有的信号对应的信号处理函数存放在sighand_struct中的一个类型为k_sigaction数组，每次程序由核心态切换到用户态时，内核都会发起信号处理，执行信号处理程序的时候为了避免对内核产生影响，所以使用的是用户栈，还可以自定义信号处理的备用栈。</p><p style="margin: 0px 0px 1.2em !important;">信号处理函数是每次程序从核心态切换到用户态的时候，内核才会负责发起信号处理，也就是说信号处理的时机有以下两种:</p><ul style="margin-left: 0px;margin-right: 0px;" class=" list-paddingleft-2"><li style="">进程在当前时间片用完后，获得了新的时间片时(会发生内核态到用户态的切换)</li><li style="">系统调用执行完成时(信号的传递可能会引起正在阻塞的系统调用过早完成)</li></ul></blockquote><h2 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.4em;border-bottom: 1px solid rgb(238, 238, 238);">如何查看一个进程当前等待的、阻塞的、忽略的、捕获的信号?</h2><p style="margin: 0px 0px 1.2em !important;">通过查看/proc/PID/status文件，该文件中有几个字端的值，这些值按照十六进制的形式显示，最低的有效位表示信号1，相邻的左边一位代表信号2，依次类推，例如下面这几个数值:</p><pre style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em;line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;margin: 0px 0.15em;padding: 0px 0.3em;white-space: pre-wrap;border: 1px solid rgb(234, 234, 234);background-color: rgb(248, 248, 248);border-radius: 3px;display: inline;white-space: pre;overflow: auto;border-radius: 3px;border: 1px solid rgb(204, 204, 204);padding: 0.5em 0.7em;display: block !important;">SigQ: &nbsp; 0/38720 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 0是当前信号队列中的信号数，3872是信号队列的最大长度
+SigPnd: 0000000000000000 &nbsp; 当前pending的信号，也就是没有信号投递给线程
+ShdPnd: 0000000000000000 &nbsp; 当前pengding的信号，也就是没有信号投递给进程
+SigBlk: 7be3c0fe28014a03 &nbsp; 当前阻塞的信号
+SigIgn: 0000000000001000 &nbsp; 当前被忽略的信号
+SigCgt: 00000001800004ec &nbsp; 当前被捕获的信号</code></pre><h2 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.4em;border-bottom: 1px solid rgb(238, 238, 238);">信号的默认处理方式有哪些?</h2><p style="margin: 0px 0px 1.2em !important;">当信号到达的时候，默认情况下信号有如下几种处理方式:</p><ul style="margin-left: 0px;margin-right: 0px;" class=" list-paddingleft-2"><li style="">忽略信号，内核直接将信号丢弃，不对进程产生任何影响</li><li style="">终止进程，是一种异常的终止方式，和调用exit而发生的终止不同</li><li style="">产生核心存储文件，同时进程终止</li><li style="">停止进程，暂停进程的运行</li><li style="">恢复之前暂停的进程</li><li style="">执行用户自定义的信号处理器</li></ul><h2 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.4em;border-bottom: 1px solid rgb(238, 238, 238);">signal和sigaction区别?</h2><p style="margin: 0px 0px 1.2em !important;">这两者都可以用来改变信号处置，signal很原始，提供的接口也比较简单，而sigaction提供了signal所不具备的功能。为了兼容，signal系统调用仍然保存，但是glibc是使用sigaction实现了signal的功能。sigaction同时支持两种形式的信号处理，通过不用的flags区分，通过设置不同的flags可以得到不同的功能。</p><pre style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em;line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;margin: 0px 0.15em;padding: 0px 0.3em;white-space: pre-wrap;border: 1px solid rgb(234, 234, 234);background-color: rgb(248, 248, 248);border-radius: 3px;display: inline;white-space: pre;overflow: auto;border-radius: 3px;border: 1px solid rgb(204, 204, 204);padding: 0.5em 0.7em;display: block !important;">struct sigaction {
+ &nbsp;// 两种handler，兼容老的signal对应的信号处理函数
+ &nbsp; &nbsp;void &nbsp; &nbsp; (*sa_handler)(int);
+ &nbsp; &nbsp;void &nbsp; &nbsp; (*sa_sigaction)(int, siginfo_t *, void *);
+ &nbsp; &nbsp;sigset_t &nbsp; sa_mask; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// 要屏蔽的信号集
+ &nbsp; &nbsp;int &nbsp; &nbsp; &nbsp; &nbsp;sa_flags;
+ &nbsp; &nbsp;void &nbsp; &nbsp; (*sa_restorer)(void); // Not for application use
+};
+
+sa_flags:
+1. SA_NOCLDSTOP &nbsp;当接收一个信号而停止或恢复某一个子进程时，将不会产生SIGCHLD信号
+2. SA_NOCLDWAIT &nbsp;子进程终止时不会将其转化为僵尸
+3. SA_NODEFER &nbsp; &nbsp;捕获信号后，不会在执行信号处理器程序的时候自动将该信号添加到进程掩码中，也就是不会被这个 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;信号再次打断，成为死循环。
+4. SA_ONSTACK &nbsp; &nbsp;在执行信号处理函数时，使用sigaltstack安装的备选栈
+5. SA_RESETHAND &nbsp;捕获信号后，会在调用处理器函数之前将信号处置为默认值
+6. SA_RESTART &nbsp; &nbsp;自动重启由信号处理器程序中断的系统调用
+7. SA_SIGINFO &nbsp; &nbsp;调用信号处理器程序时，携带额外的参数，也就是使用sa_sigaction类型的信号处理函数</code></pre><h2 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.4em;border-bottom: 1px solid rgb(238, 238, 238);">通过Kill来检查进程是否存在?</h2><p style="margin: 0px 0px 1.2em !important;"><strong>kill</strong>系统调用可以用来向指定进程发送信号，如果指定的信号是0的时候，<strong>kill</strong>仅会进行错误的检查，查看是否可以想目标进程发送信号，而这一特点恰好可以用来检测特定进程ID所对应的进程是否存在，如果不存在那么<strong>kill</strong>调用失败，并且<strong>errno</strong>设置为<strong>ESRCH</strong></p><h2 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.4em;border-bottom: 1px solid rgb(238, 238, 238);">如何打印信号枚举值对应的信号描述?</h2><pre style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em;line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;margin: 0px 0.15em;padding: 0px 0.3em;white-space: pre-wrap;border: 1px solid rgb(234, 234, 234);background-color: rgb(248, 248, 248);border-radius: 3px;display: inline;white-space: pre;overflow: auto;border-radius: 3px;border: 1px solid rgb(204, 204, 204);padding: 0.5em 0.7em;display: block !important;">#include &lt;string.h&gt;
+#include &lt;signal.h&gt;
+#include &lt;stdio.h&gt;
+
+int main() {
+ &nbsp;printf("signal: %s\n", strsignal(SIGKILL)); // 和strerror等同 
+ &nbsp;psignal(SIGKILL, "signal"); &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// 和perror等同
+ &nbsp;return 0;
+}</code></pre><h2 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.4em;border-bottom: 1px solid rgb(238, 238, 238);">信号集的内部实现？</h2><p style="margin: 0px 0px 1.2em !important;">信号集是一种用来表示一系列信号集合的数据结构，使用sigset_t来表示，它的底层存储类型其实只是一个unsigned long类型，如下:</p><pre style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em;line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;margin: 0px 0.15em;padding: 0px 0.3em;white-space: pre-wrap;border: 1px solid rgb(234, 234, 234);background-color: rgb(248, 248, 248);border-radius: 3px;display: inline;white-space: pre;overflow: auto;border-radius: 3px;border: 1px solid rgb(204, 204, 204);padding: 0.5em 0.7em;display: block !important;">typedef unsigned long sigset_t;</code></pre><p style="margin: 0px 0px 1.2em !important;">unsigned long一共是八个字节，总共是64位，每一位表示一个信号的话，最多可以表示64个信号，这个和信号的最大值是吻合的。信号集也提供了一系列用来操作信号集的方法，sigemptyset、sigfillset、sigaddset、sigdelset、sigismember、sigisemptyset等</p><h2 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.4em;border-bottom: 1px solid rgb(238, 238, 238);">如何阻塞信号，阻塞的信号在解除阻塞后是否会投递?</h2><p style="margin: 0px 0px 1.2em !important;">阻塞信号的实现不难，通过上文中对信号内部实现的分析可知，通过将要阻塞的信号放到task_struct结构中的blocked成员中，那么在信号的投递时会先查看下要投递的信号是否在阻塞信号集中，如果在就停止投递，否则就触发对应的信号处理，通过sigprocmask可以设置当前进程的阻塞信号集，对应到内核的实现如下:</p><pre style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em;line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;margin: 0px 0.15em;padding: 0px 0.3em;white-space: pre-wrap;border: 1px solid rgb(234, 234, 234);background-color: rgb(248, 248, 248);border-radius: 3px;display: inline;white-space: pre;overflow: auto;border-radius: 3px;border: 1px solid rgb(204, 204, 204);padding: 0.5em 0.7em;display: block !important;">int sigprocmask(int how, sigset_t *set, sigset_t *oldset)
+{
+ &nbsp; &nbsp;struct task_struct *tsk = current;
+ &nbsp; &nbsp;sigset_t newset;
+
+ &nbsp; &nbsp;/* Lockless, only current can change -&gt;blocked, never from irq */
+ &nbsp; &nbsp;if (oldset)
+ &nbsp; &nbsp; &nbsp; &nbsp;*oldset = tsk-&gt;blocked;
+
+ &nbsp; &nbsp;switch (how) {
+ &nbsp; &nbsp;case SIG_BLOCK:
+ &nbsp; &nbsp; &nbsp; &nbsp;sigorsets(&amp;newset, &amp;tsk-&gt;blocked, set);
+ &nbsp; &nbsp; &nbsp; &nbsp;break;
+ &nbsp; &nbsp;case SIG_UNBLOCK:
+ &nbsp; &nbsp; &nbsp; &nbsp;sigandnsets(&amp;newset, &amp;tsk-&gt;blocked, set);
+ &nbsp; &nbsp; &nbsp; &nbsp;break;
+ &nbsp; &nbsp;case SIG_SETMASK:
+ &nbsp; &nbsp; &nbsp; &nbsp;newset = *set;
+ &nbsp; &nbsp; &nbsp; &nbsp;break;
+ &nbsp; &nbsp;default:
+ &nbsp; &nbsp; &nbsp; &nbsp;return -EINVAL;
+ &nbsp; &nbsp;}
+
+ &nbsp; &nbsp;__set_current_blocked(&amp;newset);
+ &nbsp; &nbsp;return 0;
+}</code></pre><p style="margin: 0px 0px 1.2em !important;">通过sigprocmask设置阻塞的信号集存在一个竞态，如果想在设置信号处理函数的同时再设置阻塞的信号集，那么这需要先调用signal/sigaction，然后再调用sigprocmask，在设置信号处理函数和调用sigprocmask之间存在一个间隙，如果在这个间隙期间后信号投递，那么就没有起到阻塞信号的作用了。为此sigaction的sa_mask成员可以用来设置阻塞信号集，这使得设置信号处理函数的同时就可以设置阻塞信号集。</p><p style="margin: 0px 0px 1.2em !important;">另外一个问题就是被阻塞的信号在等待解除阻塞后是否会投递到进程进行处理？信号被阻塞后就会变成待决信号，并通过链表链接起来，task_struct结构中的pending成员就是链表头，如果一个信号发送多次，linux是不保证投递相同次数的，只会保存一次，也就是非实时，不对信号排队。其中SIGKILL和SIGSTOP是不能被阻塞的。</p><h2 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.4em;border-bottom: 1px solid rgb(238, 238, 238);">如何知道当前哪些信号被阻塞了?</h2><p style="margin: 0px 0px 1.2em !important;">说白了这里就是去查询待决信号的链表也就是task_struct结构中的pending成员，将里面的信号放到信号集中返回即可。对应到内核实现如下:</p><pre style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em;line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;margin: 0px 0.15em;padding: 0px 0.3em;white-space: pre-wrap;border: 1px solid rgb(234, 234, 234);background-color: rgb(248, 248, 248);border-radius: 3px;display: inline;white-space: pre;overflow: auto;border-radius: 3px;border: 1px solid rgb(204, 204, 204);padding: 0.5em 0.7em;display: block !important;">static int do_sigpending(void *set, unsigned long sigsetsize)
+{
+ &nbsp; &nbsp;if (sigsetsize &gt; sizeof(sigset_t))
+ &nbsp; &nbsp; &nbsp; &nbsp;return -EINVAL;
+
+ &nbsp; &nbsp;spin_lock_irq(&amp;current-&gt;sighand-&gt;siglock); &nbsp;//加锁
+ &nbsp; &nbsp;sigorsets(set, &amp;current-&gt;pending.signal, &nbsp; &nbsp;// 将pengding和signal-&gt;shared_pending中的信号区取并集
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&amp;current-&gt;signal-&gt;shared_pending.signal);
+ &nbsp; &nbsp;spin_unlock_irq(&amp;current-&gt;sighand-&gt;siglock);
+
+ &nbsp; &nbsp;/* Outside the lock because only this thread touches it. &nbsp;*/
+ &nbsp; &nbsp;sigandsets(set, &amp;current-&gt;blocked, set); &nbsp; &nbsp;//最后将待决信号和阻塞的信号取交集，因为待决信号并不一定是阻塞的，有可能是还没来得及投递的，所以这里要取交集
+ &nbsp; &nbsp;return 0;
+}</code></pre><p style="margin: 0px 0px 1.2em !important;">在用户态通过sigpending函数就可以查询当前哪些被阻塞的信号是未决的(也就是已经投递到进程了，但是因为被屏蔽了还没有被处理，也就是保存在进程的pending成员中)</p><div title="MDH:PHA+IyDkv6Hlj7fvvJrln7rmnKzmpoLlv7U8L3A+PHA+PGZvbnQgY29sb3I9IiNiMjIyMjIiPjxi
+cj48L2ZvbnQ+PHNwYW4gc3R5bGU9ImNvbG9yOiAjYjIyMjIyOyAiPiMjIOWPr+mHjeWFpeOAgee6
+v+eoi+WuieWFqOS7peWPiuW8guatpeS/oeWPt+WuieWFqOeahOWMuuWIqz8gIyM8L3NwYW4+PGJy
+Pjxicj7igIPlj4LogIM8c3BhbiBzdHlsZT0iZm9udC13ZWlnaHQ6IGJvbGQ7ICI+Kirlj6/ph43l
+haXjgIHnur/nqIvlronlhajlkozlvILmraXkv6Hlj7flronlhagqKjwvc3Bhbj7vvIzpnIDopoHl
+vLrosIPnmoTmmK/lvILmraXkv6Hlj7flronlhajvvIzov5nkuKrmpoLlv7Xnn6XpgZPnmoTkurrk
+uI3lpJrvvIzlubPluLjlpKflrrblnKjnvJblhpnku6PnoIHnmoTml7blgJnkuZ/lvojlsJHogIPo
+mZHov5nkuKrlm6DntKDvvIzkuZ/kuI3muIXmpZrlk6rkupvlh73mlbDmmK/lvILmraXkv6Hlj7fl
+ronlhajnmoTvvIzlk6rkupvkuI3mmK/vvIzlhbjlnovnmoTlg49wcmludGblsLHkuI3mmK/lvILm
+raXkv6Hlj7flronlhajnmoTvvIzlhoXpg6jkvJrliqDplIHvvIzkvYbmmK/lubPml7blvojlpJrk
+urrpg73llpzmrKLlnKjkv6Hlj7flpITnkIblh73mlbDkuK3osIPnlKjjgILlpKflpJrmlbDmg4Xl
+hrXkuIvpg73kuI3kvJrlh7rnjrDpl67popjnmoTvvIzmiYDku6Xorqnkvb/nlKjogIXplJnor6/n
+moTorqTkuLrov5nmmK/mraPnoa7nmoTlhpnms5XjgILnrKzkuozkuKrpnIDopoHms6jmhI/nmoTm
+mK/lj6/ph43lhaXnmoTmpoLlv7XvvIxMaW51eOacieW+iOS4jeWwkeezu+e7n+iwg+eUqOeahOWu
+nueOsOmDveaYr+S4jeWPr+mHjeWFpeeahO+8jOS8muWwhue7k+aenOS/neWtmOWcqOWGhemDqOea
+hOmdmeaAgeaVsOaNruWtmOWCqOS4re+8jOWQjOaXtui/meexu+ezu+e7n+iwg+eUqOS5n+aPkOS+
+m+S6huWPr+mHjeWFpeeJiOacrOeahOWunueOsO+8jOWFtuWHveaVsOWQjeWwseaYr+WwvumDqOa3
+u+WKoF9y5p2l5qCH6K+G44CCPGJyPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICNiMjIyMjI7ICI+
+IyMg5L+h5Y+355qE5YaF6YOo5a6e546w5piv5oCO5LmI5qC355qEPyAjIzwvc3Bhbj48YnI+PGJy
+Pjxicj48YnI+Jmd0OyDlpoLkuIrlm77miYDnpLrkuIDkuKrov5vnqIsv57q/56iL5bCx5piv5LiA
+5LiqdGFza19zdHJ1Y3Tnu5PmnoTvvIzor6Xnu5PmnoTljIXlkKvkuoblsZ7kuo7ov5nkuKrov5vn
+qIsv57q/56iL55qE6Zi75aGe5L+h5Y+36ZuG44CBcGVuZGluZ+eahOS/oeWPt+etie+8jOaJgOac
+ieaKlemAkuWIsOivpei/m+eoiy/nur/nqIvnmoTkv6Hlj7fpg73kvJrpgJrov4flj4zlkJHpk77o
+oajnu4Tnu4flnKjkuIDotbfvvIzpk77ooajnmoTlhYPntKDmmK9zaWdxdWV1Ze+8jOaJgOacieea
+hOS/oeWPt+WvueW6lOeahOS/oeWPt+WkhOeQhuWHveaVsOWtmOaUvuWcqHNpZ2hhbmRfc3RydWN0
+5Lit55qE5LiA5Liq57G75Z6L5Li6a19zaWdhY3Rpb27mlbDnu4TvvIzmr4/mrKHnqIvluo/nlLHm
+oLjlv4PmgIHliIfmjaLliLDnlKjmiLfmgIHml7bvvIzlhoXmoLjpg73kvJrlj5Hotbfkv6Hlj7fl
+pITnkIbvvIzmiafooYzkv6Hlj7flpITnkIbnqIvluo/nmoTml7blgJnkuLrkuobpgb/lhY3lr7nl
+hoXmoLjkuqfnlJ/lvbHlk43vvIzmiYDku6Xkvb/nlKjnmoTmmK/nlKjmiLfmoIjvvIzov5jlj6/k
+u6Xoh6rlrprkuYnkv6Hlj7flpITnkIbnmoTlpIfnlKjmoIjjgII8YnI+Jmd0OyZuYnNwOzxicj4m
+Z3Q7IOS/oeWPt+WkhOeQhuWHveaVsOaYr+avj+asoeeoi+W6j+S7juaguOW/g+aAgeWIh+aNouWI
+sOeUqOaIt+aAgeeahOaXtuWAme+8jOWGheaguOaJjeS8mui0n+i0o+WPkei1t+S/oeWPt+WkhOeQ
+hu+8jOS5n+WwseaYr+ivtOS/oeWPt+WkhOeQhueahOaXtuacuuacieS7peS4i+S4pOenjTo8YnI+
+Jmd0OyZuYnNwOzxicj4mZ3Q7IC0g6L+b56iL5Zyo5b2T5YmN5pe26Ze054mH55So5a6M5ZCO77yM
+6I635b6X5LqG5paw55qE5pe26Ze054mH5pe2KOS8muWPkeeUn+WGheaguOaAgeWIsOeUqOaIt+aA
+geeahOWIh+aNoik8YnI+Jmd0OyAtIOezu+e7n+iwg+eUqOaJp+ihjOWujOaIkOaXtijkv6Hlj7fn
+moTkvKDpgJLlj6/og73kvJrlvJXotbfmraPlnKjpmLvloZ7nmoTns7vnu5/osIPnlKjov4fml6nl
+rozmiJApPGJyPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICNiMjIyMjI7ICI+IyMg5aaC5L2V5p+l
+55yL5LiA5Liq6L+b56iL5b2T5YmN562J5b6F55qE44CB6Zi75aGe55qE44CB5b+955Wl55qE44CB
+5o2V6I6355qE5L+h5Y+3PyAjIzwvc3Bhbj48YnI+PGJyPumAmui/h+afpeeciy9wcm9jL1BJRC9z
+dGF0dXPmlofku7bvvIzor6Xmlofku7bkuK3mnInlh6DkuKrlrZfnq6/nmoTlgLzvvIzov5nkupvl
+gLzmjInnhafljYHlha3ov5vliLbnmoTlvaLlvI/mmL7npLrvvIzmnIDkvY7nmoTmnInmlYjkvY3o
+oajnpLrkv6Hlj7cx77yM55u46YK755qE5bem6L655LiA5L2N5Luj6KGo5L+h5Y+3Mu+8jOS+neas
+oeexu+aOqO+8jOS+i+WmguS4i+mdoui/meWHoOS4quaVsOWAvDo8YnI+PGJyPjxicj48c3BhbiBz
+dHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7PC9zcGFuPjxi
+cj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+U2lnUTombmJzcDsmbmJzcDsmbmJzcDswLzM4NzIwJm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7MOaYr+W9k+WJjeS/oeWPt+mY
+n+WIl+S4reeahOS/oeWPt+aVsO+8jDM4NzLmmK/kv6Hlj7fpmJ/liJfnmoTmnIDlpKfplb/luqY8
+L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsgIj4mbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDtTaWdQbmQ6IDAwMDAwMDAwMDAwMDAwMDAmbmJzcDsmbmJzcDsmbmJzcDvlvZPliY1w
+ZW5kaW5n55qE5L+h5Y+377yM5Lmf5bCx5piv5rKh5pyJ5L+h5Y+35oqV6YCS57uZ57q/56iLPC9z
+cGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7U2hkUG5kOiAwMDAwMDAwMDAwMDAwMDAwJm5ic3A7Jm5ic3A7Jm5ic3A75b2T5YmNcGVu
+Z2RpbmfnmoTkv6Hlj7fvvIzkuZ/lsLHmmK/msqHmnInkv6Hlj7fmipXpgJLnu5nov5vnqIs8L3Nw
+YW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsgIj4mbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDtTaWdCbGs6IDdiZTNjMGZlMjgwMTRhMDMmbmJzcDsmbmJzcDsmbmJzcDvlvZPliY3pmLvl
+oZ7nmoTkv6Hlj7c8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsgIj4mbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDtTaWdJZ246IDAwMDAwMDAwMDAwMDEwMDAmbmJzcDsmbmJzcDsm
+bmJzcDvlvZPliY3ooqvlv73nlaXnmoTkv6Hlj7c8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xv
+cjogIzAwODAwMDsgIj4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtTaWdDZ3Q6IDAwMDAwMDAxODAw
+MDA0ZWMmbmJzcDsmbmJzcDsmbmJzcDvlvZPliY3ooqvmjZXojrfnmoTkv6Hlj7c8L3NwYW4+PGJy
+Pjxicj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjYjIyMjIyOyAiPiMjIOS/oeWPt+eahOm7mOiu
+pOWkhOeQhuaWueW8j+acieWTquS6mz8gIyM8L3NwYW4+PGJyPjxicj7lvZPkv6Hlj7fliLDovr7n
+moTml7blgJnvvIzpu5jorqTmg4XlhrXkuIvkv6Hlj7fmnInlpoLkuIvlh6Dnp43lpITnkIbmlrnl
+vI86PGJyPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICM4MDgwODA7ICI+LSZuYnNwOzwvc3Bhbj7l
+v73nlaXkv6Hlj7fvvIzlhoXmoLjnm7TmjqXlsIbkv6Hlj7fkuKLlvIPvvIzkuI3lr7nov5vnqIvk
+uqfnlJ/ku7vkvZXlvbHlk408YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjODA4MDgwOyAiPi0mbmJz
+cDs8L3NwYW4+57uI5q2i6L+b56iL77yM5piv5LiA56eN5byC5bi455qE57uI5q2i5pa55byP77yM
+5ZKM6LCD55SoZXhpdOiAjOWPkeeUn+eahOe7iOatouS4jeWQjDxicj48c3BhbiBzdHlsZT0iY29s
+b3I6ICM4MDgwODA7ICI+LSZuYnNwOzwvc3Bhbj7kuqfnlJ/moLjlv4PlrZjlgqjmlofku7bvvIzl
+kIzml7bov5vnqIvnu4jmraI8YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjODA4MDgwOyAiPi0mbmJz
+cDs8L3NwYW4+5YGc5q2i6L+b56iL77yM5pqC5YGc6L+b56iL55qE6L+Q6KGMPGJyPjxzcGFuIHN0
+eWxlPSJjb2xvcjogIzgwODA4MDsgIj4tJm5ic3A7PC9zcGFuPuaBouWkjeS5i+WJjeaaguWBnOea
+hOi/m+eoizxicj48c3BhbiBzdHlsZT0iY29sb3I6ICM4MDgwODA7ICI+LSZuYnNwOzwvc3Bhbj7m
+iafooYznlKjmiLfoh6rlrprkuYnnmoTkv6Hlj7flpITnkIblmag8YnI+PGJyPjxzcGFuIHN0eWxl
+PSJjb2xvcjogI2IyMjIyMjsgIj4jIyBzaWduYWzlkoxzaWdhY3Rpb27ljLrliKs/ICMjPC9zcGFu
+Pjxicj48YnI+6L+Z5Lik6ICF6YO95Y+v5Lul55So5p2l5pS55Y+Y5L+h5Y+35aSE572u77yMc2ln
+bmFs5b6I5Y6f5aeL77yM5o+Q5L6b55qE5o6l5Y+j5Lmf5q+U6L6D566A5Y2V77yM6ICMc2lnYWN0
+aW9u5o+Q5L6b5LqGc2lnbmFs5omA5LiN5YW35aSH55qE5Yqf6IO944CC5Li65LqG5YW85a6577yM
+c2lnbmFs57O757uf6LCD55So5LuN54S25L+d5a2Y77yM5L2G5pivZ2xpYmPmmK/kvb/nlKhzaWdh
+Y3Rpb27lrp7njrDkuoZzaWduYWznmoTlip/og73jgIJzaWdhY3Rpb27lkIzml7bmlK/mjIHkuKTn
+p43lvaLlvI/nmoTkv6Hlj7flpITnkIbvvIzpgJrov4fkuI3nlKjnmoRmbGFnc+WMuuWIhu+8jOmA
+mui/h+iuvue9ruS4jeWQjOeahGZsYWdz5Y+v5Lul5b6X5Yiw5LiN5ZCM55qE5Yqf6IO944CCPGJy
+Pjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7c3RydWN0IHNpZ2FjdGlvbiB7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgw
+MDA7ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Ly8g5Lik56eNaGFuZGxl
+cu+8jOWFvOWuueiAgeeahHNpZ25hbOWvueW6lOeahOS/oeWPt+WkhOeQhuWHveaVsDwvc3Bhbj48
+YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyAiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO3ZvaWQmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDsoKnNhX2hhbmRsZXIpKGludCk7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgw
+MDA7ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7dm9p
+ZCZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOygqc2Ffc2lnYWN0aW9uKShpbnQsIHNpZ2lu
+Zm9fdCAqLCB2b2lkICopOzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyAi
+PiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO3NpZ3NldF90
+Jm5ic3A7Jm5ic3A7Jm5ic3A7c2FfbWFzazsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsvLyDopoHlsY/olL3nmoTk
+v6Hlj7fpm4Y8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsgIj4mbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtpbnQmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtzYV9mbGFnczs8L3NwYW4+PGJyPjxz
+cGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsgIj4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDt2b2lkJm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7KCpz
+YV9yZXN0b3Jlcikodm9pZCk7IC8vIE5vdCBmb3IgYXBwbGljYXRpb24gdXNlPC9zcGFuPjxicj48
+c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7fTs8
+L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsgIj4mbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDs8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsgIj4mbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDtzYV9mbGFnczo8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjog
+IzgwODA4MDsgIj4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsxLiZuYnNwOzwvc3Bhbj5TQV9OT0NM
+RFNUT1AmbmJzcDsmbmJzcDvlvZPmjqXmlLbkuIDkuKrkv6Hlj7fogIzlgZzmraLmiJbmgaLlpI3m
+n5DkuIDkuKrlrZDov5vnqIvml7bvvIzlsIbkuI3kvJrkuqfnlJ9TSUdDSExE5L+h5Y+3PGJyPjxz
+cGFuIHN0eWxlPSJjb2xvcjogIzgwODA4MDsgIj4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsyLiZu
+YnNwOzwvc3Bhbj5TQV9OT0NMRFdBSVQmbmJzcDsmbmJzcDvlrZDov5vnqIvnu4jmraLml7bkuI3k
+vJrlsIblhbbovazljJbkuLrlg7XlsLg8YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjODA4MDgwOyAi
+PiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOzMuJm5ic3A7PC9zcGFuPlNBX05PREVGRVImbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDvmjZXojrfkv6Hlj7flkI7vvIzkuI3kvJrlnKjmiafooYzkv6Hlj7fl
+pITnkIblmajnqIvluo/nmoTml7blgJnoh6rliqjlsIbor6Xkv6Hlj7fmt7vliqDliLDov5vnqIvm
+jqnnoIHkuK3vvIzkuZ/lsLHmmK/kuI3kvJrooqvov5nkuKombmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDvkv6Hlj7flho3mrKHmiZPmlq3vvIzmiJDkuLrmrbvlvqrnjq/jgII8
+YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjODA4MDgwOyAiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OzQuJm5ic3A7PC9zcGFuPlNBX09OU1RBQ0smbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDvlnKjmiafo
+oYzkv6Hlj7flpITnkIblh73mlbDml7bvvIzkvb/nlKhzaWdhbHRzdGFja+WuieijheeahOWkh+mA
+ieagiDxicj48c3BhbiBzdHlsZT0iY29sb3I6ICM4MDgwODA7ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7NS4mbmJzcDs8L3NwYW4+U0FfUkVTRVRIQU5EJm5ic3A7Jm5ic3A75o2V6I635L+h5Y+3
+5ZCO77yM5Lya5Zyo6LCD55So5aSE55CG5Zmo5Ye95pWw5LmL5YmN5bCG5L+h5Y+35aSE572u5Li6
+6buY6K6k5YC8PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzgwODA4MDsgIj4mbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDs2LiZuYnNwOzwvc3Bhbj5TQV9SRVNUQVJUJm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A76Ieq5Yqo6YeN5ZCv55Sx5L+h5Y+35aSE55CG5Zmo56iL5bqP5Lit5pat55qE57O757uf6LCD
+55SoPGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzgwODA4MDsgIj4mbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDs3LiZuYnNwOzwvc3Bhbj5TQV9TSUdJTkZPJm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A76LCD
+55So5L+h5Y+35aSE55CG5Zmo56iL5bqP5pe277yM5pC65bim6aKd5aSW55qE5Y+C5pWw77yM5Lmf
+5bCx5piv5L2/55Soc2Ffc2lnYWN0aW9u57G75Z6L55qE5L+h5Y+35aSE55CG5Ye95pWwPGJyPjxi
+cj48c3BhbiBzdHlsZT0iY29sb3I6ICNiMjIyMjI7ICI+IyMg6YCa6L+HS2lsbOadpeajgOafpei/
+m+eoi+aYr+WQpuWtmOWcqD8gIyM8L3NwYW4+PGJyPjxicj48c3BhbiBzdHlsZT0iZm9udC13ZWln
+aHQ6IGJvbGQ7ICI+KipraWxsKio8L3NwYW4+57O757uf6LCD55So5Y+v5Lul55So5p2l5ZCR5oyH
+5a6a6L+b56iL5Y+R6YCB5L+h5Y+377yM5aaC5p6c5oyH5a6a55qE5L+h5Y+35pivMOeahOaXtuWA
+me+8jDxzcGFuIHN0eWxlPSJmb250LXdlaWdodDogYm9sZDsgIj4qKmtpbGwqKjwvc3Bhbj7ku4Xk
+vJrov5vooYzplJnor6/nmoTmo4Dmn6XvvIzmn6XnnIvmmK/lkKblj6/ku6Xmg7Pnm67moIfov5vn
+qIvlj5HpgIHkv6Hlj7fvvIzogIzov5nkuIDnibnngrnmgbDlpb3lj6/ku6XnlKjmnaXmo4DmtYvn
+ibnlrprov5vnqItJROaJgOWvueW6lOeahOi/m+eoi+aYr+WQpuWtmOWcqO+8jOWmguaenOS4jeWt
+mOWcqOmCo+S5iDxzcGFuIHN0eWxlPSJmb250LXdlaWdodDogYm9sZDsgIj4qKmtpbGwqKjwvc3Bh
+bj7osIPnlKjlpLHotKXvvIzlubbkuJQ8c3BhbiBzdHlsZT0iZm9udC13ZWlnaHQ6IGJvbGQ7ICI+
+KiplcnJubyoqPC9zcGFuPuiuvue9ruS4ujxzcGFuIHN0eWxlPSJmb250LXdlaWdodDogYm9sZDsg
+Ij4qKkVTUkNIKio8L3NwYW4+PGJyPjxicj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjYjIyMjIy
+OyAiPiMjIOWmguS9leaJk+WNsOS/oeWPt+aemuS4vuWAvOWvueW6lOeahOS/oeWPt+aPj+i/sD8g
+IyM8L3NwYW4+PGJyPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICNiMjIyMjI7ICI+Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7I2luY2x1ZGUgJmx0O3N0cmluZy5oJmd0Ozwvc3Bhbj48YnI+PHNwYW4g
+c3R5bGU9ImNvbG9yOiAjYjIyMjIyOyAiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyNpbmNsdWRl
+ICZsdDtzaWduYWwuaCZndDs8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogI2IyMjIyMjsg
+Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsjaW5jbHVkZSAmbHQ7c3RkaW8uaCZndDs8L3NwYW4+
+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsgIj4mbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDs8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsgIj4mbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDtpbnQgbWFpbigpIHs8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAw
+ODAwMDsgIj4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtwcmludGYoInNpZ25h
+bDogJXNcbiIsIHN0cnNpZ25hbChTSUdLSUxMKSk7IC8vIOWSjHN0cmVycm9y562J5ZCMJm5ic3A7
+PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7cHNpZ25hbChTSUdLSUxMLCAic2lnbmFsIik7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Ly8g5ZKMcGVycm9y562J5ZCMPC9zcGFuPjxi
+cj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7cmV0dXJuIDA7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgw
+MDA7ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7fTwvc3Bhbj48YnI+PGJyPjxzcGFuIHN0eWxl
+PSJjb2xvcjogI2IyMjIyMjsgIj4jIyDkv6Hlj7fpm4bnmoTlhoXpg6jlrp7njrDvvJ8gIyM8L3Nw
+YW4+PGJyPjxicj7kv6Hlj7fpm4bmmK/kuIDnp43nlKjmnaXooajnpLrkuIDns7vliJfkv6Hlj7fp
+m4blkIjnmoTmlbDmja7nu5PmnoTvvIzkvb/nlKhzaWdzZXRfdOadpeihqOekuu+8jOWug+eahOW6
+leWxguWtmOWCqOexu+Wei+WFtuWunuWPquaYr+S4gOS4qnVuc2lnbmVkIGxvbmfnsbvlnovvvIzl
+poLkuIs6PGJyPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7dHlwZWRlZiB1bnNpZ25lZCBsb25nIHNpZ3NldF90Ozwvc3Bhbj48YnI+PGJy
+PnVuc2lnbmVkIGxvbmfkuIDlhbHmmK/lhavkuKrlrZfoioLvvIzmgLvlhbHmmK82NOS9je+8jOav
+j+S4gOS9jeihqOekuuS4gOS4quS/oeWPt+eahOivne+8jOacgOWkmuWPr+S7peihqOekujY05Liq
+5L+h5Y+377yM6L+Z5Liq5ZKM5L+h5Y+355qE5pyA5aSn5YC85piv5ZC75ZCI55qE44CC5L+h5Y+3
+6ZuG5Lmf5o+Q5L6b5LqG5LiA57O75YiX55So5p2l5pON5L2c5L+h5Y+36ZuG55qE5pa55rOV77yM
+c2lnZW1wdHlzZXTjgIFzaWdmaWxsc2V044CBc2lnYWRkc2V044CBc2lnZGVsc2V044CBc2lnaXNt
+ZW1iZXLjgIFzaWdpc2VtcHR5c2V0562JPGJyPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICNiMjIy
+MjI7ICI+IyMg5aaC5L2V6Zi75aGe5L+h5Y+377yM6Zi75aGe55qE5L+h5Y+35Zyo6Kej6Zmk6Zi7
+5aGe5ZCO5piv5ZCm5Lya5oqV6YCSPyAjIzwvc3Bhbj48YnI+PGJyPumYu+WhnuS/oeWPt+eahOWu
+nueOsOS4jemavu+8jOmAmui/h+S4iuaWh+S4reWvueS/oeWPt+WGhemDqOWunueOsOeahOWIhuae
+kOWPr+efpe+8jOmAmui/h+WwhuimgemYu+WhnueahOS/oeWPt+aUvuWIsHRhc2tfc3RydWN057uT
+5p6E5Lit55qEYmxvY2tlZOaIkOWRmOS4re+8jOmCo+S5iOWcqOS/oeWPt+eahOaKlemAkuaXtuS8
+muWFiOafpeeci+S4i+imgeaKlemAkueahOS/oeWPt+aYr+WQpuWcqOmYu+WhnuS/oeWPt+mbhuS4
+re+8jOWmguaenOWcqOWwseWBnOatouaKlemAku+8jOWQpuWImeWwseinpuWPkeWvueW6lOeahOS/
+oeWPt+WkhOeQhu+8jOmAmui/h3NpZ3Byb2NtYXNr5Y+v5Lul6K6+572u5b2T5YmN6L+b56iL55qE
+6Zi75aGe5L+h5Y+36ZuG77yM5a+55bqU5Yiw5YaF5qC455qE5a6e546w5aaC5LiLOjxicj48YnI+
+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyAiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO2lu
+dCBzaWdwcm9jbWFzayhpbnQgaG93LCBzaWdzZXRfdCAqc2V0LCBzaWdzZXRfdCAqb2xkc2V0KTwv
+c3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyAiPiZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwO3s8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsgIj4mbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtzdHJ1Y3QgdGFza19zdHJ1
+Y3QgKnRzayA9IGN1cnJlbnQ7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7
+ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7c2lnc2V0
+X3QgbmV3c2V0Ozwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyAiPiZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAw
+OyAiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOy8qIExv
+Y2tsZXNzLCBvbmx5IGN1cnJlbnQgY2FuIGNoYW5nZSAtJmd0O2Jsb2NrZWQsIG5ldmVyIGZyb20g
+aXJxICovPC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7aWYgKG9sZHNldCk8L3NwYW4+
+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsgIj4mbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsqb2xkc2V0
+ID0gdHNrLSZndDtibG9ja2VkOzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAw
+OyAiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9y
+OiAjMDA4MDAwOyAiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwO3N3aXRjaCAoaG93KSB7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7
+ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Y2FzZSBT
+SUdfQkxPQ0s6PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7c2lnb3JzZXRzKCZhbXA7bmV3c2V0LCAmYW1wO3Rzay0mZ3Q7YmxvY2tlZCwgc2V0
+KTs8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsgIj4mbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDticmVhazs8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsgIj4mbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtjYXNlIFNJR19VTkJMT0NL
+Ojwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyAiPiZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+O3NpZ2FuZG5zZXRzKCZhbXA7bmV3c2V0LCAmYW1wO3Rzay0mZ3Q7YmxvY2tlZCwgc2V0KTs8L3Nw
+YW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsgIj4mbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDticmVh
+azs8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsgIj4mbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtjYXNlIFNJR19TRVRNQVNLOjwvc3Bh
+bj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyAiPiZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO25ld3Nl
+dCA9ICpzZXQ7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7YnJlYWs7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7ZGVmYXVsdDo8
+L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsgIj4mbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDty
+ZXR1cm4gLUVJTlZBTDs8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsgIj4m
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDt9PC9zcGFuPjxi
+cj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7X19zZXRfY3VycmVudF9ibG9ja2VkKCZh
+bXA7bmV3c2V0KTs8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsgIj4mbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtyZXR1cm4gMDs8L3Nw
+YW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsgIj4mbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDt9PC9zcGFuPjxicj48YnI+PGJyPjxicj7pgJrov4dzaWdwcm9jbWFza+iuvue9rumYu+Wh
+nueahOS/oeWPt+mbhuWtmOWcqOS4gOS4quernuaAge+8jOWmguaenOaDs+WcqOiuvue9ruS/oeWP
+t+WkhOeQhuWHveaVsOeahOWQjOaXtuWGjeiuvue9rumYu+WhnueahOS/oeWPt+mbhu+8jOmCo+S5
+iOi/memcgOimgeWFiOiwg+eUqHNpZ25hbC9zaWdhY3Rpb27vvIznhLblkI7lho3osIPnlKhzaWdw
+cm9jbWFza++8jOWcqOiuvue9ruS/oeWPt+WkhOeQhuWHveaVsOWSjOiwg+eUqHNpZ3Byb2NtYXNr
+5LmL6Ze05a2Y5Zyo5LiA5Liq6Ze06ZqZ77yM5aaC5p6c5Zyo6L+Z5Liq6Ze06ZqZ5pyf6Ze05ZCO
+5L+h5Y+35oqV6YCS77yM6YKj5LmI5bCx5rKh5pyJ6LW35Yiw6Zi75aGe5L+h5Y+355qE5L2c55So
+5LqG44CC5Li65q2kc2lnYWN0aW9u55qEc2FfbWFza+aIkOWRmOWPr+S7peeUqOadpeiuvue9rumY
+u+WhnuS/oeWPt+mbhu+8jOi/meS9v+W+l+iuvue9ruS/oeWPt+WkhOeQhuWHveaVsOeahOWQjOaX
+tuWwseWPr+S7peiuvue9rumYu+WhnuS/oeWPt+mbhuOAgjxicj48YnI+5Y+m5aSW5LiA5Liq6Zeu
+6aKY5bCx5piv6KKr6Zi75aGe55qE5L+h5Y+35Zyo562J5b6F6Kej6Zmk6Zi75aGe5ZCO5piv5ZCm
+5Lya5oqV6YCS5Yiw6L+b56iL6L+b6KGM5aSE55CG77yf5L+h5Y+36KKr6Zi75aGe5ZCO5bCx5Lya
+5Y+Y5oiQ5b6F5Yaz5L+h5Y+377yM5bm26YCa6L+H6ZO+6KGo6ZO+5o6l6LW35p2l77yMdGFza19z
+dHJ1Y3Tnu5PmnoTkuK3nmoRwZW5kaW5n5oiQ5ZGY5bCx5piv6ZO+6KGo5aS077yM5aaC5p6c5LiA
+5Liq5L+h5Y+35Y+R6YCB5aSa5qyh77yMbGludXjmmK/kuI3kv53or4HmipXpgJLnm7jlkIzmrKHm
+lbDnmoTvvIzlj6rkvJrkv53lrZjkuIDmrKHvvIzkuZ/lsLHmmK/pnZ7lrp7ml7bvvIzkuI3lr7nk
+v6Hlj7fmjpLpmJ/jgILlhbbkuK1TSUdLSUxM5ZKMU0lHU1RPUOaYr+S4jeiDveiiq+mYu+Whnuea
+hOOAgiZuYnNwOzxicj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjYjIyMjIyOyAiPiMjIOWmguS9
+leefpemBk+W9k+WJjeWTquS6m+S/oeWPt+iiq+mYu+WhnuS6hj8gIyM8L3NwYW4+PGJyPjxicj7o
+r7Tnmb3kuobov5nph4zlsLHmmK/ljrvmn6Xor6LlvoXlhrPkv6Hlj7fnmoTpk77ooajkuZ/lsLHm
+mK90YXNrX3N0cnVjdOe7k+aehOS4reeahHBlbmRpbmfmiJDlkZjvvIzlsIbph4zpnaLnmoTkv6Hl
+j7fmlL7liLDkv6Hlj7fpm4bkuK3ov5Tlm57ljbPlj6/jgILlr7nlupTliLDlhoXmoLjlrp7njrDl
+poLkuIs6PGJyPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7c3RhdGljIGludCBkb19zaWdwZW5kaW5nKHZvaWQgKnNldCwgdW5zaWduZWQg
+bG9uZyBzaWdzZXRzaXplKTwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyAi
+PiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO3s8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjog
+IzAwODAwMDsgIj4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDtpZiAoc2lnc2V0c2l6ZSAmZ3Q7IHNpemVvZihzaWdzZXRfdCkpPC9zcGFuPjxicj48c3BhbiBz
+dHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7cmV0dXJuIC1FSU5WQUw7PC9z
+cGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7c3Bpbl9sb2NrX2lycSgmYW1w
+O2N1cnJlbnQtJmd0O3NpZ2hhbmQtJmd0O3NpZ2xvY2spOyZuYnNwOyZuYnNwOy8v5Yqg6ZSBPC9z
+cGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7c2lnb3JzZXRzKHNldCwgJmFtcDtjdXJyZW50
+LSZndDtwZW5kaW5nLnNpZ25hbCwmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsvLyDlsIZwZW5nZGlu
+Z+WSjHNpZ25hbC0mZ3Q7c2hhcmVkX3BlbmRpbmfkuK3nmoTkv6Hlj7fljLrlj5blubbpm4Y8L3Nw
+YW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsgIj4mbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDsmYW1wO2N1cnJlbnQtJmd0O3NpZ25hbC0mZ3Q7c2hhcmVkX3BlbmRpbmcuc2lnbmFs
+KTs8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsgIj4mbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtzcGluX3VubG9ja19pcnEoJmFtcDtj
+dXJyZW50LSZndDtzaWdoYW5kLSZndDtzaWdsb2NrKTs8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJj
+b2xvcjogIzAwODAwMDsgIj4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDs8L3NwYW4+PGJyPjxzcGFu
+IHN0eWxlPSJjb2xvcjogIzAwODAwMDsgIj4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsvKiBPdXRzaWRlIHRoZSBsb2NrIGJlY2F1c2Ugb25seSB0aGlzIHRo
+cmVhZCB0b3VjaGVzIGl0LiZuYnNwOyZuYnNwOyovPC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29s
+b3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7c2lnYW5kc2V0cyhzZXQsICZhbXA7Y3VycmVudC0mZ3Q7YmxvY2tlZCwgc2V0KTsmbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDsvL+acgOWQjuWwhuW+heWGs+S/oeWPt+WSjOmYu+WhnueahOS/
+oeWPt+WPluS6pOmbhu+8jOWboOS4uuW+heWGs+S/oeWPt+W5tuS4jeS4gOWumuaYr+mYu+Whnuea
+hO+8jOacieWPr+iDveaYr+i/mOayoeadpeW+l+WPiuaKlemAkueahO+8jOaJgOS7pei/memHjOim
+geWPluS6pOmbhjwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyAiPiZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO3JldHVybiAwOzwvc3Bh
+bj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyAiPiZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwO308L3NwYW4+PGJyPjxicj7lnKjnlKjmiLfmgIHpgJrov4dzaWdwZW5kaW5n5Ye95pWw5bCx
+5Y+v5Lul5p+l6K+i5b2T5YmN5ZOq5Lqb6KKr6Zi75aGe55qE5L+h5Y+35piv5pyq5Yaz55qEKOS5
+n+WwseaYr+W3sue7j+aKlemAkuWIsOi/m+eoi+S6hu+8jOS9huaYr+WboOS4uuiiq+Wxj+iUveS6
+hui/mOayoeacieiiq+WkhOeQhu+8jOS5n+WwseaYr+S/neWtmOWcqOi/m+eoi+eahHBlbmRpbmfm
+iJDlkZjkuK0pPC9wPg==" style="height:0;width:0;max-height:0;max-width:0;overflow:hidden;font-size:0em;padding:0;margin:0;"></div></div>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">张义飞</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                <div class="reward_qrcode_area reward_area tc" id="js_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                                        <p class="reward_tips"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" id="js_reward_qrcode_img"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

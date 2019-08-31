@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		The Future of Docker Containers
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664606599&amp;idx=1&amp;sn=9c71c87f720e1ed9e0195ae76418cc8d&amp;chksm=f04d8662c73a0f7410e7efa961683cd2f401558f78b1c2705d867604f37f1ee6ffd57261b72d&amp;scene=27#wechat_redirect&cpage=2' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">The Future of Docker Containers</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                                            
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2019-07-06</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                <a class="original_area_primary" id="copyright_info" href="##" style="visibility:hidden">
+                    <span class="tips_global_primary">文章转载自公众号</span>
+                    <span class="radius_avatar">
+                                            <img class="avatar" src="http://wx.qlogo.cn/mmhead/Q3auHgzwzM6cga6DtKYhNxna0Eias71mxPD7sVuxpg2WTY7ZBPvzBqQ/0" alt="内核月谈">
+                                          </span>
+                    <span class="original_primary_nickname rich_media_meta_link js_nickname">内核月谈</span>
+                                        <span class="tips_global_primary" id="js_comma">，</span>
+                    <span class="original_primary_author_wrp tips_global_primary" id="js_author">
+                      作者                                            阿里 灵甫 译
+                                          </span>
+                                    </a>
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="box-sizing: border-box;margin-bottom: 0.75em;border-width: 0px;border-style: initial;border-color: initial;font-variant-numeric: inherit;font-variant-east-asian: inherit;font-stretch: inherit;font-size: 16px;line-height: inherit;font-family: consolas, monaco, courier, &quot;courier new&quot;, fixed-width;vertical-align: baseline;color: rgba(51, 51, 51, 0.8);text-align: start;white-space: normal;background-color: rgb(255, 255, 255);">译者注：本文非全文直译，已省略部分关于原作者和docker公司的介绍，只针对技术部分翻译，并附上本人的一些理解，仅供参考。</p><hr style="box-sizing: border-box;border-bottom: 2px solid rgb(222, 222, 222);border-left: 0px;border-right: 0px;border-top: none;margin-top: 0.75em;margin-bottom: 0.75em;width: 800px;color: rgba(51, 51, 51, 0.8);font-family: consolas, monaco, courier, &quot;courier new&quot;, fixed-width;font-size: 16px;text-align: start;white-space: normal;background-color: rgb(255, 255, 255);"  /><p style="box-sizing: border-box;margin-bottom: 0.75em;border-width: 0px;border-style: initial;border-color: initial;font-variant-numeric: inherit;font-variant-east-asian: inherit;font-stretch: inherit;font-size: 16px;line-height: inherit;font-family: consolas, monaco, courier, &quot;courier new&quot;, fixed-width;vertical-align: baseline;color: rgba(51, 51, 51, 0.8);text-align: start;white-space: normal;background-color: rgb(255, 255, 255);">Docker在2013年开始使用LXC作为其基础技术，但它在过去六年中已经远不止于此，例如由docker主导的libcontainer项目，以及参与OCI标准制定，后者已经成为了容器运行时的实现规范。该规范包括runc容器运行时（container runtime），同时也是开源项目Containerd的核心。Containerd是Cloud Native Computing Foundation（CNCF）的托管项目成员，在项目稳定性和成熟度方面已达到CNCF中的顶级水平。</p><h2 style="box-sizing: border-box;margin-top: 0.75em;margin-bottom: 0.75em;border-width: 0px;border-style: initial;border-color: initial;font-variant-numeric: inherit;font-variant-east-asian: inherit;font-weight: 700;font-stretch: inherit;font-size: 1.625rem;line-height: 1.2;font-family: consolas, monaco, courier, &quot;courier new&quot;, fixed-width;vertical-align: baseline;color: rgba(51, 51, 51, 0.8);text-align: start;white-space: normal;background-color: rgb(255, 255, 255);">docker 19.03</h2><p style="box-sizing: border-box;margin-bottom: 0.75em;border-width: 0px;border-style: initial;border-color: initial;font-variant-numeric: inherit;font-variant-east-asian: inherit;font-stretch: inherit;font-size: 16px;line-height: inherit;font-family: consolas, monaco, courier, &quot;courier new&quot;, fixed-width;vertical-align: baseline;color: rgba(51, 51, 51, 0.8);text-align: start;white-space: normal;background-color: rgb(255, 255, 255);">在Docker CE 19.03开始将全面支持NVIDIA GPU，这标志着Docker首次以无缝方式集成了GPU支持。NVIDIA GPU 支持将使容器工作负载能够充分利用这些GPU提供的额外处理能力，这通常在人工智能和机器学习用例中被广泛应用。</p><p style="box-sizing: border-box;margin-bottom: 0.75em;border-width: 0px;border-style: initial;border-color: initial;font-variant-numeric: inherit;font-variant-east-asian: inherit;font-stretch: inherit;font-size: 16px;line-height: inherit;font-family: consolas, monaco, courier, &quot;courier new&quot;, fixed-width;vertical-align: baseline;color: rgba(51, 51, 51, 0.8);text-align: start;white-space: normal;background-color: rgb(255, 255, 255);">Containerd版本也将升级到1.2版本。除了多个bugfix和性能提升，还包括一个集成了gRPC接口的容器运行时，旨在简化容器管理。</p><h2 style="box-sizing: border-box;margin-top: 0.75em;margin-bottom: 0.75em;border-width: 0px;border-style: initial;border-color: initial;font-variant-numeric: inherit;font-variant-east-asian: inherit;font-weight: 700;font-stretch: inherit;font-size: 1.625rem;line-height: 1.2;font-family: consolas, monaco, courier, &quot;courier new&quot;, fixed-width;vertical-align: baseline;color: rgba(51, 51, 51, 0.8);text-align: start;white-space: normal;background-color: rgb(255, 255, 255);">the future of docker</h2><p style="box-sizing: border-box;margin-bottom: 0.75em;border-width: 0px;border-style: initial;border-color: initial;font-variant-numeric: inherit;font-variant-east-asian: inherit;font-stretch: inherit;font-size: 16px;line-height: inherit;font-family: consolas, monaco, courier, &quot;courier new&quot;, fixed-width;vertical-align: baseline;color: rgba(51, 51, 51, 0.8);text-align: start;white-space: normal;background-color: rgb(255, 255, 255);">Docker容器最初是为了能充分利用Linux内核特性而设计的，而Docker的未来也是要更充分地去利用更新的内核功能。容器由各种内核功能组成，如cgroups，命名空间，LSM和seccomp，我们必须把所有这些东西结合起来，以创造我们现在所知的容器。</p><p style="box-sizing: border-box;margin-bottom: 0.75em;border-width: 0px;border-style: initial;border-color: initial;font-variant-numeric: inherit;font-variant-east-asian: inherit;font-stretch: inherit;font-size: 16px;line-height: inherit;font-family: consolas, monaco, courier, &quot;courier new&quot;, fixed-width;vertical-align: baseline;color: rgba(51, 51, 51, 0.8);text-align: start;white-space: normal;background-color: rgb(255, 255, 255);">展望容器和Docker的未来，主要是处理近年来出现的不同需求。这些需求之一是利用Linux 5.0及更高版本中的现代内核功能，以及处理不同类型的新应用负载，包括有状态的应用负载（stateful workload）。这需要一定程度的持久化能力，而无状态负载中不需要这种持续性。用于网络边缘部署的边缘负载是另一个新兴的用例。物联网（IoT）、小型设备和工业设置中的嵌入式负载也是Docker在2019年的一个重要用例。</p><p style="box-sizing: border-box;margin-bottom: 0.75em;border-width: 0px;border-style: initial;border-color: initial;font-variant-numeric: inherit;font-variant-east-asian: inherit;font-stretch: inherit;font-size: 16px;line-height: inherit;font-family: consolas, monaco, courier, &quot;courier new&quot;, fixed-width;vertical-align: baseline;color: rgba(51, 51, 51, 0.8);text-align: start;white-space: normal;background-color: rgb(255, 255, 255);">Docker将在未来充分利用的Linux内核功能之一是&nbsp;<code class="highlighter-rouge" style="box-sizing: border-box;padding-right: 5px;padding-left: 5px;border-width: initial;border-style: none;border-color: initial;font-style: inherit;font-variant: inherit;font-weight: inherit;font-stretch: inherit;font-size: 1em;line-height: inherit;vertical-align: baseline;background: none rgb(237, 237, 237);border-radius: 0px;">eBPF</code>&nbsp;，未来可能用于编写seccomp filter。seccomp和BPF允许在内核中进行灵活的系统调用拦截，这为容器的控制和安全打开了新的大门。</p><p style="box-sizing: border-box;margin-bottom: 0.75em;border-width: 0px;border-style: initial;border-color: initial;font-variant-numeric: inherit;font-variant-east-asian: inherit;font-stretch: inherit;font-size: 16px;line-height: inherit;font-family: consolas, monaco, courier, &quot;courier new&quot;, fixed-width;vertical-align: baseline;color: rgba(51, 51, 51, 0.8);text-align: start;white-space: normal;background-color: rgb(255, 255, 255);"><code class="highlighter-rouge" style="box-sizing: border-box;padding-right: 5px;padding-left: 5px;border-width: initial;border-style: none;border-color: initial;font-style: inherit;font-variant: inherit;font-weight: inherit;font-stretch: inherit;font-size: 1em;line-height: inherit;vertical-align: baseline;background: none rgb(237, 237, 237);border-radius: 0px;">Cgroups v2</code>&nbsp;是另一个重要的Linux特性。自Linux 4.5发布以来，cgroups v2一直在内核中，但Docker并没有立即采用它作为支持技术。该项目并不是唯一一个不立即支持cgroups v2，Red Hat的Fedora也没有集成cgroups v2，尽管它计划发布目前定于11月发布的Fedora 31版本。然而，cgroups v2将为Docker提供更好的资源隔离和管理功能。</p><p style="box-sizing: border-box;margin-bottom: 0.75em;border-width: 0px;border-style: initial;border-color: initial;font-variant-numeric: inherit;font-variant-east-asian: inherit;font-stretch: inherit;font-size: 16px;line-height: inherit;font-family: consolas, monaco, courier, &quot;courier new&quot;, fixed-width;vertical-align: baseline;color: rgba(51, 51, 51, 0.8);text-align: start;white-space: normal;background-color: rgb(255, 255, 255);">增强用户名称空间支持（Enhanced user namespace support） 也在docker发展的roadmap中，主要是为了增强非根权限容器（rootless container）的相关功能。在默认情况下不使用更高权限来运行容器将有助于提高安全性。使用用户命名空间运行 rootless container 的想法并不是一个新概念，但它很快就会成为技术现实。</p><p style="box-sizing: border-box;margin-bottom: 0.75em;border-width: 0px;border-style: initial;border-color: initial;font-variant-numeric: inherit;font-variant-east-asian: inherit;font-stretch: inherit;font-size: 16px;line-height: inherit;font-family: consolas, monaco, courier, &quot;courier new&quot;, fixed-width;vertical-align: baseline;color: rgba(51, 51, 51, 0.8);text-align: start;white-space: normal;background-color: rgb(255, 255, 255);">更多的内核安全支持会不断加入到docker中。SELinux和AppArmor不再是开发人员想要的唯一Linux安全模块（LSM）。Docker开发人员正在努力支持的新兴LSM是&nbsp;<code class="highlighter-rouge" style="box-sizing: border-box;padding-right: 5px;padding-left: 5px;border-width: initial;border-style: none;border-color: initial;font-style: inherit;font-variant: inherit;font-weight: inherit;font-stretch: inherit;font-size: 1em;line-height: inherit;vertical-align: baseline;background: none rgb(237, 237, 237);border-radius: 0px;">Landlock</code>&nbsp;。用户还可以使用eBPF编写自己的自定义LSM。seccomp BPF的出现也值得关注。</p><h2 style="box-sizing: border-box;margin-top: 0.75em;margin-bottom: 0.75em;border-width: 0px;border-style: initial;border-color: initial;font-variant-numeric: inherit;font-variant-east-asian: inherit;font-weight: 700;font-stretch: inherit;font-size: 1.625rem;line-height: 1.2;font-family: consolas, monaco, courier, &quot;courier new&quot;, fixed-width;vertical-align: baseline;color: rgba(51, 51, 51, 0.8);text-align: start;white-space: normal;background-color: rgb(255, 255, 255);">Making containers more stateful</h2><p style="box-sizing: border-box;margin-bottom: 0.75em;border-width: 0px;border-style: initial;border-color: initial;font-variant-numeric: inherit;font-variant-east-asian: inherit;font-stretch: inherit;font-size: 16px;line-height: inherit;font-family: consolas, monaco, courier, &quot;courier new&quot;, fixed-width;vertical-align: baseline;color: rgba(51, 51, 51, 0.8);text-align: start;white-space: normal;background-color: rgb(255, 255, 255);">Docker的状态化能力（stateful capabilities）目前相对有限。更好的状态化能力包括单个容器的备份（backup），还原（restore），克隆（clone）和迁移（migrate）功能。今天Docker中的状态化能力通常依赖于存储（storage volume）而不是实际的容器本身。</p><p style="box-sizing: border-box;margin-bottom: 0.75em;border-width: 0px;border-style: initial;border-color: initial;font-variant-numeric: inherit;font-variant-east-asian: inherit;font-stretch: inherit;font-size: 16px;line-height: inherit;font-family: consolas, monaco, courier, &quot;courier new&quot;, fixed-width;vertical-align: baseline;color: rgba(51, 51, 51, 0.8);text-align: start;white-space: normal;background-color: rgb(255, 255, 255);">我们现在都知道容器镜像是可移植的（在多个地方使用），但是容器是否也可以作为一个可移植对象从一台机器挪到另一台机器呢。我们希望创作一个可随容器移动的读写层，而不再需要依赖存储。不仅是容器的文件系统数据，还需要在容器配置之间建立联系，包括用户态数据和网络信息。</p><h2 style="box-sizing: border-box;margin-top: 0.75em;margin-bottom: 0.75em;border-width: 0px;border-style: initial;border-color: initial;font-variant-numeric: inherit;font-variant-east-asian: inherit;font-weight: 700;font-stretch: inherit;font-size: 1.625rem;line-height: 1.2;font-family: consolas, monaco, courier, &quot;courier new&quot;, fixed-width;vertical-align: baseline;color: rgba(51, 51, 51, 0.8);text-align: start;white-space: normal;background-color: rgb(255, 255, 255);">Rethinking container image delivery</h2><p style="box-sizing: border-box;margin-bottom: 0.75em;border-width: 0px;border-style: initial;border-color: initial;font-variant-numeric: inherit;font-variant-east-asian: inherit;font-stretch: inherit;font-size: 16px;line-height: inherit;font-family: consolas, monaco, courier, &quot;courier new&quot;, fixed-width;vertical-align: baseline;color: rgba(51, 51, 51, 0.8);text-align: start;white-space: normal;background-color: rgb(255, 255, 255);">现在的容器镜像主要通过container registry 进行分发，例如用于公共访问的Docker Hub，或内部registry。Docker镜像是用registry中的名称来进行标识的。每个容器镜像下载时都有对应digest，包含了镜像里所有内容（json文件和每一层的内容）的hash。Docker现在正在考虑的是一种方法，即通过跨节点的某种形式的点对点（P2P）传输方法来访问和共享容器镜像，而不是依靠集中式registry来分发镜像。即使如此，仍然需要一个集中式的registry来处理镜像的命名，不过内容地址blobs可以从一台机器转移到另一台机器，而无需直接与registry交互。在用于镜像传递的P2P模型中，registry可以将容器图像发送到一个节点，然后用户可以使用诸如BitTorrent同步之类的东西来共享和分发镜像。</p><hr style="box-sizing: border-box;border-bottom: 2px solid rgb(222, 222, 222);border-left: 0px;border-right: 0px;border-top: none;margin-top: 0.75em;margin-bottom: 0.75em;width: 800px;color: rgba(51, 51, 51, 0.8);font-family: consolas, monaco, courier, &quot;courier new&quot;, fixed-width;font-size: 16px;text-align: start;white-space: normal;background-color: rgb(255, 255, 255);"  /><h2 style="box-sizing: border-box;margin-top: 0.75em;margin-bottom: 0.75em;border-width: 0px;border-style: initial;border-color: initial;font-variant-numeric: inherit;font-variant-east-asian: inherit;font-weight: 700;font-stretch: inherit;font-size: 1.625rem;line-height: 1.2;font-family: consolas, monaco, courier, &quot;courier new&quot;, fixed-width;vertical-align: baseline;color: rgba(51, 51, 51, 0.8);text-align: start;white-space: normal;background-color: rgb(255, 255, 255);">译者简评</h2><p style="box-sizing: border-box;margin-bottom: 0.75em;border-width: 0px;border-style: initial;border-color: initial;font-variant-numeric: inherit;font-variant-east-asian: inherit;font-stretch: inherit;font-size: 16px;line-height: inherit;font-family: consolas, monaco, courier, &quot;courier new&quot;, fixed-width;vertical-align: baseline;color: rgba(51, 51, 51, 0.8);text-align: start;white-space: normal;background-color: rgb(255, 255, 255);">docker在社区的影响力还是不小的，其发展策略值得参考。文中提到几点：</p><ul style="list-style-type: square;margin-left: 1.2em;" class=" list-paddingleft-2"><li><p>全面支持GPU，可以在容器中无缝使用gpu driver。目前支持gpuruntime的container runtime除了docker还有cri-o。</p></li><li><p>eBPF与cgroups v2。作为容器安全和资源隔离技术方面的改进，如果是在安全容器场景下，可能需求不大，毕竟已经有一层VMM作隔离了。但是在将来，安全容器与普通容器混<span style="background-color: rgba(9, 187, 7, 0.31);">合</span>似乎无法避免，这种改变可能也会影响到整个宿主机的部署环境，我们可以提前关注一下。</p></li><li><p>容器状态化能力。这种场景可能更多发生在容器热迁移，或者底层组件热升级上。由于OCI标准中只定义了容器管理的一套接口，但其中并没有包含像 save/restore 这种接口的实现。以containerd为例，可以认为容器的状态只有在RuntimeClass 执行的时候才会被短暂load到内存中，其他时候都是被保存到disk上的。从v1接口升级到v2接口后，虽然底层container runtime被整合到containerd-shim里了，但是依然延续了这个设计。</p></li><li><p>镜像分发P2P。这个我们内部早有实现，就是Dragonfly（蜻蜓），并且已经进入CNCF，这里不再展开。</p></li></ul><h3 style="box-sizing: border-box;margin-top: 0.75em;margin-bottom: 0.75em;border-width: 0px;border-style: initial;border-color: initial;font-variant-numeric: inherit;font-variant-east-asian: inherit;font-weight: 700;font-stretch: inherit;font-size: 1.5rem;line-height: 1.2;font-family: consolas, monaco, courier, &quot;courier new&quot;, fixed-width;vertical-align: baseline;color: rgba(51, 51, 51, 0.8);text-align: start;white-space: normal;background-color: rgb(255, 255, 255);">Reference</h3><p style="box-sizing: border-box;margin-bottom: 0.75em;border-width: 0px;border-style: initial;border-color: initial;font-variant-numeric: inherit;font-variant-east-asian: inherit;font-stretch: inherit;font-size: 16px;line-height: inherit;font-family: consolas, monaco, courier, &quot;courier new&quot;, fixed-width;vertical-align: baseline;color: rgba(51, 51, 51, 0.8);text-align: start;white-space: normal;background-color: rgb(255, 255, 255);">[1] https://www.kernel.org/doc/Documentation/cgroup-v2.txt</p><p style="box-sizing: border-box;margin-bottom: 0.75em;border-width: 0px;border-style: initial;border-color: initial;font-variant-numeric: inherit;font-variant-east-asian: inherit;font-stretch: inherit;font-size: 16px;line-height: inherit;font-family: consolas, monaco, courier, &quot;courier new&quot;, fixed-width;vertical-align: baseline;color: rgba(51, 51, 51, 0.8);text-align: start;white-space: normal;background-color: rgb(255, 255, 255);">[2] https://devblogs.nvidia.com/gpu-containers-runtime/</p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">阿里 灵甫 译</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

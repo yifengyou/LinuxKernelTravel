@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Linux加解密支持模块代码详细分析之核心文件分析-外部函数(4)
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664603740&amp;idx=1&amp;sn=151c96dc42c10effa110b452ac33f97a&amp;chksm=f04d8db9c73a04af79adceaaff1f441b48c4900101c68638d73ada54aa8822f7b8086e19140d&amp;scene=27#wechat_redirect&cpage=48' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Linux加解密支持模块代码详细分析之核心文件分析-外部函数(4)</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        于运超
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2017-02-18</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p><span style="color: rgb(2, 30, 170); font-size: 16px;"><strong><span style="color: rgb(2, 30, 170); line-height: 22.4px; font-family: 宋体;">2.4.1.4.外部函数</span></strong></span></p><p><span style="font-family: 宋体; font-size: 16px;">文件algapi.c中外部函数的详细信息如下所示。</span></p><p><span style="line-height: 24px; text-align: justify; text-indent: 28px; font-family: 宋体; font-size: 16px;">1.&nbsp;crypto_alg_lookup</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数原型：struct crypto_alg *crypto_alg_lookup(const char *name, u32 type, u32 mask);</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数功能：查找算法是否存在。</span></p><p><span style="font-size: 16px;"><span style="font-family: 宋体; font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px;">函数参数：name 算法名称； </span><span style="font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px; font-family: &#39;Times New Roman&#39;;">type </span><span style="font-family: 宋体; font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px;">算法类型； </span><span style="font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px; font-family: &#39;Times New Roman&#39;;">mask </span><span style="font-family: 宋体; font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px;">算法掩码。</span></span></p><p><span style="line-height: 24px; text-align: justify; text-indent: 28px; font-family: 宋体; font-size: 16px;">函数返回值：函数返回crypto_alg对象。</span></p><p><span style="text-indent: 28px; line-height: 24px; text-align: justify; font-family: 宋体; font-size: 16px;">2.&nbsp;crypto_mod_put</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数原型：void crypto_mod_put(struct crypto_alg *alg);</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数功能：算法模块释放。</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数参数：alg 算法注册对象。</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数返回值：无。</span></p><p><span style="line-height: 24px; text-align: justify; text-indent: 28px; font-family: 宋体; font-size: 16px;">3.&nbsp;list_first_entry</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数原型：list_first_entry(ptr, type, member);</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数功能：获得链表中的首个元素。</span></p><p><span style="font-size: 16px;"><span style="font-family: 宋体; font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px;">函数参数：ptr 要获取元素的链表头；</span><span style="font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px; font-family: &#39;Times New Roman&#39;;">type </span><span style="font-family: 宋体; font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px;">是所定义的数据结构； </span><span style="font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px; font-family: &#39;Times New Roman&#39;;">member</span><span style="font-family: 宋体; font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px;">是数据结构定义中</span><span style="font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px; font-family: &#39;Times New Roman&#39;;">list_head</span><span style="font-family: 宋体; font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px;">成员的变量名。</span></span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数返回值：返回type对应的数据结构。</span></p><p><span style="line-height: 24px; text-align: justify; text-indent: 28px; font-family: 宋体; font-size: 16px;">4.&nbsp;list_move</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数原型：static inline void list_move(struct list_head *list, struct list_head *head);</span></p><p><span style="font-size: 16px;"><span style="font-family: 宋体; font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px;">函数功能：链表中删除list并在删除位置添加</span><span style="font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px; font-family: &#39;Times New Roman&#39;;">head</span><span style="font-family: 宋体; font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px;">节点。</span></span></p><p><span style="font-size: 16px;"><span style="font-family: 宋体; font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px;">函数参数：list 链表中要删除的对象；</span><span style="font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px; font-family: &#39;Times New Roman&#39;;">head </span><span style="font-family: 宋体; font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px;">另外链表的节点</span></span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数返回值：无。</span></p><p><span style="text-indent: 28px; line-height: 24px; text-align: justify; font-family: 宋体; font-size: 16px;">5.&nbsp;crypto_notify&nbsp;</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数原型：static inline void crypto_notify(unsigned long val, void *v);</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数功能：算法的事件通知函数。</span></p><p><span style="font-size: 16px;"><span style="font-family: 宋体; font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px;">函数参数：val 要注册或注销的宏； </span><span style="font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px; font-family: &#39;Times New Roman&#39;;">v </span><span style="font-family: 宋体; font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px;">要注册或注销的对象。</span></span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数返回值：无。</span></p><p><span style="line-height: 24px; text-align: justify; text-indent: 28px; font-family: 宋体; font-size: 16px;">6.&nbsp;hlist_del</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数原型：static inline void hlist_del(struct hlist_node *n);</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数功能：hash链表删除函数。</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数参数：n 要删除的节点。</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数返回值：无。</span></p><p><span style="text-indent: 28px; line-height: 24px; text-align: justify; font-family: 宋体; font-size: 16px;">7.&nbsp;list_for_each_safe</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数原型：list_for_each_entry_safe(pos, n, head, member);</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数功能：遍历链表并安全删除给定类型数据节点。</span></p><p><span style="font-size: 16px;"><span style="line-height: 24px; text-align: justify; text-indent: 28px; font-family: 宋体; font-size: 14px;">函数参数：pos 指向当前项 ；</span><span style="line-height: 24px; text-align: justify; text-indent: 28px; font-size: 14px; font-family: &#39;Times New Roman&#39;;">n </span><span style="line-height: 24px; text-align: justify; text-indent: 28px; font-family: 宋体; font-size: 14px;">用于临时存储； </span><span style="line-height: 24px; text-align: justify; text-indent: 28px; font-size: 14px; font-family: &#39;Times New Roman&#39;;">head </span><span style="line-height: 24px; text-align: justify; text-indent: 28px; font-family: 宋体; font-size: 14px;">要遍历的链表头；</span><span style="line-height: 24px; text-align: justify; text-indent: 28px; font-size: 14px; font-family: &#39;Times New Roman&#39;;">member </span><span style="line-height: 24px; text-align: justify; text-indent: 28px; font-family: 宋体; font-size: 14px;">是数据结构定义中</span><span style="line-height: 24px; text-align: justify; text-indent: 28px; font-size: 14px; font-family: &#39;Times New Roman&#39;;">list_head</span><span style="line-height: 24px; text-align: justify; text-indent: 28px; font-family: 宋体; font-size: 14px;">成员的变量名。</span></span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数返回值：无。</span></p><p><span style="text-indent: 28px; line-height: 24px; text-align: justify; font-family: 宋体; font-size: 16px;">8.&nbsp;list_del_init</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数原型：static inline void list_del_init(struct list_head *entry);</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数功能：从链表中删除节点并初始化。</span></p><p><span style="font-size: 16px;"><span style="font-family: 宋体; font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px;">函数参数：entry 从链表中删除</span><span style="font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px; font-family: &#39;Times New Roman&#39;;">entry</span><span style="font-family: 宋体; font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px;">并初始化</span><span style="font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px; font-family: &#39;Times New Roman&#39;;">entry</span><span style="font-family: 宋体; font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px;">。虽然从链表中已经删除了</span><span style="font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px; font-family: &#39;Times New Roman&#39;;">entry</span><span style="font-family: 宋体; font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px;">元素，但是初始化之后可以再次使用包含</span><span style="font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px; font-family: &#39;Times New Roman&#39;;">entry</span><span style="font-family: 宋体; font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px;">的数据结构。</span></span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数返回值：无。</span></p><p><span style="line-height: 24px; text-align: justify; text-indent: 28px; font-family: 宋体; font-size: 16px;">9.&nbsp;list_for_each_entry</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数原型：list_for_each_entry(pos, head, member);</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数功能：链表的遍历并返回pos结果。</span></p><p><span style="font-size: 16px;"><span style="font-family: 宋体; font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px;">函数参数：pos 指向当前项 ； </span><span style="font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px; font-family: &#39;Times New Roman&#39;;">head </span><span style="font-family: 宋体; font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px;">要遍历的链表头；</span><span style="font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px; font-family: &#39;Times New Roman&#39;;">member </span><span style="font-family: 宋体; font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px;">是数据结构定义中</span><span style="font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px; font-family: &#39;Times New Roman&#39;;">list_head</span><span style="font-family: 宋体; font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px;">成员的变量名。</span></span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数返回值：无。</span></p><p><span style="line-height: 24px; text-align: justify; text-indent: 28px; font-family: 宋体; font-size: 16px;">10.&nbsp;list_add</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数原型：static inline void list_add(struct list_head *new, struct list_head *head);</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数功能：向链表添加一个新成员。</span></p><p><span style="font-size: 16px;"><span style="font-family: 宋体; font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px;">函数参数：new 要添加的成员； </span><span style="font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px; font-family: &#39;Times New Roman&#39;;">head </span><span style="font-family: 宋体; font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px;">链表的节点，新节点在</span><span style="font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px; font-family: &#39;Times New Roman&#39;;">head</span><span style="font-family: 宋体; font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px;">之后添加。</span></span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数返回值：无。</span></p><p><span style="text-indent: 28px; line-height: 24px; text-align: justify; font-family: 宋体; font-size: 16px;">11.&nbsp;down_write</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数原型：void __sched down_write(struct rw_semaphore *sem);</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数功能：写信号量的锁操作。</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数参数：sem 读写信号量。</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数返回值：无。</span></p><p><span style="font-size: 16px;"><span style="font-family: 宋体; font-size: 14px;">&nbsp;</span><span style="line-height: 24px; text-align: justify; text-indent: 28px; font-family: 宋体; font-size: 14px;">12.&nbsp;up_write</span></span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数原型：void up_write(struct rw_semaphore *sem);</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数功能：写信号量的释放。</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数参数：sem &nbsp;读写信号量。</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数返回值： 无。</span></p><p><span style="text-indent: 28px; line-height: 24px; text-align: justify; font-family: 宋体; font-size: 16px;">13.&nbsp;crypto_create_tfm</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数原型：void *crypto_create_tfm(struct crypto_alg *alg, &nbsp;const struct crypto_type *frontend);</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数功能：算法对象的创建。</span></p><p><span style="font-size: 16px;"><span style="font-family: 宋体; font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px;">函数参数：alg 算法注册名；</span><span style="font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px; font-family: &#39;Times New Roman&#39;;">frontend </span><span style="font-family: 宋体; font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px;">算法类型。</span></span></p><p><span style="line-height: 24px; text-align: justify; text-indent: 28px; font-family: 宋体; font-size: 16px;">函数返回值：返回空指针。</span></p><p><span style="text-indent: 28px; line-height: 24px; text-align: justify; font-family: 宋体; font-size: 16px;">14.&nbsp;blocking_notifier_chain_register</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数原型：int blocking_notifier_chain_register(struct blocking_notifier_head *nh, struct notifier_block *n);</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数功能：给事件通知链表添加一个事件通知，在进程上下文中调用，返回0。</span></p><p><span style="font-size: 16px;"><span style="font-family: 宋体; font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px;">函数参数：nh 指向分组通知链表的头；</span><span style="font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px; font-family: &#39;Times New Roman&#39;;">n </span><span style="font-family: 宋体; font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px;">通知链表中要删除的元素。</span></span></p><p><span style="line-height: 24px; text-align: justify; text-indent: 28px; font-family: 宋体; font-size: 16px;">函数返回值：函数调用成功返回0。</span></p><p><span style="text-indent: 28px; line-height: 24px; text-align: justify; font-family: 宋体; font-size: 16px;">15.&nbsp;blocking_notifier_chain_unregister</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数原型：int blocking_notifier_chain_unregister(struct blocking_notifier_head *nh,struct notifier_block *n);</span></p><p><span style="font-size: 16px;"><span style="font-family: 宋体; font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px;">函数功能：从事件通知链表中删除一个通知，执行成功返回0否则返回</span><span style="font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px; font-family: &#39;Times New Roman&#39;;">-ENOENT</span><span style="font-family: 宋体; font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px;">。</span></span></p><p><span style="font-size: 16px;"><span style="line-height: 24px; text-align: justify; text-indent: 28px; font-family: 宋体; font-size: 14px;">函数参数：nh 指向分组通知链表的头；</span><span style="line-height: 24px; text-align: justify; text-indent: 28px; font-size: 14px; font-family: &#39;Times New Roman&#39;;">n </span><span style="line-height: 24px; text-align: justify; text-indent: 28px; font-family: 宋体; font-size: 14px;">通知链表中要删除的元素。</span></span></p><p><span style="line-height: 24px; text-align: justify; text-indent: 28px; font-family: 宋体; font-size: 16px;">函数返回值：调用成功返回0否则返回-ENOENT。</span></p><p><span style="text-indent: 28px; line-height: 24px; text-align: justify; font-family: 宋体; font-size: 16px;">16.&nbsp;list_add_tail&nbsp;</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数原型：static inline void list_add_tail(struct list_head *new, struct list_head *head);</span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数功能：在链表头节点之前添加一个新节点，适用于对类操作。</span></p><p><span style="font-size: 16px;"><span style="font-family: 宋体; font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px;">函数参数：new 要添加的节点； </span><span style="font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px; font-family: &#39;Times New Roman&#39;;">head </span><span style="font-family: 宋体; font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px;">在</span><span style="font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px; font-family: &#39;Times New Roman&#39;;">head</span><span style="font-family: 宋体; font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px;">节点之前插入</span><span style="font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px; font-family: &#39;Times New Roman&#39;;">new</span><span style="font-family: 宋体; font-size: 14px; line-height: 24px; text-align: justify; text-indent: 28px;">节点。</span></span></p><p><span style="font-family: 宋体; line-height: 24px; text-align: justify; text-indent: 28px; font-size: 16px;">函数返回值：无。</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">于运超</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

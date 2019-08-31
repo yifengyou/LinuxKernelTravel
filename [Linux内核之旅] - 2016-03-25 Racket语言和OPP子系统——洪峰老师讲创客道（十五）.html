@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Racket语言和OPP子系统——洪峰老师讲创客道（十五）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=416785948&amp;idx=1&amp;sn=fec4715797e13a33b4a1d33efbc4aced&amp;chksm=76488bf9413f02ef6113eba34c37d8594c3709e132589dad92b856f529f25651d888372a0d44&amp;scene=27#wechat_redirect&cpage=76' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Racket语言和OPP子系统——洪峰老师讲创客道（十五）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        洪峰
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-03-25</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="text-indent:28px"><span style=""></span></p><p><mpvoice frameborder="0" class="res_iframe js_editor_audio audio_iframe" src="/cgi-bin/readtemplate?t=tmpl/audio_tmpl&amp;name=%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9315&amp;play_length=22:35" name="%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9315" play_length="1355000" voice_encode_fileid="MzI3NzA5MzUxNF80MTY3ODU5NDY="></mpvoice></p><p style="text-indent:28px"><span style=""></span><br  /></p><p style="text-indent:28px"><span style="">除了我前面提到的关于</span><span style="">Racket的三个主要特性之外，Racket是一门支持多范式的编程语言，这个地方的多范式包括面向过程的、&nbsp;面向对象的函数式的编程等等。很多种的编程范式在Racket中都是得到支持的。在这一讲中，我想重点谈一谈Racket的面向对象的编程范式的支持。在紫皮书的第三章，我们可以基于lambda表达式，也就是把lambda表达式作为一个闭包，来构造面向对象的编程系统。在那个地方我们已经看到：从本质上讲，是Scheme语言，就支持面向对象的编程。稍微通过一些适当的组合把它的特性组织起来，我们就可以完成OOP。那么Racket作为一个Scheme的现代实现，当然也是支持所有在紫皮书第三章讨论的那些案例、还有那些思想，都是可以直接得到支持的。这一点是毋庸置疑的。</span></p><p><span style="">&nbsp;</span><span style="">读过紫皮书第三章内容的读者，我要对你们讲Racket中的OOP这个子系统和传统的那些面向对象的语言相比，比方说和C++和Java相比，它又存在着许多重大的差异，这个地方，我也要把这些差异给大家做一个说明。从这个语言实现的角度来看，在Racket里面，它的对象系统是建立在struct上面的。而struct在Racket里面被设计成为一种包含许多字段的记录数据类型。&nbsp;它是一种record类型。在Racket中，一个结构类型的实例我们叫做struct,它是第一等对象。请大家注意，回顾一下我前面讲的关于Scheme里面第一等对象的定义。&nbsp;在Racket中，一个结构，一个struct这个对象是通过一个叫做constructor构造函数，这么一个过程构造出来的，然后它的字段可以通过accessor,也就是我们所说的访问符、存取符来进行读。或者通过mutator这个过程,我们叫做修改符来进行变更。这些都是关于结构类型的一些基本思想。每一个结构的实例是否属于一个结构类型，我们可以通过谓词来进行真假判断。这也和其他的Racket对象是一致的。</span></p><p><span style="">&nbsp;</span></p><p><span style="">刚才我讲过，在这个struct结构里面，有很多字段，如果这个字段的类型是属于一个常量，那么我们把它称为auto类型。auto类型的这个字段是不需要初始化的。是因为它已经定义在这个结构类型里面了。&nbsp;而且还有一个有趣的特点就是在Racket中一个Struct&nbsp;Type可以被派生。就像我们在C++里面的这个类的继承一样。他可以作为上一级的或者说超一级的类型而得到派生。这个在Racket里面也是得到支持的。所以在Racket里面，大家要构造一个struct类型，我们可以使用构造函数叫做make-struct-type这个构造函数。这个构造函数返回5个值：结构类型的描述符、构造函数的过程、谓词的过程、访问服务过程、修饰符的过程这么五个过程；会被这个make-struct-type这个函数返回出来。那么这个过程与我们在紫皮书第三章所讲dispatch函数是非常相似的。而Racket的OOP的子系统就建立在这么一个机制之上。我刚才讲到的auto这个概念以外，在Racket-struct-type里面，还有许多其它的一些习语，比方说：什么叫做opaque不透明，什么叫做prefab预制，像这样的一些习语请大家关注一些相关的文档。</span></p><p style="text-indent:28px"><span style="">在Racket当中，一个类被视作一些东西的集合，包括一组字段，一组方法，这个字段类似于C++中的数据成员；而方法类似于C++中的函数成员，或者直接叫做方法成员，当然Racket类还提供了字段的初始值的表达式。以及初始的变量，它们应当绑定在一些什么样的初始化的变量上面。像这样的一些机制就是在类的初始化的时候会被用到。这些概念在我们的OOP语言里面都是常见的。在这里我就不多说了。而Racket的OOP之所以非常独特，其关键在于，它在一些层次的概念上非常的精致，它的类在派生的时候分为许多种情况，这比C++和Java远远复杂一些。一个类可以被继承，这是没有话说的；一个类可以被重叠（overriding），一个类还可以被增广（augmenting）；inheritance叫做继承，overriding我们翻译为重叠就是以它的子类去改写父类或者说是超类的某些成员。请大家不要跟重载搞混了；重载是指函数的多态，也就是说一个函数有多种形式。而augment是保留父类的某些定义，但是在此基础之上，又会增加一些新的定义（对函数成员）。这是在C++和Java中所没有的。请大家注意一下相关的一些细节。</span></p><p><span style="">&nbsp;</span></p><p style="text-indent:28px"><span style="">而在Racket的OOP的子系统里面，最为引人注意的一点就是Racket的Class是第一等对象，这一点请大家特别注意。我们在学习C++的时候知道：一个类中的一个成员的修饰符可以有public、private、protected、friend、virtual这么五个修饰符。但是在这个Racket里面它的类的自带的修饰符就比较多了；有Public、pubment；public-final也就是说公用的字段最后一次被继承，它以后不能再被作为公共的成员被继承。重叠没有太多的地方可讲的。override和pubment可以被合成一个新的叫做overment,这个也出现在Racket的OOP&nbsp;的子系统里面。还有augment和override结合成为augride、augment-final、abstract、inheri等等这些新的东西出来。这么多东西加进来之后，就有非常多的变化。而且在Java里面，我们知道，一个子类可以去调用父类的方法，我们可以用super，而在Racket里面一个父类可以调用它的子类乃至孙子类，凡是从它派生的下面的类中定义的方法，他可以用inner这个关键词来实现相应的操作。所以说在Java的层次结构里面，只能由下一级的类去继承上一级的类中的成员。也就是说子类调用超类中定义的方法这个可以用Super来实现；这是可以的，但是Java里面没有父类去调用子类的这种情况。而这一点在Racket里面得到了很好的实现。</span></p><p><span style="">&nbsp;</span><span style="">Racket的OOP的Class对于标识符，我们叫做identifier，它又区分external-id和internal-id，所以它的外部的一个标识符external-id可以被改名renamed变成一个内部的ID，所以在这个里面就特别灵活。因为这个符可以被重新命名。我们知道符号是Racket里面一个非常灵活的数据类型。在Racket的OOP的子系统里面有define-values,&nbsp;可以通过特殊的表一次定义许多的过程。当然也可以一个个的去定义。但是有了这个define-values这个特殊表可以一次完成对许多函数成员的定义。另外还有一点要指出的是，它有一个case-lambda,这个case-lambda可以把许多函数合成在一起。这个特性使得在C++里面费了许多努力才实现的多态函数，可以在Racket的OOP的子系统里面非常容易的实现出来，这当然也算一大特色了。</span></p><p style="text-indent:28px"><span style="">从我刚才介绍的这些情况来看，Racket的类里面对于它的成员的定义是非常精细的。有public、override、augment&nbsp;、pubment、overment、override、public-final、override-final、augment-final、private这样的一些修饰符。这大大增加了我们初学者的学习成本。不过复杂的事情一旦学会以后，也有许多的用途。这样可以使你表达对类的里面字段的存取的特性大大丰富起来。和Java一样，Racket的OOP也支持Interface，这个Interface的概念也和Java的Interface的概念非常相似。请大家注意在Racket小组设计这个Racket的OOP的子系统的时候，Java语言已经存在了很长时间。所以Racket的这个设计小组既对Java的OOP系统有所学习，同时又有所提高，有所扬弃，这个请大家注意。如果要让一个类Class去实现一个Interface，那么就在类的声明的时候，在类Class的特殊表后面加上*号。这个时候再带上Interface就可以了。而在Racket里面，Interface也是可以被继承的。这一点是非常有趣的。而且它的Interface还可以合成，有就是说，由几个Interface去合成一个Interface，实际上，从形式上看，Interface就是一个函数名称列表。这个列表在Racket里面是非常容易实现的。在Racket里面为了提高程序的可读性。一般我们把表达绑定到一个Interface上的标识符,我们在它的末尾放上一个&lt;,然后再放上一个%&nbsp;，再放上一个&gt;,也就是说把一个%放到一对尖括弧里面。把它放到标识符的末尾，这样在程序里面可以一眼看出，这是一个Interface。</span></p><p style="text-indent:28px"><span style="">我们知道，在设计Java语言的时候，有个长期的内部讨论，就是是否支持C++的多重继承，讨论的结果就是，我们可以通过使用单根继承加上Interface来避免使用多重继承，那么在Racket里面，也用了类似的思想。在Racket里面，这个继承是单根的，这和Java是相似的。但是它的所有类的根节点是来自于一个object%这么一个原型，在Racket里面，为了提高程序的可读性，我们把一个类的名称，我们比方说叫做bar，我们在bar后面加上一个%来表示这是一个类的名称。</span></p><p style="text-indent:28px"><span style="">刚才我已经提到过，Racket里面Class是第一等对象，所以在Racket的设计里面，产生了一个非常有趣的叫做Mixin,我们叫做混入。混入也是一种类，那么这种类实际上是叫做无名的类，叫匿名类；匿名类有自己的Interface，有自己的Class的实现，但是没有名称。在使用混入类的时候，一旦一个类混入到类里面去，它会以此为基础形成一个新的类，并且从这个新类里面可以派生出新的子类出来，我们知道，在C++里面，混入这个概念是不被支持的。C++有自己的多重继承机制，Java里面不支持混入，Racket里面支持混入。有了这个混入之后，多重继承的支持就变得非常容易了。更加神奇的是在Racket里面，还有Traits的概念，Traits是什么呢？是一组方法的集合，这个集合可以被转换成一个Mixin,然后可以应用到一个类里面去，有了Traits之后，这个事情就非常丰富了，因为Mixin可以由Traits构造，而Traits是一组方法的集合，这个组合可以是任意的，这样的话，在Racket进行OOP编程的时候，&nbsp;自由度就非常的高，你不一定从现有的一个类出发来构造类，而是可以从函数的角度出发，可以事先把一个函数先实现出来。把函数一个个实现出来之后，一旦你觉得你设计出来的一组函数能够完成逻辑上相关的一组功能那么你可以把它打包到一个Trait里面去。然后这个Trait就可以转换成一个混入类。这个混入类就可以使用到多重继承里面去。有了这个特点之后，Racket的OOP子系统的抽象能力就变得非常强大了。</span></p><p style="text-indent:28px"><span style="">我在前面介绍Racket的语言特点的时候提到过三个主要特性，其中之一就是合同的概念，合同的概念也可以施加到Racket的Class里面。这样你在定义一个Class的时候你可以对这个合同他在计算中索取的环境它所承担的义务跟责任，进行某种平衡，这个是通过合同的概念来实现的。一旦我们在Racket中定义了Class，那么就可以对这个Class构造出一个对象，我们叫做实例化一个对象，那么在Racket中有三种方式来从一个Class构造出一个对象来，这个具体的差异请大家去看相关的文档，我这里就不讲了。而一旦有了对象以后，我们就可以向对象发送消息，让它执行某些动作。在Racket里面是通过send一个对象某一个消息这么一个形式来完成的。还有一点与Java非常相似的就是说，在Racket里面它的对象就是从Class实例化出来的对象，他可以串行化，当然，你在定义这一个类的时候，如果你将来需要串行化一个对象，从这个类中实例出来的对象，你就应该在声明类的时候进行声明。这样的话，从这个类中实例化出来的对象，就可以被转换成串行化的对象，串行化的对象可以存放在寄存器磁盘上，也可以通过计算机网络发到另外的计算机上去，另外我要提醒大家，在Java语言里面，任意的一个Java对象都是可以被实例化的。而在Racket里面，并不是所有的对象都可以被实例化的。具体的细节请大家参看Racket的文档。</span></p><p style="text-indent:28px"><span style="">在这里我要指出，因为有了Racket的OOP子系统以后，我们在软件工程里面所发展起来的那些概念、技术都可以在Racket编程里面派上用场。比方说UML建模语言即统一建模语言。有了这个统一建模语言之后，我们就可以把UML语言建模的模型用Racket语言来进行实现基于UML建模发展起来的软件工程的一些技术，包括Design&nbsp;Pattern（设计模式），在面向对象的世界里面“四人帮”呢，最初是创建了23种模式，后来又加了三种，一共是26种。分成构造模式、结构模式、行为模式这些技术都可以和Racket的OOP技术结合起来。有了设计模式还有反模式，反模式是预防OOP中出现的一些问题，大家总结出来的一些规律。还有基于OOP建模语言的项目的重构，就是在用户感觉不到的情况下，完成对项目代码的重新组织，基于OOP的这个方式，完成新的功能，而这种功能是在用户完全察觉不到的情况下完成的。这样的一些软件工程技术，都可以在Racket的OOP里面得到支持。从这里我们也可以看出，Racket的OOP为Racket带来了多么巨大的威力。这一点对大家的创业活动是非常有价值的。</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">洪峰</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

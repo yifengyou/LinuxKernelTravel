@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Java在编程语言谱系中的位置及其主要特点——洪峰老师讲创客道（十九）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=416840912&amp;idx=1&amp;sn=ba046454ad119759d8fe8babfb93e787&amp;chksm=764751354130d823b15d4cb2d7c5bba8848186b51dcb8455831ebf5b7a0ff7e378a1978f1dae&amp;scene=27#wechat_redirect&cpage=75' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Java在编程语言谱系中的位置及其主要特点——洪峰老师讲创客道（十九）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        洪峰
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-03-29</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="text-indent:28px"><span style=""><br  /></span></p><p style="text-indent:28px"><span style=""></span></p><p><mpvoice frameborder="0" class="res_iframe js_editor_audio audio_iframe" src="/cgi-bin/readtemplate?t=tmpl/audio_tmpl&amp;name=%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9319&amp;play_length=22:43" name="%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9319" play_length="1363000" voice_encode_fileid="MzI3NzA5MzUxNF80MTY4NDA5MTA="></mpvoice></p><p style="text-indent:28px"><span style="">C++适合大规模的系统程序开发，而不适合大规模的应用程序开发，那么一个问题产生了，我们应该使用什么样的语言去开发大规模的应用程序呢？我先向大家提供一个粗略的说法，&nbsp;然后在这一章的后边提供这个说法更详细的细节，我的观点就是你应该使用</span><span style="">Java</span><span style="">语言开发大规模的应用程序。现在无论你愿不愿意，都必须要正视这样一个现实，在目前的市场上，在所有的编程语言中，使用</span><span style="">Java</span><span style="">来开发应用程序的人数在程序员群体中是最多的。这个语言从1995年首度推出以后，距今已经有20多年的发展历史，它已经发展成一种非常成熟的且功能全面的一种编程语言，特别是企业界对于</span><span style="">Java</span><span style="">的使用是高度重视的，而且博得了这些IT经理们的青睐。我是从1996年的春天知道并开始学习这个语言的，当时学习</span><span style="">Java</span><span style="">语言的动机是我在学习C语言的道路上遇到了挫折，因为当时没有人指导我学习C语言，学习过程中我被C语言里边的指针搞得晕头转向，最后我决定试一试</span><span style="">Java</span><span style="">语言，因为</span><span style="">Java</span><span style="">语言里没有指针，所以对于当时在学习C语言过程中饱受挫折的我，无疑是一个福音。那么从1996年开始，我就前后断断续续的用了很多时间去学习</span><span style="">Java</span><span style="">，在这个地方我可以把</span><span style="">Java</span><span style="">的一些特点，它的一些好处在哪里，向大家进行说明。</span><br  /></p><p style="text-indent:28px"><span style="">Java</span><span style="">语言的设计师之一James&nbsp;Gosling曾经是一个非常出色的</span><span style="">Lisp</span><span style="">程序员，他曾经也写过一种</span><span style="">Emacs</span><span style="">，据悉是</span><span style="">Unix</span><span style="">平台上的第一种</span><span style="">Emacs</span><span style="">。他在设计</span><span style="">Java</span><span style="">的时候，使用了许多来自于</span><span style="">Lisp</span><span style="">的思想，比方说内存垃圾的自动回收，这个机制就是从</span><span style="">Lisp</span><span style="">里边获得的。而且</span><span style="">Java</span><span style="">语言的源程序首先会编译成字节码，起初的时候是在一个解释器上运行这个字节码，那么这个思想也是从</span><span style="">Lisp</span><span style="">中来的。当然</span><span style="">Java</span><span style="">语言的语法形式是C系列的，所以我们在讨论</span><span style="">Java</span><span style="">语言特点的时候，我们不妨把C/C++作为一个比较参照物，把C/C++作为一个比较参照物来看待</span><span style="">Java</span><span style="">的时候，</span><span style="">Java</span><span style="">语言的好处是一目了然的。美国有一位非常有名的</span><span style="">Java</span><span style="">技术专家，他的名字叫做</span><a><span style="">Jim&nbsp;Waldo</span></a><span style="">，&nbsp;他曾经写过一本书叫做</span><a title="Java"><span style="">Java</span><span style=""> :&nbsp;The&nbsp;Good&nbsp;Parts</span></a><span style="">（</span><span style="">Java</span><span style="">语言的精髓），在这本著作里边，</span><a><span style="">Jim&nbsp;Waldo</span></a><span style="">提出了</span><span style="">Java</span><span style="">究竟好在哪里的一种观点。首先他认为在致力于一个大型复杂的项目且工期比较短暂的时候，需要很多程序员合作才能完成的时候，大家都会觉得</span><span style="">Java</span><span style="">是个非常有用的工具，因为</span><span style="">Java</span><span style="">有很多特点可以满足这方面的需求，这是第一点。</span></p><p style="text-indent:28px"><span style="">第二点，当软件需要运行在多个平台上的时候，大多数的程序员都会觉得</span><span style="">Java</span><span style="">是一个非常不错的工具，因为</span><span style="">Java</span><span style="">有虚拟机，虚拟机很好的屏蔽了目标平台上的细节，硬件细节和软件细节。在开发软件的时候，大家可以针对虚拟机这个平台来进行开发，</span><span style="">Java</span><span style="">虚拟机是</span><span style="">Java</span><span style="">提供给程序员一个重要的财产，</span><span style="">Java</span><span style="">虚拟机上运行的语言不止</span><span style="">Java</span><span style="">一种，后边还会详细的提到，所以从</span><span style="">Java</span><span style="">语言一开始的时候，就是“一次编写，到处运行”，write&nbsp;once&nbsp;,run&nbsp;anywhere。这一个承诺在很大的程度上已经实现了，这是它的第二个特点。</span><span style="">第三个特点，</span><span style="">Java</span><span style="">虚拟机早期的性能是不行的，但是经过</span><span style="">Java</span><span style="">团队不断地努力，现在</span><span style="">Java</span><span style="">虚拟机的性能非常的好，比起C语言源代码可移植性，拥有一种可移植的字节码格式，完全是另外一码事，具有非常多的技术上的优势，这种优势是实实在在的，这是另外一个使用</span><span style="">Java</span><span style="">的好处。</span></p><p><span style="">接下来一点，</span><a><span style="">Jim&nbsp;Waldo</span></a><span style="">提出，</span><span style="">Java</span><span style="">最好用在先有设计后有代码的系统中。换句话讲，</span><span style="">Java</span><span style="">语言非常适合做外包项目，这一点我在2002年去印度考察的时候被深深地打动。2002年8月我在北京参加完国际数学家大会后就立即去了印度，参加2002年的TUG大会，那年是在印度南部最大的一个城市Trivandrum（特里凡得琅）召开的，我去了印度两个礼拜的时间，在这两个礼拜的时间里，我利用时间和许许多多印度的软件公司，软件设计师，软件程序员进行了广泛的接触。我发现在印度</span><span style="">Java</span><span style="">是非常流行的，许许多多的企业都把</span><span style="">Java</span><span style="">作为他们外包的首选语言，从那个时候开始我就觉得</span><span style="">Java</span><span style="">是一个再适合不过的外包工具。也确实这样，前面我提到的软件工程中的那些工具比方说</span><span style="">UML</span><span style="">语言，设计模式，反模式，还有软件的重构等等，都非常适合用</span><span style="">Java</span><span style="">语言去实现。所以用户可以在现场把需求给软件设计师说好，比如说给美国的软件工程师讲好，美国的软件工程师就可以把用户的需求翻译成计算机的文档，包括使用</span><span style="">UML</span><span style="">建模，设计模式，反模式，软件重构，都可以用软件工程的标准工具写好，然后把用标准制定的需求发到印度去，印度的公司有非常多的开发人员，因为印度的IT行业是比较发达的，在印度本土的程序员拿到了从美国发来的需求后，他们可以马上针对他的设计提供实现的代码，针对设计的代码经过测试再发回给美国去，然后由美国的工程师交回给用户进行部署。这个模式已经发展的非常好，今天的印度之所以有经济的高度增长，很大程度上得益于他的服务业，而服务业有一个很重要的环节就是他的软件工业，而他的软件工业之所以能够起飞，我认为很大的程度上都得益于</span><span style="">Java</span><span style="">语言。</span></p><p style="text-indent:28px"><a><span style="">Jim&nbsp;Waldo</span></a><span style="">提出的关于</span><span style="">Java</span><span style="">语言好在哪里的最后一点就是，</span><span style="">Java</span><span style="">语言能够让</span><span style="">Java</span><span style="">程序是可靠的，</span><span style="">Java</span><span style="">语言里边有很多的设计机制，能够让程序员编写出可靠的代码，这一点也是</span><span style="">Java</span><span style="">语言非常吸引人的特点。</span></p><p style="text-indent:28px"><span style="">了解了</span><a><span style="">Jim&nbsp;Waldo</span></a><span style="">关于</span><span style="">Java</span><span style="">语言好在哪里的观点之后，我们可以从技术的特点看</span><span style="">Java</span><span style="">语言好在哪里。第一条，</span><span style="">Java</span><span style="">语言对于C/C++程序员来说，学习难度是非常低的，这一点在我自己的学习中已经得到了很好的验证，因为C/C++都有指针，</span><span style="">Java</span><span style="">语言没有C/C++里边的那种指针，所以它的学习难度大大减少。</span><span style="">Java</span><span style="">语言的语法特点是C系列的，所以你在学习了C或C++后再来学习</span><span style="">Java</span><span style="">，在语法上就不会觉得特别怪异，你的转换是非常自然地，这是我要说的</span><span style="">Java</span><span style="">语言是非常容易学习的特点。</span></p><p style="text-indent:28px"><span style="">从类型系统上来看，</span><span style="">Java</span><span style="">语言是显式声明的语言，一个变量在传递给一个函数的时候必须声明类型，在使用一个变量之前，也必须声明它的类型。在</span><span style="">Java</span><span style="">语言设计里，我要强调的是，</span><span style="">Java</span><span style="">是一个彻底的面向对象的语言，是一个彻底的oop，为了支持彻底的oop，它的类型系统，除了原生的类型系统，在用户自定义的类型系统里，它提供了三种机制，一种机制是你可以使用类，</span><span style="">Java</span><span style="">是彻底的oop的，所以类是</span><span style="">Java</span><span style="">显著的一个特征。另外一个就是接口，在</span><span style="">Java</span><span style="">里边叫做interface，就是你给出了一些函数的签名，但是你不给出这些函数的具体实现。实现什么时候完成呢？当你的类需要这些接口的时候，你可以在这些类中声明，去实现一些接口，在这些类里你给出一些函数签名的具体实现，这个类型系统可以非常好的实现多重继承，多重继承的概念我在前面已经讲过，不再重复了。</span></p><p style="text-indent:28px"><span style="">在类和接口之间，还有一个抽象类（</span><span style="">Abstract</span><span style="">&nbsp;class），请大家回忆一下我之前在讲C++类的种类的时候，从框架开始然后是抽象类、节点类、具体类、辅助的三种类，一共是七种类。</span><span style="">Java</span><span style="">里面直接提供了抽象类，抽象类有一个</span><span style="">Abstract</span><span style="">关键词来修饰这个类，有了抽象类后，C++&nbsp;如何使用类的思想，在&nbsp;《C++&nbsp;program&nbsp;language&nbsp;,special&nbsp;edition》中第25章提到的那些思想方法，几乎可以原封不动地平移到</span><span style="">Java</span><span style="">语言编程里面，所以说类型系统是</span><span style="">Java</span><span style="">语言非常好的一个机制。</span></p><p style="text-indent:28px"><span style="">除了显式声明这个特点以外，</span><span style="">Java</span><span style="">语言的函数可以抛出exception，叫做例外、异常，对于语言设计人员来讲，如果一个函数能够显式地抛出例外，这会大大地方便程序的调试、测试、集成&nbsp;。而就像</span><a><span style="">Jim&nbsp;Waldo</span></a><span style="">所说的，</span><span style="">Java</span><span style="">语言容易让你编写非常可靠的代码，而产生可靠的代码的一个重要保障就是，根据程序运行的逻辑产生一些异常，引发的异常有专门的代码去处理它，这个设计思想贯穿在</span><span style="">Java</span><span style="">语言设计的始终，是它非常优良的一个特性。关于异常处理的重要性我后边在讲eda语言的时候还会回到这个专题上来，我先谈到这里。</span></p><p style="text-indent:28px"><span style="">除了类型和例外处理机制，</span><span style="">Java</span><span style="">还有一个很重要的技术特点：</span><span style="">Java</span><span style="">支持包（package）。package实际上是一个名称空间，我们知道对于大型的软件项目，我们可以把大型项目拆分成许多逻辑上相对独立的名称空间，我们叫做包。一个名称空间里，我们可以把逻辑上相关联的类、接口、函数放在一起。这个特点使</span><span style="">Java</span><span style="">支持模块化开发，模块化是应对大型软件复杂性的一个强有力的武器。</span></p><p style="text-indent:28px"><span style="">Java</span><span style="">语言还对文档生成的机制进行了改进，原来C/C++的文档机制是先写代码，然后插入一些简要的注释，写完之后再专门地编写文档。</span><span style="">Java</span><span style="">设计师认为这个方法是不行的，因为有了代码后再去写注释，程序员的心态已经消失了，你又要花很多时间回到当时开发代码的时候的心态，这个是非常困难的，而且是很耗时间的。怎么处理这个问题呢？</span><span style="">Java</span><span style="">提供了一个</span><span style="">Java</span><span style="">&nbsp;doc，有了它之后，在写</span><span style="">Java</span><span style="">代码的时候立即写上一些注释，这些注释会被</span><span style="">Java</span><span style="">&nbsp;doc转化为html的文档，这个方法使得</span><span style="">Java</span><span style="">&nbsp;程序员在开发</span><span style="">Java</span><span style="">程序的时候，在编写文档上有了重大的改进，这对于文档开发是非常有帮助的。</span></p><p style="text-indent:28px"><span style="">前面还提到了</span><span style="">Java</span><span style="">的内存垃圾自动回收机制，这相比C/C++的程序员大大地提高了你的生产力，因为你不用管内存方面的细节，在C和C++里面，大量的时间是耗在对内存的管理上面，而</span><span style="">Java</span><span style="">语言的运行系统是基于堆的，不是基于堆栈的，从这个意义上来讲，有了内存垃圾自动回收机制，程序员从内存管理的陷阱中解放出来，从而你可以把更多的时间用于真正的算法构造上面。但</span><span style="">Java</span><span style="">语言里面并不是说内存泄漏就不复存在，你仍然需要十分小心的处理一些问题，但相比C/C++手工管理内存而言，利用机器算法去管理内存，我们认为是个巨大的进步。</span></p><p style="text-indent:28px"><span style="">前面我说过，我们使用C++代替C进行系统程序开发，主要原因就是C++有标准库，这个情况在</span><span style="">Java</span><span style="">中也是类似的，在</span><span style="">Java</span><span style="">中有collections（集合），有了集合中提供的数据结构、标准算法之后，实际上C++程序员利用标准库所提供的好处，在</span><span style="">Java</span><span style="">程序中也是类似的。这里我要提醒一点，从</span><span style="">Java</span><span style="">8开始，Lambda表达式已经被直接支持了，有了Lambda表达式的引入，collects的使用发生了许多重大的变化，其中之一包括对流的处理。回想前面学习racket语言的时候，你可以把一个函数的环境封装到一个B包中去，你就可以利用这套机制产生一个流的概念，甚至是无穷流的概念。这套机制在</span><span style="">Java</span><span style="">8中也已经实现，这是一个重大的改进，有了这些标准库以及语言提供的第三方的库，开发</span><span style="">Java</span><span style="">应用程序的时候你的生产力会大大的提高，我不敢保证</span><span style="">Java</span><span style="">的所有库都是优良的，但是对于绝大多数情况而言，已经出现的库，它的品质作为工程实践是可以接受的，这一点是业界所认同的。</span></p><p style="text-indent:28px"><span style="">Java</span><span style="">语言从1995年的Api的开始，它就支持网络编程，</span><span style="">Java</span><span style="">语言的设计理念上是十分先进的，早在20多年前他就意识到网络编程的重要性。关于网络编程有两个专题可以提出，一个是，</span><span style="">Java</span><span style="">支持远程方法调用，叫作rmi。与这个相关的是对象序列化，这个前面在讲racket语言的时候我讲过对象序列化，也就是说，一个对象可以变成一个字节码，序列化的对象可以放在本地的磁盘上，也可以通过网络传递到网上去。有了这两个特点，一个是远程方法调用，一个是对象序列化，对于网络编程来说，</span><span style="">Java</span><span style="">提供了一个清晰地，容易使用的解决方案。</span></p><p><span style="">还有一点就是</span><span style="">Java</span><span style="">支持多线程，对于</span><span style="">Java</span><span style="">多线程的支持也是从</span><span style="">Java</span><span style="">1.0的API就开始了，对于网络应用的开发，</span><span style="">Java</span><span style="">语言提供了非常多的特点，从开始的</span><span style="">Java</span><span style="">1.0的API发展到现在</span><span style="">Java</span><span style="">8的API，它提供了很多网络编程接口。为了应对高负载的网络应用开发，它专门提供了</span><span style="">Java</span><span style="">&nbsp;nio，就是为了针对高负载的网络应用设计而提供的一套解决方案，这一点在本书第七章讲精灵进程的时候，我再回到这个主题进行讲解。</span></p><p style="text-indent:28px"><span style="">谈到</span><span style="">Java</span><span style="">语言开发的时候，我们不得不提到</span><span style="">Java</span><span style="">语言的开发生态，生态不是指自然环境的生态，我们是指开发人员的生态。</span><span style="">Java</span><span style="">社团的人员数量是非常巨大的，在</span><span style="">Java</span><span style="">社团里面可以使用的软件资源也是非常多的，因为</span><span style="">Java</span><span style="">语言已经有20多年的历史了，它有很多开发工具，比如IDE的开发工具eclipse、NetBeans，以及比它们两者都好的IntelliJ，这样的一些开发工具非常多，还有搞单元测试的junit，也是非常好的保证代码开发质量的一个工具。还有构建系统，当你的</span><span style="">Java</span><span style="">项目完成以后，你需要去构建它，这个时候有Gradle来帮你发布你的代码，还有findbugs这样一些软件，都可以提高你的代码质量，提高你的生产力。从这一点来讲，</span><span style="">Java</span><span style="">程序员的生态环境的重要性和价值，无论如何强调都是不为过的。</span></p><p style="text-indent: 28px;"><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">洪峰</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

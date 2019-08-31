@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Scheme语言惰性求值思想——洪峰老师讲创客道（八）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=416667918&amp;idx=1&amp;sn=6bacf173e7861444b8cbc835e74c0578&amp;chksm=764af4eb413d7dfd9d7c36c2ce2074cb7f0c2a3e071843887c00ae59190bfeb3f05377c7b5a5&amp;scene=27#wechat_redirect&cpage=76' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Scheme语言惰性求值思想——洪峰老师讲创客道（八）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        洪峰
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-03-17</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p><mpvoice frameborder="0" class="res_iframe js_editor_audio audio_iframe" src="/cgi-bin/readtemplate?t=tmpl/audio_tmpl&amp;name=%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%938&amp;play_length=15:45" name="%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%938" play_length="945000" voice_encode_fileid="MzI3NzA5MzUxNF80MTY2Njc5MTY="></mpvoice></p><p><br  /></p><p style="text-indent:28px"><span style="">由MIT出版的《计算机程序的结构与解释》这本书，因为它的封面采用深紫色的背景颜色，所以我们在社团里面也把它成为紫皮书，Purple&nbsp;Book。也因为这本书封面印有两位巫师的图画，所以我们有的时候也称之为巫师书，the&nbsp;Wizard&nbsp;Book。在麻省理工学院曾经还出现过一位非常有名的教授——诺伯特&nbsp;维纳(Norbert&nbsp;Wiener)，他是控制论的创始人。他曾经在学校里上课的时候给听众讲过，计算的思想可以用学校里的砖头、纸张、剪刀等这些不起眼的工具去实现。也就是说，关于计算的本质这个思想，在很早的时代就已经产生了。</span></p><p style="text-indent:28px"><span style=""><br  /></span></p><p style="text-indent:28px"><span style="">在我们中国古代的道家文化里面就有阴阳泛导，我们的太极图里面不是有阴阳和鱼眼吗？阴中有阳、阳中有阴以及鱼眼已经印在了太极图里面，而且由太极图可以衍生出八八六十四卦来。</span></p><p style="text-indent:28px"><span style=""><br  /></span></p><p style="text-indent:28px"><span style="">在道家的文化里面也有大量的关于延年益寿的修炼方法，比如说深受道家文化发展起来的太极拳以及与之有关联的八卦掌，也有一些类似的思想，只不过在太极拳和八卦掌里面他的收敛条件变为：以击倒对手为收敛点。围绕这个条件发明了很多招式，在招式里面，转圈就是完成阴与阳的循环......这里面做了大量细致的工作，所以有兴趣的同学可以练一练太极拳或者是八卦掌，达到强身健体的效果，这是非常有用的。</span></p><p style="text-indent:28px"><span style=""><br  /></span></p><p style="text-indent:28px"><span style="">在紫皮书里面，第四章的标题叫做元语言抽象，Meta&nbsp;Language&nbsp;Abstraction，除了第一节讲了有eval和apply两个高阶旋子完成的太极推索之外呢，还提供了关于这一个求值器模型的第三种变形。在这里，我做一下详细的介绍。</span></p><p style="text-indent:28px"><span style=""><br  /></span></p><p style="text-indent:28px"><span style="font-size: 16px;"><span style="">我们先来看看第一种变形，叫做Lazy&nbsp;Evaluation——</span><span style="">惰性求值</span><span style="">，或者叫Lazy&nbsp;Computing——惰性计算。我们等会讲Haskell语言的时候还会回到这个专题上来。</span></span></p><p style="text-indent:28px"><span style="font-size: 16px;"><span style=""><br  /></span></span></p><p style="text-indent:28px"><span style="font-size: 16px;"><span style="">前面我在介绍C语言的时候已经说过，C语言是采用Transmit&nbsp;by&nbsp;Value，向一个函数传参数的时候，先把这个变量的拷贝构造出来，然后把拷贝传递给函数。而在Scheme语言中，默认的情况也是采用Transmit&nbsp;by&nbsp;Value这个形式。也就是说在一个对象被传给一个函数去完成计算的时候，它首先会把这个对象做一个拷贝，把拷贝而不是对象本身，传给函数进行计算。在计算机科学里面，我们把这种顺序叫做</span><span style="">应用序</span><span style="">（Applicative&nbsp;Order），与之相对的叫做</span><span style="">正则序</span><span style="">（Regular&nbsp;Order）。从计算的效果上讲，这两种求值的顺序是一样的，但是会在计算的细节上，产生若干重大的差异。这里我们来详细看看。</span></span></p><p style="text-indent:28px"><span style="font-size: 16px;"><span style=""><br  /></span></span></p><p style="text-indent:28px"><span style="">与应用序相对的正则序，实际上是先对表达式展开。当一个表达式有很多的子表达式的时候，他会对每一个表达式展开而不进行具体的、对相应的原始数据的计算。当这个表达式被展开到不能再展开的时候或者是全被展开为最基本的表达式的时候，真正的计算才开始。所以正则序我们可以表达成：先完全展开然后进行归约。这是正规的说法，在紫皮书的第一章就已经提到了关于正则序与应用序这两个概念以及他们的差异。</span></p><p style="text-indent:28px"><span style=""><br  /></span></p><p style="text-indent:28px"><span style="">在对我们的Scheme的求值器进行修改的时候，可以采用正则序。也就是说，我们对一个表达式的求值，不再采用默认的应用序而改为采用正则序。</span></p><p style="text-indent:28px"><span style="">前面我在介绍eval这个高阶函数的时候，我已经介绍了eval函数的第一个参数，也就是expression，在那里提到了expression有很多子类型。对这些子类型的展开，大部分都比较容易，但是有几个类型比较复杂。主要就是Lambda函数、函数的调用、宏和宏的定义这些都比较啰嗦。对于原始数据类型、引用类型操作这个正则序操作是比较简单的。当对一个函数进行正则序求值的时候，这个函数不是被马上执行，而是产生一个对求值的承诺，这个在Scheme叫做promise。Promise可以在你要对它进行强迫（force）的时候，真正的完成求值计算，这一个细节是非常有序的。</span></p><p style="text-indent:28px"><span style=""><br  /></span></p><p style="text-indent:28px"><span style="">在现实生活里面，我们经常碰到有许多人提供了承诺但是没有兑现这些承诺的情况。比如说市场上有大量的商家营销自己的产品或者服务的时候，向用户许下了许多美丽动听的诺言，但是这些诺言最后都落空了，严重的情况是这些商家变成了骗子。市场上有一句话叫，无奸不商、无商不奸，就是针对这一类不守承诺的商家说的。而Scheme语言，计算机在求值的时候，当一个函数产生了承诺，你对它强迫执行，它一定会去执行，除非这一个函数被当做内存垃圾回收了。除此之外，承诺都是会被执行的。</span></p><p style="text-indent:28px"><span style=""><br  /></span></p><p style="text-indent:28px"><span style="">在Scheme一个函数的承诺是怎么产生的呢？我们可以用delay这一个特殊表对函数求值产生承诺。一旦承诺产生以后，我们就用force强迫它来执行。这里，可能有的听众会问，delay这个特殊表究竟做了什么工作呢？实际上很简单，我们会把对一个函数的求值，封装在一个Lambda表达式里，这就是他的实质。然后把Lambda表达式作为一个函数直接返回。我们前面讲过，在Scheme里面的Lambda表达式作为函数是低等对象。低等对象同时满足四个条件，这四个条件其中之一就是这个对象可以直接返回。这里我们看到Scheme用了这个特点，用于惰性求值。在惰性求值，一个函数被delay（延迟）以后，会产生一个promise，这个promise实际上是在原有的函数的基础上穿了一件衣服——把它放到了Lambda表达式里面，数学的术语叫闭包，我们把一个函数放到一个闭包里。这就是惰性求值的实质。</span></p><p style="text-indent:28px"><span style=""><br  /></span></p><p style="text-indent:28px"><span style="">在Scheme中，我们把承诺当成一个单独的类型看待，这个在Racket语言里面也是这样实现的。这样有什么好处呢？就是在对承诺进行求值的时候，他可以致使惰性求值以及由惰性求值产生一些新的机制。当惰性求值和Scheme语言其他特性结合起来的时候，会产生一些新的特性，比如说：流的概念。流的概念在紫皮书里面前后提到过两次。第一次在第三章，那是运用两个函数直接的印象泛导通过latrak特殊表实现一种流（stream）。</span></p><p style="text-indent:28px"><span style=""><br  /></span></p><p style="text-indent:28px"><span style="">有了惰性求值的概念以后，我们仍然可以产生流。流是怎么产生的呢？这里我们向大家介绍一下。我们前面讲过Scheme语言是采用静态辖域的，所以当我们把一个函数封装到一个Closure（闭包）里面去之后，实际上我们可以把这个函数和与它相关的环境也一并封装到Closure里面去。当Lambda表达式与被封装的这个函数和他的环境一并封装到闭包里面去之后，我们可以对环境进行某一些操作，这就是产生流的基础。</span></p><p style="text-indent:28px"><span style=""><br  /></span></p><p style="text-indent:28px"><span style="">前面已经几次提到过，在Scheme求值的时候，对一个表达式的求值（包括Lambda表达式的求值）一定是与环境发生一定关联的。在Scheme语言中，有了惰性求值以后我们可以把Lambda表达式和它相关联的环境一并打包到闭包里面去，成为一个承诺。令人吃惊的是，我们可以利用这个机制产生无穷的流。因为我们前面说过，环境实际上是数据库，里面可以是包罗万象的。我们可以利用函数和环境的相互作用，不断产生数据。具体的细节在紫皮书的第四章第二节有非常详细的介绍，请各位听众仔细去研读这方面的材料。</span></p><p style="text-indent:28px"><span style=""><br  /></span></p><p style="text-indent:28px"><span style="">这里有听众会问：洪老师你为什么如此强调惰性计算的重要性呢？这里我要给出我的观点，在紫皮书里面没有提到的，那就是在乔姆斯基提出的语言里面，它是不是有四种语言被提出来。因为乔姆斯基的语言从图论的角度来看是一个四元组，分别由根、内节点和叶子加上产生式构成一个四元组。由四元组模型来研究新式语言，从而一举打通语言、逻辑和计算三者之间的关节。这是一项非常了不起的进展，在前面第一章就提到了这个观点。在乔姆斯基的语言被分成了零形、一形、二形和三形语言，其中的第三形语言就是正则语言，我们称由正则表达式所构成的语言为正则语言。在正则语言里有一个很重要的概念，叫克林闭包（Kliine&nbsp;Closure）。克林是一位很有名的、和阿伦左丘奇同时代的一位逻辑学家。后来我们把一目的后缀运算符（*），在正则语言里面称为Kliine&nbsp;Closure（克林闭包）。</span></p><p style="text-indent:28px"><span style=""><br  /></span></p><p style="text-indent:28px"><span style="">什么叫克林闭包呢？就是说如果对一个表达式后面附上*号的话，对这个表达式求值会产生0个或者n个乃至无穷多个匹配项，这个叫做克林闭包。请大家注意，产生0个到无穷多个匹配项，我们是不是可以看成一个流，甚至是一个无穷流。所以在处理克林闭包的实现的时候，我们一定要用到我们Scheme语言的惰性求值的模型。换句话讲，虽然我们在计算机系统上内存资源是有限的，磁盘空间也是有限的，但是我们可以用基于Lazy&nbsp;Evaluation的Kliine&nbsp;Star去理化一个无穷流，用一个承诺表示一个无穷的对象，这就是惰性求值非常重大的一项应用。有了这一个应用以后，我们可以在正则语言里面非常自由的去定义正则语言，在具体的编译器实现里面，除了克林闭包以外，为了表示上的方便我们还有+号、？号等等这样一些具体的方面，但是在它的基础都是从克林闭包，也就是惰性计算衍生出来的。</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">洪峰</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		审计系统在内核的实现-基本框架
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664604911&amp;idx=1&amp;sn=b4c67b479531e27ba483cd4a7decfeb7&amp;chksm=f04d890ac73a001c0fa0b9b6ef301827edc571ada8791a49de4fc53932adee3ff55e7ad1aeb8&amp;scene=27#wechat_redirect&cpage=28' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">审计系统在内核的实现-基本框架</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        武特
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2017-11-22</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="margin: 0px 0px 1.2em !important;">审计系统在内核的实现部分主要包括是审计内核模块、kauditd内核线程、进程审计和文件系统的审计。审计系统的内核态子系统不仅要能够响应用户态所发送的请求（比如增加或删除审计规则），并且还要在内核发生审计规则所指定的事件时记录并生成日志。</p><p style="margin: 0px 0px 1.2em !important;">本文将对审计系统在Linux内核中的实现做简单说明，重点说明审计内核模块和kuaditd内核线程的基本实现。</p><h1 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.6em;border-bottom: 1px solid rgb(221, 221, 221);">1.审计内核模块的实现</h1><p style="margin: 0px 0px 1.2em !important;">审计内核模块是审计系统在内核的主体程序，它主要负责响应用户态所发送的请求。比如，用户态的auditctl命令用于获取审计系统的状态，以及增加或删除审计规则，该命令对数据的获取和设置是与审计模块进行数据交互而实现的。</p><h2 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.4em;border-bottom: 1px solid rgb(238, 238, 238);">1.1.基本实现</h2><h3 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.3em;">1.1.1.audit_init()</h3><p style="margin: 0px 0px 1.2em !important;">审计在内核中的实现包括许多方面，不仅包括审计内核模块，还包括分布在进程、文件等子系统中的实现。审计内核模块是审计系统在内核中的主体框架，它不仅对审计系统中所需的数据结构进行了初始化，而且主要实现对用户态请求的处理。</p><p style="margin: 0px 0px 1.2em !important;">审计模块的初始化函数为audit_init，它的主要过程如下：</p><ol style="margin-left: 0px;margin-right: 0px;" class=" list-paddingleft-2"><li><p style="margin: 0px 0px 1.2em !important;margin: 0.5em 0px !important;">首先通过netlink_kernel_create()创建netlink套接字audit_sock，并且注册了（针对用户态）数据的处理函数audit_receive，它将接收并处理用户态发送的netlink数据包；</p></li><li><p style="margin: 0px 0px 1.2em !important;margin: 0.5em 0px !important;">初始化审计系统所需的链表和变量等内容,其中audit_skb_queue链表用于保存审计套接字缓冲区；</p></li><li><p style="margin: 0px 0px 1.2em !important;margin: 0.5em 0px !important;">通过audit_log()生成本次初始化对应的审计日志；</p></li><li><p style="margin: 0px 0px 1.2em !important;margin: 0.5em 0px !important;">初始化基于inode的审计规则所对应的哈希链表；</p></li></ol><h3 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.3em;">1.1.2.audit_receive()</h3><p style="margin: 0px 0px 1.2em !important;">audit_receive内部封装了audit_receive_skb函数，该函数的实现过程如下：</p><p style="margin: 0px 0px 1.2em !important;">1.netlink套接字所发送的数据报文格式为nlmsghdr结构的包头+指定格式的净荷数据；因此，该函数首先按照协议取数据报头和整个数据报文长度，交由audit_receive_msg函数处理；</p><p style="margin: 0px 0px 1.2em !important;">2.如果数据包处理完成，通过netlink_ack函数向用户态发送响应；</p><p style="margin: 0px 0px 1.2em !important;">3.通过NLMSG_NEXT获取下一个数据报；</p><h3 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.3em;">1.1.3.audit_receive_msg()</h3><p style="margin: 0px 0px 1.2em !important;">该函数实际上是一个消息分发处理器，根据数据报头部的nlmsg_type进行消息分发处理。具体的过程如下：</p><ol style="margin-left: 0px;margin-right: 0px;" class=" list-paddingleft-2"><li><p style="margin: 0px 0px 1.2em !important;margin: 0.5em 0px !important;">从netlink报文头部获取当前消息类型msg_type；</p></li><li><p style="margin: 0px 0px 1.2em !important;margin: 0.5em 0px !important;">通过audit_netlink_ok函数检查当前的消息类型是否合法；如不合法，则退出；</p></li><li><p style="margin: 0px 0px 1.2em !important;margin: 0.5em 0px !important;">检查kauditd内核线程是否已启动，如果没有启动则通过kthread_run()启动该线程；kauditd线程用于将内核中的审计日志发送到用户态中；</p></li><li><p style="margin: 0px 0px 1.2em !important;margin: 0.5em 0px !important;">根据当前的套接字缓冲区skb和当前进程current获取审计所需的数据，比如pid、uid和loginuid等信息；</p></li><li><p style="margin: 0px 0px 1.2em !important;margin: 0.5em 0px !important;">根据消息类型进行消息分发和处理；</p></li></ol><h2 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.4em;border-bottom: 1px solid rgb(238, 238, 238);">1.2.日志的记录</h2><p style="margin: 0px 0px 1.2em !important;">审计系统在内核中通过audit_buffer结构表示一个审计日志缓冲区，它的结构如下：</p><pre style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em;line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;margin: 0px 0.15em;background-color: rgb(248, 248, 248);white-space: pre;overflow: auto;border-radius: 3px;border-width: 1px;border-style: solid;border-color: rgb(204, 204, 204);padding: 0.5em 0.7em;display: block !important;">struct audit_buffer {
+struct list_head list;
+struct sk_buff *skb; /* formatted skb ready to send */
+struct audit_context *ctx; /* NULL or associated context */
+gfp_t gfp_mask;
+};</code></pre><p style="margin: 0px 0px 1.2em !important;">list为链表节点；所有的审计日志缓冲区通过链表连接；</p><p style="margin: 0px 0px 1.2em !important;">skb为套接字缓冲区；由于审计系统通过netlink机制实现用户态和内核态的数据交互，因此需求封装套接字缓冲区；</p><p style="margin: 0px 0px 1.2em !important;">ctx表示审计上下文；当审计系统进行进程监控时，ctx将保存进程的相关信息；</p><p style="margin: 0px 0px 1.2em !important;">gfp_mask是内核申请内存时的标志；表示为audit_buffer在哪片内存区申请内存；</p><p style="margin: 0px 0px 1.2em !important;">内核通过一组接口对审计日志缓冲区进行操作。当审计事件发生时，通过audit_log_start()为该条日志分配audit_buffer结构的缓冲区；根据具体的审计事件，audit_log_vformat()将审计事件发生时要显示的数据以格式化字符串的形式写入缓冲区内；最终，audit_log_end()将缓冲区（审计缓冲区audit_buffer）加入缓冲区(审计套接字缓冲区sk_buffer)链表audit_skb_queue中。链表audit_skb_queue中的缓冲区由内核线程kauditd发送至用户态auditd进程。</p><h3 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.3em;">1.2.1.audit_log_start()</h3><p style="margin: 0px 0px 1.2em !important;">该函数主要用于分配日志缓冲区，但是如果当前缓冲区链表中的太多，将阻塞当前进程。具体的步骤如下：</p><ol style="margin-left: 0px;margin-right: 0px;" class=" list-paddingleft-2"><li><p style="margin: 0px 0px 1.2em !important;margin: 0.5em 0px !important;">通过audit_filter_type()检查当前日志类型是否被指定为过滤，如果是，则直接返回；</p></li><li><p style="margin: 0px 0px 1.2em !important;margin: 0.5em 0px !important;">如果当前缓冲区列表audit_skb_queue中存在的节点数目大于指定的audit_backlog_limit大小，则当前的进程将会被阻塞；即创建等待队列实例，改变当前进程的状态为TASK_UNINTERRUPTIBLE，并且将其加入到等待队列audit_backlog_wait中；此时，再次检查缓冲区列表中的数据是否大于所指定的audit_backlog_limit，如果是，则主动发起重新调度；否则，将删除刚才创建的等待队列实例，并且恢复进程的状态；</p></li><li><p style="margin: 0px 0px 1.2em !important;margin: 0.5em 0px !important;">此时，通过audit_buffer_alloc()创建审计缓冲区，并且在该缓冲区中写入审计序列号和时间戳等信息；</p></li></ol><p style="margin: 0px 0px 1.2em !important;">当进程在该函数中被阻塞时，将由kauditd内核线程将其唤醒；由于当前进程被阻塞的理由是缓冲区未被发送的数据超过了限制，因此一旦kauditd发送了数据后，该进程将被唤醒。</p><h3 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.3em;">1.2.2.audit_log_vformat()</h3><p style="margin: 0px 0px 1.2em !important;">审计数据不是一次全部产生，因此audit_log_vformat(）可能被调用多次，在需要记录信息的地方调用该函数即可；所有的数据将以格式化字符串的形式进行记录；</p><h3 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.3em;">1.2.3.audit_log_end()</h3><p style="margin: 0px 0px 1.2em !important;">该函数将结束本次审计日志的记录过程，具体的过程如下：</p><ol style="margin-left: 0px;margin-right: 0px;" class=" list-paddingleft-2"><li><p style="margin: 0px 0px 1.2em !important;margin: 0.5em 0px !important;">通过audit_rate_check()检查当前审计日志发送的频率是否超过了设定的限制；即如果每秒从内核向用户态发送的日志数超过了制定的数值audit_rate_limit，那么将抛弃当前的日志；</p></li><li><p style="margin: 0px 0px 1.2em !important;margin: 0.5em 0px !important;">从当前审计日志缓冲区中提取所封装的套接字缓冲区，将其加入到audit_skb_queue链表中；</p></li><li><p style="margin: 0px 0px 1.2em !important;margin: 0.5em 0px !important;">唤醒kauditd_wait等待队列中的一个进程。该等待队列由内核线程kauditd控制，该线程将依次发送audit_skb_queue链表中的缓冲区，如果已经无节点可发，则阻塞当前线程；此时，由于刚向audit_skb_queue中加入了新的节点，因此唤醒kauditd线程；</p></li><li><p style="margin: 0px 0px 1.2em !important;margin: 0.5em 0px !important;">释放在audit_log_start()中申请的audit_buffer缓冲区；</p></li></ol><h2 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.4em;border-bottom: 1px solid rgb(238, 238, 238);">1.3.审计规则的操作</h2><p style="margin: 0px 0px 1.2em !important;">audit_receive_msg函数接收并处理用户态auditctl命令发送的消息，这里针对审计规则的操作实现做简单说明。</p><p style="margin: 0px 0px 1.2em !important;">审计规则的操作包括增加、删除和列举当前规则，这三种操作类型在内核中分别对应为AUDIT_ADD_RULE、AUDIT_DEL_RULE和AUDIT_LIST_RULES。这些操作在audit_receive_msg函数中均由audit_receive_filter函数进行具体处理，具体的过程如下：</p><ol style="margin-left: 0px;margin-right: 0px;" class=" list-paddingleft-2"><li><p style="margin: 0px 0px 1.2em !important;margin: 0.5em 0px !important;">对于增加和删除操作，先通过audit_log_common_recv_msg()针对本次审计规则的操作进行审计日志缓冲区的分配和部分字段的记录；</p></li><li><p style="margin: 0px 0px 1.2em !important;margin: 0.5em 0px !important;">审计规则在内核中通过双链表进行组织，因此对审计规则的操作即是对链表的操作；</p></li></ol><p style="margin: 0px 0px 1.2em !important;">对于AUDIT_LIST_RULES操作，audit_receive_filter函数即分配缓冲区，依次遍历规则并拷贝至缓冲区，最终通过audit_send_list线程将缓冲区数据发送至内核态；具体的，netlink中从内核态发送数据至用户态通过netlink_unicast(）函数完成；</p><p style="margin: 0px 0px 1.2em !important;">对于AUDIT_ADD_RULES操作，audit_receive_filter()先通过audit_data_to_entry()将用户态发送的规则data转换成内核中使用的规则entry，其次将当前的规则添加到对应的规则链表中；由于审计系统的文件监控基于fsnotify机制完成，因此还需将规则中对应的文件加入到fsnotify监控列表中；</p><p style="margin: 0px 0px 1.2em !important;">AUDIT_DEL_RULES操作的实现与增加是相反过程，在次不再赘述；</p><h1 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.6em;border-bottom: 1px solid rgb(221, 221, 221);">2.kauditd内核线程的实现</h1><p style="margin: 0px 0px 1.2em !important;">kauditd内核线程对应的执行函数为kauditd_thread()，它将审计套接字缓冲区链表audit_skb_queue中的节点发送至用户态，用户态auditd将这些日志写入审计文件（auditd.log）。该线程将循环发送缓冲区数据，当缓冲区链表有节点时就利用netlink套接字从内核发送数据到用户态，当该链表中为空时，该线程将进入等待状态，直到缓冲区有新的节点时候再被唤醒。kauditd每次具体的执行过程如下：</p><ol style="margin-left: 0px;margin-right: 0px;" class=" list-paddingleft-2"><li><p style="margin: 0px 0px 1.2em !important;margin: 0.5em 0px !important;">当用户态的auditd运行（内核中audit_pid标志），且审计功能随启动开启时（内核中audit_default标志），将不断将audit_skb_hold_queue链表中的节点发送至用户态；该链表中通常保存的是当auditd停止后或启动前所产生的审计日志，这些日志在auditd未正常运行时可能已经被发送至系统的syslog中，当auditd正常运行时则需要将它们保存在审计的日志文件中；</p></li><li><p style="margin: 0px 0px 1.2em !important;margin: 0.5em 0px !important;">通过skb_dequeue()在audit_skb_queue链表中移除一个缓冲区节点；</p></li><li><p style="margin: 0px 0px 1.2em !important;margin: 0.5em 0px !important;">唤醒audit_backlog_wait等待链表中的一个进程，表示此时可以继续生成日志了；</p></li><li><p style="margin: 0px 0px 1.2em !important;margin: 0.5em 0px !important;">当在audit_skb_queue中移除节点成功时，将通过kauditd_send_skb()发送数据到用户态，或者（当auditd未启动时）直接printk到系统日志中；</p></li><li><p style="margin: 0px 0px 1.2em !important;margin: 0.5em 0px !important;">当在audit_skb_queue中移除节点失败时，将创建一个等待实例，将其添加到kauditd_wait等待队列中；如果此时audit_skb_queue中确实没有节点了，那么将当前内核线程状态置为TASK_INTERRUPTIBLE，并且主动发起重新调度；否则，重新将当前进程状态恢复为TASK_RUNNING，并从等待队列中将其移除；</p></li></ol><p style="margin: 0px 0px 1.2em !important;">如果kauditd由于缓冲区链表中无数据而阻塞了，那么一旦审计系统又产生了新的套接字缓冲区时，它将会被唤醒。具体的唤醒动作在audit_log_end()中。</p><h1 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.6em;border-bottom: 1px solid rgb(221, 221, 221);">3.总结</h1><p style="margin: 0px 0px 1.2em !important;">审计内核模块和kauditd内核线程基本体现了审计在内核中的实现框架，前者负责处理用户态发送的命令请求，完成审计规则的操作任务；后者完成日志向用户态的合理传送。对于审计系统来说，用户更关心的是日志的产生。那么，审计日志是在内核哪个部分产生的？什么时机产生？这将涉及到审计系统中文件监控和进程监控的实现，请参考本系列下一篇文章。</p><blockquote style="margin: 1.2em 0px;border-left: 4px solid rgb(221, 221, 221);padding: 0px 1em;color: rgb(119, 119, 119);quotes: none;"><p style="margin: 0px 0px 1.2em !important;">参考资料：</p><p style="margin: 0px 0px 1.2em !important;">1.Linux Audit ：http://people.redhat.com/sgrubb/audit/</p><p style="margin: 0px 0px 1.2em !important;">2.深入Linux内核架构：http://book.douban.com/subject/4843567/</p></blockquote>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">武特</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                <div class="reward_qrcode_area reward_area tc" id="js_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                                        <p class="reward_tips"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" id="js_reward_qrcode_img"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

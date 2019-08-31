@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		printf到printk的转变
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664604217&amp;idx=2&amp;sn=38d816eb1192c58d0ed4dda9bcd29fa4&amp;chksm=f04d8fdcc73a06ca94b67d46471c6ef9e268596f986f49de043ac700790dd7ca4f5fbf04f01b&amp;scene=27#wechat_redirect&cpage=36' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">printf到printk的转变</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        武特
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2017-06-17</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="margin: 0px 0px 1.2em !important;">昨天下午stepbystep的为其他同学演示了内核模块编程hello,kernel！在陈老师的指导下，先为大家演示了最基本的C程序hello,world。然后又一步步的转换成内核模块程序。在这一步步的转变过程中，我也发现了自己在学习内核模块中的不足，下面将下午遇到的一些问题总结如下。</p><p style="margin: 0px 0px 1.2em !important;">一个简单的hello，world程序如下：</p><pre style="font-family: Consolas,Inconsolata,Courier,monospace; font-size: 1em; line-height: 1.2em; margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas,Inconsolata,Courier,monospace; margin: 0px 0.15em; background-color: rgb(248, 248, 248); white-space: pre; overflow: auto; border-radius: 3px; border-width: 1px; border-style: solid; border-color: rgb(204, 204, 204); -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; padding: 0.5em 0.7em; display: block !important;">#include &lt;\stdio.h\&gt;
+int main()
+{
+ &nbsp; &nbsp;printf("hello,world\n");
+ &nbsp; &nbsp;return 0;
+}</code></pre><p style="margin: 0px 0px 1.2em !important;">对于上面的程序，我们通常一步到位进行编译：</p><pre style="font-family: Consolas,Inconsolata,Courier,monospace; font-size: 1em; line-height: 1.2em; margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas,Inconsolata,Courier,monospace; margin: 0px 0.15em; background-color: rgb(248, 248, 248); white-space: pre; overflow: auto; border-radius: 3px; border-width: 1px; border-style: solid; border-color: rgb(204, 204, 204); -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; padding: 0.5em 0.7em; display: block !important;">gcc hello.c -o hello</code></pre><p style="margin: 0px 0px 1.2em !important;">这样的命令简单方便，不过通常会让我们忽略从.c文件到可执行文件的整个编译过程。通常在使用gcc编译程序时，编译过程通常会分为4个阶段，即预处理（pre-processing），编译（compiling），汇编（assembling），链接（linking）。</p><p style="margin: 0px 0px 1.2em !important;">在预处理阶段，一般输入的是.c文件，而输出的是.i文件。在此阶段中通常会处理源文件中的预处理命令，比如#define，#include，#ifdef等命令。如果想要生成这种.i中间文件，那么可以使用下面命令：</p><pre style="font-family: Consolas,Inconsolata,Courier,monospace; font-size: 1em; line-height: 1.2em; margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas,Inconsolata,Courier,monospace; margin: 0px 0.15em; background-color: rgb(248, 248, 248); white-space: pre; overflow: auto; border-radius: 3px; border-width: 1px; border-style: solid; border-color: rgb(204, 204, 204); -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; padding: 0.5em 0.7em; display: block !important;">gcc -E hello.c -o hello.i</code></pre><p style="margin: 0px 0px 1.2em !important;">在编译阶段，输入的是.i中间文件，输出的是.s汇编语言文件。可以使用下面的命令：</p><pre style="font-family: Consolas,Inconsolata,Courier,monospace; font-size: 1em; line-height: 1.2em; margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas,Inconsolata,Courier,monospace; margin: 0px 0.15em; background-color: rgb(248, 248, 248); white-space: pre; overflow: auto; border-radius: 3px; border-width: 1px; border-style: solid; border-color: rgb(204, 204, 204); -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; padding: 0.5em 0.7em; display: block !important;">gcc -S hello.i -o test.s</code></pre><p style="margin: 0px 0px 1.2em !important;">在汇编阶段，输入的是上一步产生的.s文件，产生的是二进制机器代码.o文件。此阶段对应的命令如下：</p><pre style="font-family: Consolas,Inconsolata,Courier,monospace; font-size: 1em; line-height: 1.2em; margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas,Inconsolata,Courier,monospace; margin: 0px 0.15em; background-color: rgb(248, 248, 248); white-space: pre; overflow: auto; border-radius: 3px; border-width: 1px; border-style: solid; border-color: rgb(204, 204, 204); -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; padding: 0.5em 0.7em; display: block !important;">gcc -c test.s -o test.o</code></pre><p style="margin: 0px 0px 1.2em !important;">在链接阶段，输入的是.o二进制机器代码文件，连同其他的（如果有的话）机器代码文件和库文件一起汇集成一个可执行的二进制代码文件。</p><pre style="font-family: Consolas,Inconsolata,Courier,monospace; font-size: 1em; line-height: 1.2em; margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas,Inconsolata,Courier,monospace; margin: 0px 0.15em; background-color: rgb(248, 248, 248); white-space: pre; overflow: auto; border-radius: 3px; border-width: 1px; border-style: solid; border-color: rgb(204, 204, 204); -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; padding: 0.5em 0.7em; display: block !important;">gcc test.o -o test</code></pre><p style="margin: 0px 0px 1.2em !important;">以上是一个程序编译完整的四个阶段。一般来说我们会将前三个阶段一步搞定，那么整个编译过程可以用下面两条命令就完成：</p><pre style="font-family: Consolas,Inconsolata,Courier,monospace; font-size: 1em; line-height: 1.2em; margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas,Inconsolata,Courier,monospace; margin: 0px 0.15em; background-color: rgb(248, 248, 248); white-space: pre; overflow: auto; border-radius: 3px; border-width: 1px; border-style: solid; border-color: rgb(204, 204, 204); -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; padding: 0.5em 0.7em; display: block !important;">gcc -c test.c -o test.o
+gcc test.o -o test</code></pre><p style="margin: 0px 0px 1.2em !important;">也就是先生成目标文件，再将目标文件连接成可执行文件。当你熟悉了整个编译过程后，可以用一开始我们说的一条命令来完成。</p><p style="margin: 0px 0px 1.2em !important;">了解普通文件的编译过程，我们现在就将hello.c中的代码转换成模块编程中的.c代码。首先我们要更改头文件：</p><pre style="font-family: Consolas,Inconsolata,Courier,monospace; font-size: 1em; line-height: 1.2em; margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas,Inconsolata,Courier,monospace; margin: 0px 0.15em; background-color: rgb(248, 248, 248); white-space: pre; overflow: auto; border-radius: 3px; border-width: 1px; border-style: solid; border-color: rgb(204, 204, 204); -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; padding: 0.5em 0.7em; display: block !important;">#include &lt;\linux/kernel.h\&gt;
+#include &lt;\linux/module.h\&gt;</code></pre><p style="margin: 0px 0px 1.2em !important;">这与我们一般的头文件不同。一般我们在用户态下编写C程序，头文件会放在：/usr/include/下，而我们模块编程时，它使用的是内核中的头文件，一般在：cd /usr/src/linux-headers-2.6.32-21/include/。特别的我们这里使用的是include/目录下linux/这个子目录中的头文件，因此模块编译的时候会自动在内核中的include/目录下找linux/kernel.h这样的头文件。</p><p style="margin: 0px 0px 1.2em !important;">其次，printf到printk是一个典型的用户态下编程与内核模块编程的不同。可能我们一开始会比较奇怪，为什么我make成功，加载也成功，但是就是不能显示printk里面的语句呢？我们可以这么想printk就是专门为内核“服务”。它一般输出的语句都在内核的日志文件当中。</p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">武特</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                <div class="reward_qrcode_area reward_area tc" id="js_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                                        <p class="reward_tips"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" id="js_reward_qrcode_img"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

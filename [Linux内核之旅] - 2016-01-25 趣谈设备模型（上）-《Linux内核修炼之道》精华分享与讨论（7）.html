@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		趣谈设备模型（上）-《Linux内核修炼之道》精华分享与讨论（7）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=415817899&amp;idx=1&amp;sn=2aef26b2fc06923c0482a553490b8724&amp;chksm=7657cd4e412044589df890d9505a8eaa222d42a81a125ef31837e81efc54005424eb54414a8d&amp;scene=27#wechat_redirect&cpage=79' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">趣谈设备模型（上）-《Linux内核修炼之道》精华分享与讨论（7）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        fudan_abc
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-01-25</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style=""><br  /></p><p style="">对于驱动开发来说，设备模型的理解是根本，毫不夸张得说，理解了设备模型，再去看那些五花八门的驱动程序，你会发现自己站在了另一个高度，从而有了一种俯视的感觉。</p><p style="">顾名而思义就知道设备模型是关于设备的模型，既不是任小强们的房模，也不是张导的炮模。对咱们写驱动的和不写驱动的人来说，设备的概念就是总线和与其相连的各种设备了。电脑城的IT工作者都会知道设备是通过总线连到计算机上的，而且还需要对应的驱动才能用，可是总线是如何发现设备的，设备又是如何和驱动对应起来的，它们经过怎样的艰辛才找到命里注定的那个他，它们的关系如何，白头偕老型的还是朝三暮四型的，这些问题就不是他们关心的了，而是咱们需要关心的。在房市股市千锤百炼的咱们还能够惊喜的发现，这些疑问的中心思想中心词汇就是总线、设备和驱动，没错，它们就是咱们这里要聊的Linux设备模型的名角。</p><p style="">总线、设备、驱动，也就是bus、device、driver，既然是名角，在内核里都会有它们自己专属的结构，在include/linux/device.h里定义。</p><p style=""><span style="box-sizing: border-box; color: rgb(0, 0, 255);">52 struct bus_type {<br style="box-sizing: border-box;"  />53 &nbsp;&nbsp;const char&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * name;<br style="box-sizing: border-box;"  />54&nbsp;&nbsp;&nbsp; &nbsp;struct module&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * owner;<br style="box-sizing: border-box;"  />55&nbsp;<br style="box-sizing: border-box;"  />56&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;struct kset&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; subsys;<br style="box-sizing: border-box;"  />57&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;struct kset&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; drivers;<br style="box-sizing: border-box;"  />58&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;struct kset&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; devices;<br style="box-sizing: border-box;"  />59&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;struct klist&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; klist_devices;<br style="box-sizing: border-box;"  />60&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;struct klist&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; klist_drivers;<br style="box-sizing: border-box;"  />61&nbsp;<br style="box-sizing: border-box;"  />62&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;struct blocking_notifier_head bus_notifier;<br style="box-sizing: border-box;"  />63&nbsp;<br style="box-sizing: border-box;"  />64&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;struct bus_attribute&nbsp;&nbsp;&nbsp; * bus_attrs;<br style="box-sizing: border-box;"  />65&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;struct device_attribute * dev_attrs;<br style="box-sizing: border-box;"  />66&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;struct driver_attribute * drv_attrs;<br style="box-sizing: border-box;"  />67&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;struct bus_attribute drivers_autoprobe_attr;<br style="box-sizing: border-box;"  />68&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;struct bus_attribute drivers_probe_attr;<br style="box-sizing: border-box;"  />69&nbsp;<br style="box-sizing: border-box;"  />70&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;int (*match)(struct device * dev, struct device_driver * drv);<br style="box-sizing: border-box;"  />71&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;int (*uevent)(struct device *dev, char **envp,<br style="box-sizing: border-box;"  />72&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;int num_envp, char *buffer, int buffer_size);<br style="box-sizing: border-box;"  />73&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (*probe)(struct device * dev);<br style="box-sizing: border-box;"  />74&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (*remove)(struct device * dev);<br style="box-sizing: border-box;"  />75&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (*shutdown)(struct device * dev);<br style="box-sizing: border-box;"  />76&nbsp;<br style="box-sizing: border-box;"  />77&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;int (*suspend)(struct device * dev, pm_message_t state);<br style="box-sizing: border-box;"  />78&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;int (*suspend_late)(struct device * dev, pm_message_t state);<br style="box-sizing: border-box;"  />79&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;int (*resume_early)(struct device * dev);<br style="box-sizing: border-box;"  />80&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;int (*resume)(struct device * dev);<br style="box-sizing: border-box;"  />81&nbsp;<br style="box-sizing: border-box;"  />82&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;unsigned int drivers_autoprobe:1;<br style="box-sizing: border-box;"  />83 };</span></p><p style=""><span style="box-sizing: border-box; color: rgb(64, 118, 0);">124 struct device_driver {<br style="box-sizing: border-box;"  />125&nbsp;&nbsp;&nbsp; &nbsp;const char&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * name;<br style="box-sizing: border-box;"  />126&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;struct bus_type&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * bus;<br style="box-sizing: border-box;"  />127&nbsp;<br style="box-sizing: border-box;"  />128&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;struct kobject&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; kobj;<br style="box-sizing: border-box;"  />129&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;struct klist&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; klist_devices;<br style="box-sizing: border-box;"  />130&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;struct klist_node&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; knode_bus;<br style="box-sizing: border-box;"  />131&nbsp;<br style="box-sizing: border-box;"  />132&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;struct module&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * owner;<br style="box-sizing: border-box;"  />133&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;const char&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * mod_name;&nbsp; /* used for built-in modules */<br style="box-sizing: border-box;"  />134&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;struct module_kobject&nbsp;&nbsp; * mkobj;<br style="box-sizing: border-box;"  />135&nbsp;<br style="box-sizing: border-box;"  />136&nbsp;&nbsp;&nbsp; &nbsp;int&nbsp;&nbsp;&nbsp;&nbsp; (*probe)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (struct device * dev);<br style="box-sizing: border-box;"  />137&nbsp;&nbsp;&nbsp; &nbsp;int&nbsp;&nbsp;&nbsp;&nbsp; (*remove)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (struct device * dev);<br style="box-sizing: border-box;"  />138&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;void&nbsp;&nbsp;&nbsp; (*shutdown)&nbsp;&nbsp;&nbsp;&nbsp; (struct device * dev);<br style="box-sizing: border-box;"  />139&nbsp;&nbsp;&nbsp; &nbsp;int&nbsp;&nbsp;&nbsp;&nbsp; (*suspend)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (struct device * dev, pm_message_t state);<br style="box-sizing: border-box;"  />140&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;int&nbsp;&nbsp;&nbsp;&nbsp; (*resume)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (struct device * dev);<br style="box-sizing: border-box;"  />141 };</span></p><p style=""><span style="box-sizing: border-box; color: rgb(0, 0, 255);">407 struct device {<br style="box-sizing: border-box;"  />408&nbsp; &nbsp;struct klist&nbsp;&nbsp;klist_children;<br style="box-sizing: border-box;"  />409&nbsp; &nbsp;struct klist_node&nbsp;knode_parent;&nbsp;&nbsp;/* node in sibling list */<br style="box-sizing: border-box;"  />410&nbsp; &nbsp;struct klist_node&nbsp;knode_driver;<br style="box-sizing: border-box;"  />411&nbsp; &nbsp;struct klist_node&nbsp;knode_bus;<br style="box-sizing: border-box;"  />412&nbsp; &nbsp;struct device&nbsp;&nbsp;*parent;<br style="box-sizing: border-box;"  />413<br style="box-sizing: border-box;"  />414&nbsp; &nbsp;struct kobject kobj;<br style="box-sizing: border-box;"  />415&nbsp; &nbsp;char&nbsp;bus_id[BUS_ID_SIZE];&nbsp;/* position on parent bus */<br style="box-sizing: border-box;"  />416&nbsp; &nbsp;struct device_type&nbsp;*type;<br style="box-sizing: border-box;"  />417&nbsp; &nbsp;unsigned&nbsp;&nbsp;is_registered:1;<br style="box-sizing: border-box;"  />418&nbsp; &nbsp;unsigned&nbsp;&nbsp;uevent_suppress:1;<br style="box-sizing: border-box;"  />419<br style="box-sizing: border-box;"  />420&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; struct semaphore&nbsp;sem;&nbsp;/* semaphore to synchronize calls to<br style="box-sizing: border-box;"  />421&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * its driver.<br style="box-sizing: border-box;"  />422&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */<br style="box-sizing: border-box;"  />423<br style="box-sizing: border-box;"  />424&nbsp; &nbsp;struct bus_type&nbsp;* bus;&nbsp;&nbsp;/* type of bus device is on */<br style="box-sizing: border-box;"  />425&nbsp; &nbsp;struct device_driver *driver;&nbsp;/* which driver has allocated this<br style="box-sizing: border-box;"  />426&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; device */<br style="box-sizing: border-box;"  />427&nbsp; &nbsp;void&nbsp;&nbsp;*driver_data;&nbsp;/* data private to the driver */<br style="box-sizing: border-box;"  />428&nbsp; &nbsp;void&nbsp;&nbsp;*platform_data;&nbsp;/* Platform specific data, device<br style="box-sizing: border-box;"  />429&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; core doesn&#39;t touch it */<br style="box-sizing: border-box;"  />430&nbsp; &nbsp;struct dev_pm_info&nbsp;power;<br style="box-sizing: border-box;"  />431&nbsp;<br style="box-sizing: border-box;"  />432 #ifdef CONFIG_NUMA<br style="box-sizing: border-box;"  />433&nbsp; &nbsp;int&nbsp;&nbsp;numa_node;&nbsp;/* NUMA node this device is close to */<br style="box-sizing: border-box;"  />434 #endif<br style="box-sizing: border-box;"  />435&nbsp; &nbsp;u64&nbsp;&nbsp;*dma_mask;&nbsp;/* dma mask (if dma&#39;able device) */<br style="box-sizing: border-box;"  />436&nbsp; &nbsp;u64&nbsp;&nbsp;coherent_dma_mask;/* Like dma_mask, but for<br style="box-sizing: border-box;"  />437&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; alloc_coherent mappings as<br style="box-sizing: border-box;"  />438&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; not all hardware supports<br style="box-sizing: border-box;"  />439&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 64 bit addresses for consistent<br style="box-sizing: border-box;"  />440&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; allocations such descriptors. */<br style="box-sizing: border-box;"  />441&nbsp;<br style="box-sizing: border-box;"  />442&nbsp; &nbsp;struct list_head&nbsp;dma_pools;&nbsp;/* dma pools (if dma&#39;ble) */<br style="box-sizing: border-box;"  />443<br style="box-sizing: border-box;"  />444&nbsp; &nbsp;struct dma_coherent_mem&nbsp;*dma_mem; /* internal for coherent mem<br style="box-sizing: border-box;"  />445&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; override */<br style="box-sizing: border-box;"  />446&nbsp; &nbsp;/* arch specific additions */<br style="box-sizing: border-box;"  />447&nbsp; &nbsp;struct dev_archdata&nbsp;archdata;<br style="box-sizing: border-box;"  />448&nbsp;<br style="box-sizing: border-box;"  />449&nbsp; &nbsp;spinlock_t&nbsp;&nbsp;devres_lock;<br style="box-sizing: border-box;"  />450&nbsp; &nbsp;struct list_head&nbsp;devres_head;<br style="box-sizing: border-box;"  />451<br style="box-sizing: border-box;"  />452&nbsp; &nbsp;/* class_device migration path */<br style="box-sizing: border-box;"  />453&nbsp; &nbsp;struct list_head&nbsp;node;<br style="box-sizing: border-box;"  />454&nbsp; &nbsp;struct class&nbsp;&nbsp;*class;<br style="box-sizing: border-box;"  />455&nbsp; &nbsp;dev_t&nbsp;&nbsp;&nbsp;devt;&nbsp;&nbsp;/* dev_t, creates the sysfs &quot;dev&quot; */<br style="box-sizing: border-box;"  />456&nbsp; &nbsp;struct attribute_group&nbsp;**groups;&nbsp;/* optional groups */<br style="box-sizing: border-box;"  />457&nbsp;<br style="box-sizing: border-box;"  />458&nbsp; &nbsp;void&nbsp;(*release)(struct device * dev);<br style="box-sizing: border-box;"  />459 };</span></p><p style="">有没有发现它们的共性是什么？对，不是很傻很天真，而是很长很复杂。不过不妨把它们看成艺术品，既然是艺术，当然不会让你那么容易的就看懂了，不然怎么称大师称名家。这么想想咱们就会比较的宽慰了，阿Q是鲁迅对咱们80后最大的贡献。</p><p style="">我知道进入了21世纪，最缺的就是耐性，房价股价都让咱们没有耐性，内核的代码也让人没有耐性。不过做为最没有耐性的一代人，还是要平心静气的扫一下上面的结构，我们会发现，struct bus_type中有成员struct kset drivers 和struct kset devices，同时struct device中有两个成员struct bus_type * bus和struct device_driver *driver，struct device_driver中有两个成员struct bus_type * bus和struct klist klist_devices。先不说什么是klist、kset，光从成员的名字看，它们就是一个完美的三角关系。我们每个人心中是不是都有两个她？一个梦中的她，一个现实中的她。</p><p style="">凭直觉，我们可以知道，struct device中的bus表示这个设备连到哪个总线上，driver表示这个设备的驱动是什么，struct device_driver中的bus表示这个驱动属于哪个总线，klist_devices表示这个驱动都支持哪些设备，因为这里device是复数，又是list，更因为一个驱动可以支持多个设备，而一个设备只能绑定一个驱动。当然，struct bus_type中的drivers和devices分别表示了这个总线拥有哪些设备和哪些驱动。</p><p style="">单凭直觉，张钰红不了。我们还需要看看什么是klist、kset。还有上面device和driver结构里出现的kobject结构是什么？作为一个五星红旗下长大的孩子，我可以肯定的告诉你，kobject和kset都是Linux设备模型中最基本的元素，总线、设备、驱动是西瓜，kobjcet、klist是种瓜的人，没有幕后种瓜人的汗水不会有清爽解渴的西瓜，我们不能光知道西瓜的的甜，还要知道种瓜人的辛苦。kobject和kset不会在意自己的得失，它们存在的意义在于把总线、设备和驱动这样的对象连接到设备模型上。种瓜的人也不会在意自己的汗水，在意的只是能不能送出甜蜜的西瓜。</p><p style="">一般来说应该这么理解，整个Linux的设备模型是一个OO的体系结构，总线、设备和驱动都是其中鲜活存在的对象，kobject是它们的基类，所实现的只是一些公共的接口，kset是同种类型kobject对象的集合，也可以说是对象的容器。只是因为C里不可能会有C++里类的class继承、组合等的概念，只有通过kobject嵌入到对象结构里来实现。这样，内核使用kobject将各个对象连接起来组成了一个分层的结构体系，就好像马列主义将我们13亿人也连接成了一个分层的社会体系一样。kobject结构里包含了parent成员，指向了另一个kobject结构，也就是这个分层结构的上一层结点。而kset是通过链表来实现的，这样就可以明白，struct bus_type结构中的成员drivers和devices表示了一条总线拥有两条链表，一条是设备链表，一条是驱动链表。我们知道了总线对应的数据结构，就可以找到这条总线关联了多少设备，又有哪些驱动来支持这类设备。</p><p style="">那么klist呢？其实它就包含了一个链表和一个自旋锁，我们暂且把它看成链表也无妨，本来在2.6.11内核里，struct device_driver结构的devices成员就是一个链表类型。这么一说，咱们上面的直觉都是正确的，如果买股票，摸彩票时直觉都这么管用，就不会有咱们这被压扁的一代了。</p><p style="">现在的人都知道，三角关系很难处。那么总线、设备和驱动之间是如何和谐共处那？先说说总线中的那两条链表是怎么形成的。内核要求每次出现一个设备就要向总线汇报，或者说注册，每次出现一个驱动，也要向总线汇报，或者说注册。比如系统初始化的时候，会扫描连接了哪些设备，并为每一个设备建立起一个struct device的变量，每一次有一个驱动程序，就要准备一个struct device_driver结构的变量。把这些变量统统加入相应的链表，device 插入devices 链表，driver插入drivers链表。这样通过总线就能找到每一个设备，每一个驱动。然而，假如计算机里只有设备却没有对应的驱动，那么设备无法工作。反过来，倘若只有驱动却没有设备，驱动也起不了任何作用。在他们遇见彼此之前，双方都如同路埂的野草，一个飘啊飘，一个摇啊摇，谁也不知道未来在哪里，只能在生命的风里飘摇。于是总线上的两张表里就慢慢的就挂上了那许多孤单的灵魂。devices开始多了，drivers开始多了，他们像是来自两个世界，devices们彼此取暖，drivers们一起狂欢，但他们有一点是相同的，都只是在等待属于自己的那个另一半。</p><p style="">现在，总线上的两条链表已经有了，这个三角关系三个边已经有了两个，剩下的那个那？链表里的设备和驱动又是如何联系那？先有设备还是先有驱动？很久很久以前，在那激情燃烧的岁月里，先有的是设备，每一个要用的设备在计算机启动之前就已经插好了，插放在它应该在的位置上，然后计算机启动，然后操作系统开始初始化，总线开始扫描设备，每找到一个设备，就为其申请一个struct device结构，并且挂入总线中的devices链表中来，然后每一个驱动程序开始初始化，开始注册其struct device_driver结构，然后它去总线的devices链表中去寻找(遍历)，去寻找每一个还没有绑定驱动的设备，即struct device中的struct device_driver指针仍为空的设备，然后它会去观察这种设备的特征，看是否是他所支持的设备，如果是，那么调用一个叫做device_bind_driver的函数，然后他们就结为了秦晋之好。换句话说，把struct device中的struct device_driver driver指向这个驱动，而struct device_driver driver把struct device加入他的那张struct klist klist_devices链表中来。就这样，bus、device和driver，这三者之间或者说他们中的两两之间，就给联系上了。知道其中之一，就能找到另外两个。一荣俱荣，一损俱损。</p><p style="">但现在情况变了，在这红莲绽放的日子里，在这樱花伤逝的日子里，出现了一种新的名词，叫热插拔。设备可以在计算机启动以后在插入或者拔出计算机了。因此，很难再说是先有设备还是先有驱动了。因为都有可能。设备可以在任何时刻出现，而驱动也可以在任何时刻被加载，所以，出现的情况就是，每当一个struct device诞生，它就会去bus的drivers链表中寻找自己的另一半，反之，每当一个一个struct device_driver诞生，它就去bus的devices链表中寻找它的那些设备。如果找到了合适的，那么OK，和之前那种情况一下，调用device_bind_driver绑定好。如果找不到，没有关系，等待吧，等到昙花再开，等到风景看透，心中相信，这世界上总有一个人是你所等的，只是还没有遇到而已。</p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">fudan_abc</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

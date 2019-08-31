@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		指向一维数组的指针
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664604219&amp;idx=1&amp;sn=8f902602d3301ab43b450d0a21842650&amp;chksm=f04d8fdec73a06c87177e68567fdbc21d72eaeebf60b67642a9c094ad306bd5218f3ec80acc2&amp;scene=27#wechat_redirect&cpage=36' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">指向一维数组的指针</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        武特
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2017-06-18</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <div class="markdown-here-wrapper" data-md-url="https://mp.weixin.qq.com/cgi-bin/appmsg?t=media/appmsg_edit&amp;action=edit&amp;lang=zh_CN&amp;token=473457073&amp;type=10&amp;appmsgid=517120570&amp;isMul=1"><p style="margin: 0px 0px 1.2em !important;">今天在看到typedef int (*int_arry)[10];这条语句时，因为对这样的定义使用较少，就想着编写一个test.c来试试看。不过，当我编写完一个简单的测试程序时，却发现我对指向一维数组的指针的使用了解甚少。</p><p style="margin: 0px 0px 1.2em !important;">起初，我的程序是这样：</p><pre style="font-size: 0.85em; font-family: Consolas,Inconsolata,Courier,monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas,Inconsolata,Courier,monospace;margin: 0px 0.15em; padding: 0px 0.3em; white-space: pre-wrap; border: 1px solid rgb(234, 234, 234); background-color: rgb(248, 248, 248); border-radius: 3px; display: inline;white-space: pre; overflow: auto; border-radius: 3px; border: 1px solid rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important;">#include &nbsp;&lt; stdio.h &gt;
+typedef int (*int_array)[10];
+int main()
+{
+
+ &nbsp; &nbsp;int a[10]={1,2,3,4,5};
+ &nbsp; &nbsp;int_array i=&amp;a;
+
+ &nbsp; &nbsp;printf("%d=%d\n",i[4],a[4]);
+ &nbsp; &nbsp; &nbsp;return 0;
+}</code></pre><p style="margin: 0px 0px 1.2em !important;">编译后，提示如下错误：</p><pre style="font-size: 0.85em; font-family: Consolas,Inconsolata,Courier,monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas,Inconsolata,Courier,monospace;margin: 0px 0.15em; padding: 0px 0.3em; white-space: pre-wrap; border: 1px solid rgb(234, 234, 234); background-color: rgb(248, 248, 248); border-radius: 3px; display: inline;white-space: pre; overflow: auto; border-radius: 3px; border: 1px solid rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important;">test.c: In function ‘main’:
+test.c:10: warning: format ‘%d’ expects type ‘int’, but argument 2 has type ‘int *’</code></pre><p style="margin: 0px 0px 1.2em !important;">也就是说，i[4]是一个int*型的指针。为什么会出现这样的错误？既然i是一个指向有10个整形元素数组的指针。那么将i指向数组a，然后使用i[4]获取第四个元素有什么错？</p><p style="margin: 0px 0px 1.2em !important;">那我们从另一个角度来分析，一般i[4]这样的形式都可以看成<em>(i+4)这样的形式。i+4是什么？对了！i是一个数组指针，那么i+4也就是一个数组指针。如果将i所指的数组看作一个二维表的第1行，那么i+4就是指向第5行的指针。也就是说它相对于i所指向位置的偏移量为4</em>sizeof(int)<em>10个字节。因此</em>(i+4)仍然是一个指针，只不过它指向第5行的首个元素。</p><p style="margin: 0px 0px 1.2em !important;">看来我们找到问题所在，i[4]并不是一个整形元素，而是一个指向整形元素的指针。上面程序中，我原本的意思是通过i来打印数组a中第四个元素。那么此刻我们应该这么修改：</p><pre style="font-size: 0.85em; font-family: Consolas,Inconsolata,Courier,monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas,Inconsolata,Courier,monospace;margin: 0px 0.15em; padding: 0px 0.3em; white-space: pre-wrap; border: 1px solid rgb(234, 234, 234); background-color: rgb(248, 248, 248); border-radius: 3px; display: inline;white-space: pre; overflow: auto; border-radius: 3px; border: 1px solid rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important;">printf("%d=%d\n",i[0][4],a[4]);</code></pre><p style="margin: 0px 0px 1.2em !important;">或者下面任意一句：</p><pre style="font-size: 0.85em; font-family: Consolas,Inconsolata,Courier,monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas,Inconsolata,Courier,monospace;margin: 0px 0.15em; padding: 0px 0.3em; white-space: pre-wrap; border: 1px solid rgb(234, 234, 234); background-color: rgb(248, 248, 248); border-radius: 3px; display: inline;white-space: pre; overflow: auto; border-radius: 3px; border: 1px solid rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important;">printf("%d=%d\n",(*(i+0))[4],a[4]);
+printf("%d=%d\n",*(i[0]+4),a[4]);
+printf("%d=%d\n",*(*(i+0)+4),a[4]);</code></pre><p style="margin: 0px 0px 1.2em !important;">你会发现，如果p是一个指向指针的指针，那么总能够通过两次的<em>、两次的[]或者一次</em>和一次[]取得这个指针最终指向的数据，因为说到底[]总能够化成*的形式。理解了这些，上面的语句对你也就不成问题了。got it？</p><div title="MDH:PHA+5LuK5aSp5Zyo55yL5YiwdHlwZWRlZiBpbnQgKCppbnRfYXJyeSlbMTBdO+i/meadoeivreWP
+peaXtu+8jOWboOS4uuWvuei/meagt+eahOWumuS5ieS9v+eUqOi+g+Wwke+8jOWwseaDs+edgOe8
+luWGmeS4gOS4qnRlc3QuY+adpeivleivleeci+OAguS4jei/h++8jOW9k+aIkee8luWGmeWujOS4
+gOS4queugOWNleeahOa1i+ivleeoi+W6j+aXtu+8jOWNtOWPkeeOsOaIkeWvueaMh+WQkeS4gOe7
+tOaVsOe7hOeahOaMh+mSiOeahOS9v+eUqOS6huino+eUmuWwkeOAgjxicj48YnI+6LW35Yid77yM
+5oiR55qE56iL5bqP5piv6L+Z5qC377yaPGJyPjxicj48c3BhbiBzdHlsZT0iY29sb3I6IHJnYigx
+NzgsIDM0LCAzNCk7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsjaW5jbHVkZSZuYnNwOyZuYnNw
+OyZsdDsgc3RkaW8uaCAmZ3Q7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6IHJnYigwLCAx
+MjgsIDApOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7dHlwZWRlZiBpbnQgKCppbnRfYXJyYXkp
+WzEwXTs8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogcmdiKDAsIDEyOCwgMCk7Ij4mbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDtpbnQgbWFpbigpPC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29s
+b3I6IHJnYigwLCAxMjgsIDApOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7ezwvc3Bhbj48YnI+
+PHNwYW4gc3R5bGU9ImNvbG9yOiByZ2IoMCwgMTI4LCAwKTsiPiZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiByZ2IoMCwgMTI4LCAwKTsiPiZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO2ludCBhWzEwXT17MSwy
+LDMsNCw1fTs8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogcmdiKDAsIDEyOCwgMCk7Ij4m
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtpbnRfYXJyYXkg
+aT0mYW1wO2E7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6IHJnYigwLCAxMjgsIDApOyI+
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6IHJn
+YigwLCAxMjgsIDApOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7cHJpbnRmKCIlZD0lZFxuIixpWzRdLGFbNF0pOzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9
+ImNvbG9yOiByZ2IoMCwgMTI4LCAwKTsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO3JldHVybiAwOzwvc3Bhbj48YnI+PHNwYW4gc3R5
+bGU9ImNvbG9yOiByZ2IoMCwgMTI4LCAwKTsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO308L3Nw
+YW4+PGJyPjxicj7nvJbor5HlkI7vvIzmj5DnpLrlpoLkuIvplJnor6/vvJo8YnI+PGJyPjxzcGFu
+IHN0eWxlPSJjb2xvcjogcmdiKDAsIDEyOCwgMCk7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDt0
+ZXN0LmM6IEluIGZ1bmN0aW9uIOKAmG1haW7igJk6PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29s
+b3I6IHJnYigwLCAxMjgsIDApOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7dGVzdC5jOjEwOiB3
+YXJuaW5nOiBmb3JtYXQg4oCYJWTigJkgZXhwZWN0cyB0eXBlIOKAmGludOKAmSwgYnV0IGFyZ3Vt
+ZW50IDIgaGFzIHR5cGUg4oCYaW50ICrigJk8L3NwYW4+PGJyPjxicj7kuZ/lsLHmmK/or7TvvIxp
+WzRd5piv5LiA5LiqaW50KuWei+eahOaMh+mSiOOAguS4uuS7gOS5iOS8muWHuueOsOi/meagt+ea
+hOmUmeivr++8n+aXoueEtmnmmK/kuIDkuKrmjIflkJHmnIkxMOS4quaVtOW9ouWFg+e0oOaVsOe7
+hOeahOaMh+mSiOOAgumCo+S5iOWwhmnmjIflkJHmlbDnu4Rh77yM54S25ZCO5L2/55SoaVs0XeiO
+t+WPluesrOWbm+S4quWFg+e0oOacieS7gOS5iOmUme+8nzxicj48YnI+6YKj5oiR5Lus5LuO5Y+m
+5LiA5Liq6KeS5bqm5p2l5YiG5p6Q77yM5LiA6IisaVs0Xei/meagt+eahOW9ouW8j+mDveWPr+S7
+peeci+aIkDxzcGFuIHN0eWxlPSJmb250LXN0eWxlOiBpdGFsaWM7Ij4qKGkrNCnov5nmoLfnmoTl
+vaLlvI/jgIJpKzTmmK/ku4DkuYjvvJ/lr7nkuobvvIFp5piv5LiA5Liq5pWw57uE5oyH6ZKI77yM
+6YKj5LmIaSs05Lmf5bCx5piv5LiA5Liq5pWw57uE5oyH6ZKI44CC5aaC5p6c5bCGaeaJgOaMh+ea
+hOaVsOe7hOeci+S9nOS4gOS4quS6jOe7tOihqOeahOesrDHooYzvvIzpgqPkuYhpKzTlsLHmmK/m
+jIflkJHnrKw16KGM55qE5oyH6ZKI44CC5Lmf5bCx5piv6K+05a6D55u45a+55LqOaeaJgOaMh+WQ
+keS9jee9rueahOWBj+enu+mHj+S4ujQqPC9zcGFuPnNpemVvZihpbnQpPHNwYW4gc3R5bGU9ImZv
+bnQtc3R5bGU6IGl0YWxpYzsiPioxMOS4quWtl+iKguOAguWboOatpCo8L3NwYW4+KGkrNCnku43n
+hLbmmK/kuIDkuKrmjIfpkojvvIzlj6rkuI3ov4flroPmjIflkJHnrKw16KGM55qE6aaW5Liq5YWD
+57Sg44CCPGJyPjxicj7nnIvmnaXmiJHku6zmib7liLDpl67popjmiYDlnKjvvIxpWzRd5bm25LiN
+5piv5LiA5Liq5pW05b2i5YWD57Sg77yM6ICM5piv5LiA5Liq5oyH5ZCR5pW05b2i5YWD57Sg55qE
+5oyH6ZKI44CC5LiK6Z2i56iL5bqP5Lit77yM5oiR5Y6f5pys55qE5oSP5oCd5piv6YCa6L+Haead
+peaJk+WNsOaVsOe7hGHkuK3nrKzlm5vkuKrlhYPntKDjgILpgqPkuYjmraTliLvmiJHku6zlupTo
+r6Xov5nkuYjkv67mlLnvvJo8YnI+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogcmdiKDAsIDEyOCwg
+MCk7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtwcmludGYoIiVkPSVkXG4iLGlbMF1bNF0sYVs0
+XSk7PC9zcGFuPjxicj48YnI+5oiW6ICF5LiL6Z2i5Lu75oSP5LiA5Y+l77yaPGJyPjxicj48c3Bh
+biBzdHlsZT0iY29sb3I6IHJnYigwLCAxMjgsIDApOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+cHJpbnRmKCIlZD0lZFxuIiwoKihpKzApKVs0XSxhWzRdKTs8L3NwYW4+PGJyPjxzcGFuIHN0eWxl
+PSJjb2xvcjogcmdiKDAsIDEyOCwgMCk7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtwcmludGYo
+IiVkPSVkXG4iLCooaVswXSs0KSxhWzRdKTs8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjog
+cmdiKDAsIDEyOCwgMCk7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtwcmludGYoIiVkPSVkXG4i
+LCooKihpKzApKzQpLGFbNF0pOzwvc3Bhbj48YnI+PGJyPuS9oOS8muWPkeeOsO+8jOWmguaenHDm
+mK/kuIDkuKrmjIflkJHmjIfpkojnmoTmjIfpkojvvIzpgqPkuYjmgLvog73lpJ/pgJrov4fkuKTm
+rKHnmoQ8c3BhbiBzdHlsZT0iZm9udC1zdHlsZTogaXRhbGljOyI+KuOAgeS4pOasoeeahFtd5oiW
+6ICF5LiA5qyhKjwvc3Bhbj7lkozkuIDmrKFbXeWPluW+l+i/meS4quaMh+mSiOacgOe7iOaMh+WQ
+keeahOaVsOaNru+8jOWboOS4uuivtOWIsOW6lVtd5oC76IO95aSf5YyW5oiQKueahOW9ouW8j+OA
+gueQhuino+S6hui/meS6m++8jOS4iumdoueahOivreWPpeWvueS9oOS5n+WwseS4jeaIkOmXrumi
+mOS6huOAgmdvdCBpdO+8n+KAizxicj48L3A+" style="height:0;width:0;max-height:0;max-width:0;overflow:hidden;font-size:0em;padding:0;margin:0;"></div></div>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">武特</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                <div class="reward_qrcode_area reward_area tc" id="js_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                                        <p class="reward_tips"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" id="js_reward_qrcode_img"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://edsionte.com/techblog/archives/1336' target='_blank'>
+			阅读全文
+		</a>
+	</div>
+</body>

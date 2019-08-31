@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		函数的概念、Lambda 演算与 Haskell 语言——洪峰老师讲创客道（三十二）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=417088160&amp;idx=1&amp;sn=f83a1e961a58b09b6ac15fb3f8149765&amp;chksm=76436f454134e653ae369da096b45dd10e45c39cb974c4a9dc2133cbe93af47964a276a23723&amp;scene=27#wechat_redirect&cpage=74' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">函数的概念、Lambda 演算与 Haskell 语言——洪峰老师讲创客道（三十二）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        洪峰
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-04-13</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="text-indent:28px"><span style=""></span></p><p><mpvoice frameborder="0" class="res_iframe js_editor_audio audio_iframe" src="/cgi-bin/readtemplate?t=tmpl/audio_tmpl&amp;name=%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9332&amp;play_length=25:12" name="%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9332" play_length="1512000" voice_encode_fileid="MzI3NzA5MzUxNF80MTcwODgxNTg="></mpvoice></p><p style="text-indent:28px"><span style=""></span><br  /></p><p style="text-indent:28px"><span style="">在上一讲，我给大家介绍了科学发展的四个范式，以及在科学革命的过程中，科学范式的重要性。而且我已经提到，对于具有数学专业背景的创客道学员，Haskell</span><span style="">这一语言是最接近数学家的思维方式的，请大家留意一下我说的这个话的意思。我这里说的好消息就是对于具有数学专业背景的创客道学员创业的时候，使用Haskell语言会非常的自然。坏消息是，如果诸位没有比较良好的数学背景的话，那么Haskell语言的学习难度会非常大，学习的曲线非常漫长，只有当你迈过初期的比较长的学习曲线以后，Haskell语言才会变成你真正喜爱的编程语言，才会变成你真正愿意在创客项目中使用的一个开发工具。我在黑客道的教学中已经开发了一套专门给学员讲解Haskell语言的学习教程，这个教程一共分为二十个单元，那么这里，我想在这二十个单元教学时间的基础上，给大家谈一谈Haskell语言应该怎么去学，他的学习难点在什么地方。</span></p><p style="text-indent:28px"><span style="">我的黑客道的Haskell培训教程实际上分为三个轮回，每一个轮回又有三个基本概念。第一个轮回是讲Haskell语言的“静”的方面，&nbsp;安静的静，也就是Haskell语言的类型系统，包括类型、类型变量与类型类，英文分别叫做type、type&nbsp;variable、type&nbsp;class。第二轮讲解Haskell语言“动”的部分，也就是函数部分，与函数相关的一些概念。因为Haskell语言是纯函数式的编程语言，所以函数在Haskell语言编程里面是一个非常基本的东西，那么在第二轮，讲这个动的概念的时候，也分别介绍了三个基本概念，分别叫做函数、函子和单子，英文叫做function、functor、monad。在课程的第三轮，我讲到“用”，前面讲到“静”、讲到“动”，第三轮就讲“用”，就是用法。如何去使用Haskell的类型系统，还有它的函数的编程特点。那么这个地方，实际上是根据我们在黑客道初段中的教学，请大家回顾一下我在这一章前面讲这个racket语言的时候，我讲过基于基本求值器的三种变形，分别是惰性求值、非确定性计算、以及逻辑编程，那么我们可以把这三种变形平行的推广到对Haskell语言的用法上面去。那么就自然得到一个关于流的处理。我马上就要讲到Haskell这个语言本质上是lazy的，是懒惰的、惰性的。所以，它可以很容易的构造出流的概念，还有其它的一些数据结构。第二个部分就是关于非确定性计算，就是把我们前面讲的ubiquity&nbsp;operator叫做ubp算子用到这个非确定性计算里面来。第三点就是非常特殊的，因为Haskell里面不支持变量的赋值，Haskell语言不允许程序员进行赋值，因为一赋值就会产生计算机的状态变化，Haskell语言设计师是反对在编程的时候使用赋值，那么没有赋值的话，这个时候，对于逻辑计算的支持就需要采用一种新的技术——图的重写技术，英文叫做graph&nbsp;rewriting&nbsp;skill。在用的部分，如果大家知道了三个概念之后，那就可以把Haskell语言推广应用到许许多多的创业项目中去。</span></p><p style="text-indent:28px"><span style="">这里我想请大家再一次回顾一下我在这一章前面介绍过的思想方法：就是说你首先要学通一门语言，然后把在这一门语言中所得到的感悟一以贯之的推广到其他语言的学习中去，前面我已经重点解说了racket语言，根据Richard&nbsp;Stallman院士的建议，我们可以把racket语言中得到的思想感悟推广到Haskell语言的学习中来，这是一种多快好省的方法。实际上正如Larry&nbsp;Wall指出的那样，从许许多多方面来看Haskell语言可以视为Lisp语言的一个现代版本，这个观点我认为是非常中肯的。</span></p><p style="text-indent:28px"><span style="">在这一讲中，我想向大家先介绍Haskell的类型系统，也就是它的“静”的这个部分，在这章前面我在介绍C语言的时候，我给大家讲过，&nbsp;C的编译器会维护一个符号表，在符号表中会把C的变量的类型作为一个单独的值表来存放，在这个值表中，C的编译器会放置一些关于C语言的原生的数据类型，比方说int类型。那么当编译器扫描用户的C语言程序的时候，如果一旦发现用户在源程序中定义了新的类型，比方说instruct或者是typedef等等，定义了一个新的类型之后，那么它就会在符号表的记录类型的值表中，插入一条新的纪录，关于这个类型的新的记录。在后续的编译过程中，如果引用这个类型的语句出现了之后，那么编译器会使用这个类型的表格投入后面的编译计算。请大家回忆一下我前面说的这些内容。Haskell语言的类型系统，从它的特点上来看有三点。第一点，它是强类型的。第二点，它是静态类型的。第三点，它的类型是可以自动推导的。</span></p><p style="text-indent:28px"><span style="">下面我来结合编译器所使用的符号表，来谈一谈Haskell这个类型系统的这三个特点的具体含义。在Haskell语言中，强类型就意味着对类型要实施检查，由编译器来实施对类型的检查，这是在Haskell中强类型的含义。比方说我们在Haskell中定义了一个函数，那么在定义这个函数的时候，我们要首先给出这个函数的声明。在函数的声明中我们要对函数吸收的一个传入的参数类型进行说明，编译器在编译Haskell语言的时候会检查传递给这个函数的参数的类型是不是符合函数声明的要求，如果某个函数的函数声明中，它带的这个参数是一个整型的，而你却向这个函数传入了一个浮点数据的类型，那么这个时候编译器会报错，你的程序会通不过编译。当一个数据的类型满足这个定义的时候，它叫做well-typed，叫做良好类型的。如果表达式或者变量，它违反了类型的规则，那么在这个Haskell行话里面，叫做yell-typed，也就是病态类型的。凡是病态类型的这些程序，都会引起类型的错误，叫做type-error。在Haskell语言编译器设计的时候，它会对程序所有的表达式的类型实行检查。请大家注意，这不是说Haskell语言并不支持类型转换，而是说你如果要进行类型转换的话，就要显示的构造出一个专门进行类型转换的函数，让这个类型转换的函数来实施类型的转换，完成这个类型转换的函数必须单独的来定义。那么，这种做covers类型转换的函数在Haskell语言里，它也要被Haskell编译器来进行类型检查。和早期的Lisp系统相比，Haskell的类型检查是在编译时完成的，而早期的Lisp系统或者我前面提到的passion语言，它的类型检查是在运行时完成，这样的话，程序在编译的时候它的类型的错误就会被发现，也就说你在编译一个程序的过程中，就会预防许多类型转换的错误。那么对于开发大型应用程序来讲是非常有吸引力的。</span></p><p style="text-indent:28px"><span style="">在编译程序的过程中，Haskell编译器会把你传来的数据类型和符号表中关于类型的值表中的记录进行比对，然后产生一个比对的结果。如果比对通过了之后，那么你这个程序的类型就是well-typed，否则你就是type-error。这个时候编译器就会报错，Haskell的type类型系统的第二个特点就是它的类型是静态类型，英文叫做static&nbsp;type，其实就是一个表达式。在这个程序里面，在它存在的生命周期中，它的类型是不会发生任何变化的。静态的类型系统可以从某种程度上简化编译器的设计。因为一旦这个类型作为一条记录插入到符号表中、类型值表中去之后，它在它的生命周期中不会被变更，这是它的本质。注意Haskell静态类型系统，你不能把它机械的、片面的理解。因为Haskell系统中，它的类型系统是有三种的，一种是普通的类型，还有一种是类型变量，另外还有一种叫做类型类。他的英语分别叫做type-variable，type-classes。有了这个类型变量和类型类以后，一条符号表中类型值表中的一条记录，它的边界是可以发生浮动的，这一点请大家注意，这一点是非常微妙的，请大家务必理解。有了类型浮动的边界，那么这个时候，在传统的一些动态语言中，所谓的duck-typing，鸭子类型，它也可以在Haskell中得到支持。所谓鸭子类型，是说如果某个动物它的叫声像鸭子，嘎嘎嘎嘎叫，并且它的走路的样子也像鸭子一样，走起路来摇摇晃晃的话，那么这个动物就是鸭子。在编程语言中，数据或表达式的某些行为，或者它的语法特点、或者句法形式、词法形式非常像某个类型的话。那么Haskell会根据它的静态类型系统，把表达式或者是这一个值，它的类型划归到这一条记录所管辖的范围中去，这一点是非常有趣的。Haskell语言类型系统的第三点就是它的类型是可以自动推导的。我前面讲过，在Lisp里面对一个表达式的求值，它是要根据它的环境来决定的。那么在Haskell编程中，对于一个类型它的存在不是孤立的，它往往是跟其他的一些数据类型有某种关联。那么在符号表里面，我们从符号表的这个构造的角度来看。也就是说在类型值表中，一条记录和另外一些记录它可以形成一些偏序关系，就是用我们图论的语言来讲，它可以形成一个网络，或者是在最简单的情况下可以形成一棵树。Haskell编译器可以根据这个偏序结构再自动的推导出某个表达式它的类型是什么，那么这个推导过程是由Haskell的编译器根据这个符号表中的类型值表来完成的计算，这个特点叫做类型自动推导，在英文里面叫做type-inference，要想支持这个type-inference，那么Haskell的编译器就必须要能够对图进行某种程度的运筹，自动化的运筹，才能实现类型的自动推导。从这个意义上讲Haskell语言它的编译器，它的设计，它的难度会比相比其他语言高出很多很多。这对于编译器的设计师来讲挑战是巨大的。</span></p><p style="text-indent:28px"><span style="">今天在Haskell社团里面，有Glasgow&nbsp;Haskell&nbsp;Compiler，叫做GHC，这是一个自由软件包。它已经发展的非常成熟，而我们国内还没有任何人能够设计出类似于GHC这种系统来。这里，从一个侧面表明，国内的计算机水平与国际先进同行的巨大差距。关于Haskell的类型系统的三个特点，我先就谈到这里。</span></p><p><span style="">下面我来谈一谈，刚才我在前面提到Haskell培训课程中有三个轮回，第一个轮回就是对Haskell静的部分进行教学，包括type，也就是类型。然后是type-variable，类型变量。还有type-class，也就是类型类。</span></p><p style="text-indent:28px"><span style="">现在我来花一点时间来谈谈这三个东西。在谈论这三个概念之前，我们首先必须要搞清楚，类型的计算实际上是通过函数的设计来完成的。打个比方说，在首都机场或者是其他海关，边防检查的地方，旅客能否进入中国，或者是某个人是否能够出境。我们有出入境的边境检查。在出入关的时候，旅客必须要提交自己的护照，然后护照要交给边防人员，边防检查人员去核实你的身份，看一看你这个人是不是跟护照上的证件相符，你的护照本身是不是真的。如果一切正常的话会放你进关或者是出关。</span></p><p style="text-indent:28px"><span style="">大家看看，在这个场景下面，比方说中国人，就是旅客本人，还有这个旅客持有的护照，以及检验的一个结果，就是让你进关还是出关。那么实际上，我们可以从数学的角度来看，我们可以把这种场景定义叫做内部运算。从数学的定义来讲就是假设一个A，是一个非空集合的话，注意这个地方的A一般用大写字母A来表示，表示为一个集合。那么A与A的子集，我们在数学上写成A×A。从子集空间到集合A的一个映射，称为内部运算，或者叫做代数运算。下面为了解说的方便，我用希腊字母、小写字母α来表示这个内部运算。</span></p><p style="text-indent:28px"><span style="">在中国旅客出入境的时候，边防人员会对旅客的证照进行检查。从数学的角度来看，边防人员所实施的这个工作，实际上就是实施一个内部运算。如果边防人员执行的各种操作的结果都符合中国公民的定义，那么一旦这个检查完成了之后，你就被放进来或者是放出去，这个放行从数学的角度来看，就是一种内部运算。这是对中国旅客的情况。简单地讲，从数学定义的角度来看，内部运算就是A×A，就是A与A的子集到A的一个映射关系，那么这个就叫做内部运算。那么我们再来看看外国旅客出入境的情况，我们把所有的外国人当成一个集合，假设这个集合叫做Ω，这里我用希腊字母，大写的希腊字母Ω来表示这个集合。所有的中国人，我们把他称之为一个集合叫做A，我还是用大写的英文字母A来表示这个集合，所有外国人与所有中国人形成的这个空间，我们把它表示为Ω×A。那么在具体操作的时候，一个外国人能不能进入中国的国境，首先需要检查他是否具有中国签证，他来之前应该在所在的国家中国驻外的使领馆去申办签证，我们中国的使领馆人员在收到他的申请之后把他的签证贴在他的护照上，然后这个护照持有人，外国公民到达首都机场后，他会向边防检查人员出示自己的护照和签证。一旦签证还有他的护照和他的本人，被边防检查人员确认为真的时候，外国旅客就可以被放行，进入中国国境。</span></p><p style="text-indent:28px"><span style="">所以从数学的角度来看，这是一个外部运算，也就是说从Ω×A组成的这个子集空间到A的映射称为外部运算。那么有了外部运算之后，外国人是怎么进入到中国境内的呢，他是经过这样一个边防检查的流程进来的，所以就是说我们在学习Haskell的这个类型中关于静的部分的时候，首先一定要有这个代数系的内部运算或者是外部运算的概念。而这个代数运算实际上是刻画的三元关系，我们在讲集合论的时候或者讲代数系统的时候，会提出这样的一些概念。那么搞懂了我刚才讲的代数系、代数系的内部运算与代数系的外部运算之后，往前面回顾一下，结合我前面讲的关于这个Haskell类型系统中Haskell的类型是静态的这个概念。在那个地方我讲过，在Haskell编译器所维护的符号表的类型值表中，一条记录它所拥有的边界是浮动的，也就是说，对于一个类型、对于一个表达式或者是一个值的类型检查，从我们代数系的运算来看，实际上要实施一个涉及到三元关系的运算。无论是内部运算还是外部运算，它们都是关于三元关系的运算，从我们计算的本质来看，它实际上是一种隶属关系的运算，也就是我们在计算机本质十八课时中讲的，编译同这个关系的运筹。对于内部运算，它是A×A子集空间到A的一个映射关系，所以对于内部运算我们可以很容易的得到一个表格，如果元素是有限的话，那我们是可以把它们一一列举出来的，把子集空间列举出来，然后对这个表格中我们可以考察它的运算，就是这个形影关系所满足的规律。那么在这个地方就可以得到，我们叫做抽象代数的三个基本的运算规律，分别是：结合律、交换律还有分配律。分配律有左分配律、右分配律。具体的一些情况请大家阅读关于近世代数里面的一些内容。对于一个内部运算，我们不妨把它叫做α，那么这个α可以定义成为从A×A这个子集到A的一个映射，这个映射我们在数学上可以用一个箭头来表示。如果它满足结合律，那么我们这个时候就称为A关于这个α为半群，半群的概念我们后面在讲Haskell的幺半群的时候还会提到。请大家注意α，它是A×A这个子集到A的一个映射关系，也就是说你从子集空间上选取两个元素，对这两个元素实施α运算之后得到的结果，仍然在这个集合A里面。也就是说在子集空间上你无论如何实施这个α操作，它会操做出一个结果，这个结果仍然在这个集合A里面，这个叫做封闭性。所以半群实际上就是要满足运算的封闭性和结合律。所谓结合律，就是你从这个A×A这个子集中任选三个元素，我们分别叫做a、b、c，注意a、b、c&nbsp;&nbsp;是小写的。对这三个元素两两实施α运算，那么α运算作用在这三个元素上面的时候，那么作用顺序，不论先算a、b，还是先算b、c，结果是一致的。这个时候，我们把这个内部运算α称之为满足关于集合A的结合律。所以说半群首先要满足运算的封闭性和结合律。请大家记住结合律在Haskell语言中用的是非常多的。</span></p><p style="text-indent:28px"><span style="">刚才我提到的运算，实际上可以视为一种函数，视为一种形影关系，而在Haskell语言中函数是低等对象，这个低等对象的概念我们前面已经讲过，我这里不再重复了，而真正要理解type、type-variable和type-class，那么就必须要把它们和Haskell的函数、函子和单子结合起来考虑，所以我下一讲将会讲函数、函子和单子，等到那个地方讲完之后我再回过头来讲这里的类型、类型变量和类型类。</span></p><p><span style="">&nbsp;</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">洪峰</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

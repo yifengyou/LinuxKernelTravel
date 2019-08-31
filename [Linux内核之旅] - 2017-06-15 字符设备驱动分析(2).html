@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		字符设备驱动分析(2)
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664604198&amp;idx=2&amp;sn=a4924b4beabc24a58a05540ecdb9e2e0&amp;chksm=f04d8fc3c73a06d52af2655e324e86167299259a06729c6afc2e4b25ac2205fd4e1c5d32bb25&amp;scene=27#wechat_redirect&cpage=37' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">字符设备驱动分析(2)</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        武特
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2017-06-15</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="margin: 0px 0px 1.2em !important;">在前文中，我们按照一般内核模块的结构分析了globalmem_init函数和globalmem_exit函数。通过上述两个函数可以完成字符驱动的加载和卸载。那么本文将进一步分析字符设备驱动的实现。</p><p style="margin: 0px 0px 1.2em !important;">linux2.6内核中使用cdev结构体来表述一个字符设备驱动，但是一般我们并不直接使用cdev结构体，而是将与该设备相关的信息与cdev街头体结合爱一起，定义一个新的结构体，比如</p><pre style="font-family: Consolas,Inconsolata,Courier,monospace; font-size: 1em; line-height: 1.2em; margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas,Inconsolata,Courier,monospace; margin: 0px 0.15em; background-color: rgb(248, 248, 248); white-space: pre; overflow: auto; border-radius: 3px; border-width: 1px; border-style: solid; border-color: rgb(204, 204, 204); -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; padding: 0.5em 0.7em; display: block !important;">struct globalmem_dev
+{ &nbsp; &nbsp;struct cdev cdev;
+ &nbsp; &nbsp; &nbsp;unsigned char mem[GLOBALMEM_SIZE];
+};
+struct cdev
+{
+ &nbsp; &nbsp;struct kobject kobj;//内嵌kobject对象
+ &nbsp; &nbsp;struct module *owner;//指向实现驱动程序的模块的指针，通常为THIS_MODULE
+ &nbsp; &nbsp;const struct file_operations *ops;//指向此设备驱动程序文件操作结构体的指针
+ &nbsp; &nbsp;struct list_head list;//指向字符设备文件对应的索引节点链表的头
+ &nbsp; &nbsp;dev_t dev;//设备号
+ &nbsp; &nbsp;unsigned int count;//给该设备驱动程序分配的设备号范围的大小
+};</code></pre><p style="margin: 0px 0px 1.2em !important;">就像前文所说的，设备号都是分配一个范围（count的大小），因此可能有很多个设备文件主设备号相同并且对应于同一个设备驱动。list所指向的链表就是由当前该设备驱动对应的设备文件索引节点组成。</p><p style="margin: 0px 0px 1.2em !important;">我们现在回到globalmem_setup_cdev函数，它的主要作用就是申请并初始化一个cdev结构体，并且将通过cdev_add函数向系统内添加一个cdev，完成字符设备的注册。通常我们将cdev_add函数安排在字符设备驱动模块的加载函数中，而对应的将cdev_del函数放在字符设备驱动的卸载函数中。</p><pre style="font-family: Consolas,Inconsolata,Courier,monospace; font-size: 1em; line-height: 1.2em; margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas,Inconsolata,Courier,monospace; margin: 0px 0.15em; background-color: rgb(248, 248, 248); white-space: pre; overflow: auto; border-radius: 3px; border-width: 1px; border-style: solid; border-color: rgb(204, 204, 204); -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; padding: 0.5em 0.7em; display: block !important;">static void globalmem_setup_cdev(struct globalmem_dev *dev, int index)
+{
+int err, devno = MKDEV(globalmem_major, index);
+
+cdev_init(&amp;dev-&gt;cdev, &amp;globalmem_fops);
+dev-&gt;cdev.owner = THIS_MODULE;
+dev-&gt;cdev.ops = &amp;globalmem_fops;
+err = cdev_add(&amp;dev-&gt;cdev, devno, 1);
+if (err)
+printk(KERN_NOTICE "Error %d adding cdev%d", err, index);
+}</code></pre><p style="margin: 0px 0px 1.2em !important;">除此之外，globalmem_setup_cdev函数还会将cdev结构体中的struct file_operation类型的指针ops实例化。globalmem_fops全局变量是文件操作表，这个结构中含有许多文件操作函数类型的指针。当我们实现某些文件操作函数时，就可以将这些函数名赋值给这个结构中的相应变量。比如我们在稍候会实现globalmem_open函数，将其赋值给globalmem.open，那么当用户使用open系统调用对字符设备文件进行打开操作时，内核就会自动调用适合该设备文件的打开函数，也就是globalmem_open函数。</p><p style="margin: 0px 0px 1.2em !important;">正如你所知的那样，Linux下一些皆为文件，当然设备也不例外。对于一个设备文件来说，用户通过VFS可以使用统一的系统调用接口对各种设备（文件）进行相关操作，比如open，read，write等等，用户可以不去考虑当前设备具体如何去操作。而在VFS层下——位于操作系统中的设备驱动就会对于每种设备去实现相应的操作函数。对于每类设备所实现的操作如何在用户层统一的表现出来，这就需要struct file_operations结构体。此结构体中包含大量的函数指针，这些函数指针便是用户层上统一的系统调用函数名，将设备驱动中实现的具体操作函数赋值给这些函数指针后，用户就可以使用统一的系统调用函数了。</p><p style="margin: 0px 0px 1.2em !important;">接下来我们来看具体的文件操作函数是如何实现的。<br  />文件打开函数将设备结构体指针赋值给私有数据，这个私有数据会在稍候的read以及write中被用到，而不是直接的使用globalmem_devp。</p><pre style="font-family: Consolas,Inconsolata,Courier,monospace; font-size: 1em; line-height: 1.2em; margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas,Inconsolata,Courier,monospace; margin: 0px 0.15em; background-color: rgb(248, 248, 248); white-space: pre; overflow: auto; border-radius: 3px; border-width: 1px; border-style: solid; border-color: rgb(204, 204, 204); -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; padding: 0.5em 0.7em; display: block !important;">/*文件打开函数*/
+int globalmem_open(struct inode *inode, struct file *filp)
+{
+ &nbsp;/*将设备结构体指针赋值给文件私有数据指针*/
+ &nbsp;filp-&gt;private_data = globalmem_devp;
+ &nbsp;return 0;
+}</code></pre><p style="margin: 0px 0px 1.2em !important;">在读函数中，首先将私有数据赋值给一个设备结构体指针。然后，判断要读的长度是否合法。接着利用copy_to_user函数内核空间的数据（dev-&gt;mem）拷贝到用户空间。关于这个copy_to_user函数的详细拷贝过程，我们也可以对其进行代码分析。如果拷贝成功，那么修改相应的指针即可完毕读操作。</p><pre style="font-family: Consolas,Inconsolata,Courier,monospace; font-size: 1em; line-height: 1.2em; margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas,Inconsolata,Courier,monospace; margin: 0px 0.15em; background-color: rgb(248, 248, 248); white-space: pre; overflow: auto; border-radius: 3px; border-width: 1px; border-style: solid; border-color: rgb(204, 204, 204); -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; padding: 0.5em 0.7em; display: block !important;">/*读函数*/
+static ssize_t globalmem_read(struct file *filp, char __user *buf, size_t size,
+ &nbsp;loff_t *ppos)
+{
+ &nbsp;unsigned long p = &nbsp;*ppos;
+ &nbsp;unsigned int count = size;
+ &nbsp;int ret = 0;
+ &nbsp;struct globalmem_dev *dev = filp-&gt;private_data; /*获得设备结构体指针*/
+
+ &nbsp;/*分析获取有效的写长度*/
+ &nbsp;if (p &gt;= GLOBALMEM_SIZE)
+ &nbsp; &nbsp;return count ? &nbsp;- ENXIO: 0;
+ &nbsp;if (count &gt; GLOBALMEM_SIZE - p)
+ &nbsp; &nbsp;count = GLOBALMEM_SIZE - p;
+
+ &nbsp;/*从内核空间向用户空间写数据*/
+ &nbsp;if (copy_to_user(buf, (void*)(dev-&gt;mem + p), count))
+ &nbsp;{
+ &nbsp; &nbsp;ret = &nbsp;- EFAULT;
+ &nbsp;}
+ &nbsp;else
+ &nbsp;{
+ &nbsp; &nbsp;*ppos += count;
+ &nbsp; &nbsp;ret = count;
+
+ &nbsp; &nbsp;printk(KERN_INFO "read %d bytes(s) from %d\n", count, p);
+ &nbsp;}
+
+ &nbsp;return ret;
+}</code></pre><p style="margin: 0px 0px 1.2em !important;">写函数与读函数的过程大体一直，不同的是使用了copy_from_user函数。这里不再详解。</p><p style="margin: 0px 0px 1.2em !important;">接下来我们就可以使用一个简单测试程序来对我们所实现的字符设备驱动进行测试了。</p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">武特</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                <div class="reward_qrcode_area reward_area tc" id="js_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                                        <p class="reward_tips"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" id="js_reward_qrcode_img"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://edsionte.com/techblog/archives/1439' target='_blank'>
+			阅读全文
+		</a>
+	</div>
+</body>

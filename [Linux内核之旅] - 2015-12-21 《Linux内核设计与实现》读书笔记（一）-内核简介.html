@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		《Linux内核设计与实现》读书笔记（一）-内核简介
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=412496699&amp;idx=2&amp;sn=ef546cb84cba4fa476f5235517663591&amp;chksm=76091ede417e97c8ca5d979c95bee067481fd31a612469cc57884b29f967b254598bea3ecfbe&amp;scene=27#wechat_redirect&cpage=83' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">《Linux内核设计与实现》读书笔记（一）-内核简介</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        wang_yb
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2015-12-21</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                <div class="rich_media_thumb_wrp" id="media">
+                    
+                                        
+                                    </div>
+                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="margin: 10px auto; line-height: 25.6px; white-space: normal;"><strong><span style="color: rgb(64, 118, 0);">题记：在网上偶然看到一位Linux的爱好者对我们翻译的《Linux内核设计与时下这本书》写出了系列读书笔记，在此转载，一方面以飨读者，另一方面抛砖引玉，希望更多的读者把自己学习Linux内核的体会分享出来。</span></strong></p><p style="margin: 10px auto; line-height: 25.6px; white-space: normal;"><strong><span style="color: rgb(64, 118, 0);">    此篇是开篇，比较简洁。</span></strong></p><p style="margin: 10px auto; line-height: 25.6px; white-space: normal;"><br  /></p><p style="margin: 10px auto; line-height: 25.6px; white-space: normal;">本篇简单介绍内核相关的基本概念。</p><p style="margin: 10px auto; line-height: 25.6px; white-space: normal;"><strong><span style="color: rgb(0, 0, 255);">主要内容：</span></strong></p><ul class=" list-paddingleft-2" style="margin-left: 30px; width: 528.188px; line-height: 25.6px; white-space: normal;"><li><p>单内核和微内核</p></li><li><p>内核版本号</p></li></ul><p style="margin: 10px auto; line-height: 25.6px; white-space: normal;"><br  /></p><h3 style="margin: 15px auto 2px; padding-top: 5px; padding-bottom: 5px; padding-left: 20px; font-weight: bold; white-space: normal; border-radius: 6px; box-shadow: rgb(95, 90, 75) 0px 0px 0px 1px, rgba(10, 10, 0, 0.498039) 1px 1px 6px 1px; color: white; font-family: 微软雅黑, 宋体, 黑体, Arial; height: 18px; line-height: 18px; text-shadow: rgb(34, 34, 34) 2px 2px 3px; background: rgb(43, 102, 149);"><strong>1. 单内核和微内核</strong></h3><table cellspacing="0" cellpadding="2"><tbody><tr><td align="middle" width="100" style="padding: 3px; border-color: silver; border-collapse: collapse;"><br  /></td><td align="middle" width="142" style="padding: 3px; border-color: silver; border-collapse: collapse;"><p style="margin: 10px auto;"><strong>原理</strong></p></td><td align="middle" width="97" style="padding: 3px; border-color: silver; border-collapse: collapse;"><p style="margin: 10px auto;"><strong>优势</strong></p></td><td align="middle" width="180" style="padding: 3px; border-color: silver; border-collapse: collapse;"><p style="margin: 10px auto;"><strong>劣势</strong></p></td></tr><tr><td valign="top" width="100" style="padding: 3px; border-color: silver; border-collapse: collapse;"><p style="margin: 10px auto; text-align: center;"><strong>单内核</strong></p></td><td valign="top" width="142" style="padding: 3px; border-color: silver; border-collapse: collapse;">整个内核都在一个大内核地址空间上运行。</td><td valign="top" width="117" style="padding: 3px; border-color: silver; border-collapse: collapse;">1. 简单。<br  />2. 高效：所有内核都在一个大的地址空间上，所以内核各个功能之间的调用和调用函数类似，几乎没有性能开销。</td><td valign="top" width="180" style="padding: 3px; border-color: silver; border-collapse: collapse;">一个功能的崩溃会导致整个内核无法使用。</td></tr><tr><td valign="top" width="100" style="padding: 3px; border-color: silver; border-collapse: collapse;"><p style="margin: 10px auto; text-align: center;"><strong>微内核</strong></p></td><td valign="top" width="142" style="padding: 3px; border-color: silver; border-collapse: collapse;">内核按功能被划分成各个独立的过程。每个过程独立的运行在自己的地址空间上。</td><td valign="top" width="117" style="padding: 3px; border-color: silver; border-collapse: collapse;">1. 安全：内核的各种服务独立运行，一种服务挂了不会影响其他服务。</td><td valign="top" width="180" style="padding: 3px; border-color: silver; border-collapse: collapse;">内核各个服务之间的调用涉及进程间的通信，比较复杂且效率低。</td></tr></tbody></table><p><span style="line-height: 25.6px;"></span></p><p style="margin: 10px auto; line-height: 25.6px; white-space: normal;"><br  /></p><p style="margin: 10px auto; line-height: 25.6px; white-space: normal;">Linux的内核虽然是基于单内核的，但是经过这么多年的发展，也具备微内核的一些特征。（体现了Linux实用至上的原则）</p><p style="margin: 10px auto; line-height: 25.6px; white-space: normal;">主要有以下特征：</p><ol class=" list-paddingleft-2" style="padding-left: 40px; width: 528.188px; line-height: 25.6px; white-space: normal;"><li><p>支持动态加载内核模块</p></li><li><p>支持对称多处理（SMP）</p></li><li><p>内核可以抢占（preemptive），允许内核运行的任务有优先执行的能力</p></li><li><p>不区分线程和进程</p></li></ol><h3 style="margin: 15px auto 2px; padding-top: 5px; padding-bottom: 5px; padding-left: 20px; font-weight: bold; white-space: normal; border-radius: 6px; box-shadow: rgb(95, 90, 75) 0px 0px 0px 1px, rgba(10, 10, 0, 0.498039) 1px 1px 6px 1px; color: white; font-family: 微软雅黑, 宋体, 黑体, Arial; height: 18px; line-height: 18px; text-shadow: rgb(34, 34, 34) 2px 2px 3px; background: rgb(43, 102, 149);"><strong>2. 内核版本号</strong></h3><p style="margin: 10px auto; line-height: 25.6px; white-space: normal;">内核的版本号主要有四个数组组成。比如版本号：2.6.26.1  其中，</p><p style="margin: 10px auto; line-height: 25.6px; white-space: normal;">2  - 主版本号</p><p style="margin: 10px auto; line-height: 25.6px; white-space: normal;">6  - 从版本号或副版本号</p><p style="margin: 10px auto; line-height: 25.6px; white-space: normal;">26 - 修订版本号</p><p style="margin: 10px auto; line-height: 25.6px; white-space: normal;">1  - 稳定版本号</p><p style="margin: 10px auto; line-height: 25.6px; white-space: normal;">副版本号表示这个版本是稳定版（<strong><span style="color: rgb(255, 0, 0);">偶数</span></strong>）还是开发版（<strong><span style="color: rgb(255, 0, 0);">奇数</span></strong>），上面例子中的版本号是稳定版。</p><p style="margin: 10px auto; line-height: 25.6px; white-space: normal;">稳定的版本可用于企业级环境。</p><p style="margin: 10px auto; line-height: 25.6px; white-space: normal;">修订版本号的升级包括BUG修正，新的驱动以及新的特性的追加。</p><p style="margin: 10px auto; line-height: 25.6px; white-space: normal;">稳定版本号主要是一些关键性BUG的修改。</p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">wang_yb</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://www.cnblogs.com/wang_yb/archive/2012/08/15/2640972.html' target='_blank'>
+			阅读全文
+		</a>
+	</div>
+</body>

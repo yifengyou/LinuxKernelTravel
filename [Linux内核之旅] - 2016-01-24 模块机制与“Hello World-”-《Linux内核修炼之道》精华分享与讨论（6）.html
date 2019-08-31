@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		模块机制与“Hello World-”-《Linux内核修炼之道》精华分享与讨论（6）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=415808409&amp;idx=1&amp;sn=b85a4d06ca249e4821e464e77eab83ef&amp;chksm=7657967c41201f6abc40c37ebb7578665c193b49edc5637f448adda977141e787fa3a147a7a7&amp;scene=27#wechat_redirect&cpage=79' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">模块机制与“Hello World!”-《Linux内核修炼之道》精华分享与讨论（6）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        fudan_abc
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-01-24</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="">有一种感动，叫内牛满面，有一种机制，叫模块机制。显然，这种模块机制给那些Linux的发烧友们带来了方便，因为模块机制意味着人们可以把庞大的Linux内核划分为许许多多个小的模块。对于编写设备驱动程序的开发者来说，从此以后他们可以编写设备驱动程序却不需要把她编译进内核，不用reboot机器，她只是一个模块，当你需要她的时候，你可以把她抱入怀中（insmod），当你不再需要她的时候，你可以把她一脚踢开（rmmod）。&nbsp;</p><p style="">于是，忽如一夜春风来，内核处处是模块。让我们从一个伟大的例子去认识模块。这就是传说中的&quot;Hello World!&quot;，这个梦幻般的名字我们看过无数次了，每一次她出现在眼前，就意味着我们开始接触一种新的计算机语言了。（某程序员对书法十分感兴趣，退休后决定在这方面有所建树。于是花重金购买了上等的文房四宝。一日，饭后突生雅兴，一番磨墨拟纸，并点上了上好的檀香，颇有王羲之风范，又具颜真卿气势，定神片刻，泼墨挥毫，郑重地写下一行字：hello world）&nbsp;</p><p style="">请看下面这段代码，她就是Linux下的一个最简单的模块。当你安装这个模块的时候，她会用她特有的语言向你表白：“Hello，world！”，而后来你卸载了这个模块，你无情抛弃了她，她很伤心，她很绝望，但她没有抱怨，她只是淡淡地说，“Goodbye，cruel world！”（再见，残酷的世界!）</p><p style="">&nbsp;</p><p style=""><span style="box-sizing: border-box; color: rgb(0, 0, 255);">/************ hello.c *********************/</span></p><p style=""><span style="box-sizing: border-box; color: rgb(0, 0, 255);">&nbsp;&nbsp;&nbsp;&nbsp; 1 #include &lt;linux/init.h&gt;&nbsp; /* Needed for the macros */<br style="box-sizing: border-box;"  />&nbsp; 2 #include &lt;linux/module.h&gt; /* Needed for all modules */<br style="box-sizing: border-box;"  />&nbsp; 3 MODULE_LICENSE(&quot;Dual BSD/GPL&quot;);<br style="box-sizing: border-box;"  />&nbsp; 4 MODULE_AUTHOR(&quot;fudan_abc&quot;);<br style="box-sizing: border-box;"  />&nbsp; 5<br style="box-sizing: border-box;"  />&nbsp; 6 static int __init hello_init(void)<br style="box-sizing: border-box;"  />&nbsp; 7 {<br style="box-sizing: border-box;"  />&nbsp; 8&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; printk(KERN_ALERT &quot;Hello, world!/n&quot;);<br style="box-sizing: border-box;"  />&nbsp;&nbsp;&nbsp; 9&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return 0;<br style="box-sizing: border-box;"  />&nbsp;&nbsp; 10 }<br style="box-sizing: border-box;"  />&nbsp; 11<br style="box-sizing: border-box;"  />&nbsp;&nbsp; 12 static void __exit hello_exit(void)<br style="box-sizing: border-box;"  />&nbsp;&nbsp;&nbsp; 13 {<br style="box-sizing: border-box;"  />&nbsp;&nbsp; 14&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; printk(KERN_ALERT &quot;Goodbye, cruel world/n&quot;);<br style="box-sizing: border-box;"  />&nbsp;&nbsp;&nbsp; 15 }<br style="box-sizing: border-box;"  />&nbsp;&nbsp; 16<br style="box-sizing: border-box;"  />&nbsp;&nbsp;&nbsp; 17 module_init(hello_init);<br style="box-sizing: border-box;"  />&nbsp;&nbsp;&nbsp; 18 module_exit(hello_exit);</span>&nbsp;&nbsp;</p><p style="">你需要使用module_init()和module_exit()，你可以称它们为函数，不过实际上它们是一些宏，你可以不用去知道她们背后的故事，只需要知道，在Linux Kernel 2.6的世界里，你写的任何一个模块都需要使用它们来初始化或退出，或者说注册以及后来的注销。&nbsp;</p><p style="">当你用module_init()为一个模块注册了之后，在你使用insmod这个命令去安装的时候，module_init()注册的函数将会被执行。而当你用rmmod这个命令去卸载一个模块的时候，module_exit()注册的函数将会被执行。module_init()被称为驱动程序的初始化入口(driver initialization entry point)。&nbsp;</p><p style="">怎么样演示以上代码的运行呢？没错，你需要一个Makefile。</p><p style="">&nbsp;</p><p style=""><span style="box-sizing: border-box; color: rgb(0, 0, 255);">1 # To build modules outside of the kernel tree, we run &quot;make&quot;<br style="box-sizing: border-box;"  />&nbsp;&nbsp; 2 # in the kernel source tree; the Makefile these then includes this<br style="box-sizing: border-box;"  />&nbsp;&nbsp; 3 # Makefile once again.<br style="box-sizing: border-box;"  />&nbsp;&nbsp;&nbsp; 4 # This conditional selects whether we are being included from the<br style="box-sizing: border-box;"  />&nbsp;&nbsp;&nbsp; 5 # kernel Makefile or not.<br style="box-sizing: border-box;"  />&nbsp;&nbsp;&nbsp; 6 ifeq ($(KERNELRELEASE),)<br style="box-sizing: border-box;"  />&nbsp;&nbsp; 7<br style="box-sizing: border-box;"  />&nbsp;&nbsp;&nbsp; 8&nbsp;&nbsp;&nbsp;&nbsp; # Assume the source tree is where the running kernel was built<br style="box-sizing: border-box;"  />&nbsp;&nbsp;&nbsp; 9&nbsp;&nbsp;&nbsp;&nbsp; # You should set KERNELDIR in the environment if it&#39;s elsewhere<br style="box-sizing: border-box;"  />&nbsp;&nbsp;&nbsp; 10&nbsp;&nbsp;&nbsp;&nbsp; KERNELDIR ?= /lib/modules/$(shell uname -r)/build<br style="box-sizing: border-box;"  />&nbsp;&nbsp; 11&nbsp;&nbsp;&nbsp;&nbsp; # The current directory is passed to sub-makes as argument<br style="box-sizing: border-box;"  />&nbsp;&nbsp; 12&nbsp;&nbsp;&nbsp;&nbsp; PWD := $(shell pwd)<br style="box-sizing: border-box;"  />&nbsp;&nbsp;&nbsp; 13<br style="box-sizing: border-box;"  />&nbsp;&nbsp;&nbsp; 14 modules:<br style="box-sizing: border-box;"  />&nbsp;&nbsp;&nbsp; 15&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $(MAKE) -C $(KERNELDIR) M=$(PWD) modules<br style="box-sizing: border-box;"  />&nbsp;&nbsp;&nbsp; 16<br style="box-sizing: border-box;"  />&nbsp;&nbsp;&nbsp; 17 modules_install:<br style="box-sizing: border-box;"  />&nbsp;&nbsp;&nbsp; 18&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $(MAKE) -C $(KERNELDIR) M=$(PWD) modules_install<br style="box-sizing: border-box;"  />&nbsp;&nbsp;&nbsp; 19<br style="box-sizing: border-box;"  />&nbsp;&nbsp;&nbsp; 20 clean:<br style="box-sizing: border-box;"  />&nbsp;&nbsp;&nbsp; 21&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rm -rf *.o *~ core .depend .*.cmd *.ko *.mod.c .tmp_versions<br style="box-sizing: border-box;"  />&nbsp;&nbsp;&nbsp; 22<br style="box-sizing: border-box;"  />&nbsp;&nbsp;&nbsp; 23 .PHONY: modules modules_install clean<br style="box-sizing: border-box;"  />&nbsp;&nbsp;&nbsp; 24<br style="box-sizing: border-box;"  />&nbsp;&nbsp;&nbsp; 25 else<br style="box-sizing: border-box;"  />&nbsp;&nbsp;&nbsp; 26&nbsp;&nbsp;&nbsp;&nbsp; # called from kernel build system: just declare what our modules are<br style="box-sizing: border-box;"  />&nbsp;&nbsp;&nbsp; 27&nbsp;&nbsp;&nbsp;&nbsp; obj-m := hello.o<br style="box-sizing: border-box;"  />&nbsp;&nbsp;&nbsp; 28 endif</span>&nbsp;&nbsp;</p><p style="">在lwn.net上可以找到这个例子，你可以把以上两个文件放在你的某个目录下，然后执行make，也许你不一定能成功，因为Linux Kernel 2.6要求你编译模块之前，必须先在内核源代码目录下执行make，换言之，你必须先配置过内核，执行过make，然后才能make你自己的模块。原因就不细说了，你按着要求的这么去做就行了。在内核顶层目录make过之后，你就可以在你当前放置Makefile的目录下执行make了。make之后你就应该看到一个叫做hello.ko的文件生成了，恭喜你，这就是你将要测试的模块。</p><p style="">执行命令，</p><p style=""><br  /></p><p style=""><span style="box-sizing: border-box; color: rgb(0, 0, 255);">#insmod hello.ko</span>&nbsp;&nbsp;</p><p style="">同时在另一个窗口，用命令tail -f /var/log/messages察看日志文件，你会看到Hello world被打印了出来。再执行命令，</p><p style="">&nbsp;</p><p style=""><span style="box-sizing: border-box; color: rgb(0, 0, 255);">#rmmod hello.ko</span>&nbsp;&nbsp;</p><p style="">此时，在另一窗口你会看到Goodbye，cruel world！被打印了出来。&nbsp;</p><p style="">到这里，我该恭喜你，因为你已经能够编写Linux内核模块了。这种感觉很美妙，不是吗？你可以嘲笑秦皇汉武略输文采唐宗宋祖稍逊风骚，还可以嘲笑一代天骄成吉思汗只识弯弓射大雕了。是的，阿娇姐姐告诉我们，只要我喜欢，还有什么不可以。&nbsp;&nbsp;</p><p style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 日后我们会看到，2.6内核中，每个模块都是以module_init开始，以module_exit结束。对大多数人来说没有必要知道这是为什么，记住就可以了，对大多数人来说，这就像是1+1为什么等于2一样，就像是两点之间最短的是直线，不需要证明，如果一定要证明两点之间直线最短，可以扔一块骨头在B点，让一条狗从A点出发，你会发现狗走的是直线，是的，狗都知道，咱还能不知道吗？</p><p><br  /></p><p><br  /></p><p>关于内核模块更多的例子请参考内核之旅网站：http://www.kerneltravel.net/?page_id=8，Linux2.6内核编程指导。</p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">fudan_abc</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

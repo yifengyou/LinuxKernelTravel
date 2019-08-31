@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Linux强制访问控制机制模块代码分析报告（一）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664603960&amp;idx=1&amp;sn=66a4cb0963efa2f928eae24c301ca19b&amp;chksm=f04d8cddc73a05cb9edc8e6311edb2720ca96f652d82c2fe7daa0ef943cc6ec5fbdf17a40105&amp;scene=27#wechat_redirect&cpage=42' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Linux强制访问控制机制模块代码分析报告（一）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        苗磊
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2017-04-23</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <h2><a name="_Toc343177492" style="font-size: 20px; text-decoration: underline; color: rgb(0, 128, 255);"><span style="color: rgb(0, 128, 255);"></span></a></h2><h2><span style="color: rgb(0, 128, 255);"><strong><span style="font-size: 20px;">总体描述</span></strong></span></h2><p><span style="font-size: 18px; color: rgb(0, 128, 255);">概述</span><br  /></p><h2>强制访问控制机制是访问控制机制的一种，主要用于根据主体和客体的安全属性来限制主体对客体的访问，从而对系统的安全进行防护，该机制是强加给主体的，当主体对客体进行访问时，系统强制要求其必须满足强制访问控制策略，其原理如图1-1所示。对于强制访问控制机制，有多种模型可以用来描述其功能，其中最具代表性的就是Bell-LaPadula模型(简称BLP模型)及Biba模型，本文主要针对BLP模型进行介绍，并在其基础之上对SELinux实现的多级安全策略(MLS，Multi-level Security)从源码上进行分析。<br  /></h2><p><img data-s="300,640" data-type="png" src="data:image/PNG;base64,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 " src="SeWfibBcBT0EePLKicW4nymlMQ9t8N9ib7UsDG5xuOohI676ibXLouzKsvUice4g8bMRMzfz1A6sIibicdrYdqrM93KIA"  data-ratio="0.3681917211328976" data-w="459"  /></p><p><span style="font-size: 18px; color: rgb(0, 128, 255);">涉及到的源码范围说明</span></p><p>本文以SELinux为例来分析MLS的实现，因此其涉及到的源码文件包括：<br  /></p><p>security/selinux/ss/context.h：定义了SELinux使用的安全上下文及安全上下文相关操作。</p><p>security/selinux/ss/mls_types.h：定义了MLS使用的安全级别及安全级别之间的关系。</p><p>security/selinux/ss/mls.c：声明了MLS相关操作。</p><p>security/selinux/ss/mls.c：实现了MLS相关操作。</p><p><span style="font-size: 18px; color: rgb(0, 128, 255);">技术方案及原理</span></p><p><span style="color: rgb(0, 128, 255);">BLP模型</span></p><p>BLP模型是一个请求驱动的状态机模型，它在某一状态接受请求，然后对其处理并输出决策结果，最后进入下一状态[1]，主要用于解决机密性相关问题。在该模型中，其先为系统中的主体和客体分配相应的安全级别，当主体对客体进行访问时，根据事先分配给它们的安全级别及相应的特性来判断是否允许主体访问相应的客体。安全级别由敏感级别和类别集合两部分组成，其中敏感级别是有序的，类别集合是无序的。根据敏感级别和类别集合，在BLP模型中，安全级别之间的关系分为三种：支配关系，相等关系和不相交关系。假设有两个安全级别A，B：<br  /></p><p>1．支配关系：当安全级别A的敏感级别大于B的敏感级别，且A的类别集合包含B的类别集合时，称安全级别A支配安全级别B。</p><p>2．相等关系：当安全级别A的敏感级别等于B的敏感级别，且A的类别集合等于B的类别集合时，称安全级别A和安全级别B相等。</p><p>3．不相交关系：当安全级别A和安全级别B的类别集合不相交时，称安全级别A和安全级别B不相交。</p><p>在BLP模型中定义了三个特性：简单安全特性、星号特性和自主安全特性。假设用l(s)表示主体的安全级别，l(o)表示客体的安全级别，&gt;表示安全级别之间的支配关系，=表示安全级别之间的相等关系，则：</p><p>1．简单安全特性：当且仅当l(s)&gt;=l(o)时，主体能够读取客体的内容。</p><p>2．星号特性：当且仅当l(o)&gt;=l(s)时，主体可以写客体。</p><p>3．自主安全特性：当且进行相应的访问权限在访问控制矩阵中时，主体才允许访问客体。</p><p>BLP模型的安全策略包括强制访问控制策略和自主访问控制策略两部分。对于上述三个特性，其中简单安全特性和星号特性组成了强制访问控制策略，即多级安全策略MLS，其通过安全级别来强制约束主体对客体的访问，并且信息只能由低安全级别流向高安全级别；自主安全特性组成了自主访问控制策略，其通过访问控制矩阵来限制主体对客体的访问。对于一个实现BLP模型的系统，某个时刻系统所处的状态是安全的当且仅当该状态可以到达的所有的状态都满足简单安全特性、星号特性和自主安全特性。</p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">苗磊</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		vmalloc()的基本实现
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664604074&amp;idx=1&amp;sn=02ae16ceb32ee1ad351baa07585f9615&amp;chksm=f04d8c4fc73a05596ad46f65a71cb45dc36586b9abcf8670f878441a7804f357a17169de9042&amp;scene=27#wechat_redirect&cpage=38' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">vmalloc()的基本实现</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        武特
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2017-05-28</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p>每个进程都拥有一段连续而且平坦的虚拟地址空间，这段连续的空间被划分为两大部分：用户空间和内核空间。在x86-32架构下，用户空间占据最低端的3G，内核空间占据最高的1G。事实上，每个进程并不会同时使用掉整个3G的地址空间，因此整个用户空间又进一步被划分为若干个虚拟内存区域(struct
+ vm_area_struct)，每个内存区域都有相应的访问权限，并且针对当前的内存区域还有具体的操作函数。</p><p>对于内核空间而言，根据不同的映射规则，整个内核空间划分为四大部分：物理内存映射区、vmalloc区、永久内核映射区和固定映射的线性地址区域。内核空间的映射情况如下图所示：</p><p>其中vmalloc区(struct vm_struct)跟用户空间的虚拟内存区域有些类似，它们都是利用分散的物理页框构建连续的虚拟地址区间。</p><h3>非连续内存区的数据结构</h3><p>vmalloc区也被称为非连续内存区域，整个非连续内存区的起始地址定义为VMALLOC_START宏，结束地址定义为VMALLOC_END宏。它由若干个vmalloc区组成，每个vmalloc区之间间隔4KB，这是为了防止非法的内存访问。内核中使用vm_struct结构来表示每个vmalloc区，也就是说，每次调用vmalloc()函数在内核中申请一段连续的内存后，都对应着一个vm_struct，系统中所有的vmalloc区组成一个链表，链表头指针为vmlist。vm_sttruct结构在最新内核源码的描述如下(本文所涉及的内核源码均来自v3.0.4)：</p><p><br  /></p><p>struct vm_struct {<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; struct vm_struct&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *next;<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *addr;<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; unsigned long&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; size;<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; unsigned long&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; flags;<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; struct page&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; **pages;<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; unsigned int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; nr_pages;<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; unsigned long&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; phys_addr;<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *caller;<br  />};</p><p><br  /></p><p>下面是这个结构中各个字段的解释：</p><p>next：所有的vm_struct结构组成一个vmlist链表，该字段指向下一个节点；</p><p>addr：vmalloc()最终是在内核空间中申请一个内存区域，addr代表这段子区域的起始地址；</p><p>size：表示子区域的大小；</p><p>flags：表示该非连续内存区的类型，VM_ALLOC表示由vmalloc()映射的内存区，VM_MAP表示通过vmap()映射的内存区，VM_IOREMAP表示通过ioremap()将硬件设备的内存映射到内核的一段内存区；</p><p>pages：指针数组，该数组的成员是struct page*类型的指针，每个成员都关联一个映射到该虚拟内存区的物理页框；</p><p>nr_pages：pages数组中page结构的总数；</p><p>phys_addr：通常为0，当使用ioremap()映射一个硬件设备的物理内存时才填充此字段；</p><p>caller：表示一个返回地址；</p><h3>vmalloc()的实现</h3><p>vmalloc()内部封装了__vmalloc_node()，该函数的原型和调用如下代码所示。其中，size表示要分配子内存区的大小，它通过vmalloc()传递过来的；align表示将所申请长度的内存区分为几部分，1表示将size大小的虚拟内存区作为一个整体；gfp_mask描述页面分配的标志，GFP_KERNEL|__GFP_HIGHMEM表明内存管理子系统将从高端内存区(ZONE_HIGHMEM)中分配内存空间；prot描述当前页的保护标志；node表示在哪个节点(struct
+ pg_data_t)上为这段子内存区分配空间，-1表明在当前节点中分配；caller表示该函数的返回地址。</p><p><br  /></p><p>static void *__vmalloc_node(unsigned long size, unsigned long align,<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gfp_t gfp_mask, pgprot_t prot,<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int node, void *caller)<br  />void *vmalloc(unsigned long size)<br  />{<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return __vmalloc_node(size, 1, GFP_KERNEL | __GFP_HIGHMEM, PAGE_KERNEL,<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -1, __builtin_return_address(0));<br  />}</p><p><br  /></p><p>__vmalloc_node函数的主要功能分为两部分：</p><p>1.在非连续内存区的起始和终止地址之间查找一个空闲的内存区域，这部分由__get_vm_area_node()完成。</p><p>2.为该子内存区分配物理页框，并将分散的物理页框分别映射到连续的vmalloc区中，这部分由__vmalloc_area_node()完成。</p><p>__vmalloc_node()一开始会先修正一下自内存取的大小，PAGE_ALIGN将size的大小修改成页大小的倍数。假如要申请1KB的内存区，那么事实上分配的是4KB大小(一个页大小)的区域。接着进行size合法性的检查，如果size为0，或者size所占页框数大于系统当前空闲的页框数(totalram_pages)，将返回NULL，既申请失败。</p><p>如果子内存区大小合法，__get_vm_area_node()将在整个非连续内存区中查找一个size大小的子内存区。该函数先遍历整个vmlist链表，依次比对每个vmalloc区，直到找到满足要求的子内存区为止。接着为这个子内存区建立一个vm_struct结构，再将这个结构插入到整个vmlist链表中。该函数的详细实现过程本文不做分析。</p><p><br  /></p><p>static void *__vmalloc_node(unsigned long size, unsigned long align,<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gfp_t gfp_mask, pgprot_t prot,<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int node, void *caller)<br  />{<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; struct vm_struct *area;<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void *addr;<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; unsigned long real_size = size;<br  /><br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; size = PAGE_ALIGN(size);<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!size || (size &gt;&gt; PAGE_SHIFT) &gt; totalram_pages)<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return NULL;<br  /><br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; area = __get_vm_area_node(size, align, VM_ALLOC, VMALLOC_START,<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; VMALLOC_END, node, gfp_mask, caller);<br  /><br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!area)<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return NULL;<br  /><br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; addr = __vmalloc_area_node(area, gfp_mask, prot, node, caller);<br  /><br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; kmemleak_alloc(addr, real_size, 3, gfp_mask);<br  /><br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return addr;<br  />}</p><p><br  /></p><h3>__vmalloc_area_node()的实现</h3><p>当__get_vm_area_node()创建了一个新的vm_struct结构后，接下来就要通过__vmalloc_area_node()为这个子内存区分配真正的物理页。<br  />首先计算通过右移PAGE_SHIFT位来计算nr_pages，它表示这个子内存区映射的页数。接着根据子内存区所映射的页框数计算pages数组的大小，这个数组的元素为struct page*型，每个元素都指向一个用来描述物理页框的page结构。</p><p><br  /></p><p>static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pgprot_t prot, int node, void *caller)<br  />{<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; struct page **pages;<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; unsigned int nr_pages, array_size, i;<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gfp_t nested_gfp = (gfp_mask &amp; GFP_RECLAIM_MASK) | __GFP_ZERO;<br  /><br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; nr_pages = (area-&gt;size - PAGE_SIZE) &gt;&gt; PAGE_SHIFT;<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; array_size = (nr_pages * sizeof(struct page *));<br  /><br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; area-&gt;nr_pages = nr_pages;</p><p><br  /></p><p>接着，__vmalloc_area_node()为页描述符指针数组分配空间。如果这个指针数组的大小超过一个页的大小，那么递归调用__vmalloc_node()为其分配空间，也就是说pages数组本身就采用vmalloc区来存储；否则，通过kmalloc_node()为pages数组分配一段连续的空间，这段空间既位于内核空间的物理内存线性映射区。</p><p>接下来用刚才的局部变量pages更新area中的pages。如果pages数组分配失败，则调用remove_vm_area()将__get_vm_area_node()的到的vm_struct结构从vmlist中移除，并返回NULL，表示vmalloc()申请失败。</p><p><br  /></p><p>if (array_size &gt; PAGE_SIZE) {<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pages = __vmalloc_node(array_size, 1, nested_gfp|__GFP_HIGHMEM,<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PAGE_KERNEL, node, caller);<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; area-&gt;flags |= VM_VPAGES;<br  />} else {<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pages = kmalloc_node(array_size, nested_gfp, node);<br  />}<br  />area-&gt;pages = pages;<br  />area-&gt;caller = caller;<br  />if (!area-&gt;pages) {<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; remove_vm_area(area-&gt;addr);<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; kfree(area);<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return NULL;<br  />}</p><p><br  /></p><p>现在到了最关键的时刻，通过一个循环依次为pages数组中的每个页面描述符分配真正的物理页框。需要注意的是page结构并不是代表一个具体的物理页框，只是用来描述物理页框的数据结构而已。如果node小于0，也就是未指定物理内存所在节点，那么使用alloc_page()分配一个页框，并将该页框对应的页描述符指针赋值给page临时变量；否则通过alloc_pages_node()在指定的节点上分配物理页框。接着将刚刚分配的物理页框对应的页描述符赋值给pages数组的第i个元素。一旦某个物理页框分配失败则直接返回NULL，表示本次vmalloc()操作失败。</p><p><br  /></p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (i = 0; i &lt; area-&gt;nr_pages; i++) {<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; struct page *page;<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (node &lt; 0)<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; page = alloc_page(gfp_mask);<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; page = alloc_pages_node(node, gfp_mask, 0);<br  /><br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (unlikely(!page)) {<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; area-&gt;nr_pages = i;<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; goto fail;<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; area-&gt;pages[i] = page;<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br  /><br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (map_vm_area(area, prot, &amp;pages))<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; goto fail;<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return area-&gt;addr;<br  /><br  />fail:<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; vfree(area-&gt;addr);<br  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return NULL;<br  />}<br  /><br  />到目前为止，__vmalloc_area_node()已经分配了所需的物理页框，但是这些分散的页框并没有映射到area所代表的那个连续vmalloc区中。map_vm_area()将完成映射工作，它依次修改内核使用的页表项，将pages数组中的每个页框分别映射到连续的vmalloc区中。<br  /></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">武特</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                <div class="reward_qrcode_area reward_area tc" id="js_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                                        <p class="reward_tips"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" id="js_reward_qrcode_img"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

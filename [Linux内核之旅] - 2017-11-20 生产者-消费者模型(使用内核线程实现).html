@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		生产者-消费者模型(使用内核线程实现)
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664604908&amp;idx=1&amp;sn=52dcd042c88a32ef0e795568617bdd60&amp;chksm=f04d8909c73a001f8e9ccdc9c62f6c4c5f9eb4a60a45aafe46f4680f4416d1ade679ec970198&amp;scene=27#wechat_redirect&cpage=28' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">生产者-消费者模型(使用内核线程实现)</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        武特
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2017-11-20</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <div class="markdown-here-wrapper" data-md-url="https://mp.weixin.qq.com/cgi-bin/appmsg?t=media/appmsg_edit&amp;action=edit&amp;type=10&amp;appmsgid=517121259&amp;token=896602978&amp;lang=zh_CN"><p style="margin: 0px 0px 1.2em !important;">在IPC系列文章当中，利用信号量集实现的是用户态下生产者-消费者模型的模型。本文以内核模块的方式，通过创建内核线程来为大家演示内核态下的生产者消费者模型。本模型属于np-nc-nb，即多个生产者多个消费着多个缓冲区。</p><p style="margin: 0px 0px 1.2em !important;">在加载函数中，完成一些初始化的工作，并分别创建了5个生产者线程和消费者线程。kernel_thread函数的第一个参数是所所创建线程要做的动作；通过第二个参数传递i变量。</p><pre style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em;line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;margin: 0px 0.15em;padding: 0px 0.3em;white-space: pre-wrap;border: 1px solid rgb(234, 234, 234);background-color: rgb(248, 248, 248);border-radius: 3px;display: inline;white-space: pre;overflow: auto;border-radius: 3px;border: 1px solid rgb(204, 204, 204);padding: 0.5em 0.7em;display: block !important;">static int __init np_nc_init(void)
+{
+ &nbsp; &nbsp;int i;
+
+ &nbsp; &nbsp;printk("np_nc module is working..\n");
+ &nbsp; &nbsp;in=out=0;
+ &nbsp; &nbsp;cflag=0;
+ &nbsp; &nbsp;init_MUTEX(&amp;mutex);
+ &nbsp; &nbsp;sema_init(&amp;s1,BUF_NUM);
+ &nbsp; &nbsp;sema_init(&amp;s2,0);
+
+ &nbsp; &nbsp;for(i=0;i&lt; N;i++)
+ &nbsp; &nbsp;{
+ &nbsp; &nbsp; &nbsp; &nbsp;index[i]=i+1;
+ &nbsp; &nbsp; &nbsp; &nbsp;kernel_thread(productor_thread,&amp;(index[i]),CLONE_KERNEL);
+ &nbsp; &nbsp; &nbsp; &nbsp;kernel_thread(consumer_thread,&amp;(index[i]),CLONE_KERNEL);
+ &nbsp; &nbsp;}
+
+ &nbsp; &nbsp;return 0;
+}</code></pre><p style="margin: 0px 0px 1.2em !important;">在生产者函数中，PNUM是每个生产者要生产货物的数量。语句buf[in]=i*100+(PNUM-p_num+1)即是产生货物的过程。</p><pre style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em;line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;margin: 0px 0.15em;padding: 0px 0.3em;white-space: pre-wrap;border: 1px solid rgb(234, 234, 234);background-color: rgb(248, 248, 248);border-radius: 3px;display: inline;white-space: pre;overflow: auto;border-radius: 3px;border: 1px solid rgb(204, 204, 204);padding: 0.5em 0.7em;display: block !important;">int productor_thread(void *p)
+{
+ &nbsp; &nbsp;int i=*(int *)p;
+ &nbsp; &nbsp;int p_num=PNUM;
+
+ &nbsp; &nbsp;while(p_num)
+ &nbsp; &nbsp;{
+ &nbsp; &nbsp; &nbsp; &nbsp;if((s1.count)&lt;=0)
+ &nbsp; &nbsp; &nbsp; &nbsp;{
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;printk("[producer %d,%d]:I will be waiting for producting..\n",i,s1.count);
+ &nbsp; &nbsp; &nbsp; &nbsp;}
+ &nbsp; &nbsp; &nbsp; &nbsp;down(&amp;s1);
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;down(&amp;mutex);
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;buf[in]=i*100+(PNUM-p_num+1);
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;printk("[producer %d,%d]:I producted a goods \"%d\" to buf[%d]..\n",i,s1.count,buf[in],in);
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;in=(in+1)%BUF_NUM;
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; up(&amp;mutex);
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;up(&amp;s2);
+ &nbsp; &nbsp; &nbsp; &nbsp;p_num--;
+ &nbsp; &nbsp;}
+ &nbsp; &nbsp;return 0;
+}</code></pre><p style="margin: 0px 0px 1.2em !important;">在消费者函数中，通过一个全局变量CNUM来控制消费者总共的消费次数。</p><pre style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em;line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;margin: 0px 0.15em;padding: 0px 0.3em;white-space: pre-wrap;border: 1px solid rgb(234, 234, 234);background-color: rgb(248, 248, 248);border-radius: 3px;display: inline;white-space: pre;overflow: auto;border-radius: 3px;border: 1px solid rgb(204, 204, 204);padding: 0.5em 0.7em;display: block !important;">int consumer_thread(void *p)
+{
+ &nbsp; &nbsp;int i=*(int *)p;
+ &nbsp; &nbsp;int goods;
+
+ &nbsp; &nbsp;while(cflag!=CNUM)
+ &nbsp; &nbsp;{
+ &nbsp; &nbsp; &nbsp; &nbsp;if((s2.count)&lt;=0)
+ &nbsp; &nbsp; &nbsp; &nbsp;{
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;printk("[consumer %d,%d]:I will be waiting for goods..\n",i,s2.count);
+ &nbsp; &nbsp; &nbsp; &nbsp;}
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;down(&amp;s2);
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;down(&amp;mutex);
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;goods=buf[out];
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; printk("[consumer %d,%d]:I consumed a goods \"%d\" from buf[%d]..\n",i,s2.count,goods,(out%BUF_NUM));
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; out=(out+1)%BUF_NUM;
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;up(&amp;mutex);
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;up(&amp;s1);
+ &nbsp; &nbsp; &nbsp; &nbsp;cflag++;
+ &nbsp; &nbsp;}
+ &nbsp; &nbsp;return 0;
+}</code></pre><div title="MDH:PHA+Jm5ic3A75ZyoSVBD57O75YiX5paH56ug5b2T5Lit77yM5Yip55So5L+h5Y+36YeP6ZuG5a6e
+546w55qE5piv55So5oi35oCB5LiL55Sf5Lqn6ICFLea2iOi0ueiAheaooeWei+eahOaooeWei+OA
+guacrOaWh+S7peWGheaguOaooeWdl+eahOaWueW8j++8jOmAmui/h+WIm+W7uuWGheaguOe6v+eo
+i+adpeS4uuWkp+Wutua8lOekuuWGheaguOaAgeS4i+eahOeUn+S6p+iAhea2iOi0ueiAheaooeWe
+i+OAguacrOaooeWei+WxnuS6jm5wLW5jLW5i77yM5Y2z5aSa5Liq55Sf5Lqn6ICF5aSa5Liq5raI
+6LS5552A5aSa5Liq57yT5Yay5Yy644CCPGJyPjxicj7lnKjliqDovb3lh73mlbDkuK3vvIzlrozm
+iJDkuIDkupvliJ3lp4vljJbnmoTlt6XkvZzvvIzlubbliIbliKvliJvlu7rkuoY15Liq55Sf5Lqn
+6ICF57q/56iL5ZKM5raI6LS56ICF57q/56iL44CCa2VybmVsX3RocmVhZOWHveaVsOeahOesrOS4
+gOS4quWPguaVsOaYr+aJgOaJgOWIm+W7uue6v+eoi+imgeWBmueahOWKqOS9nO+8m+mAmui/h+es
+rOS6jOS4quWPguaVsOS8oOmAkmnlj5jph4/jgII8YnI+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjog
+IzAwODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO3N0YXRpYyBpbnQgX19pbml0IG5wX25j
+X2luaXQodm9pZCk8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwO3s8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAw
+MDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO2ludCBp
+Ozwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtwcmludGsoIm5wX25jIG1v
+ZHVsZSBpcyB3b3JraW5nLi5cbiIpOzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4
+MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7aW49
+b3V0PTA7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtjZmxhZz0wOzwvc3Bhbj48YnI+
+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7aW5pdF9NVVRFWCgmYW1wO211dGV4KTs8L3NwYW4+PGJyPjxz
+cGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwO3NlbWFfaW5pdCgmYW1wO3MxLEJVRl9OVU0pOzwvc3Bhbj48YnI+
+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7c2VtYV9pbml0KCZhbXA7czIsMCk7PC9zcGFuPjxicj48c3Bh
+biBzdHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDs8L3NwYW4+
+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO2ZvcihpPTA7aSZsdDsgTjtpKyspPC9zcGFuPjxicj48
+c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDt7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgw
+MDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDtpbmRleFtpXT1pKzE7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0i
+Y29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtrZXJuZWxfdGhyZWFkKHByb2R1Y3Rvcl90
+aHJlYWQsJmFtcDsoaW5kZXhbaV0pLENMT05FX0tFUk5FTCk7PC9zcGFuPjxicj48c3BhbiBzdHls
+ZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtrZXJuZWxfdGhyZWFkKGNvbnN1bWVy
+X3RocmVhZCwmYW1wOyhpbmRleFtpXSksQ0xPTkVfS0VSTkVMKTs8L3NwYW4+PGJyPjxzcGFuIHN0
+eWxlPSJjb2xvcjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwO308L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4
+MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7cmV0
+dXJuIDA7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDt9PC9zcGFuPjxicj48YnI+PGJyPuWcqOeUn+S6p+iAheWHveaVsOS4re+8
+jFBOVU3mmK/mr4/kuKrnlJ/kuqfogIXopoHnlJ/kuqfotKfniannmoTmlbDph4/jgILor63lj6Vi
+dWZbaW5dPWkqMTAwKyhQTlVNLXBfbnVtKzEp5Y2z5piv5Lqn55Sf6LSn54mp55qE6L+H56iL44CC
+PGJyPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDtpbnQgcHJvZHVjdG9yX3RocmVhZCh2b2lkICpwKTwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9
+ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7ezwvc3Bhbj48YnI+PHNw
+YW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7aW50IGk9KihpbnQgKilwOzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9
+ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7aW50IHBfbnVtPVBOVU07PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMw
+MDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDs8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJj
+b2xvcjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwO3doaWxlKHBfbnVtKTwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAw
+OyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7ezwvc3Bh
+bj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7aWYoKHMx
+LmNvdW50KSZsdDs9MCk8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwO3s8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO3ByaW50aygiW3Byb2R1Y2VyICVk
+LCVkXTpJIHdpbGwgYmUgd2FpdGluZyBmb3IgcHJvZHVjdGluZy4uXG4iLGksczEuY291bnQpOzwv
+c3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7fTwv
+c3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7ZG93
+bigmYW1wO3MxKTs8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO2Rvd24oJmFtcDttdXRleCk7PC9zcGFu
+Pjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtidWZbaW5dPWkqMTAwKyhQTlVNLXBfbnVtKzEp
+Ozwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7cHJpbnRrKCJbcHJvZHVjZXIgJWQs
+JWRdOkkgcHJvZHVjdGVkIGEgZ29vZHMgXCIlZFwiIHRvIGJ1ZlslZF0uLlxuIixpLHMxLmNvdW50
+LGJ1Zltpbl0saW4pOzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7aW49KGluKzEpJUJVRl9OVU07PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgw
+MDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDt1cCgmYW1w
+O211dGV4KTs8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO3VwKCZhbXA7czIpOzwv
+c3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7cF9u
+dW0tLTs8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO308L3NwYW4+PGJyPjxzcGFuIHN0
+eWxlPSJjb2xvcjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwO3JldHVybiAwOzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4
+MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7fTwvc3Bhbj48YnI+PGJyPjxicj7lnKjmtojo
+tLnogIXlh73mlbDkuK3vvIzpgJrov4fkuIDkuKrlhajlsYDlj5jph49DTlVN5p2l5o6n5Yi25raI
+6LS56ICF5oC75YWx55qE5raI6LS55qyh5pWw44CCPGJyPjxicj48c3BhbiBzdHlsZT0iY29sb3I6
+ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtpbnQgY29uc3VtZXJfdGhyZWFkKHZv
+aWQgKnApPC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDt7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4m
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtpbnQgaT0qKGlu
+dCAqKXA7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtpbnQgZ29vZHM7PC9zcGFuPjxi
+cj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDs8
+L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO3doaWxlKGNmbGFnIT1DTlVNKTwvc3Bhbj48
+YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7ezwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAj
+MDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7aWYoKHMyLmNvdW50KSZsdDs9MCk8L3NwYW4+PGJyPjxz
+cGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO3s8L3NwYW4+PGJyPjxz
+cGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwO3ByaW50aygiW2NvbnN1bWVyICVkLCVkXTpJIHdpbGwgYmUgd2FpdGluZyBmb3Ig
+Z29vZHMuLlxuIixpLHMyLmNvdW50KTs8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAw
+ODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwO308L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAw
+ODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO2Rvd24oJmFtcDtz
+Mik7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtkb3duKCZh
+bXA7bXV0ZXgpOzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Z29vZHM9YnVmW291
+dF07PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtwcmludGsoIltjb25z
+dW1lciAlZCwlZF06SSBjb25zdW1lZCBhIGdvb2RzIFwiJWRcIiBmcm9tIGJ1ZlslZF0uLlxuIixp
+LHMyLmNvdW50LGdvb2RzLChvdXQlQlVGX05VTSkpOzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNv
+bG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7b3V0PShvdXQrMSklQlVGX05VTTs8L3NwYW4+PGJyPjxzcGFuIHN0eWxl
+PSJjb2xvcjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO3VwKCZhbXA7bXV0ZXgpOzwvc3Bhbj48YnI+PHNwYW4g
+c3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7dXAoJmFtcDtzMSk7PC9zcGFuPjxicj48c3Bh
+biBzdHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtjZmxhZysrOzwvc3Bhbj48
+YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7fTwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAj
+MDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+cmV0dXJuIDA7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDt9PC9zcGFuPjwvcD4=" style="height:0;width:0;max-height:0;max-width:0;overflow:hidden;font-size:0em;padding:0;margin:0;"></div></div>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">武特</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                <div class="reward_qrcode_area reward_area tc" id="js_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                                        <p class="reward_tips"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" id="js_reward_qrcode_img"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

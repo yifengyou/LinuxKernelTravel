@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		支持阻塞操作的字符设备驱动
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664604205&amp;idx=2&amp;sn=0090cc75021ec0df0ebf2c8d6037132c&amp;chksm=f04d8fc8c73a06de571303f13821abb23a104e121151702f70523f3ace15ed0db4480bdbdee3&amp;scene=27#wechat_redirect&cpage=36' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">支持阻塞操作的字符设备驱动</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        武特
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2017-06-16</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="margin: 0px 0px 1.2em !important;">在前文(<a href="http://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664604189&amp;idx=2&amp;sn=36114a6031059283780423c545545146&amp;chksm=f04d8ff8c73a06eeb2f3dab465e062cc1c3638b74a466f5a6b5cfb537b7033f7f7476c308bf1&amp;scene=21#wechat_redirect" target="_blank">字符驱动设备1</a> <a href="http://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664604198&amp;idx=2&amp;sn=a4924b4beabc24a58a05540ecdb9e2e0&amp;chksm=f04d8fc3c73a06d52af2655e324e86167299259a06729c6afc2e4b25ac2205fd4e1c5d32bb25&amp;scene=21#wechat_redirect" target="_blank">字符驱动设备2</a>)中，我们已经知道了如何编写一个简单的字符设备驱动。本文将在此基础上为这个字符设备驱动增加阻塞功能。不过在此之前，我们会先做一些准备工作。</p><p style="margin: 0px 0px 1.2em !important;">阻塞和非阻塞I/O</p><p style="margin: 0px 0px 1.2em !important;">阻塞和非阻塞I/O是设备访问内核的两种不同的模式。进程以阻塞方式访问设备并对其进行操作时，如果不能及时获得I/O资源则会被挂起，直到满足可操作的条件后才进行相应的操作。这个被挂起的进程会进入睡眠状态，并被移至某个等待队列；当条件满足时候，会被移出这个等待队列。这里所说的等待队列以及相关操作在上文已说明，在此不再赘述。非阻塞方式是指进程在不能进行设备操作时并不被挂起，它要么放弃操作，要么不停进行查询，直至可以进行相关的设备操作为止。</p><p style="margin: 0px 0px 1.2em !important;">我们现在已经知道，用户空间中的应用程序通过read()和write()等统一的系统调用来访问设备文件。而这些系统调用函数最终则会调用设备驱动中的XXX_read()和XXX_write()函数。因此，如果我们在设备驱动中实现了阻塞功能（具体会落实到某个操作函数），当应用程序进程不能及时获得设备资源时就会将该进程阻塞到资源可访问为止。那么XXX_read()和XXX_write()等函数也就不会立即返回，read()和write()等系统调用也就不会立即返回。整个阻塞-唤醒的过程用户是无法感知到的。从用户的角度来看，他们会认为直接就可以对此设备进行操作。</p><p style="margin: 0px 0px 1.2em !important;">相反，如果设备驱动中的操作函数是非阻塞的，那么当设备资源不可用时，设备驱动中的XXX_read()和XXX_write()等函数会立即返回，那么read()和write()等系统调用也会立即返回。从用户角度来看，此时访问设备文件就出错了。</p><p style="margin: 0px 0px 1.2em !important;">支持阻塞操作的字符设备驱动</p><p style="margin: 0px 0px 1.2em !important;">接下来要分析的这个字符设备驱动同样使用一个全局的字符串数组globalmem来存储字符数据。XXX_read()负责将内核空间的数据（此处即为globalmem中的字符串）拷贝到用户空间，实现用户空间对设备文件的读操作；XXX_write()负责将用户空间的数据拷贝到内核空间，实现用户空间对该设备文件的写操作。另外，为了更好的演示本文所述的阻塞操作，我们对这个字符串数组globalmem进行这样的限制：当它为空时，读进程不能进行读操作；当它为满的时候，写进程不能进行写操作。当读了count字节的数据后，还要将globalmem中这些被读的数据移出这个全局数组。</p><p style="margin: 0px 0px 1.2em !important;">如果你理解了前面那个最基本的字符设备驱动的话，除了上述的不同外，基本上没有什么地方你看不懂的。这个举例的完整代码在这里。</p><pre style="font-family: Consolas,Inconsolata,Courier,monospace; font-size: 1em; line-height: 1.2em; margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas,Inconsolata,Courier,monospace; margin: 0px 0.15em; background-color: rgb(248, 248, 248); white-space: pre; overflow: auto; border-radius: 3px; border-width: 1px; border-style: solid; border-color: rgb(204, 204, 204); -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; padding: 0.5em 0.7em; display: block !important;">static char globalmem[BUF_NUM];
+static wait_queue_head_t rdwait;
+static wait_queue_head_t wrwait;
+static struct semaphore mutex;
+
+static int len;
+ssize_t myblock_read(struct file*,char*,size_t count,loff_t*);
+ssize_t myblock_write(struct file*,char*,size_t count,loff_t*);
+
+struct file_operations fops=
+{
+ &nbsp; &nbsp;.read=myblock_read,
+ &nbsp; &nbsp;.write=myblock_write,
+};
+
+static int __init myblock_init(void)
+{
+ &nbsp; &nbsp;int ret;
+
+ &nbsp; &nbsp;printk("myblock module is working..\n");
+
+ &nbsp; &nbsp;ret=register_chrdev(MAJOR_NUM,"edsionte_block_cdev",&amp;fops);
+ &nbsp; &nbsp;if(ret&lt;0)
+ &nbsp; &nbsp;{
+ &nbsp; &nbsp; &nbsp; &nbsp;printk("register failed..\n");
+ &nbsp; &nbsp; &nbsp; &nbsp;return 0;
+ &nbsp; &nbsp;}
+ &nbsp; &nbsp;else
+ &nbsp; &nbsp;{
+ &nbsp; &nbsp; &nbsp; &nbsp;printk("register success..\n");
+ &nbsp; &nbsp;}
+ &nbsp; &nbsp;init_MUTEX(&amp;mutex);
+ &nbsp; &nbsp;init_waitqueue_head(&amp;rdwait);
+ &nbsp; &nbsp;init_waitqueue_head(&amp;wrwait);
+
+ &nbsp; &nbsp;return 0;
+}</code></pre><p style="margin: 0px 0px 1.2em !important;">在内核模块加载函数中，先申请字符设备号；再初始化互斥信号量mutex；最后分别初始化了读等待队列头和写等待队列头。另外定义了一个全局变量len来记录当前globalmem中实际的字节数，而BUF_NUM则是最大长度。</p><p style="margin: 0px 0px 1.2em !important;">在读函数中，我们先创建一个代表当前进程的等待队列结点wait，并把它加入到读等待队列当中。但这并不意味着当前进程就已经完全睡眠了，还需要调度函数的调度。我们前面已经说过，当共享数据区的数据长度为0时，就应该阻塞该进程。因此，在循环中，首先将当前进程的状态设置TASK_INTERRUPTIBLE。然后利用schedule函数进行重新调度，此时，读进程才会真正的睡眠，直至被写进程唤醒。在睡眠途中，如果用户给读进程发送了信号，那么也会唤醒睡眠的进程。</p><p style="margin: 0px 0px 1.2em !important;">当共享数据区有数据时，会将count字节的数据拷贝到用户空间，并且唤醒正在睡眠的写进程。当上述工作完成后，会将当前进程从读等待队列中移除，并且将当前进程的状态设置为TASK_RUNNING。</p><p style="margin: 0px 0px 1.2em !important;">关于从全局缓冲区移出已读数据，这里要特别说明一下。这里利用了memcpy函数将以（globalmem+count）开始的（len-count）字节的数据移动到缓冲区最开始的地方。</p><p style="margin: 0px 0px 1.2em !important;">另外，在上述操作过程中，还加入了互斥信号量防止多个进程同时访问共享数据len和globalmem。</p><pre style="font-family: Consolas,Inconsolata,Courier,monospace; font-size: 1em; line-height: 1.2em; margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas,Inconsolata,Courier,monospace; margin: 0px 0.15em; background-color: rgb(248, 248, 248); white-space: pre; overflow: auto; border-radius: 3px; border-width: 1px; border-style: solid; border-color: rgb(204, 204, 204); -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; padding: 0.5em 0.7em; display: block !important;">ssize_t myblock_read(struct file*fp,char*buf,size_t count,loff_t*offp)
+{
+ &nbsp; &nbsp;int ret;
+ &nbsp; &nbsp;DECLARE_WAITQUEUE(wait,current);
+
+ &nbsp; &nbsp;down(&amp;mutex);
+ &nbsp; &nbsp;add_wait_queue(&amp;rdwait,&amp;wait);
+
+ &nbsp; &nbsp;while(len==0)
+ &nbsp; &nbsp;{
+ &nbsp; &nbsp; &nbsp; &nbsp;__set_current_state(TASK_INTERRUPTIBLE);
+ &nbsp; &nbsp; &nbsp; &nbsp;up(&amp;mutex);
+ &nbsp; &nbsp; &nbsp; &nbsp;schedule();
+ &nbsp; &nbsp; &nbsp; &nbsp;if(signal_pending(current))
+ &nbsp; &nbsp; &nbsp; &nbsp;{
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ret=-1;
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;goto signal_out;
+ &nbsp; &nbsp; &nbsp; &nbsp;}
+
+ &nbsp; &nbsp; &nbsp; &nbsp;down(&amp;mutex);
+ &nbsp; &nbsp;}
+
+ &nbsp; &nbsp;if(count&gt;len)
+ &nbsp; &nbsp;{
+ &nbsp; &nbsp; &nbsp; &nbsp;count=len;
+ &nbsp; &nbsp;}
+
+ &nbsp; &nbsp;if(copy_to_user(buf,globalmem,count)==0)
+ &nbsp; &nbsp;{
+ &nbsp; &nbsp; &nbsp; &nbsp;memcpy(globalmem,globalmem+count,len-count);
+ &nbsp; &nbsp; &nbsp; &nbsp;len-=count;
+ &nbsp; &nbsp; &nbsp; &nbsp;printk("read %d bytes\n",count);
+ &nbsp; &nbsp; &nbsp; &nbsp;wake_up_interruptible(&amp;wrwait);
+ &nbsp; &nbsp; &nbsp; &nbsp;ret=count;
+ &nbsp; &nbsp;}
+ &nbsp; &nbsp;else
+ &nbsp; &nbsp;{
+ &nbsp; &nbsp; &nbsp; &nbsp;ret=-1;
+ &nbsp; &nbsp; &nbsp; &nbsp;goto copy_err_out;
+ &nbsp; &nbsp;}
+
+copy_err_out:up(&amp;mutex);
+signal_out:remove_wait_queue(&amp;rdwait,&amp;wait);
+
+ &nbsp; &nbsp;set_current_state(TASK_RUNNING);
+ &nbsp; &nbsp;return ret;
+}</code></pre><p style="margin: 0px 0px 1.2em !important;">在写函数中，如果检测到globalmem当前的长度是BUF_NUM，则阻塞当前的进程；否则，从用户空间将数据拷贝到内核空间。写函数的控制流程大致与读函数相同，只不过对应的等待队列是写等待队列。</p><pre style="font-family: Consolas,Inconsolata,Courier,monospace; font-size: 1em; line-height: 1.2em; margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas,Inconsolata,Courier,monospace; margin: 0px 0.15em; background-color: rgb(248, 248, 248); white-space: pre; overflow: auto; border-radius: 3px; border-width: 1px; border-style: solid; border-color: rgb(204, 204, 204); -moz-border-top-colors: none; -moz-border-right-colors: none; -moz-border-bottom-colors: none; -moz-border-left-colors: none; padding: 0.5em 0.7em; display: block !important;">ssize_t myblock_write(struct file*fp,char*buf,size_t count,loff_t*offp)
+{
+ &nbsp; &nbsp;int ret;
+ &nbsp; &nbsp;DECLARE_WAITQUEUE(wait,current);
+
+ &nbsp; &nbsp;down(&amp;mutex);
+ &nbsp; &nbsp;add_wait_queue(&amp;wrwait,&amp;wait);
+
+ &nbsp; &nbsp;while(len==BUF_NUM)
+ &nbsp; &nbsp;{
+ &nbsp; &nbsp; &nbsp; &nbsp;__set_current_state(TASK_INTERRUPTIBLE);
+ &nbsp; &nbsp; &nbsp; &nbsp;up(&amp;mutex);
+ &nbsp; &nbsp; &nbsp; &nbsp;schedule();
+ &nbsp; &nbsp; &nbsp; &nbsp;if(signal_pending(current))
+ &nbsp; &nbsp; &nbsp; &nbsp;{
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ret=-1;
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;goto signal_out;
+ &nbsp; &nbsp; &nbsp; &nbsp;}
+
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; down(&amp;mutex);
+ &nbsp; &nbsp;}
+ &nbsp; &nbsp;if(count&gt;(BUF_NUM-len))
+ &nbsp; &nbsp;{
+ &nbsp; &nbsp; &nbsp; &nbsp;count=BUF_NUM-len;
+ &nbsp; &nbsp;}
+
+ &nbsp; &nbsp;if(copy_from_user(globalmem+len,buf,count)==0)
+ &nbsp; &nbsp;{
+ &nbsp; &nbsp; &nbsp; &nbsp;len=len+count;
+ &nbsp; &nbsp; &nbsp; &nbsp;printk("written %d bytes\n",count);
+ &nbsp; &nbsp; &nbsp; &nbsp;wake_up_interruptible(&amp;rdwait);
+ &nbsp; &nbsp; &nbsp; &nbsp;ret=count;
+ &nbsp; &nbsp;}
+ &nbsp; &nbsp;else
+ &nbsp; &nbsp;{
+ &nbsp; &nbsp; &nbsp; &nbsp;ret=-1;
+ &nbsp; &nbsp; &nbsp; &nbsp;goto COPY_ERR_OUT;
+ &nbsp; &nbsp;}
+
+signal_out:up(&amp;mutex);
+COPY_ERR_OUT:remove_wait_queue(&amp;wrwait,&amp;wait);
+ &nbsp; &nbsp;set_current_state(TASK_RUNNING);
+
+ &nbsp; &nbsp;return ret;
+}</code></pre><p style="margin: 0px 0px 1.2em !important;">上述就是支持阻塞模式的字符设备驱动。关于上述程序更多的解释如下：</p><p style="margin: 0px 0px 1.2em !important;">1.两种睡眠。当读进程读数据时，如果发现写进程正在访问临界区，那么它会因为不能获得互斥信号量而阻塞；而当读进程获得信号量后，如果当前globalfifo的数据数为0，则会阻塞。这种阻塞是由我们在设备驱动中实现的。</p><p style="margin: 0px 0px 1.2em !important;">2.两种唤醒。当写进程离开临界区并释放信号量时，读进程会因信号量被释放而唤醒；当写进程往globalfifo中写入了数据时，读进程会被写进程中的唤醒函数所唤醒。特别的，如果读进程是以轻度睡眠方式睡眠的，那么用户可以通过发送信号而唤醒睡眠的读进程。</p><p style="margin: 0px 0px 1.2em !important;">3.唤醒后如何执行。无论因哪种方式而睡眠，当读进程被唤醒后，均顺序执行接下来的代码。</p><p style="margin: 0px 0px 1.2em !important;">4.down操作和add_wait_queue操作交换。在原程序中，读进程先获取信号量，再将读进程对应的等待队列项添加到读等待队列中。如果交换，当读进程的等待队列项加入到等待队列后，它可能又会因未获得信号量而阻塞。</p><p style="margin: 0px 0px 1.2em !important;">5.up操作和remove_wait_queue操作交换。这两个操作分别对应标号out和out2。如果读进程从内核空间向用户空间拷贝数据失败时，就会跳转到out。因为读进程是在获得信号量后才拷贝数据的，因此必须先释放信号量，再将读进程对应的等待队列项移出读等待队列。而当读进程因信号而被唤醒时，则直接跳转到out2。此时读进程并没有获得信号量，因此只需要移出队列操作即可。如果交换上述两个操作，读进程移出等待队列时还未释放互斥信号量，那么写进程就不能写。而当读进程因信号而唤醒时，读进程并没有获得信号量，却还要释放信号量。</p><p style="margin: 0px 0px 1.2em !important;">通过下述方法，你就可以体验到以阻塞方式访问设备文件。</p><p style="margin: 0px 0px 1.2em !important;"><strong>1. make编译文件，并插入到内核；</strong></p><p style="margin: 0px 0px 1.2em !important;"><strong>2. 创建设备文件结点：sudo mknod /dev/blockcdev c major_num 0；</strong></p><p style="margin: 0px 0px 1.2em !important;"><strong>3. 修改设备文件权限：sudo chmod 777 /dev/blockcdev；</strong></p><p style="margin: 0px 0px 1.2em !important;"><strong>4. 终端输入：cat /dev/blockcdev&amp;；即从字符设备文件中读数据，并让这个读进程在后台执行，可通过ps命令查看到这个进程；</strong></p><p style="margin: 0px 0px 1.2em !important;"><strong>5. 中断继续输入：echo ‘I like eating..’ &gt; /dev/blockcdev；即向字符设备文件中写入数据；</strong></p><p style="margin: 0px 0px 1.2em !important;">通过上述的步骤，可以看到，每当利用echo命令写入数据时，后台运行的读进程就会读出数据，否则读进程一直阻塞。此外，如果你愿意的话，还可以分别编写一个读写进程的程序进行测试。</p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">武特</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                <div class="reward_qrcode_area reward_area tc" id="js_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                                        <p class="reward_tips"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" id="js_reward_qrcode_img"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

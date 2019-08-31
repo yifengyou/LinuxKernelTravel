@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		领域专用语言（DSL）概说——洪峰老师讲创客道（三十八）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664601818&amp;idx=1&amp;sn=a8d40f1f4498815e00bfe85c76d6824d&amp;scene=27#wechat_redirect&cpage=73' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">领域专用语言（DSL）概说——洪峰老师讲创客道（三十八）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        洪峰
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-04-21</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p><mpvoice frameborder="0" class="res_iframe js_editor_audio audio_iframe" src="/cgi-bin/readtemplate?t=tmpl/audio_tmpl&amp;name=%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9338&amp;play_length=22:02" name="%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9338" play_length="1322000" voice_encode_fileid="MzI3NzA5MzUxNF8yNjY0NjAxODE3"></mpvoice></p><p>&nbsp;&nbsp;&nbsp;<br  /></p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在上一讲我向大家介绍了，计算机工业界内部正在时兴的领域专用语言设计的活动，计算机工业界的内部人士把领域专用语言设计的活动认为是计算机编程的活动，前面的那一讲中提到的Martin Fowler这位专家，曾经在他的那本著作中提到过这么个观点,他说记住DSL是一种程序设计语言，用它感觉应该像编程，和自然语言相比，程序设计语言应该更加简洁和准备，尝试让程序设计语言，看上去像自然语言，只会让大脑陷于错误的上下文，同程序打交道的时候，务必记住你得按照程序的规矩办事，我认为对于西方专家的这些观点我们应该批判的看待，对于他们合理的部分要认真的学习，但是我们不能局限在他们的思想观点上面，实际上在我们说这个领域专用语言的时候，现在有有一个新的方向正在悄然的而且是快速的崛起，那就是非文本的DSL,在这一讲中呢， 我来就这个非文本的DSL来谈谈我的观点，在历史上早就有伟大的哲学家，思想家已经意识到语言可贵的地方和它不足的地方，这里我向大家介绍一下，我们古代的哲学家庄子的观点，他就认为，书本不足为贵，语言有他的局限性，他是这样说的，世人所珍贵的道理，记载在这书本里面，书本里记载下来的不过是语言，语言有他可贵的地方，语言的可贵之处是含有意义 ，而意义却有所依随，意义所依随的却不能用语言来表达，而世人由于认为语言可贵，便通过书本相传，世人是认为珍贵书本，我还是认为不足以珍贵，因为人们所珍贵的并不是那真正可贵的地方，因为可以看得见的东西是形状和颜色，可以听得见的是名称和声音，可悲啊，世俗之人以为从形状，颜色，名称，声音中就可以完全获取那事物的道理。假如从形状，颜色，名称声音中确实不能完全得到事物的道理的事情那么知道的人不写不说，说到写的不知道，而世俗之人又怎么能了解呢，那么这是他在天道中表达的观点。本质上是涉及到了思维和语言的关系.</p><p>&nbsp;&nbsp;&nbsp;&nbsp;我在本书的第三章讲这个现代巫师的时候，讲过那个PM1/2/3理论框架，形而上的道和形而下的气，两者之前要发生关联，要联系起来的话，就必须要通过语言和逻辑这个中间桥梁，然后配合对关系处理的三个数学版本，也就是集合，图和矩阵这三个数学版本来加以处理，在那个PM1/2/3中那个2指的是可能事件的逻辑和形式语言，然后在应用这个可能事件的逻辑和形式语言的时候，我们需要根据具体的环境，根据具体的领域的特点，来对这个形式语言和这个可能事件的逻辑进行适当的扩变，才能够把这个PM1/2/3应用到这个创业项目中去，在设计这个语言和思想的关系的时候，我们必须要搞清楚这个文字形式的载体只是这其中的一种形式，而交流思想以及很多非文本的这种语言形式，为了说明这个问题.</p><p>&nbsp;&nbsp;&nbsp;&nbsp;我为大家回顾一下，禅宗的起源.这个禅宗的起源里面有一个很有名的典故，这个典故曾经在一本书叫做《五灯会元》中记载过，它是这样写的，佛陀在灵山会上，拈花示众，是时众皆默然,唯迦叶尊者破颜微笑 世尊曰吾有正法眼藏，涅盘妙心，实相无相，微妙法门，不立文字，教外别传，付嘱摩柯迦叶,</p><p>世尊至多子塔前，命摩诃迦叶分座令坐，以僧伽梨围之。遂告曰：吾以正法眼藏密付于汝，汝当护持，传付将来。这个拈花微笑的传闻就说明了这个禅宗的衣钵的传承是源自于灵山会上佛陀传发给迦叶的，之后又经历了各个时代的传承。二十八组菩提达摩从印度到东土来播下了禅的种子，为东方传宗的始祖。此后又传到五组弘忍，然后又传给了六祖慧能,这个时候南宗就建立起来了,波澜壮阔大放异彩.应验了达摩祖师一花开五叶，结果自然成的语言。禅宗成为了隋唐禅学的黄金时代。这个禅宗讲的是不立文字，教外别传，直指人心。这个传法，它有很大的优越性。</p><p>&nbsp;&nbsp;&nbsp;&nbsp;我们知道在唐朝，唐武宗会昌法难期间寺院被没收，僧侣集团被打散，强迫僧人还俗。会昌法难后的其它门派都受到了致命的打击。但是唯有禅宗与净土两宗得以留源下来。为什么呢，因为禅宗它不立文字，它也不需要寺庙，净土呢只要念阿弥陀佛经就可以了。所以这两派得以生存下来。所以对这个思想的传承来说，我们在这个思想的传承过程中对语言发挥的作用呢我们要有一个一分为二的看法，美国有一位很有名的人类学家爱德华·霍尔，他写过一本书叫做《无声的语言》，在这本书中他提到了一个观点，就是把人类的活动分成十大类称之为基本信息系统。</p><p>&nbsp;&nbsp;&nbsp;&nbsp;在这是十个系统中只有第一个系统中用到了语言，其它的系统都是交流过程中采用的非语言形式，那么这个十个系统我在这里和大家介绍一下，第一个是相互作用，这个相互作用信息系统里面是要采用语言的。第二个就是相互联系，第三个是谋求生存，第四个是两性表现， 第五个叫做领土获得，第六个是时间关系，第七个是学习，第八个是游戏，第九个是防卫，第十个是利用环境或者是说利用物质材料。那么从第二个到第十个这个九个基本的信息系统里面，它采用的都是非语言形式。竟然这个在人类的十大基本信息系统里面非语言形式的种类如此多，那么对于我们今天在搞软件开发的时候，在开发非文本的DSL的时候，春天来自于人类学家的这些观点，那就变得十分重要了,爱德华·霍尔在他的这本书中的末尾的地方增加了一个矩阵，把上文中提到的是个信息基本单元，按照纵向和横向排了一个方阵，他认为人类的文化，就是建立在这个方阵之上的，从这点我们可以看出，爱德华·霍尔在研究这个社会学问题的时候，在研究这个无声的语言的时候，他有他自己独到的观点。</p><p>&nbsp;&nbsp;&nbsp;&nbsp;以这个矩阵来研究这个文化，那么就可以发现这个无声的语言的三个层次，也就是正式层，非正式层吗，和技术层，这三个层次，在这个真实层的学习的时候，这个长者会用这个训诫，劝告的方式来对这个幼者进行教育。比方说这个孩子在童年时期成长的阶段，他的父母会用训诫，劝告的方式来教育这个小孩。所以在孩子六岁以前家庭环境，父母的教育对这个儿童终身的影响都是巨大的。实际上我有一些研究儿童心理行为的朋友告诉我，一个儿童在他六岁的时候，他的心里性格就基本上已经定型了。在正式学习的过程中，学习者和教授者他们之间是有互动的，而且这个互动经过多个轮回来完成，直到这个学习者掌握了相关的知识为止。这个非正式生的学习，与这个正式生的学习和技术生的学习都不一样，他这种学习的主要媒介是模仿的榜样，就是这个青少年时期，他非常在乎其他人的动作，以及其他人对自己的看法。我们中国有句古话叫做近朱者赤，近墨者黑。那就是说明了环境对这个孩子，对这个人的心理性格的形成具有至关重要的作用。我们还有这个孟母为了培养他的孟子多次搬家的故事，也就是主动的去选择这个环境来培养她的儿子，在这个非正式层的学习过程中，一般是学习者去模仿别人，这可能是有意识的，也可能是无意识的，更多的情况下是无意识的，到了这个技术层学习的时候，语言的重要性就发挥出来了。这个时候老师通常用非常明确的明晰的口头语言或书面语言来教授学生，而且这个教学往往是单行道，单向的。</p><p>&nbsp;&nbsp;&nbsp;&nbsp;在教授之前呢需要进行逻辑分析，传授本身很连贯，很概括，很系统，那么这个例子是非常多的，所以从这个观点来看待前面Martin Fowler的观点，他是把领域专用语言定义在技术层次。然后我们不能不指出，在进行技术层学习之前，如果没有前面的正式层的学习和非正式层的学习，那么这个教学时无法实施的。请大家回顾一下我在第二章山水鱼鸟的观点，我在这个地方给大家说就是你选择创业项目的时候，一定要选择一个你最熟悉而已是你最擅长的领域，在那个领域中你挑选出困扰很多人的问题把他解决掉，我们每个人的生活道路，成长经历都有他很强的个性。所以在这个创业者选择创业方向以及在这个选定的创业领域打造这个领域专用语言的时候你就必须要结合自己亲身的经历，选择自己最熟悉，自己最擅长的领域来打造这个领域专用语言，从这个意义上来讲，成功他是有某种规律在支配做的。</p><p>&nbsp;&nbsp;&nbsp;&nbsp;在向大家介绍了我关于领域专用语言，特别是非文本领域专用语言的一些思想观点后，我在这里向大家列举几个具体的案例，来说明非文本领域专用语言的一些特点。我第一个要介绍的案例就是google公司开发的google classes，当用户戴上这个google公司开发的这个智能眼镜的时候，你在街上想走的时候那么你所处在的环境会通过google的眼镜传递给google公司的搜索引擎，那么google公司的搜索引擎会根据你在街上所在的环境想你介绍这个周围的情况，无论你在一个什么街道上走，它会告诉你在这个街上有哪些餐馆可以吃饭，有哪些商店可以买东西，有哪些地方可以停车等等。这项技术经过适当的变形和改造，我们就可以出现汽车的这种自动驾驶技术。因为在这个长途的旅行中，人们开车很容易疲劳的，这个时候如果让计算机系统帮助人去驾驶，代替人去驾驶，那会大大减少许多因为人的疲劳驾驶导致的一些交通事故，所以这个技术是非常有价值的。在计算机驾驶系统里面实际上就是需要把这个道路的信息传递给计算机系统，让计算机系统根据道路信息来控制车况，在这种系统中传感器采集的信息都是一些图像信息，那么这些图像信息是非文本信息，它会传递给计算机系统进行处理。那么这个时候计算机它所接受的信息是非文本信息。把这个技术再做一种变形，那我们就可以得到飞行头盔的概念。</p><p>&nbsp;&nbsp;&nbsp;&nbsp;这个飞行头盔是个什么东西呢?就是在战斗机或者是军用飞机的驾驶里面这个飞行员是要带头盔的，在这个头盔里面有很多复杂的设计实际上一种非常特别的专用计算机。那么在飞机飞行的时候飞行员驾驶的飞机在这个座舱里面根据他所看到的空中的情况会进行侦查，进行格斗，进行轰炸等等。那么这个飞行员的反映是根据在头盔中所接收到的的视觉信息，这个视觉信息被传达到他的闹到，他的脑袋会产生了脑电波，然后这个脑电波会被这个传感器所接受，探测。然后会被转换成为对飞机上的很多子系统进行操作。比方说来了一个敌机，那么我这个时候通过这个飞行头盔对敌机进行瞄准，那么在瞄准之后，脑电波就发送给了计算机系统，而计算机系统会根据你对这个敌机的信号和一些飞行状态进行判定和计算，来选择机载上最适当的武器，比如某种空对空的导弹，来配置它。从而在你意念发出的时候，这个导弹发射出去把敌机进行击落。有了这个飞行头盔，那么飞行员和这个飞机上的武器系统，还有这个飞机的操控都会进行某种融合。那么这种技术可以大大提高空战的效果，提升空战的战斗力。回想下我们前面提到的爱德华·霍尔提出的十个基本信息系统里面是不是有学习，游戏和防卫，以及利用物质材料呢。那么在这个飞行头盔里面这些非文本的语言的处理，那就非常的明显了。类似这样的技术，当然了创意是无穷无尽的。我在2002年的时候，在北京曾经遇到北京清华大学的一名教授。他当时就有一个想法，就是做一个智能教室，也就是说让老师在课堂上讲课的时候利用自己的肢体语言，比方说这个时候我要打开一个幻灯片用投影仪来投影到墙上，这个时候我会做一个手势，那么这个手势会被转换为计算机的一个指令，然后把这个幻灯片通过投影仪投放到墙壁上告诉学生们。像聋哑人传递这个信息的时候，我们可以使用这个手语。因为聋哑人是因耳朵和嗓子失效了，但是他们的视觉是正常的。所以你可以通过手语向这个聋哑人传递信息。我在国外看电视的时候经常发现如果有重要的新闻插播的时候，在屏幕的左下角，或者是右上角会有一个熟练使用手语的人，向聋哑人提供信息。我们国家的聋哑人可能也有很多，但是据我所知在我们的电视节目里面，还有新闻节目里面提供类似服务还没看到过。现在智能手机和平板电脑都已经非常的普及了，在使用智能手机和平板电脑的时候，我们这个时候可以使用手势来作为操作的输入，那么这个也是非文本的DSL。</p><p>&nbsp;&nbsp;&nbsp;&nbsp;在明白了这些我刚才列举的案例之后我们可以对这个非文本的DSL的设计有这样的一些观点。非文本的DSL的设计是在技术层上的一种特定领域上的活动。但是他与正式层和非正式层的学习是有密切关联的。实际上我们可以把它看作是一个浮动在海上的的冰山，我们所看到的那个冰山上的那个部分，实际上是冰山的大概十分之一到十一分之一左右这个比例。大量的冰山大部分冰，在这个水下的部分那就是我们的正式学习和非正式学习的部分。那么要开发一个好的领域专用语言，我们不可能只看到冰山上的那个部分，那么还要对水面下的那个部分进行多种层次的学习和研究。在这种情况下你才能设计出一个良好的非文本的DSL。这个领域在计算机工业界处在刚刚兴起的时代，这个里面的创业方向是非常多的，这里呢我想请在座的诸位创客道学员关注这个领域。这个领域将会为诸位创客道学员提供大量的创业的新机会。机会只会留给那些有心人，思想上有准备的创客学员。</p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">洪峰</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

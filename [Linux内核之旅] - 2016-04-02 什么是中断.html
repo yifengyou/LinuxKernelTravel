@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		什么是中断
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=416903463&amp;idx=2&amp;sn=18387a7813b5db54983731eda10bf2f9&amp;chksm=76465cc24131d5d4e2ddf102f1c294166f1aea78e6bf3acc90edf1d0f013dc3812dd77355c91&amp;scene=27#wechat_redirect&cpage=75' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">什么是中断</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        武特
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-04-02</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style=""><span style="font-size: 16px;">我们经常听到中断这个词，到底什么是中断？在这之前我先讲给大家一个故事。</span></p><p style=""><span style="font-size: 16px;"><em style="border: 0px; outline: 0px;"><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);">从前有两位班主任A和B，A老师带一班，B老师带二班。这两位老师平时都很忙，平时除了为学生们备课改作业，当某个同学提出问题时，还要为他们解答疑问。A老师生怕遗漏每一位同学提出的问题，每隔一段时间就放下手头的工作，不断轮流寻问每一位同学：“你有问题吗”。也许被寻问的这位同学恰好有问题要咨询老师，可这毕竟是少数；而当A老师继续批改作业的时候又出现了一些同学提出问题，可是这个时候还没到A老师轮流寻问同学的时间。就这样，A老师的宝贵时间经常被浪费。</strong></em></span></p><p style=""><span style="font-size: 16px;"><em style="border: 0px; outline: 0px;"><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);">B老师和A老师有所不同，他认为完全没有必要这样死板的寻问每一位同学是否有问题。他对全班同学说：“谁有问题就主动来找我“。即便他可能正在改作业，但是完全可以暂时放下手头那些重要的工作，先为这位迷惑的同学解决问题。因此，B老师既可以改作业，又可以在学生主动提出问题的时候为那个学生解决问题。显然B老师的工作效率比A老师提高了很多。</strong></em></span></p><p style=""><span style="font-size: 16px;">故事看懂了，那么恭喜你，你也懂了什么是中断。</span></p><p style=""><span style="font-size: 16px;">上面的两位老师分别代表系统中对设备进行管理的两种典型的方式。A老师的那种工作方式属于早期的程序查询控制方式（或称为轮询），内核定期对设备的状态进行查询；而B老师则属于中断控制方式，I/O设备需要服务时，可主动向内核发出中断请求并打断CPU当前正在执行的任务。前者内核为主动；而后者变内核主动为被动，由设备主动向内核发出中断请求。</span></p><p style=""><span style="font-size: 16px;">从物理角度来看，中断请求是由外部硬件设备产生的一种电信号，外部设备首先将这种电信号发给中断控制器，接着中断控制器将此电信号发送给CPU。CPU检查到该中断信号后再通知内核，然后由内核完成后续的一些列处理工作。显然，内核不需要定期去检查设备，从而提高了CPU利用率。</span></p><p style=""><span style="font-size: 16px;">通过以上的描述，你应该对中断有了一个大致的了解，不过想要更具体的了解中断必须搞清楚以下的知识点。</span></p><p style=""><span style="font-size: 16px;">1.中断的分类</span></p><p style=""><span style="font-size: 16px;">早期以及一般情况下，我们所说的中断即指由外设所产生的中断。随着计算机的迅速发展，中断不再仅仅局限于外部设备，CPU本身也会产生中断，不过我们将这种中断称为异常。</span></p><p style=""><span style="font-size: 16px;">对于x86体系结构而言，中断可以分为两大类：同步中断和异步中断。同步中断即我们上面所说的异常，它是由 CPU 在执行非法命令时所产生的。之所以称为同步，是因为这种中断请求信号与代码指令同步执行，也就是说只有在一条指令执行完毕后 CPU 才会发出中断，而不是发生在代码指令执行期间。而异步中断即由外部设备产生的中断，这种中断可以随时发生，习惯上，我们将异步中断仍然称为中断。</span></p><p style=""><span style="font-size: 16px;">中断可分为可屏蔽中断（Maskable interrupt）和不可屏蔽中断（Nomaskable interrupt）。异常可分为故障（fault）、陷阱（trap）、终止（abort）三类。</span></p><p style=""><span style="font-size: 16px;">可屏蔽中断主要是针对外部设备所产生的中断信号，不可屏蔽中断一般是指计算机内部硬件产生的中断。由于异常是CPU发出的中断信号，与中断控制器（下文有解释）无关，因此异常不能被屏蔽。那么，异常和不可屏蔽中断有些相似点：它们均与外部设备无关，并且均不能被屏蔽。</span></p><p style=""><span style="font-size: 16px;">2.中断控制器</span></p><p style=""><span style="font-size: 16px;">中断控制器可分为可编程中断控制器（Programmable Interrupt Controller,PIC）和高级可编程中断控制器（Advanced Programmable Interrupt Controller,APIC）。前者仅可用于单处理器（Uni-processor）平台，后者则可用于多处理器（Mutiliple Processor）平台。</span></p><p style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);">传统</strong>的PIC都是通过两片级联的8259A来管理和控制15个由外部设备所产生的中断源。由下图可看到，每片8259A芯片最多可管理8个中断源。但由于两片8259A芯片的级联，即从片的INT输出端与主片的2号（第三条线）中断线相连接，所以总共可以管理15个中断源。</span></p><p style=""><a rel="attachment wp-att-1696" style="color: rgb(0, 77, 153); border: 0px; outline: 0px;"><img class="aligncenter size-medium wp-image-1696" title="Linux_kernel_interrupt_manage_05_1024" src="data:image/PNG;base64,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 " src="SeWfibBcBT0FMo7DAbTpm9qqZXOonGoW5iau6LA0ibcjE8E11ibuxS8al5UEujENSHItKwSObEfAib5a130KxRRjHNQ"  width="300" height="186" srcset="http://edsionte.com/techblog/wordpress/wp-content/uploads/2010/10/Linux_kernel_interrupt_manage_05_1024-300x186.png 300w, http://edsionte.com/techblog/wordpress/wp-content/uploads/2010/10/Linux_kernel_interrupt_manage_05_1024.png 1024w" sizes="(max-width: 300px) 100vw, 300px" data-type="png" data-ratio="0.20333333333333334" data-w="300" style="margin-right: auto; margin-left: auto; max-width: 576px; border: 0px; outline: 0px; display: block;"  /></a></p><p style=""><span style="font-size: 16px;">外设和中断控制器上每根相连的线被称为中断线（也称为IRQ线）。对这些中断线进行编号就形成了中断号。IRQn线所对应的中断号即为n。当外部设备产生中断时，就通过中断线向系统发出中断请求（Interrupt ReQuirement）。由于中断控制器只能控制15个中断源，而如今的外设又日益剧增，因此就出现了对各外设共享一条中断线的情况，即中断共享（后文会有详细解释）。</span></p><p style=""><span style="font-size: 16px;">上面已经说过，外部设备的中断请求可以被屏蔽，但是具体体现到硬件上是如何做到的？在每个8259A芯片上都有一个8位的中断屏蔽寄存器，每一位对应一条中断线。在对应为上置1则可屏蔽此条中断线；相反置0则可启动此条中断线。</span></p><p style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);">需要说明的是，现在大多数计算机都使用的是APIC，可以通过查看/proc/interrupts文件获取中断控制器的名称。之所以将传统的8259A作为PIC的举例来学习，最大的原因还是因为它非常的经典，就如同古董——8086处理器一样。通过查看/proc/interrupts文件，可以发现APIC的中断号并不止15个（但即便是这样，还需要共享中断）。</strong></span></p><p style=""><span style="font-size: 16px;">3.中断向量</span></p><p style=""><span style="font-size: 16px;">x86体系结构支持256种中断，即256个中断源。将这些中断源按照0到255的顺序对每种中断进行编号，这个编号叫做中断向量，通常使用8位无符号整数来存储这个向量。中断号和中断向量存在一对一的映射关系。</span></p><p style=""><span style="font-size: 16px;">中断号和中断向量是两个不同的概念。当I/O设备把中断信号发送给中断控制器时，与之关联的是一个中断号；而当中断控制器将该中断信号传递给CPU时，与之关联的是一个中断向量。也就是说，中断号是以中断控制器的角度而言的；而中断向量则是以CPU的角度而言的。中断号和中断向量存在一对一的映射关系。</span></p><p style=""><span style="font-size: 16px;">通常，Intel将编号为0～31的向量分配给异常和非屏蔽中断，这部分向量是固定的。因此在8259A默认情况下，中断号n所对应的中断向量为n+32。</span></p><p style=""><span style="font-size: 16px;">4.中断服务例程</span></p><p style=""><span style="font-size: 16px;">在响应一个具体的中断时，内核会执行一个函数，该函数被称为中断服务例程（Interrupt Service Routine，ISR）。每一个设备的驱动程序中都会定义相关的中断服务例程。从下面的代码可以看到，中断服务例程有两个参数，分别为int型和void指针型。并且返回值为irqreturn_t。</span></p><pre class="brush:c" style="margin-top: 0px; margin-bottom: 0px; padding: 0px; border: 0px; font-size: 13px; outline: 0px; color: rgb(36, 38, 38); line-height: 20px; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;"> //linux/include/linux/interrupt.h
+ &nbsp;98typedef irqreturn_t (*irq_handler_t)(int, void *);
+ //linux/include/linux/irqreturn.h
+ &nbsp;10enum irqreturn {
+ &nbsp;11 &nbsp; &nbsp; &nbsp; &nbsp;IRQ_NONE,
+ &nbsp;12 &nbsp; &nbsp; &nbsp; &nbsp;IRQ_HANDLED,
+ &nbsp;13 &nbsp; &nbsp; &nbsp; &nbsp;IRQ_WAKE_THREAD,
+ &nbsp;14};
+ &nbsp;15
+ &nbsp;16typedef enum irqreturn irqreturn_t;</span></pre><p style=""><span style="font-size: 16px;">由于irqreturn_t是一个枚举类型，因此本质上为整形。并且IRQ_NONE,IRQ_HANDLED,IRQ_WAKE_THREAD的值一次为0，1，2。IRQ_NONE表示不处理所收到的中断请求；IRQ_HANDLED表示接收到了有效的中断请求，并且作出了正确的处理（这一点在后文中有详细讨论）。</span></p><p style=""><span style="font-size: 16px;">需要注意的是，当一个中断服务例程正在执行的时候，该中断所在所有处理器上的都会被屏蔽，以免继续接受同一条中断线上的另一个新的中断。</span></p><p style=""><span style="font-size: 16px;">以上就是关于中断的基本概念，了解了它们就容易进行后续的中断分析了。</span></p><p><span style="font-size: 16px;"><br  /></span></p><ul class="previousnext clearfix list-paddingleft-2" style="list-style-type: none;"></ul><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">武特</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

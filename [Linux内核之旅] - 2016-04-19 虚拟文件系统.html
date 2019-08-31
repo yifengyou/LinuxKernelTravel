@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		虚拟文件系统
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664601813&amp;idx=2&amp;sn=8bf0046d6b8f3ac213969955e969e297&amp;chksm=f04db530c73a3c26e4a1fa40e2fe7b5010709fb5c4ba6119adeaabce6a1d307bc8dfb7670776&amp;scene=27#wechat_redirect&cpage=73' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">虚拟文件系统</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        武特
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-04-19</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <h4 style="">文件系统基础知识</h4><p style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);">1.文件类型</strong></span></p><p style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);">普通文件（regular file）</strong>：包括文本文件和二进制文件。通过open或creat系统调用函数可以创建一个普通文件。</span></p><p style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);">目录文件（directory file）</strong>：也称为目录，一个目录的内容即为该目录下的文件和其他子目录。通过mkdir命令可创建一个目录。通过ls -l某个目录文件时，可以看到该文件的属性的第一项为d，即表示目录文件。</span></p><p style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);">设备文件（device file）</strong>：Linux将硬件设备也当作文件来处理，通过mknod命令可以创建一个设备文件。通常设备文件分为字设备文件（character special file），比如键盘和鼠标等；还有块设备文件（block special file），比如硬盘和光驱等。</span></p><p style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);">链接文件（symbolic link）</strong>：也称为符号链接，通过ln命令可以创建一个符号链接。符号链接文件本身就是一个文件，这种文件的内容则是另一个文件（即源文件）的路径。对符号链接进行读写等基本操作时，系统会自动将其转化为对源文件的相应操作。通过ls -l某个符号链接文件时，可以看到文件属性的第一项为l，即表示目录文件。</span></p><p style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);">管道文件（pipe）</strong>：用于进程间通信，也称为FIFO文件。通过系统调用pipe可以创建一个管道。管道文件在使用上和普通文件没有什么太大的区别，只不过这种文件不像普通文件那样存储与磁</span>盘上，而是存储在内存中。</p><p style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);">套接字文件（socket）</strong>：主要用于网络通信，也可以用于一台主机上的进程间通信。</span></p><p style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);">2.Linux文件结构</strong></span></p><p style=""><span style="font-size: 16px;">Linux采用树型结构将所有文件组织起来，也就是说，每一个Linux系统就只对应一个这样的树型结构。windows操作系统也采用树型结构，但却是每个分区对应一个树型结构。下面对Linux根目录下的一些常见子目录进行说明：</span></p><p style=""><span style="font-size: 16px;">/bin：存放二进制的可执行的命令文件，我们通常所使用的命令就是来自这里。比如ls，cat等。</span></p><p style=""><span style="font-size: 16px;">/sbin：存放系统管理命令的目录，即为使用前要加sudo的那些命令，比如fdisk等。</span></p><p style=""><span style="font-size: 16px;">/mnt：存放用户临时安装其他文件系统的目录。</span></p><p style=""><span style="font-size: 16px;">/dev：存放设备文件的目录。</span></p><p style=""><span style="font-size: 16px;">/etc：存放系统管理和配置文件的目录。</span></p><p style=""><span style="font-size: 16px;">/home：系统中所有用户主目录的汇总。通过/home/username可以访问某个用户的主目录。</span></p><p style=""><span style="font-size: 16px;">/tmp：公共的临时文件目录。相对的，每个用户在其主目录下也有私有的临时文件目录。</span></p><p style=""><span style="font-size: 16px;">/lib：标准程序设计库，又叫做动态链接共享库。</span></p><p style=""><span style="font-size: 16px;">/proc：这个目录存在与内存中，不占用磁盘空间。该目录存放的是对内存的一次映像，我们每打印一次/proc目录，显示的就是当前内存的状态。</span></p><h4 style="">虚拟文件系统</h4><p style=""><span style="font-size: 16px;">Linux可支持数十种文件系统，不同的文件系统可以同时共存于一个系统之中。这些不同类型的文件系统并不是各自封闭的，而很可能会进行文件复制和移动等。比如，我的PC中装有双系统（比如ubuntu+winXP），现在我要将XP系统E盘中的test.doc文件拷贝到ubuntu系统中的主目录下。我们知道，XP的文件系统类型是FAT，而Linux主目录的文件系统类型是ext3，我们如何使用一种统一的“语言”来支持这种不同文件系统上文件的移动和复制？虚拟文件系统（Virtual FileSystem，VFS）就扮演的这样的角色，即支持跨越不同文件系统或存储设备的文件操作。</span></p><p style=""><span style="font-size: 16px;">VFS是在各种具体的文件系统之上建立了一个抽象层，它屏蔽了不同文件系统间的差异。它之所以可以将各种文件系统纳入其中，是因为它提供了一个通用的文件系统模型。<span style="border: 0px; font-size: 13.3333px; outline: 0px;">在内核中，这个通用的模型具体的表现为一组统一的抽象接口和数据结构。每个文件系统都必须实现这些统一接口，并在组织结构上与该模型保持一致。</span></span></p><p style=""><span style="font-size: 16px;">VFS相当于一个万能插销座，具体的文件系统相当于插销座内部的电路实现。不管是两头插销还是三头插销，甚至未来出现的单头插销都可以使用这个万能的插座，使用根本不必考虑这个插座内部是如何实现的。</span></p><h4 style="">VFS中的数据结构</h4><p style=""><span style="font-size: 16px;">上面说到，VFS是通用的文件系统模型。那么，这个通用性具体如何表现出来？VFS主要通过一组数据结构来描述文件对象。其中有四个基本的结构体：</span></p><p style=""><span style="font-size: 16px;">超级块（struct super_block）：它描述一个已安装了的文件系统。</span></p><p style=""><span style="font-size: 16px;">索引结点（struct inode）：它描述一个文件。</span></p><p style=""><span style="font-size: 16px;">目录项（strcut dentry）：它描述文件系统的层次结构。一个完整路径的每个组成部分都是一个目录项。比如打开/home/edsionte/code/hello.c时，内核分别为/，home/，edsionte/，code/，hello.c创建相应的目录项。</span></p><p style=""><span style="font-size: 16px;">文件（struct file）：它描述一个已被进程打开的文件。</span></p><p style=""><span style="font-size: 16px;">VFS采用面向对象的思想，在上述每一个结构体中即包含描述每个文件对象属性的数据，又包含对这些数据进行操作的函数指针结构体。也就是说，上述四个基本的结构体中，每一个结构体中又嵌套了一个子结构体，这个子结构体包含了对父结构体进行各种操作的函数指针。</span></p><p style=""><span style="font-size: 16px;">上述文字是对VFS主要的几个结构体大致的说明。下文中，将从代码的角度分析这些结构体</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">武特</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

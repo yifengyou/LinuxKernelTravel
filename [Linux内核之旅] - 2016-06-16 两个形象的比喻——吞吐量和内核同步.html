@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		两个形象的比喻——吞吐量和内核同步
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664602371&amp;idx=1&amp;sn=c6632f2c3337c208652e6340687ff24f&amp;scene=27#wechat_redirect&cpage=69' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">两个形象的比喻——吞吐量和内核同步</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        王聪
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-06-16</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="">我们知道，计算机中有很多概念并不容易理解，有些时候一个好的比喻能胜过很多句解释。下面两个是我看到的两个很精彩的比喻，拿出来和大家分享一下。</p><p style="">第一比喻是关于吞吐量（throughput）和延迟（latency）的。如果你要搞网络性能优化，这两个概念是你必须要知道的，它们看似简单实则不是。我相信包括我在内的很多人都曾经认为大的吞吐量就意味着低延迟，高延迟就意味着吞吐量变小。下面的比喻可以解释这种观点根本不对。该比喻来自<a target="_blank" rel="external" style="-webkit-margin-before: 0px; -webkit-margin-after: 0px; border: 0px; outline: 0px; font-weight: inherit; font-style: inherit; font-family: inherit; vertical-align: baseline; color: rgb(44, 166, 203);">这里</a>，我来做个大体意译（非逐字翻译）。</p><p style="">我们可以把网络发送数据包比喻成去街边的 ATM 取钱。每一个人从开始使用 ATM 到取钱结束整个过程都需要一分钟，所以这里的延迟是60秒，那吞吐量呢？当然是 1/60 人/秒。现在银行升级了他们的 ATM 机操作系统，每个人只要30秒就可以完成取款了！延迟是 30秒，吞吐量是 1/30 人/秒。很好理解，可是前面的问题依然存在对不对？别慌，看下面。</p><p style="">因为这附近来取钱的人比较多，现在银行决定在这里增加一台 ATM 机，一共有两台 ATM 机了。现在，一分钟可以让4个人完成取钱了，虽然你去排队取钱时在 ATM 机前还是要用 30 秒！也就是说，延迟没有变，但吞吐量增大了！可见，吞吐量可以不用通过减小延迟来提高。</p><p style="">好了，现在银行为了改进服务又做出了一个新的决定：每个来取钱的客户<strong style="-webkit-margin-before: 0px; -webkit-margin-after: 0px; border: 0px; outline: 0px; font-style: inherit; font-family: inherit; vertical-align: baseline;">在取完钱之后必须</strong>在旁边填写一个调查问卷，用时也是30秒。那么，现在你去取钱的话从开始使用 ATM 到完成调查问卷离开的时间又是 60 秒了！换句话说，延迟是60秒。而吞吐量根本没变！一分钟之内还是可以进来4个人！可见，延迟增加了，而吞吐量没有变。</p><p style="">从这个比喻中我们可以看出，延迟测量的是每个客户（每个应用程序）感受到的时间长短，而吞吐量测量的是整个银行（整个操作系统）的处理效率，是两个完全不同的概念。用作者的原话说是：</p><blockquote style=""><p style="-webkit-margin-before: 0px; -webkit-margin-after: 0px; margin-top: 1em; border: 0px; outline: 0px; font-weight: inherit; font-style: inherit; font-family: inherit; vertical-align: baseline; line-height: 1.5;"><span style="font-size: 14px;">In short, the throughput is a function of how many stages are in parallel while latency is a function of how many are in series when there are multiple stages in the processing. The stage with the lowest throughput determines the overall throughput.<br style="-webkit-margin-before: 0px; -webkit-margin-after: 0px;"  />正如银行为了让客户满意不光要提高自身的办事效率外，还要尽量缩短客户在银行办事所花的时间一样，操作系统不光要尽量让网络吞吐量大，而且还要让每个应用程序发送数据的延迟尽量小。这是两个不同的目标。</span></p></blockquote><p style="">另外一个比喻是解释信号量（semaphore）和互斥锁（mutex）的区别。该比喻最初来自<a target="_blank" rel="external" style="-webkit-margin-before: 0px; -webkit-margin-after: 0px; border: 0px; outline: 0px; font-weight: inherit; font-style: inherit; font-family: inherit; vertical-align: baseline; color: rgb(44, 166, 203);">这里</a>，我先翻译一下，然后对它做个改进。</p><p style="">互斥锁是一把公共厕所的钥匙。一个人使用厕所的时候可以拿到这把钥匙，用完之后把这把钥匙交给排队的下一个人。</p><p style="">信号量是没有人使用的厕所的钥匙数量，所有厕所的钥匙都一样。比如有4个厕所有相同的钥匙和锁。信号量的值就是钥匙的数量，一开始是4。当进来一个人的时候数量就是少一个，如果4个厕所都满了，信号量就成0了，出去一个人就增加1，并把钥匙交给排队的下一个人。</p><p style="">这个比喻并不是太好，尤其是它无法解释 二元（binary）信号量和互斥锁的区别！我把这个比喻做了改进。互斥锁的比喻还是和上面一样，需要指出的是，当你拿到那把钥匙的时候你就是它的拥有者（owner），别人是无法打开厕所门的。</p><p style="">而信号量到底是什么呢？它就是一个大的公共厕所，里面有若干个位置，外面的大门口有一个可以翻动牌子写着“已满”和“可用”，当里面还有空的位置的时候，进去的人不用翻动这个牌子，直到没有位置时最后一个进去的人必须把它设成“已满”，这时后面的人必须排队等候，然后出去的人必须把牌子翻到“可用”，如果需要的话。</p><p style="">很好理解对嘛？那么它怎么解释二元信号量呢？也就是当这个厕所里面只能容纳一个人的时候，每个人进去的时候都要把门口的牌子翻到“已满”，出去的时候翻到“可用”。它和互斥锁的区别马上就可以看出来了，翻动的牌子在外面可以被别人翻的，而锁住的锁只有拿钥匙的人才可以开！</p><p style="">当然了，信号量之所以翻译成“信号”，还是有道理的，因为它（厕所门口的牌子）标示的是资源（厕所空位）的状态，而互斥锁就是锁，它实实在在地锁住了资源。这在生产者消费者的情况下区别更明显。</p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">王聪</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://wangcong.org/2012/11/22/-e4-b8-a4-e4-b8-aa-e7-b2-be-e5-bd-a9-e7-9a-84-e6-af-94-e5-96-bb/' target='_blank'>
+			阅读全文
+		</a>
+	</div>
+</body>

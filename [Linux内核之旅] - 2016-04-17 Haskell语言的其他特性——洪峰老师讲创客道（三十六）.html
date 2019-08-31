@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Haskell语言的其他特性——洪峰老师讲创客道（三十六）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664601808&amp;idx=1&amp;sn=9f11e02f121b3d63130891713c8e1bd0&amp;chksm=f04db535c73a3c23bab4d53553a1368d9be3e621ea3d345d1e4c08277013f0f0f9f147162752&amp;scene=27#wechat_redirect&cpage=73' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Haskell语言的其他特性——洪峰老师讲创客道（三十六）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        洪峰
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-04-17</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="text-indent:28px"><span style=";font-family:宋体;font-size:16px"></span></p><p><mpvoice frameborder="0" class="res_iframe js_editor_audio audio_iframe" src="/cgi-bin/readtemplate?t=tmpl/audio_tmpl&amp;name=%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9336&amp;play_length=25:58" name="%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9336" play_length="1558000" voice_encode_fileid="MzI3NzA5MzUxNF8yNjY0NjAxODA3"></mpvoice></p><p style="text-indent:28px"><span style=";font-family:宋体;font-size:16px"></span><br  /></p><p style="text-indent:28px"><span style=";font-family:宋体;font-size:16px">在前面一讲中花了大量的时间向大家说明了</span><span style=";font-family:宋体;font-size:16px">Haskell语言中引入的单子即Monad的概念</span><span style=";font-family:宋体;font-size:16px">，我理解</span><span style=";font-family:宋体;font-size:16px">Haskell语言的设计师引入Monad的目的主要是两个：一个是支持函数的多态性；另一个是支持状态的变化，对外部世界或程序本身所涉及到的状态的变化进行某种模拟。前面一讲中花了大量的时间给大家讲解了Haskell语言支持函数的多态性，通过比较C++与Haskell语言对函数多态性的支持，我们可以发现，C++语言对函数多态性的支持、对纯虚函数以及其他的一些函数的重载机制是隐藏在类的层次结构之中的，为什么将C++称为面向对象的编程语言？很重要的原因就是它支持类，通过类来模拟人在思考问题、解决问题时的一些状态。我们已经提到对于运行时系统函数的多态性，C++语言是需要通过操作系统的文件系统的协助才能完成的，而Haskell语言的设计对于运行时函数多态性的支持所涉及到的两点方面都做的非常好：第一，它不需要把纯虚函数隐藏在类的层次结构中；第二，它对运行时函数多态性的支持并不需要文件系统的任何帮助。奇妙的是，在Haskell语言中类型类与类型类的实例之间是多多对应的关系，所以从某种意义上讲，类型类是一种开放的结构。在Haskell语言编程中可以对一个已经存在的类型类实例新增新的类型类，这不仅是语言规范所允许的，而且是语言的设计师们所鼓励使用的一种方法，</span><span style="font-family: 宋体;font-size: 16px">在我前面讲座中提到的关于中国范畴的各种箭头是否可以向其他的任何范畴形成态射，例如美国、欧洲、俄罗斯等等，都可以将这些国家当作新的范畴形成态射，从Haskell编译器的角度来看，这实际上是在类型的值表中随时可以添加新的类型类这种记录，并且可以通过在以前的类型类实例中增加新的类型类的接口从而实现对函数多态性的支持。从Haskell语言编译器的设计角度来看，这种方式和C++中以一种“格”的状态来维护类的层次结构，在类的层次结构中基于格（Lattice）的层次结构去维护函数的多态性，Haskell的这种处理方法更加简洁优美。理解刚刚所提到的Haskell语言中函数多态性的内幕是十分重要的，因为这与我马上要讲到的对变化状态的模拟有直接的关联。</span></p><p style="text-indent:28px"><span style="font-family: 宋体;font-size: 16px">在传统的编程语言中，对于状态的变化是通过对变量的赋值（Assignment）来实现的，这个概念很简单，理解起来也很容易，而且与计算机的状态变化直接关联，比如在C语言中，对一个整型变量x进行赋值，初始值为10，后面此变量的值发生了变更，于是可以直接采用赋值的语句实现对变量所含有的值的状态的变化。到了C++语言中，一个对象的数据成员的状态可能发生变化，我们也可以通过赋值的形式让一个对象维持某种状态，不过对C++中对象的数据成员进行赋值需要注意，因为其中可能含有private成员，此种成员只能通过公共的方法来间接对其进行赋值，但是本质上它们都是通过赋值来维持对象的某种状态，换句话说，就是程序员必须关注计算机的状态，否则C++的程序是没有办法写的，其他的非函数式的编程语言在处理类似问题的所使用方法都是一致的，而Haskell语言中因其不支持对一个变量的赋值，即在传统语言中通过对变量的赋值来模拟状态的变化的做法在Haskell语言中是完全行不通的，其解决方案是通过对值的新的构造即构造出新的对象来避免赋值，当一个量的状态不断发生变化的时候，Haskell的设计思想是不断构造新的数据对象来模拟状态的变化。说到这里有的人可能会问，这样是否会极耗费内存资源？可以告诉大家几点内幕来打消大家的疑虑，首先Haskell语言是含有垃圾自动回收机制的，即对不再使用的对象所占的空间，Haskell语言会自动回收内存投入以后的使用；其次，Haskell语言的计算模型是基于惰性求值的计算模型的，即当一个值不是被强迫时它只是做出一个承诺去构造新的数据对象，并没有马上构造出来，只有当计算真正需要此对象时，这个对象才会被构造出来；最后也是最微妙的一点，对新的数据对象的构造可以利用Haskell的类型系统即Haskell函数的多态，利用刚刚生成出的函数去构造新的数据，请大家反复揣摩刚刚的这句话，因为这句话是关于Haskell语言出现以后当今软件设计领域程序员的生产力发生革命性跃升的一个本质，相比Haskell以前的程序设计，从算法的构造上来说，是偏重于数据结构的，这也是Linux&nbsp;Kernel的发明人林纳斯·托瓦兹（Linus&nbsp;Torvalds）为什么那么看重数据结构的一个原因，而在Haskell语言的编程中，其重点已经发生了重大的迁移，从原来对数据结构的关注转向了对函数本身打造的关注，这里让我将这个问题说的更清楚一些，在C和C++这种传统语言中，因为算法的打造是围绕数据结构进行的，所以数据结构的不同一定会导致算法的不同，即操作数据结构的函数是不同的，对于不同的数据结构有着不同的函数进行操作，在这些语言中函数是作为数据结构的一个从属地位而设计的，那么作用于一个数据结构的函数可能对于另外一个数据结构是完全不适用的，而在Haskell语言这个Lisp语言的现代版本中，它的数据机构已经大大简化，以链表为主，而且Haskell语言中的链表元素是相同类型的，即从C或C++的编程角度来看，Haskell里面链表中的数据实际上都是C或C++中的数组，而数组是计算机算术逻辑运算单元最喜欢处理的数据，因为数组的类型是一样的，那就意味着元素的长度是一样的，在ALU这个层次传进去的数据可以在相同的时间长度进行处理，而不需要发生算法的调度。这也是前面提到的Haskell在一些问题上比Lisp做的更有原则的一个证据，当然了，Haskell语言中不只是链表、列表的数据结构，还有着许多其它的数据结构，但是相比于其它的C或C++这类传统的编程语言，Haskell语言更加侧重对函数的构造，而从软件编程的实践角度来看，Haskell中内置的数据结构以及通过其类型打造的机制，比如在Haskell中可以通过data这个关键字来构造自己新的类型（包括一些代数类型），这使得Haskell的类型的构造能力非常的强大，是完全可以和C或C++相媲美的，而让C与C++望尘莫及的是，当一个类型在Haskell中被构造出来后，它可以很快地被投放到Haskell的链表等等的结构中，由已有的对链表进行操作的函数以及一些新打造的函数进行操作，所有的这些已有的及新打造的函数都会提供函数的签名，从而Haskell编译器会对所有的函数进行类型检查，C或C++编译器在类型检查这个单项上与Haskell相比显得很弱。</span></p><p style="text-indent:28px"><span style="font-family: 宋体;font-size: 16px">刚才谈到的这些细节都是关于Haskell语言的设计师对状态变化的模拟方面所做的一些基础性的考虑，有了这些基础的考虑后，我们来看看单子的引入的意义以及单子是如何被应用于模拟变化的状态的。谈到这里，有一个概念就自然而然的引出来了，这个概念叫做图的重写机制（Graph&nbsp;Rewriting&nbsp;Skill），在前面讲解人工智能程序的设计以及Rocket编程的时候已经提到过，人工智能程序设计的本质是要用解空间不断扩大的闭包的边界去覆盖问题空间的边界，从数学的角度来看实际上是两个图的阴阳泛导来解决问题，我们可以把解空间和问题空间都用图论的语言来表示成为两个图，然后寻求这两个图在</span><span style="font-family: 宋体;font-size: 16px">阴阳泛导</span><span style="font-family: 宋体;font-size: 16px">之间的收敛情况来进行计算，大家如果听懂了前面的讲座中对于范畴论的介绍后，实际上可以发现图论中的图我们可以用范畴来表示，这个时候图中节点与节点间的弧线可以用箭头替换，在做了这样的改变后，图的重写机制就变成了范畴的重写机制的问题，而建立在范畴论之上的Haskell语言就是解决这一类问题的强有力的编程工具。在上世界三十年代阿隆佐·邱奇（</span><span style="font-family: 宋体;color: rgb(51, 51, 51);letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">Alonzo&nbsp;Church</span><span style="font-family: 宋体;font-size: 16px">）提出了</span><span style="font-family: 宋体;color: rgb(51, 51, 51);letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">λ演算</span><span style="font-family: 宋体;color: rgb(51, 51, 51);letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">，之后</span><span style="font-family: 宋体;color: rgb(51, 51, 51);letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">哈斯凯尔·加里</span><span style="font-family: 宋体;color: rgb(51, 51, 51);letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">（</span><span style="font-family: 宋体;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">Haskell</span><span style="font-family: 宋体;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">&nbsp;</span><span style="font-family: 宋体;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">Brooks</span><span style="font-family: 宋体;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">&nbsp;</span><span style="font-family: 宋体;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">Curry</span><span style="font-family: 宋体;color: rgb(51, 51, 51);letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">）提出了组合逻辑，这些理论都是我们这里所介绍的图的重写机制的理论基础，在这些基础之上，上世纪七十年代，为了解决函数式语言的实现问题，提出了一种更好的方法，这个思想的最初的起源应该是在</span><span style="font-family: 宋体;color: rgb(51, 51, 51);letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">MIT，数学家们之所以如此关注并花大量时间研究图的重写机制主要是因为其具有优美的数学性质，容易实现惰性求值，且较易支持无穷的数据结构，所以此种计算模型对于开发并行计算机任务是一种非常自然的模型，这个模型在Haskell语言中得到了广泛的采用，并且Haskell语言也确实赶上了当前这个硬件进步飞速、CPU普遍多核的时代。</span></p><p style="text-indent:28px"><span style="font-family: 宋体;color: rgb(51, 51, 51);letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">除了来自硬件的支持以外，Haskell语言一个主要的、显著的革命性进步就是使用了串行组合子（Serial&nbsp;Combinator），其和前面所说的图的重写规则的计算模型结合起来可以很好的优化计算粒度。顺序的组合子的优化特性表现在以下几个方面：一、顺序的组合子仍然保</span><span style="font-family: 宋体;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">留组合子的信子</span><span style="font-family: 宋体;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">，适合于重写计算；二、顺序组合子采用了全惰性的求值方式，从而保证了没有冗余的计算开销；三、内部没有可平行计算的子结构，从而保证了不会丢失、可以并发的计算任务；四、没有更大的计算体满足这些性质，在一定程度上增大粒度的可能性不存在，从而压缩了额外的开销。顺序组合子是学术上的说法，在Haskell语言中实际上就是单子，我们前面讲过，单子的四个</span><span style="font-family: 宋体;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">要件中第二个要件</span><span style="font-family: 宋体;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">就是要有连续性，而这个连续性我们可以用Serialize（串行化）来理解，当理解了这点后，就会发现串行组合子就是Haskell语言中的单子，在解释了这点后，Haskell语言为何能够在当今软件生产领域掀起革命的答案就大白于天下了。</span></p><p style="text-indent:28px"><span style="font-family: 宋体;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">前面说过许多传统编程语言是通过使用赋值来模拟状态的变化，那么当数据量比较小或者说数据本身结构并不复杂的时候，这个工作方式是可以的，然而当数据的复杂度越来越高即数据结构越来越复杂的时候，就需要写越来越多复杂的函数来服务于数据结构，比如在Apache&nbsp;Web服务器中有一个中心的数据结构request_rec，任何来自Web的请求都会被Apache服务器首先转化为request_rec结构，这个结构是用C语言的struct写的，如果仔细的研读struct的代码的话就会发现其中有着非常多的字段，这里所列举的request_rec结构在以往的系统编程领域中是很常见的，对于一些大型的应用来说，类似的数据结构非常多。在2010年我第一次见到Nginx的发明人伊戈尔·塞索耶夫（</span><span style="font-family: 宋体;color: rgb(51, 51, 51);letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">Igor&nbsp;Sysoev</span><span style="font-family: 宋体;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">）的时候，我也问过他类似的问题，他说request_rec这个Apache的数据结构在Nginx中也是最中心的数据结构，对于访问Web服务器上的一个文件这样简单的请求，这个结构工作起来的原理是非常简单的，然而当你的Web请求是某种电子商务的交易的时，你的请求会变得非常复杂，Web服务器本身并不支持这些商业逻辑的运算，需要另外单独开发新的代码来对商业逻辑计算进行支持，随着请求的数据复杂度的提高以及所请求的数据的本身数据量的变大，相应的商业逻辑的处理会变得越来越困难、复杂，而Haskell的设计哲学并不是盲目追求使用新的函数去适应数据结构的要求，相反它是以函数设计为中心考虑问题的，即它会提供一组基本的函数集合，通过函数集合的组合简称函数的复合来进行复杂的计算，这让我们想起在Shell编程中，Unix系统提供了300到500个基本的Utility&nbsp;Program，然后可以通过Shell编程把这些基本的函数组合起来成为一个脚本，通过脚本编程来解决许许多多复杂的任务，Haskell编程中，所不同的是其本身提供一组标准库中所提供的函数，除此之外具有自己打造类型以及打造处理新的类型的函数的能力，而这个函数的构造能力在Haskell中是非常强大的，请再次回忆下之前提到过的Haskell的类型系统是静态的说法，这意味着静态的类型可以是多态的，当函数是多态的时候，我们把一个Typeclass放到一条记录中去，那么这条记录中可以有多态的函数存在，多态的函数可以构造出新的函数，而这个被构造出的新函数又可以用于投入到后续的计算，新产生的函数可以去构造新的数据，这样来模拟外部世界状态的变化，而不适用赋值的概念，当程序需要新的数据的时候，我们通过已有的函数来打造出新的数据，如果这个函数的不存在，那么可以通过Haskell的类型系统构造出一个新函数，通过此新函数就可以生成新的数据。前面讲过在Haskell的类型系统中有着Type&nbsp;Constructor，有了它以后函数作为一种类型也就可以被Type&nbsp;Constructor构造出来，一旦有了新构造的函数，其所产生的函数值是一次性构造出来的，而且在它的生命周期内不会发生变化。Haskell就是以这么一种新的方式实现了对变化状态进行模拟，这种计算模型对于小的数据状态变化不会表现出什么优越性，而对于越来越大规模、复杂的数据，就会表现出它的优越性，而我们今天的时代正好是大数据的时代，在此时代背景下我们所开发的应用程序的规模及其软件复杂度都是在不断上升的，在这种情况下，使用Haskell这种纯函数式编程语言一定会带来软件设计领域生产力的一次革命。说到这里我想起了数学中积分理论的发展，在微积分刚刚发明的年代，我们所使用的积分方法叫做黎曼积分，但是后来发现其有着很多约束，比方说对狄利克雷函数（dirichlet函数）就无法进行积分，此时法国的数学家勒贝格（</span><span style="font-family: 宋体;color: rgb(51, 51, 51);letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">Henri&nbsp;Léon&nbsp;Lebesgue</span><span style="font-family: 宋体;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">）提出了勒贝格积分，其大大地扩大了可积函数的范围，在微积分的发展历史上，勒贝格积分的提出是对积分理论的一次重大改进和完善，勒贝格本人曾经打过一个比方将传统的黎曼积分与勒贝格积分进行比较，传统的黎曼积分是沿着定义域即x轴，将其细分为许多区间，把每一个区间的面积算出，将面积相加并取极限值所得即积分值，这是在大学中学到的黎曼积分的公式，而勒贝格积分恰恰是反其道而行之，不是沿x轴而是沿y轴这个值域上操作，他的比方的说法是，黎曼积分是将口袋里的钱一张一张摸出来后将值加起来，而勒贝格积分是将钱摸出来后看钱的币值的多少，然后按照币值进行归类，之后计算各币值的张数，最终进行汇总。类似的，有了Haskell编程语言后，对于我们处理复杂度不断提高、数据量不断增长的数据时，函数式编程语言提供了强有力的武器。</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">洪峰</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

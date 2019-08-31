@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Unix 系统上的 Shell 脚本编程——洪峰老师讲创客道（二十六）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=416982244&amp;idx=1&amp;sn=b0335e7fdeb0f225e4cb2de55d3c136e&amp;chksm=7645890141320017002faddff0912128f57912cd0262ef5c1d938988a7fa045876394690b8b6&amp;scene=27#wechat_redirect&cpage=74' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Unix 系统上的 Shell 脚本编程——洪峰老师讲创客道（二十六）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        洪峰
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-04-07</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p class="p" style=""><span style="font-size: 16px; font-family: 微软雅黑; letter-spacing: 0pt; background-image: initial; background-attachment: initial; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;"></span></p><p><mpvoice frameborder="0" class="res_iframe js_editor_audio audio_iframe" src="/cgi-bin/readtemplate?t=tmpl/audio_tmpl&amp;name=%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9326&amp;play_length=19:19" name="%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9326" play_length="1159000" voice_encode_fileid="MzI3NzA5MzUxNF80MTY5ODIyNDI="></mpvoice></p><p class="p" style=""><span style="font-size: 16px; font-family: 微软雅黑; letter-spacing: 0pt; background-image: initial; background-attachment: initial; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;"></span><br  /></p><p class="p" style=""><span style="font-size: 16px;"><span style="font-family: 微软雅黑; letter-spacing: 0pt; background-image: initial; background-attachment: initial; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;前面我已经讲过，在编程语言设计实践中已经出现了C和Lisp这两个高峰，然后我从C这一段出发，已经分别向大家介绍了C++、Java、Go、Ada语言。从现在开始准备向大家介绍一些脚本语言，脚本语言更靠近Lisp这一段。脚本语言在英文里叫scripting language，它是由scrips英文单词变来的。在英文里面scrips原意剧作，像莎士比亚那个时代，写剧本的时候人物之间有许多动作，那么对这些动作进行描述的文字叫做一个剧本的脚本。在编程语言中，编写脚本或者脚本语言编程和这个传统的英文单词的用法有相通和不同的地方。</span><span style="font-family: 微软雅黑; letter-spacing: 0pt;"><o:p></o:p></span></span></p><p class="p" style=""><span style="font-family: 微软雅黑; letter-spacing: 0pt; font-size: 16px; background-image: initial; background-attachment: initial; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;下面我来介绍一下细节，在Unix系统上，无论是FreeBSD和GUNLinux都有一个程序叫shell。shell有两个功能，一个是充当用户和计算机交互的界面，另一个是可以作为编程语言来使用。shell程序究竟有多重要呢？我请大家欣赏一下Linux内核的开发者Linus Torvalds在自传中写的一段话，他写了一本自传《Just for Fun》（只是为了好玩）。他说：“我的操作系统内核首先要做的不是启动init进程，而是启动shell程序”。他在之前提过他已经大概实现了25个系统调用，但是shell程序才是他真正要运行的第一个程序。但是他没有自己开发shell程序，而是下载了自由软件基金会的Bourne-Again<o:p></o:p></span></p><p class="p" style=""><span style="font-family: 微软雅黑; letter-spacing: 0pt; font-size: 16px; background-image: initial; background-attachment: initial; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;">Shell。&nbsp;Bourne-Again shell是Bourne&nbsp;&nbsp;shell的一个变种，Linus Torvalds把它复制到一张软盘上，它是Unix早期的一个shell，可以在互联网上自由下载。最初创建的shell叫Bourne&nbsp;&nbsp;shell，那个人叫Bourne，所以克隆的版本叫做Bourne-Again shell。从那个时代开始，bash就成了所有GUNLinux发行版默认的&nbsp;shell程序。</span><span style="font-family: 微软雅黑; letter-spacing: 0pt; font-size: 10.5pt; background-image: initial; background-attachment: initial; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;"><o:p></o:p></span></p><p class="p" style=""><span style="font-family: 微软雅黑; letter-spacing: 0pt; font-size: 16px; background-image: initial; background-attachment: initial; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;">Linus Torvalds当年在设计Linux kernel的时候，实际上Unix系统已经存在很多年了。有了这个shell之后，开发就进入了一个新的阶段，当载入shell程序之后，屏幕上就会生成许多反馈的信息，告诉他哪些必须的系统调用还没有实现，然后他启动操作系统并运行shell程序，有了这些反馈信息以后，Linus Torvalds就试着辨认哪一条系统调用出了错，实际上他在做一项逆向工程，我们英文里叫reverse engineering。就是先把shell作为用户和计算机系统交互的界面，用shell查看哪些系统调用还没有完成，然后他一条一条地把系统调用补上去，最终把所有的系统调用补齐，这个时候内核提供的功能也就完备起来了。这是他当时设计Linux内核时采用的方法。</span><span style="font-family: 微软雅黑; letter-spacing: 0pt; font-size: 10.5pt; background-image: initial; background-attachment: initial; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;"><o:p></o:p></span></p><p class="p" style=""><span style="font-size: 16px;"><span style="font-family: 微软雅黑; letter-spacing: 0pt; background-image: initial; background-attachment: initial; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在shell的帮助下，他把所有的系统调用补齐以后，再写了一些实用程序像copy、list。当实用程序变得丰满起来以后Linux kernel就可以发布了。按照他自传中的说法，他是在1991年9月17日发布了Linux内核的第一个版本。Linus Torvalds&nbsp;1969年12月出生在芬兰，小我一岁多，按照现在流行的说法我们同属60后。当他在芬兰天涯海角，在计算机工业界闹革命的时候，我在干什么呢？我有长期写日记的习惯，后来我查了一下，我在1991年9月份忙些什么事情呢？当时我正在一个大型的国营公司工作，我正在和同事们搞阶级斗争。在武汉，在中国，这个世界的中心，我却在浪费自己宝贵的年轻的生命。回想起这些过去的往事，经常是让我感叹不已，我希望诸位年轻人吸取我当年的教训，所有的资源都是可以回来的但时间却永远回不来。希望大家珍惜眼下的每时每刻，把现有的稀缺资源用于创业活动，而不是一些没有意义的事情。</span><span style="font-family: 微软雅黑; letter-spacing: 0pt;"><o:p></o:p></span></span></p><p class="p" style=""><span style="font-size: 16px;"><span style="font-family: 微软雅黑; letter-spacing: 0pt; background-image: initial; background-attachment: initial; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;现在不提这些题外话，我们来看看bash。我们前面讲过shell是用户和计算机之间交互的界面，它究竟完成哪些功能呢？美国的O&#39;Reilly公司是一个非常有名的计算机图书出版商，他们曾经出过一本书《Learning the&nbsp;bash&nbsp;shell》，它对bash做了非常详细的介绍。在这本书的第七章有一个框图，这个框图一目了然地说了shell可以做哪些事情，我按照框图的流程给大家大致讲一讲。当用户在系统提示符下输入命令的时候，一旦你按回车键以后，计算机系统首先会分解你输入的内容（token）；然后通过查表确定第一个token是不是命令、关键词，如果是的话就看一看第一个token有没有别名，如果不是别名就看你刚刚输入的命令行里面有没有大括弧，它会对大括弧进行展开；接下来对波浪符进行展开，波浪符一般表示你的home directory,就是你的主目录在文件系统什么地方；再接下来对输入的参数进行展开；然后再对命令中有些命令进行替换，因为你有可能调用其他的一些命令；再往下就是做一些算术的替换，有些表达式可能还有算术表达式；再下来就是单词的切分，然后就是对路径名的扩展，把它扩展到文件系统的绝对路径上；最后一步就是命令的查找，包括函数、内置的命令、可扩展文件。一旦找到了，这个时候就把计算机的控制交给命令，命令在计算机系统上执行。这个流程大致就是shell完成的主要功能。</span><span style="font-family: 微软雅黑; letter-spacing: 0pt;"><o:p></o:p></span></span></p><p class="p" style=""><span style="font-size: 16px;"><span style="font-family: 微软雅黑; letter-spacing: 0pt; background-image: initial; background-attachment: initial; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;我在前面讲过，bash是GUNLinux默认的shell，但是这个shell也不是完美无缺的，它曾经在2015年被发现有一个重大的安全漏洞，引起很多问题，结果这个安全漏洞被迅速地弥补掉了。在Unix系统上，除了Bourne&nbsp;shell（最初的shell）、bash之外，还有许许多多其他的shell，比方说Korn&nbsp;shell&nbsp;(ksh)是OpenBSD上默认的shell，csh是FreeBSD上默认的shell。为什么FreeBSD要用csh？因为它要兼容POSIX标准，&nbsp;所以默认使用了csh。还有TENEX/TOPS C&nbsp;shell&nbsp;( tcsh)，tcsh是csh的一个改进版本。在我知道的所有shell中，我认为设计最好的shell是z</span><span style="font-family: 宋体; color: rgb(51, 51, 51); letter-spacing: 0pt; background-image: initial; background-attachment: initial; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;">sh，</span><span style="font-family: 微软雅黑; letter-spacing: 0pt; background-image: initial; background-attachment: initial; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;">它的句法和我前面提到的shell都是兼容的，而且它的可配置性和许许多多内置的功能都设计的非常好。所以我推荐大家在Unix系统上包括FreeBSD和GUNLinux，都使用z</span><span style="font-family: 宋体; color: rgb(51, 51, 51); letter-spacing: 0pt; background-image: initial; background-attachment: initial; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;">sh</span><span style="font-family: 微软雅黑; letter-spacing: 0pt; background-image: initial; background-attachment: initial; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;">来干活。<o:p></o:p></span></span></p><p class="p" style=""><span style="font-size: 16px;"><span style="font-family: 微软雅黑; letter-spacing: 0pt; background-image: initial; background-attachment: initial; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在我谈到shell内置命令行的编辑功能的时候，我要向大家说一个非常有名的库，叫做readline。这个库是Richard Stallman院士非常喜欢的一个库，而且这个库从Unix社团诞生之后，在emacs设计中得到了广泛的应用。后来独立出来成熟以后，又被许许多多的shell利用上，我刚才提到的bash和zsh都支持readline，但是csh不支持。有了readline之后，对用户使用命令行而言是非常方便的。前面我在讲Java语言，用JavaFX8设计图形用户界面的时候，我对用户图形界面的好处推崇备至。但请大家不要误解我的意思，我并不是说命令行界面是一无是处的，不是这样的。实际上命令行界面对程序员而言是最好的界面，或者换一句话讲是最简单、最高效的界面。一旦你知道命令行的基本用法，会大幅度提高你的生产效率。</span><span style="font-family: 微软雅黑; letter-spacing: 0pt;"><o:p></o:p></span></span></p><p class="p" style=""><span style="font-size: 16px;"><span style="font-family: 微软雅黑; letter-spacing: 0pt; background-image: initial; background-attachment: initial; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;shell除了作为用户与计算机之间的交互界面之外，还可以作为一种编程语言来使用。在学习shell作为编程语言的时候，从哪里入手呢？首先应该从Unix的一些基本概念入手。在Unix系统上，设备是被抽象成文件的，把设备抽象成为文件来进行操作，这是Unix设计哲学的主要思想之一。关于Unix设计思想的一些通俗的介绍，有一本非常好的入门书，这本书就是我前面提到的</span><span style="font-family: 微软雅黑; color: rgb(0, 0, 0); letter-spacing: 0pt; background-image: initial; background-attachment: initial; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;">Eric S. Raymond</span><span style="font-family: 微软雅黑; letter-spacing: 0pt; background-image: initial; background-attachment: initial; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;">所写的一本书，叫做《Unix编程艺术》，这本书非常值得一读。在理解了文件是Unix上的一个主要的抽象之后,许多设备是当做文件来看待的。在Unix发展早期，终端(terminal)是非常重要的设备，这个设备有一个显示器和一个键盘，这是基本的终端配置。在当时设计Unix系统的时候，把键盘当成是标准的输入（stdin）。对于一个进程而言，它会有一个默认的终端，虚拟的设备跟它发生关联，那么键盘就被映射成标准输入，用0表示；屏幕当成标准输出，用1表示；标准的出错，一旦程序发生一些问题时候，系统会提示一些错误信息，用2表示标准出错，它默认的输出方向是打印在屏幕上。标准输入、标准输出、标准出错在Unix中都是可以重定向的。</span></span><span style="font-family: 微软雅黑; letter-spacing: 0pt; font-size: 10.5pt; background-image: initial; background-attachment: initial; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;"><o:p></o:p></span></p><p class="p" style=""><span style="font-size: 16px;"><span style="font-family: 微软雅黑; letter-spacing: 0pt; background-image: initial; background-attachment: initial; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Unix有一个基本的设计哲学思想，就是在系统上提供许多短小精悍的实用工具程序，通过管道或者输入输出重定向，可以把许许多多简单的功能拼装成复杂的功能。在Unix系统上提供了许许多多这样的实用工具程序，在FreeBSD上将近有500个，GUNLinux上可能也是这个数字。在所有的Unix上都有man page，我们可以通过查man page知道命令的功能、选项、具体参数的含义。当然这几百个功能记不住，但是常见的三十个或者五十个是必须要记住的，因为这是你干活的基础。</span><span style="font-family: 微软雅黑; letter-spacing: 0pt; font-size: 16px;"><o:p></o:p></span></span></p><p class="p" style=""><span style="font-family: 微软雅黑; letter-spacing: 0pt; font-size: 16px; background-image: initial; background-attachment: initial; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;刚才说过管道和输入输出重定向是在命令行里面把简单的实用程序拼装起来的一个基本的用法。然后可以把许许多多的命令行再一次组合，组合起来后，我们可以把它放到一个文件里面去，这个文件我们可以在命令行下去执行它，这个文件就叫做脚本文件。如何编写脚本文件呢？shell是一个编程语言，shell里面提供了一些变量的定义，它也提供了一些控制结构，比如顺序执行、分叉、循环。当你熟悉了Unix的基本命令，加上管道，输入输出重定向以及shell流控制的机制以后，你就可以编写脚本文件了。<o:p></o:p></span></p><p class="p" style=""><span style="font-family: 微软雅黑; letter-spacing: 0pt; font-size: 16px; background-image: initial; background-attachment: initial; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;遗憾的是不同的shell的脚本编程语法存在着差异，csh里面的脚本不能在bash下直接地应用。而且在shell编程的时候，你还得知道许多关于Unix系统的约定，比方说$0代表什么意思、$1代表什么意思等等。$？是表示最近执行的命令的返回值，$$表示shell的进程号，就是shell进程的PID，$！表示shell引用的最近后台进程的号码，$#表示shell自变量也就是未知参数的个数有多少个。还有$-表示shell的标志位，它在被引用的时候，是由shell传递过来的或者由set命令设置的。这些约定在Unix shell编程中非常多，由此可见shell编程是有一定学习难度的，也有一定的学习曲线需要大家迈过去。无论你将来学习什么样的脚本语言，熟悉shell的用法，我认为是一项基本功，是你在Unix平台上从事脚本编程的第一步。</span><span style="font-family: 微软雅黑; letter-spacing: 0pt; font-size: 10.5pt; background-image: initial; background-attachment: initial; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;"><o:p></o:p></span></p><p class="p" style=""><span style="font-family: 微软雅黑; letter-spacing: 0pt; font-size: 16px; background-image: initial; background-attachment: initial; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在自由软件社团里面，大量的自由软件资源都是通过源代码打包的方式发布的。所以在你的Unix机器上，无论是FreeBSD或者GUNLinux，安装这些自由软件包的时候，解包以后就要运行makefile这个脚本。这个makefile是由make程序来执行的，它实际上就是一个脚本文件，在make的设计里面它有一些特殊的约定。如果你不懂shell的工作方式，你是看不懂makefile里面究竟写了什么。换句话讲，如果你要使用人家提供的自由软件资源，但又不理解shell、makefile这些脚本的约定的话，那你是被拒之于门外的。详细讲解shell的这些约定和编程的实质，请参阅我在黑客道的讲课内容。<o:p></o:p></span></p><p class="p" style=""><span style="font-family: 微软雅黑; letter-spacing: 0pt; font-size: 16px; background-image: initial; background-attachment: initial; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;这里我想指出什么问题呢？shell作为编程语言的确可以完成许多的任务，但是从其他高级编程语言的角度来看，它的功能仍然太弱。比方说shell没有内置的丰富的数据结构，这在编程的时候是非常麻烦的，而且它对算术的运算指令的支持也比较弱。由于有种种的缺陷，在Unix社团中出现了大量的脚本语言来代替或者辅助shell进行编程活动。在下面一讲中，我会重点介绍Perl语言。</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">洪峰</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		linux 内核开发指南 - 7 高级主题
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664606513&amp;idx=1&amp;sn=3e5aaae05050f2cc50deeb8c31f71115&amp;chksm=f04d86d4c73a0fc2b0dd92fa8ad4f6714826c7eaf8a5dafb6e6700484f7dbbda243eb9cffd95&amp;scene=27#wechat_redirect&cpage=4' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">linux 内核开发指南 - 7 高级主题</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                                            
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2019-06-09</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                <a class="original_area_primary" id="copyright_info" href="##" style="visibility:hidden">
+                    <span class="tips_global_primary">文章转载自公众号</span>
+                    <span class="radius_avatar">
+                                            <img class="avatar" src="http://wx.qlogo.cn/mmhead/Q3auHgzwzM6cga6DtKYhNxna0Eias71mxPD7sVuxpg2WTY7ZBPvzBqQ/0" alt="内核月谈">
+                                          </span>
+                    <span class="original_primary_nickname rich_media_meta_link js_nickname">内核月谈</span>
+                                        <span class="tips_global_primary" id="js_comma">，</span>
+                    <span class="original_primary_author_wrp tips_global_primary" id="js_author">
+                      作者                                            Jonathon Corbet
+                                          </span>
+                                    </a>
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <h1 style="font-weight: 700;font-size: 28px;max-width: 100%;box-sizing: border-box;font-family: sans-serif;color: rgb(0, 0, 0);text-align: start;background-color: rgb(252, 252, 252);overflow-wrap: break-word !important;">7. 高级主题</h1><p style="margin-bottom: 24px;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 24px;font-size: 16px;color: rgb(0, 0, 0);font-family: serif;text-align: start;background-color: rgb(252, 252, 252);overflow-wrap: break-word !important;">现在，希望您能够掌握开发流程的工作方式。然而，还有更多的东西要学！本节将介绍 一些主题，这些主题对希望成为Linux内核开发过程常规部分的开发人员有帮助。</p><h2 style="font-weight: 700;font-size: 24px;max-width: 100%;box-sizing: border-box;font-family: sans-serif;overflow-wrap: break-word !important;">7.1. 使用Git管理补丁</h2><p style="margin-bottom: 24px;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 24px;overflow-wrap: break-word !important;">内核使用分布式版本控制始于2002年初，当时Linus首次开始使用专有的Bitkeeper应用 程序。虽然bitkeeper存在争议，但它所体现的软件版本管理方法却肯定不是。分布式 版本控制可以立即加速内核开发项目。在当前的时代，有几种免费的比特保持器替代品。无论好坏，内核项目都将Git作为其选择的工具。</p><p style="margin-bottom: 24px;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 24px;overflow-wrap: break-word !important;">使用Git管理补丁可以使开发人员的生活更加轻松，尤其是随着补丁数量的增加。Git 也有其粗糙的边缘和一定的危险，它是一个年轻和强大的工具，仍然在其开发人员完善 中。本文档不会试图教会读者如何使用git；这会是个巨长的文档。相反，这里的重点 将是Git如何特别适合内核开发过程。想要加快Git的开发人员可以在以下网站上找到 更多信息：</p><blockquote style="margin-top: 0px;margin-bottom: 24px;margin-left: 24px;color: rgba(0, 0, 0, 0.5);max-width: 100%;box-sizing: border-box;line-height: 24px;overflow-wrap: break-word !important;"><p style="margin-bottom: 24px;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 24px;font-size: 16px;overflow-wrap: break-word !important;">http://git-scm.com/</p><p style="margin-bottom: 24px;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 24px;font-size: 16px;overflow-wrap: break-word !important;">http://www.kernel.org/pub/software/scm/git/docs/user-manual.html</p></blockquote><p style="margin-bottom: 24px;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 24px;overflow-wrap: break-word !important;">在尝试使用它使补丁可供其他人使用之前，第一要务是阅读上述站点，对Git的工作 方式有一个扎实的了解。使用Git的开发人员应该能够获得主线存储库的副本，探索 修订历史，提交对树的更改，使用分支等。了解Git用于重写历史的工具（如Rebase） 也很有用。Git有自己的术语和概念；Git的新用户应该了解refs、远程分支、索引、 快进合并、推拉、分离头等。一开始可能有点吓人，但这些概念不难通过一点学习来 理解。</p><p style="margin-bottom: 24px;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 24px;overflow-wrap: break-word !important;">使用git生成通过电子邮件提交的补丁是提高速度的一个很好的练习。</p><p style="margin-bottom: 24px;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 24px;overflow-wrap: break-word !important;">当您准备好开始安装Git树供其他人查看时，您当然需要一个可以从中提取的服务器。如果您有一个可以访问Internet的系统，那么使用git守护进程设置这样的服务器相 对简单。否则，免费的公共托管网站（例如github）开始出现在网络上。成熟的开发 人员可以在kernel.org上获得一个帐户，但这些帐户并不容易找到；有关更多信息， 请参阅 http://kernel.org/faq/</p><p style="margin-bottom: 24px;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 24px;overflow-wrap: break-word !important;">正常的Git工作流程涉及到许多分支的使用。每一条开发线都可以分为单独的“主题 分支”，并独立维护。Git的分支机构很便宜，没有理由不免费使用它们。而且，在 任何情况下，您都不应该在任何您打算让其他人从中受益的分支中进行开发。应该 小心地创建公开可用的分支；当它们处于完整的形式并准备好运行时(而不是之前）， 合并开发分支的补丁。</p><p style="margin-bottom: 24px;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 24px;overflow-wrap: break-word !important;">Git提供了一些强大的工具，可以让您重写开发历史。一个不方便的补丁（比如说， 一个打破二分法的补丁，或者有其他一些明显的缺陷）可以在适当的位置修复，或者 完全从历史中消失。一个补丁系列可以被重写，就好像它是在今天的主线之上写的 一样，即使你已经花了几个月的时间在写它。可以透明地将更改从一个分支转移到另 一个分支。等等。明智地使用git修改历史的能力可以帮助创建问题更少的干净补丁集。</p><p style="margin-bottom: 24px;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 24px;overflow-wrap: break-word !important;">然而，过度使用这种能力可能会导致其他问题，而不仅仅是对创建完美项目历史的 简单痴迷。重写历史将重写该历史中包含的更改，将经过测试（希望）的内核树变 为未经测试的内核树。但是，除此之外，如果开发人员没有对项目历史的共享视图， 他们就无法轻松地协作；如果您重写了其他开发人员拉入他们存储库的历史，您将 使这些开发人员的生活更加困难。因此，这里有一个简单的经验法则：被导出到其他 人的历史在此后通常被认为是不可变的。</p><p style="margin-bottom: 24px;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 24px;overflow-wrap: break-word !important;">因此，一旦将一组更改推送到公开可用的服务器上，就不应该重写这些更改。如果您 尝试强制进行不会导致快进合并（即不共享同一历史记录的更改）的更改，Git将尝 试强制执行此规则。可以重写此检查，有时可能需要重写导出的树。在树之间移动变 更集以避免Linux-next中的冲突就是一个例子。但这种行为应该是罕见的。这就是为 什么开发应该在私有分支中进行（必要时可以重写）并且只有在公共分支处于合理的 高级状态时才转移到公共分支中的原因之一。</p><p style="margin-bottom: 24px;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 24px;overflow-wrap: break-word !important;">当主线（或其他一组变更所基于的树）前进时，很容易与该树合并以保持领先地位。对于一个私有的分支，rebasing 可能是一个很容易跟上另一棵树的方法，但是一旦 一棵树被导出到全世界，rebasing就不是一个选项。一旦发生这种情况，就必须进行 完全合并（merge）。合并有时是很有意义的，但是过于频繁的合并会不必要地扰乱 历史。在这种情况下，建议的技术是不经常合并，通常只在特定的发布点（如主线-rc 发布）合并。如果您对特定的更改感到紧张，则可以始终在私有分支中执行测试合并。在这种情况下，git rerere 工具很有用；它记住合并冲突是如何解决的，这样您就 不必重复相同的工作。</p><p style="margin-bottom: 24px;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 24px;overflow-wrap: break-word !important;">关于Git这样的工具的一个最大的反复抱怨是：补丁从一个存储库到另一个存储库的 大量移动使得很容易陷入错误建议的变更中，这些变更避开审查雷达进入主线。当内 核开发人员看到这种情况发生时，他们往往会感到不高兴；在Git树上放置未查看或 主题外的补丁可能会影响您将来获取树的能力。引用Linus:</p><pre style="padding: 12px;max-width: 100%;box-sizing: border-box;font-family: SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, Courier, monospace;font-size: 12px;line-height: 1.4;overflow: auto;overflow-wrap: break-word !important;">你可以给我发补丁，但要我从你哪里取一个Git补丁，我需要知道你知道<br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  />你在做什么，我需要能够相信事情而不去检查每个个人改变。<br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  /></pre><p style="margin-bottom: 24px;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 24px;overflow-wrap: break-word !important;">（http://lwn.net/articles/224135/）。</p><p style="margin-bottom: 24px;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 24px;overflow-wrap: break-word !important;">为了避免这种情况，请确保给定分支中的所有补丁都与相关主题紧密相关；“驱动程序 修复”分支不应更改核心内存管理代码。而且，最重要的是，不要使用Git树来绕过 审查过程。不时的将树的摘要发布到相关的列表中，当时间合适时，请求 Linux-next 中包含该树。</p><p style="margin-bottom: 24px;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 24px;overflow-wrap: break-word !important;">如果其他人开始发送补丁以包含到您的树中，不要忘记查看它们。还要确保您维护正确 的作者信息；&nbsp;<code class="" style="padding: unset;max-width: 100%;box-sizing: border-box;font-family: SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, Courier, monospace;font-size: 13.6px;white-space: nowrap;background: inherit;border-width: initial;border-style: none;border-color: initial;color: inherit;overflow-x: auto;overflow-wrap: break-word !important;"><span class="" style="max-width: 100%;box-sizing: border-box;overflow-wrap: break-word !important;">git</span>&nbsp;<span class="" style="max-width: 100%;box-sizing: border-box;overflow-wrap: break-word !important;">am</span></code>&nbsp;工具在这方面做得最好，但是如果它通过第三方转发给您， 您可能需要在补丁中添加“From：”行。</p><p style="margin-bottom: 24px;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 24px;overflow-wrap: break-word !important;">请求pull操作时，请务必提供所有相关信息：树的位置、要拉的分支以及拉操作将导致 的更改。在这方面，git request pull 命令非常有用；它将按照其他开发人员的预期 格式化请求，并检查以确保您记住了将这些更改推送到公共服务器。</p><h2 style="font-weight: 700;font-size: 24px;max-width: 100%;box-sizing: border-box;font-family: sans-serif;overflow-wrap: break-word !important;">7.2. 审查补丁</h2><p style="margin-bottom: 24px;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 24px;overflow-wrap: break-word !important;">一些读者当然会反对将本节与“高级主题”放在一起，因为即使是刚开始的内核开发人员 也应该检查补丁。当然，学习如何在内核环境中编程没有比查看其他人发布的代码更好 的方法了。此外，审阅者永远供不应求；通过查看代码，您可以对整个流程做出重大贡献。</p><p style="margin-bottom: 24px;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 24px;overflow-wrap: break-word !important;">审查代码可能是一个令人生畏的前景，特别是对于一个新的内核开发人员来说，他们 可能会对公开询问代码感到紧张，而这些代码是由那些有更多经验的人发布的。不过， 即使是最有经验的开发人员编写的代码也可以得到改进。也许对评审员（所有评审员） 最好的建议是：把评审评论当成问题而不是批评。询问“在这条路径中如何释放锁？” 总是比说“这里的锁是错误的”更好。</p><p style="margin-bottom: 24px;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 24px;overflow-wrap: break-word !important;">不同的开发人员将从不同的角度审查代码。一些主要关注的是编码样式以及代码行是 否有尾随空格。其他人将主要关注补丁作为一个整体实现的变更是否对内核有好处。然而，其他人会检查是否存在锁定问题、堆栈使用过度、可能的安全问题、在其他 地方发现的代码重复、足够的文档、对性能的不利影响、用户空间ABI更改等。所有 类型的检查，如果它们导致更好的代码进入内核，都是受欢迎和值得的</p><p style="max-width: 100%;min-height: 1em;box-sizing: border-box !important;overflow-wrap: break-word !important;"><br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  /></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">Jonathon Corbet</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://mp.weixin.qq.com/s/LvaN-6n-ncY_xLGzkrRchA#rd' target='_blank'>
+			阅读全文
+		</a>
+	</div>
+</body>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		C++ 在编程语言谱系中的位置及其特点——洪峰老师讲创客道（十八）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=416829459&amp;idx=1&amp;sn=80aa3946727034153d249ab1a797e64b&amp;chksm=76477df64130f4e0bbc0b626c0db722e30d956bd17d5b3f6f40506f7cc576a69cac0e747d85d&amp;scene=27#wechat_redirect&cpage=75' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">C++ 在编程语言谱系中的位置及其特点——洪峰老师讲创客道（十八）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        洪峰
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-03-28</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p><mpvoice frameborder="0" class="res_iframe js_editor_audio audio_iframe" src="/cgi-bin/readtemplate?t=tmpl/audio_tmpl&amp;name=%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9318&amp;play_length=17:26" name="%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9318" play_length="1046000" voice_encode_fileid="MzI3NzA5MzUxNF80MTY4Mjk0NTc="></mpvoice></p><p>&nbsp;&nbsp;&nbsp;&nbsp;</p><p><span style="">在前面的讲座中我已经跟大家深入地介绍了C和Rocket这两种计算机编程语言。对于创客道的践行者而言，在开始创业的阶段，如果能够熟练地掌握这两种语言的话，那么作为开始，应该可以的。这里我想让大家回顾一下我在前面说的这个观点。</span></p><p><span style="">对于一个创业项目选择什么编程语言，应该根据你的创业项目特点来进行选择，我现在已经提供了两种语言供大家选择，如果大家觉得这两种语言还不够的话，那么我在接下来的讲座中，我会给大家提供更多的选择。</span></p><p><span style="">在介绍这些新的选择的时候，我会按照我的观点，把斯托曼院士的建议从C和Lisp里面得到的关于计算的感悟一以贯之地推广到新的语言的学习里面去，这是一个方法。第二个就是看看我介绍的新的选项，它具有哪些方面突出的特长，它擅长做什么事情，看看是否满足特定创业项目的需求。</span></p><p><span style="">我在后面的讲座中会按照这两种方式来讲解一些新的语言选项，如果我们把C和Lisp看成编程语言谱系的两端，可以先从C这端出发看看其他的语言，第一个要考察的对象就是C++语言，它是对C语言的扩展。曾经有人调侃C++语言“C++是C这条狗被钉上软肢而形成的章鱼”。C++对C最初的扩展是增加了类，后来开始增加其他范式的支持，比方说对范型的支持，在新的语言规范，也就是2014年发布的C++语言规范C++14这个版本里面，又增加了很多新的特性。</span></p><p><span style="">为了解说的方便，我在讲座里面，只针对C++1998年的标准进行讲解，C++语言的发明人，比雅尼·斯特劳斯特鲁普（Bjarne&nbsp;Stroustrup）教授，曾经写过一本书，叫做《C&nbsp;++&nbsp;programming&nbsp;&nbsp;lanuage》，等到Ｃ++的1998年标准发布以后，他出版过这本书的第三版的特别版，这个版本是那本书的一个重大里程碑，因为在C++&nbsp;1998年版本发布以后，C++语言完全成熟了，所以在下面的解说中，将以这个版本的C++为主要的介绍对象。毫无疑问，要理解C++首先要理解C++类的概念（也就是class），&nbsp;C++如何在C的基础上通过对C里的struct的改造得到class这个概念的。</span></p><p><span style="">我们回忆一下，前面在讲C的时候我们说过，C里面的static修饰符修饰函数时能将函数的作用域限定在它所在的文件里面，文件作为static函数的作用域，这是我们前面提到的观点。但是在很多情况下我们发现把文件作为函数的作用域仍然显得力度太大，在C里边为了解决这个问题不得不构造许多的文件，在文件里面放一个static函数，让它的作用域扩充到整个文件，而这个文件里如果新增加一个函数，这个函数与原来的函数有类似的功能的话，那这个时候对程序员会造成很大的负担，因为这两个函数有可能会产生逻辑上的干扰，所以我们需要一种方法，以一个文件为基础，在一个文件内部把它的力度尽量的减少，这样就可以在一个文件里边放上许多在逻辑上相互独立的函数。在这个情况下，需要引入类的概念，正好是对C的struct进行的扩展。在C++中struct被当成类，只不过类中所有的成员都是public&nbsp;的，C++的struct和C&nbsp;的struct在语法形式上是一样，但本质实现并不完全一样，这一点请大家搞清楚。实际上在学习C++的时候有大量的细节需要理清楚，特别是与C语言对比时，C++做了哪些新的扩展，大家一定要搞清楚。</span></p><p><span style="">因为有C++语言如此精致的扩展，所以当C程序员理解了C++的扩展之后，思维会变得非常的缜密，考虑的非常周全，做系统设计时让你考虑的滴水不漏，这是学习C++的额外好处。在C++中，类是一个容器，容器中可以放上一些数据成员，还可以放上一些函数成员，函数成员可以对容器中的数据成员进行操作，这是类的基本概念。在默认的情况下，C中定义的函数不能对类之外的东西进行操作，类外部的东西也不能对类内部的数据成员进行操作，对类内部的成员进行操作必须通过另外的机制进行操作。</span></p><p><span style="">在OOP的思想方法里面，首先通过向类的实例化对象发消息，通过消息调用对象中的方法，通过方法调用相应的内部逻辑来操作对象中的数据成员，这样就构造出对象的状态概念，这是OOP的基本思想。为了支持这个思想，C++&nbsp;的编译器在C编译器的基础上大大扩充了，它做了很多幕后的工作。一个C++的类有5个成员函数，分别是构造函数（Constructor）、析构函数（Destructor）、拷贝构造函数（Copy&nbsp;Constructor）、赋值运算符重载（Assignment&nbsp;Operator&nbsp;Overloading，这个运算符把等号重新定义），最后一个是print函数，这5个函数被增加到每一个C++的类里面来，学习C++要搞清这5个成员函数的功能，它们的作用和角色。</span></p><p><span style="">简要的回顾一下，构造函数关于基于类的对象是如何在内存里产生的，在类被初始化成为一个对象的时候，我们需要做许多的准备工作，包括类中的数据成员，如何初始化，如何为新产生的对象分配内存，这些就是构造函数要完成的事情，构造函数在C++里的写法和类的同名（这点请大家注意）。析构函数就是当一个对象在不需要的时候，如何去摧毁它，这样对象占用的资源就可以被系统回收，所以在析构函数中一定要对对象产生的内存资源如何进行回收进行详细的思考。拷贝构造函数是把一个已经存在的对象赋值给另外一个对象，有了拷贝构造函数以后，一个新对象的产生不用从原始社会做起了，它可以从一个已经存在内存中的对象开始做起，所以我认为拷贝构造函数是C++中设计的最妙的函数，一定要把拷贝构造函数的细节搞清楚，在用到这个函数时要用到赋值。</span></p><p><span style="">在5个函数中有一个关于赋值运算符的重载，C++有一个非常诡异的特性，它有定义了一批运算符，其中一个子集（也就是一部分运算符）的语义是可以重新定义的，这里用到了其中的一个运算符即等号，赋值运算符的重载会和拷贝构造函数的使用结合起来，在理解赋值运算符重载的时候，大家一定要特别地小心。最后一个print函数在调试的时候是非常有用的，让它去显示某一个对象的状态。</span></p><p><span style="">要理解C++类中这5个成员函数的特点，第一步要知道reference类型的引入，它的原因是什么，是为了解决C++编程中C里面指针类型的变量它所产生的不足而引入的，在不使用堆上内存的时候，C的指针和C++引用区别不太明显，然而当我们定义类里面对象会占用动态内存，也就是堆上的内存的时候，这个时候必须要使用C++的reference的这个类型，而我认为要理解C++的reference类型必须要知道编译原理，这一点我在讲黑客道的教学里面讲&nbsp;C&nbsp;的时候，你必须要理解C里面的这些细节，你不知道编译原理，你不知道C编译器如何工作的话，那你是学不好c的。同样的道理，在学C++的时候，你不理解编译器做了哪些工作，它是如何对待reference这个类型的，那你实际上也不理解reference这个类型的应用，在C++里面，reference类型实际上是在符号表里面增加一个新的纪录，这个纪录与某一个指针变量所指向的对象，它是会指向同一个对象，换句话讲，Reference&nbsp;Type实际上是一个指针的别名（Alias），有了这个理解之后，再去理解C++&nbsp;中的Reference&nbsp;Type就有一个很好的基础。</span></p><p><span style="">在搞清楚C++中类的定义之后，C++的编译器在幕后做的工作以后，我们还要知道模板（template）这个特性，为什么要学这个模板呢，这个模板有两种，一种叫做函数模板，一个叫做类模板，这里主要指类模板，因为有了类模板之后，再去理解1998年C++的标准库就比较容易了，这个是模板的重要性。我们要使用C++而不是使用C的原因就是C++提供了一个标准库，有了标准库后大大提高了我们写系统程序的生产力，要理解标准库，对模板的理解是必不可少的。一旦有了C++的标准库，设计系统程序时开发效率会大大提高，针对这一点，比雅尼·斯特劳斯特鲁普在C++编程语言（第三版）特别版中，第四部分的第二十五章，讲了类的作用，这一章请大家反复地阅读，对创客搞创业有指导意义。在这一章中，作者把类的作用分成7个类型，首先C++非常适合做框架，很多框架都是用C++语言编写的，比如QT图形用户界面的框架，好处是显而易见的，C++非常适合大规模的系统程序的开发。</span></p><p><span style="">在框架内部，在开发的时候可以放一些抽象类，刚刚设计的时候，概念不太清晰，有一些模糊的感觉，这个时候可以用C++的抽象类来表达模糊的感觉，然后你的开发过程中，你这些模糊的感觉会逐渐地变得清晰起来，这个时候，可以用C++节点类让你的概念清晰化。到了最后就是要给具体类，这是从框架到抽象类，从抽象类到节点类，从节点类到你的具体类，在这个过程中，我们还可以设计动作类，界面类，句柄类，这么一些辅助类，有了这7个类型的类以后，在做大型的系统程序开发的时候，就有了非常好的工具，C++非常适合干这个事情，这是我想要向大家指出的一点，换句话讲，C++不适合做应用程序，因为现在写大规模的应用程序有许多更好的选择，但是在大规模的系统程序开发上面，C++是一个非常理想的选择，请大家记住这一点。</span></p><p><span style="">&nbsp;</span></p><p><span style=";font-size:16px;font-family:Calibri">&nbsp;</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">洪峰</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

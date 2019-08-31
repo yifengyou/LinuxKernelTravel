@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		内核调试神器SystemTap — 简介与使用（一）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=414709826&amp;idx=1&amp;sn=d3523ea22d636df346d66345d61179f4&amp;chksm=7628d5a7415f5cb156236c5b8bb9f2eea63a92de29ac4abc88539e1b182b51047a1c2a2a358f&amp;scene=27#wechat_redirect&cpage=82' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">内核调试神器SystemTap — 简介与使用（一）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        zhangskd
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-01-02</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="text-align: right;"><br  /></p><h2><strong>简介<span style="line-height: 1.6;"> </span></strong></h2><p>SystemTap是我目前所知的最强大的内核调试工具，有些家伙甚至说它无所不能：）<span style="line-height: 25.6px;">官网：</span>https://sourceware.org/systemtap/</p><p></p><p><strong>(1) 发展历程</strong></p><p>Debuted in 2005 in Red Hat Enterprise Linux 4 Update 2 as a technology preview.</p><p>After four years in development, System 1.0 was released in 2009.</p><p>As of 2011 SystemTap runs fully supported in all Linux distributions.</p><p></p><p><strong>(2) 官方介绍</strong></p><p>SystemTap provides free software(GPL) infrastructure to simplify the gathering of information about the</p><p>running Linux system. This assists diagnosis of a performance or functional problem. SystemTap eliminates</p><p>the need for the developer to go through the tedious and disruptive instrument, recompile, install, and reboot</p><p>sequence that may be otherwise required to collect data.</p><p>SystemTap provides a simple command line interface and scripting language for writing instrumentation for</p><p>a live running kernel plus user-space application. We are publishing samples, as well as enlarging the internal</p><p>&quot;tapset&quot; script library to aid reuse and abstraction.</p><p>Among other tracing/probing tools, SystemTap is the tool of choice for complex tasks that may require live analysis,</p><p>programmable on-line response, and whole-system symbolic access. SystemTap can also handle simple tracing</p><p>jobs.</p><p>Current project members include Red Hat, IBM, Hitachi, and Oracle.</p><p></p><p><strong>(3) 获取源码</strong></p><p>git clone git://sourceware.org/git/systemtap.git</p><p></p><h2>安装</h2><p></p><p><strong>(1) Ubuntu发行版</strong></p><p>1. 安装systemtap包</p><p>apt-get install systemtap</p><p></p><p>2. 安装依赖包</p><p>gcc：C语言编译器</p><p>elfutils：提供分析调试信息的库函数</p><p>linux-headers-generic：编译内核模块所需的内核头文件以及模块配置信息</p><p></p><p>3. 安装内核调试信息(kernel-debuginfo)</p><p>kernel-debuginfo提供了调试内核所需的符号表，如果没有安装的话SystemTap的威力就会大打折扣，</p><p>只能提供kprobes系列的功能。</p><p>下载地址：http://ddebs.ubuntu.com/pool/main/l/linux/</p><p>下载对应的内核版本，我的是linux-image-3.11.0-12-generic-dbgsym_3.11.0-12.19_amd64.ddeb</p><p>下载后安装：dpkg -i linux-image-3.11.0-12-generic-dbgsym_3.11.0-12.19_amd64.ddeb</p><p></p><p>4. 验证</p><p>stap -ve &#39;probe kernel.function(&quot;do_fork&quot;) { print(&quot;hello world\n&quot;) exit() }&#39;</p><p>如果没有提示错误，就是安装成功了。</p><p></p><p><strong>(2) CentOS/RedHat发行版</strong></p><p>使用yum安装下列rpm包即可：</p><p>systemtap：SystemTap包</p><p>gcc：C语言编译器</p><p>elfutils：提供库函数来分析调试信息</p><p>kernel-devel：编译内核模块所需的内核头文件及模块配置信息</p><p>kernel-debuginfo：提供所需的内核调试信息来定位内核函数和变量的位置</p><p></p><h2>使用</h2><p></p><p>一些例子SystemTap的简单例子。</p><p></p><p><strong>(1) stap</strong></p><p>通常直接使用stap执行用SystemTap语法编写的脚本即可。</p><p><strong>stap</strong> - systemtap script translator/driver</p><p>stap test.stp // .stp后缀的文件是用SystemTap语法编写的脚本</p><p></p><p>脚本主要元素：probe point + probe handler</p><p>stap [options] FILE // Run script in file</p><p>stap [options] -e SCRIPT // Run given script.</p><p>stap [options] -l PROBE // List matching probes.</p><p>stap [options] -L PROBE // List matching probes and local variables.</p><p></p><p>常用选项</p><p>-h：帮助</p><p>-g：guru模式，嵌入式C代码需要</p><p>-m：指定编译成的模块名称</p><p>-v：add verbosity to all passes</p><p>-k：不删除临时目录</p><p>-p NUM：stop after pass NUM 1-5, instead of 5 (parse, elaborate, translate, compile, run)</p><p>-b：bulk (percpu file) mode, 使用RelayFS将数据从内核空间传输到用户空间</p><p>-o FILE：输出到指定文件，而不是stdout</p><p>-c CMD：start the probes, run CMD, and exit when it finishes</p><p></p><p>stap是SystemTap的前端，当出现以下情况时退出：</p><p>1. The user interrupts the script with a CTRL-C.</p><p>2. The script executes the exit() function.</p><p>3. The script encounters a sufficient number of soft errors.</p><p>4. The monitored command started with the stap program&#39;s -c option exits.</p><p></p><p><strong>(2) staprun</strong></p><p>如果我们的输入不是.stp脚本，而是一个用stap生成的模块，那么就用staprun来执行。</p><p><strong>staprun</strong> - systemtap runtime</p><p>staprun [OPTIONS] MODULE [MODULE-OPTIONS]</p><p></p><p>staprun的作用：</p><p>The staprun program is the back-end of the Systemtap tool. It expects a kernel module produced by</p><p>the front-end stap tool.</p><p>Splitting the systemtap tool into a front-end and a back-end allows a user to compile a systemtap script</p><p>on a development machine that has the kernel debugging information (need to compile the script) and</p><p>then transfer the resulting kernel module to a production machine that doesn&#39;t have any development</p><p>tools or kernel debugging information installed.</p><p>staprun is a part of the SystemTap package, dedicated to module loading and unloading and kernel-to-user</p><p>data transfer.</p><p></p><p>常用选项</p><p>-o FILE：Send output to FILE.</p><p>-D：Run in background. This requires &#39;-o&#39; option.</p><p></p><p><strong>(3) 监测内核函数</strong></p><p>一个简单脚本，每当内核函数do_fork()被调用时，显示调用它的进程名、进程ID、函数参数。</p><ol start="1" class="dp-j list-paddingleft-2" style=""><li><p><span style="color: black; font-size: 16px; background-color: inherit;">global proc_counter  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">probe begin {  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">    print(<span class="string" style="font-size: 16px; color: blue; background-color: inherit;">&quot;Started monitoring creation of new processes...Press ^C to terminate\n&quot;</span>)  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">    printf(<span class="string" style="font-size: 16px; color: blue; background-color: inherit;">&quot;%-25s %-10s %-s\n&quot;</span>, <span class="string" style="font-size: 16px; color: blue; background-color: inherit;">&quot;Process Name&quot;</span>, <span class="string" style="font-size: 16px; color: blue; background-color: inherit;">&quot;Process ID&quot;</span>, <span class="string" style="font-size: 16px; color: blue; background-color: inherit;">&quot;Clone Flags&quot;</span>)  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">}  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">probe kernel.function(<span class="string" style="font-size: 16px; color: blue; background-color: inherit;">&quot;do_fork&quot;</span>) {  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">    proc_counter++  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">    printf(<span class="string" style="font-size: 16px; color: blue; background-color: inherit;">&quot;%-25s %-10d 0x%-x\n&quot;</span>, execname(), pid(), $clone_flags)  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">}  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">probe end {  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">    printf(<span class="string" style="font-size: 16px; color: blue; background-color: inherit;">&quot;\n%d processes forked during the observed period\n&quot;</span>, proc_counter)  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">}  </span></p></li></ol><p style="font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;"><strong>(4) 监测系统调用</strong></span></p><p style="font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">一个简单脚本，显示4秒内open系统调用的信息：调用进程名、进程ID、函数参数。</span></p><ol start="1" class="dp-j list-paddingleft-2" style=""><li><p><span style="color: black; font-size: 16px; background-color: inherit;">probe syscall.open  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">{  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">    printf(<span class="string" style="font-size: 16px; color: blue; background-color: inherit;">&quot;%s(%d) open(%s)\n&quot;</span>, execname(), pid(), argstr)  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">}  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">probe timer.ms(<span class="number" style="font-size: 16px; color: rgb(192, 0, 0); background-color: inherit;">4000</span>) # after <span class="number" style="font-size: 16px; color: rgb(192, 0, 0); background-color: inherit;">4</span> seconds  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">{  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">    exit()  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">}  </span></p></li></ol><p style="font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;"><strong>(5) 监测源文件中所有函数入口和出口</strong></span></p><p style="font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">括号内的探测点描述包含三个部分：</span></p><p style="font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">function name part：函数名</span></p><p style="font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">@file name part：文件名</span></p><p style="font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">function line part：所在行号</span></p><p style="font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">例如：</span></p><ol start="1" class="dp-j list-paddingleft-2" style=""><li><p><span style="color: black; font-size: 16px; background-color: inherit;">probe kernel.function(<span class="string" style="font-size: 16px; color: blue; background-color: inherit;">&quot;*@net/socket.c&quot;</span>) {}  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">probe kernel.function(<span class="string" style="font-size: 16px; color: blue; background-color: inherit;">&quot;*@net/socket.c&quot;</span>).<span class="keyword" style="font-size: 16px; color: rgb(0, 102, 153); font-weight: bold; background-color: inherit;">return</span> {}  </span></p></li></ol><p style="font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">这里指定函数名为任意（用*表示），指定文件名为net/socket.c，探测函数的入口和返回。</span></p><p style="font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">还可以用“：行号”来指定行号。</span></p><p style="font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;"> </span></p><p style="font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;"><strong>(6) 查找匹配的内核函数和变量</strong></span></p><p style="font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">查找名字中包含nit的内核函数：</span></p><p style="font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">stap -l &#39;kernel.function(&quot;*nit*&quot;)&#39;</span></p><p style="font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">查找名字中包含nit的内核函数和变量：</span></p><p style="font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">stap -L &#39;kernel.function(&quot;*nit*&quot;)&#39;</span></p><p style="font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;"> </span></p><p style="font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;"><strong>(7) 自带的用例集</strong></span></p><p style="font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">/root/systemtap/testsuite/systemtap.examples/，包含了许多用例脚本。</span></p><p style="font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">主要有几个方面：</span></p><p style="font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">network、io、interrupt、locks、memory、process、virtualization等</span></p><p style="font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;"> </span></p><p style="font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;"><strong>(8) 监控所有进程的收发包情况</strong></span></p><ol start="1" class="dp-j list-paddingleft-2" style=""><li><p><span style="color: black; font-size: 16px; background-color: inherit;">global recv, xmit  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">probe begin {  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">    printf(<span class="string" style="font-size: 16px; color: blue; background-color: inherit;">&quot;Starting network capture...Press ^C to terminate\n&quot;</span>)  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">}  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">probe netdev.receive {  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">    recv[dev_name, pid(), execname()] &lt;&lt;&lt; length  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">}  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">probe netdev.transmit {  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">    xmit[dev_name, pid(), execname()] &lt;&lt;&lt; length  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">}  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">probe end {  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">    printf(<span class="string" style="font-size: 16px; color: blue; background-color: inherit;">&quot;\nCapture terminated\n\n&quot;</span>)  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">    printf(<span class="string" style="font-size: 16px; color: blue; background-color: inherit;">&quot;%-5s %-15s %-10s %-10s %-10s\n&quot;</span>,   </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">        <span class="string" style="font-size: 16px; color: blue; background-color: inherit;">&quot;If&quot;</span>, <span class="string" style="font-size: 16px; color: blue; background-color: inherit;">&quot;Process&quot;</span>, <span class="string" style="font-size: 16px; color: blue; background-color: inherit;">&quot;Pid&quot;</span>, <span class="string" style="font-size: 16px; color: blue; background-color: inherit;">&quot;RcvPktCnt&quot;</span>, <span class="string" style="font-size: 16px; color: blue; background-color: inherit;">&quot;XmtPktCnt&quot;</span>)  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">      </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">    foreach([dev, pid, name] in recv) {  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">        recvcnt = <span class="annotation" style="font-size: 16px; color: rgb(100, 100, 100); background-color: inherit;">@count</span>(recv[dev, pid, name])  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">        xmtcnt =  <span class="annotation" style="font-size: 16px; color: rgb(100, 100, 100); background-color: inherit;">@count</span>(xmit[dev, pid, name])  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">        printf(<span class="string" style="font-size: 16px; color: blue; background-color: inherit;">&quot;%-5s %-15s %-10d %-10d %-10d\n&quot;</span>, dev, name, pid, recvcnt, xmtcnt)  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">    }  </span></p></li><li><p><span style="color: black; font-size: 16px; background-color: inherit;">}  </span></p></li></ol><p style="font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;"><strong>(9) Systemtap usage stories and interesting demos</strong></span></p><p style="font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">https://sourceware.org/systemtap/wiki/WarStories</span></p><p style="font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">官网提供的很多例子。</span></p><p style="font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">zhangskd</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://blog.csdn.net/zhangskd/article/details/25708441' target='_blank'>
+			阅读全文
+		</a>
+	</div>
+</body>

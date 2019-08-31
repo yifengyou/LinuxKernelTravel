@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Linux2.6进程调度分析(3)-与调度有关的函数分析
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664604599&amp;idx=1&amp;sn=772816f42d2ea5dc778773e00f1930fe&amp;chksm=f04d8e52c73a0744e3ee8a35d8ff0104b558d008d626567cbf9967affe105a4029856418ea0a&amp;scene=27#wechat_redirect&cpage=32' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Linux2.6进程调度分析(3)-与调度有关的函数分析</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        武特
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2017-08-26</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="margin: 0px 0px 1.2em !important;">前面两篇文章从原理角度分析了进程的调度，本文将从具体的源码出发，分析与进程进程调度密切相关的几个函数。</p><h2 style="margin: 1.3em 0px 1em; padding: 0px; font-weight: bold;font-size: 1.4em; border-bottom: 1px solid rgb(238, 238, 238);">1.时间片的分配：task_timeslice()</h2><p style="margin: 0px 0px 1.2em !important;">正如我们所知的那样，进程的时间片与进程的静态优先级有直接的关系。从代码中可以看到，根据进程静态优先级static_prio与NICE_TO_PRIO(0)的大小关系，进程时间片的分配可以分为两条路线。以下代码如无特别说明均位于linux/kernel/sched.c下。</p><pre style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace; margin: 0px 0.15em; background-color: rgb(248, 248, 248); white-space: pre; overflow: auto; border-radius: 3px; border-width: 1px; border-style: solid; border-color: rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important;">static unsigned int task_timeslice(task_t *p)
+{
+ &nbsp; &nbsp;if (p-&gt;static_prio &lt; NICE_TO_PRIO(0)) &nbsp; &nbsp; &nbsp; &nbsp; return SCALE_PRIO(DEF_TIMESLICE*4, p-&gt;static_prio);
+ &nbsp; &nbsp;else
+ &nbsp; &nbsp; &nbsp; &nbsp;return SCALE_PRIO(DEF_TIMESLICE, p-&gt;static_prio);
+}</code></pre><p style="margin: 0px 0px 1.2em !important;">NICE_TO_PRIO以及PRIO_TO_NICE宏的作用将进行nice值和进程静态优先级之间的转换。nice也用来表示进程的静态优先级，只不过它与静态优先级的大小范围不同，因此可以将nice看作是static_prio的缩影。</p><pre style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace; margin: 0px 0.15em; background-color: rgb(248, 248, 248); white-space: pre; overflow: auto; border-radius: 3px; border-width: 1px; border-style: solid; border-color: rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important;">#define MAX_USER_RT_PRIO &nbsp; &nbsp; &nbsp; &nbsp;100
+#define MAX_RT_PRIO &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MAX_USER_RT_PRIO
+#define NICE_TO_PRIO(nice) &nbsp; &nbsp;(MAX_RT_PRIO + (nice) + 20)
+#define PRIO_TO_NICE(prio) &nbsp; &nbsp;((prio) - MAX_RT_PRIO - 20)</code></pre><p style="margin: 0px 0px 1.2em !important;">目前我们已经知道普通进程的静态优先级大小范围是100到139，因此从上面的一些列宏可以得知，nice的取值范围为-20到19。</p><p style="margin: 0px 0px 1.2em !important;">因此，NICE_TO_PRIO(0)取值为120，也就是说进程时间片分配的两条路线是根据静态优先级120进行划分的。从SCALE_PRIO宏的定义我们可以看到，该宏的作用是取两个数值（具体应该是时间片）的最大者。</p><pre style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace; margin: 0px 0.15em; background-color: rgb(248, 248, 248); white-space: pre; overflow: auto; border-radius: 3px; border-width: 1px; border-style: solid; border-color: rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important;">#define MAX_PRIO &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;(MAX_RT_PRIO + 40)
+#define USER_PRIO(p) &nbsp; &nbsp; &nbsp; &nbsp;((p)-MAX_RT_PRIO)
+#define MAX_USER_PRIO &nbsp; &nbsp; &nbsp; &nbsp;(USER_PRIO(MAX_PRIO))
+#define DEF_TIMESLICE &nbsp; &nbsp; &nbsp; &nbsp;(100 * HZ / 1000)
+#define MIN_TIMESLICE &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; max(5 * HZ / 1000, 1)
+# define HZ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 1000 &nbsp;//位于linux/include/asm-i386/param.h
+#define SCALE_PRIO(x, prio) \
+max(x * (MAX_PRIO - prio) / (MAX_USER_PRIO/2), MIN_TIMESLICE)</code></pre><p style="margin: 0px 0px 1.2em !important;">从上面的宏定义可知，(MAX_USER_PRIO/2)为20。当进程静态优先级小于120时，x的值为DEF_TIMESLICE*4，具体即为400ms；否则x为100ms。因此对于SCALE_PRIO宏可以用下面的公式来表达：</p><p style="margin: 0px 0px 1.2em !important;"><strong> 静态优先级&lt;120，基本时间片=max((140-静态优先级)*20, MIN_TIMESLICE) </strong></p><p style="margin: 0px 0px 1.2em !important;"><strong> 静态优先级&gt;=120，基本时间片=max((140-静态优先级)*5, MIN_TIMESLICE) </strong></p><p style="margin: 0px 0px 1.2em !important;">其中MIN_TIMESLICE为系统所规定的最小时间片大小。</p><h2 style="margin: 1.3em 0px 1em; padding: 0px; font-weight: bold;font-size: 1.4em; border-bottom: 1px solid rgb(238, 238, 238);">2.对可运行队列的操作</h2><p style="margin: 0px 0px 1.2em !important;">在优先级数组结构prio_array中，数组queue用来表示系统中每种优先级进程所形成的可运行队列，而且过期进程和活动进程分别对应这样一个数组。</p><p style="margin: 0px 0px 1.2em !important;">如果进程仍然处于活动进程队列中，即说明该进程的时间片未用完。当该进程的时间片用完时就需要离开活动进程队列并进入过期进程队列。可运行进程进入进程队列是通过enqueue_task函数完成的，而离开进程队列是通过dequeue_task函数完成的。</p><p style="margin: 0px 0px 1.2em !important;">每个进程的task_struct结构中都有list_head类型的run_list字段，将进程从可运行队列中删除起始就是对双联表的操作，同时我们需要更新优先级数组结构中活动进程的数目nr_active。如果当前进程优先级所对应的可运行队列已空，那么还要清除优先级位图中该进程优先级所对应的那个位。</p><p style="margin: 0px 0px 1.2em !important;">如果要进程某个可运行队列，所做的工作基本上跟删除相反。不过该函数首先通过sched_info_queued函数更新该进程最后进入可运行队列的时间戳，并且在最后更新该进程描述符中的array字段，该字段指向当前进程所在的优先级数组。</p><pre style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace; margin: 0px 0.15em; background-color: rgb(248, 248, 248); white-space: pre; overflow: auto; border-radius: 3px; border-width: 1px; border-style: solid; border-color: rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important;">static void dequeue_task(struct task_struct *p, prio_array_t *array)
+ {
+ &nbsp; &nbsp; &nbsp; &nbsp; array-&gt;nr_active--;
+ &nbsp; &nbsp; &nbsp; &nbsp; list_del(&amp;p-&gt;run_list);
+ &nbsp; &nbsp; &nbsp; &nbsp; if (list_empty(array-&gt;queue + p-&gt;prio))
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; __clear_bit(p-&gt;prio, array-&gt;bitmap);
+ }
+
+ static void enqueue_task(struct task_struct *p, prio_array_t *array)
+ {
+ &nbsp; &nbsp; &nbsp; &nbsp; sched_info_queued(p);
+ &nbsp; &nbsp; &nbsp; &nbsp; list_add_tail(&amp;p-&gt;run_list, array-&gt;queue + p-&gt;prio);
+ &nbsp; &nbsp; &nbsp; &nbsp; __set_bit(p-&gt;prio, array-&gt;bitmap);
+ &nbsp; &nbsp; &nbsp; &nbsp; array-&gt;nr_active++;
+ &nbsp; &nbsp; &nbsp; &nbsp;p-&gt;array = array;
+ }</code></pre><h2 style="margin: 1.3em 0px 1em; padding: 0px; font-weight: bold;font-size: 1.4em; border-bottom: 1px solid rgb(238, 238, 238);">3.schedule_tick()</h2><p style="margin: 0px 0px 1.2em !important;">schedule_tick函数用来更新进程的时间片，它被调用时本地中断被禁止，该函数的具体操作如下。</p><p style="margin: 0px 0px 1.2em !important;">1.首先通过相应的函数和宏获得当前处理器的编号、当前可运行队列和当前进程描述符就，再通过sched_clock函数获得最近一次定时器中断的时间戳。如果array没有指向本地活动进程队列，则设置TIF_NEED_RESCHED标志，以便在稍候强制进程重新调度。</p><pre style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace; margin: 0px 0.15em; background-color: rgb(248, 248, 248); white-space: pre; overflow: auto; border-radius: 3px; border-width: 1px; border-style: solid; border-color: rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important;">void scheduler_tick(void)
+{
+ &nbsp; &nbsp;int cpu = smp_processor_id();
+ &nbsp; &nbsp;runqueue_t *rq = this_rq();
+ &nbsp; &nbsp;task_t *p = current;
+
+ &nbsp; &nbsp;rq-&gt;timestamp_last_tick = sched_clock();
+
+ &nbsp; &nbsp;if (p == rq-&gt;idle) {
+ &nbsp; &nbsp; &nbsp; &nbsp;if (wake_priority_sleeper(rq))
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;goto out;
+ &nbsp; &nbsp; &nbsp; &nbsp;rebalance_tick(cpu, rq, SCHED_IDLE);
+ &nbsp; &nbsp; &nbsp; &nbsp;return;
+ &nbsp; &nbsp;}
+ &nbsp; &nbsp;if (p-&gt;array != rq-&gt;active) {
+ &nbsp; &nbsp; &nbsp; &nbsp;set_tsk_need_resched(p);
+ &nbsp; &nbsp; &nbsp; &nbsp;goto out;
+ &nbsp; &nbsp;}</code></pre><p style="margin: 0px 0px 1.2em !important;">2.由于实时进程和普通进程的调度方法不同，因此这两种进程对时间片的更新方式也有所不同，下面仅说明普通进程更新时间片的方式。如果当前进程是普通进程，则递减当前进程的时间片。<br  />3.如果当前进程时间片用完，首先从当前活动进程集合中删除该进程，然后通过set_tsk_need_resched函数设置TIF_NEED_RESCHED标志。</p><p style="margin: 0px 0px 1.2em !important;">接着通过effective_prio函数更新当前进程的动态优先级，在进程调度的基本原理中我们已经知道进程的动态优先级是以进程的静态优先级(static_prio)为基数，在通过bonus适当的对其惩罚或奖励。</p><pre style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace; margin: 0px 0.15em; background-color: rgb(248, 248, 248); white-space: pre; overflow: auto; border-radius: 3px; border-width: 1px; border-style: solid; border-color: rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important;">static int effective_prio(task_t *p)
+{
+ &nbsp; &nbsp;int bonus, prio;
+
+ &nbsp; &nbsp;if (rt_task(p))
+ &nbsp; &nbsp; &nbsp; &nbsp;return p-&gt;prio;
+
+ &nbsp; &nbsp;bonus = CURRENT_BONUS(p) - MAX_BONUS / 2;
+
+ &nbsp; &nbsp;prio = p-&gt;static_prio - bonus;
+ &nbsp; &nbsp;if (prio &lt; MAX_RT_PRIO) &nbsp; &nbsp; &nbsp; &nbsp; prio = MAX_RT_PRIO; &nbsp; &nbsp; if (prio &gt; MAX_PRIO-1)
+ &nbsp; &nbsp; &nbsp; &nbsp;prio = MAX_PRIO-1;
+ &nbsp; &nbsp;return prio;
+}</code></pre><p style="margin: 0px 0px 1.2em !important;">通过effective_prio函数，我们可以总结出进程动态优先级的计算规则：</p><p style="margin: 0px 0px 1.2em !important;">动态优先级=max(100 , min(静态优先级 – bonus + 5) , 139)</p><p style="margin: 0px 0px 1.2em !important;">再通过task_timeslice函数对当前进程重新分配时间片，因为我现在所处的分析环境是进程的时间片已经用完。然后将first_time_slice的值设置为0，说明当前进程的时间片可以用完。</p><p style="margin: 0px 0px 1.2em !important;">上述过程的代码描述如下：</p><pre style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace; margin: 0px 0.15em; background-color: rgb(248, 248, 248); white-space: pre; overflow: auto; border-radius: 3px; border-width: 1px; border-style: solid; border-color: rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important;">if (rt_task(p)) {
+ &nbsp; &nbsp;/*
+ &nbsp; &nbsp; *更新实时进程的时间片
+ &nbsp; &nbsp; */
+}
+if (!--p-&gt;time_slice) {
+ &nbsp; &nbsp;dequeue_task(p, rq-&gt;active);
+ &nbsp; &nbsp;set_tsk_need_resched(p);
+ &nbsp; &nbsp;p-&gt;prio = effective_prio(p);
+ &nbsp; &nbsp;p-&gt;time_slice = task_timeslice(p);
+ &nbsp; &nbsp;p-&gt;first_time_slice = 0;</code></pre><p style="margin: 0px 0px 1.2em !important;">4.运行队列结构中的expired_timestamp字段用来描述过期进程队列中最早进程被插入队列的时间，如果本地运行队列中该字段等于0，则说明当前过期进程集合为空。因此将当前的时钟节拍赋值给该字段。</p><p style="margin: 0px 0px 1.2em !important;">由于当前进程的时间片已经用完，因此接下来应该判定是将当前进程插入活动进程集合还是过期进程集合。可能此时你会有疑惑：既然当前进程的时间片已经用完，就应该直接插入过期进程队列，为何还要进行判断插入那个进程集合？</p><p style="margin: 0px 0px 1.2em !important;">正如基本原理中所说的，调度程序总偏向交互进程以提高系统的响应能力。因此当交互型进程使用完时间片后，调度程序总是重新填充时间片并把它留在活动进程集合中。但调度程序并不永远都偏向交互型程序，如果最早进入过期进程集合的进程已经等待了很长时间，或过期进程的静态优先级比交互进程的静态优先级高，此时调度程序就会将时间片用完的交互进程转移到过期进程集合中。EXPIRED_STARVING宏完成的工作就是判断上述两种情况，至少其一否和，该宏就产生值1。</p><p style="margin: 0px 0px 1.2em !important;">如果说当前进程已经移入到过期进程集合中，还需根据当前进程的优先级更新运行队列结构中的best_expired_prio字段，该字段用于记录过期进程集合中最高的静态优先级。</p><p style="margin: 0px 0px 1.2em !important;">如果当前进程是交互进程，而且不满足EXPIRED_STARVING宏，则直接将该交互进程继续插入活动进程集合中。</p><pre style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace; margin: 0px 0.15em; background-color: rgb(248, 248, 248); white-space: pre; overflow: auto; border-radius: 3px; border-width: 1px; border-style: solid; border-color: rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important;">if (!rq-&gt;expired_timestamp)
+ &nbsp; &nbsp;rq-&gt;expired_timestamp = jiffies;
+if (!TASK_INTERACTIVE(p) || EXPIRED_STARVING(rq)) {
+ &nbsp; &nbsp;enqueue_task(p, rq-&gt;expired);
+ &nbsp; &nbsp;if (p-&gt;static_prio &lt; rq-&gt;best_expired_prio)
+ &nbsp; &nbsp; &nbsp; &nbsp;rq-&gt;best_expired_prio = p-&gt;static_prio;
+} else
+ &nbsp; &nbsp;enqueue_task(p, rq-&gt;active);</code></pre><p style="margin: 0px 0px 1.2em !important;">5.如果当前进程并未使用完时间片，则检查当前进程的剩余时间片是否太长。如果当前进程时间片过长的话，就将该进程的时间片分成若干个更小的时间段，这样可以防止拥有较长时间片的进程长时间霸占CPU。并且调度程序会将这样的进程放入与该进程优先级所对应的活动进程队列的末尾，稍候再次对其集成调度。</p><pre style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace; margin: 0px 0.15em; background-color: rgb(248, 248, 248); white-space: pre; overflow: auto; border-radius: 3px; border-width: 1px; border-style: solid; border-color: rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important;">} else {
+ &nbsp; &nbsp;if (TASK_INTERACTIVE(p) &amp;&amp; !((task_timeslice(p) -
+ &nbsp; &nbsp; &nbsp; &nbsp;p-&gt;time_slice) % TIMESLICE_GRANULARITY(p)) &amp;&amp;
+ &nbsp; &nbsp; &nbsp; &nbsp;(p-&gt;time_slice &gt;= TIMESLICE_GRANULARITY(p)) &amp;&amp;
+ &nbsp; &nbsp; &nbsp; &nbsp;(p-&gt;array == rq-&gt;active)) {
+
+ &nbsp; &nbsp; &nbsp; &nbsp;requeue_task(p, rq-&gt;active);
+ &nbsp; &nbsp; &nbsp; &nbsp;set_tsk_need_resched(p);
+ &nbsp; &nbsp;}
+}</code></pre><p style="margin: 0px 0px 1.2em !important;">至此，该函数分析完毕。</p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">武特</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                <div class="reward_qrcode_area reward_area tc" id="js_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                                        <p class="reward_tips"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" id="js_reward_qrcode_img"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

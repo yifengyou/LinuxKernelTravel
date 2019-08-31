@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		适合应用 Haskell 的创客道项目——洪峰老师讲创客道（三十七）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664601813&amp;idx=1&amp;sn=6aea2fe3de0cbcdfda5562f7102ceb00&amp;chksm=f04db530c73a3c26488b21735beca3321437201e5920a3817ccc04af80d3c44247256e9c7f75&amp;scene=27#wechat_redirect&cpage=73' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">适合应用 Haskell 的创客道项目——洪峰老师讲创客道（三十七）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        洪峰
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-04-19</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="font-family: Arial;font-size: 14px;line-height: 23.8px;white-space: normal;text-indent: 28px"><span style="font-family: 微软雅黑;font-size: 16px">在前面的几讲中我根据自己在黑客道教学中讲解<span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">语言的一些教案为大家讲解了</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">语言的一些特点，包括三个轮回。第一个轮回是讲静的部分也就是它的类型系统，</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">语言的类型系统有类型、类型变量、类型类三个基本概念。从我们黑客道初段的观点看，也就是从关于计算的本质来看，</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">的类型系统实际上都是关于异同关系的运筹。有了异同关系的运筹再回过头去看</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">里边的类型、类型变量、类型类以及与它们相关的一些范畴论的思想，特别是关于函数以及函数多态性，那个时候我们能够看的更清楚一些。</span></span></p><p style="font-family: Arial;font-size: 14px;line-height: 23.8px;white-space: normal;text-indent: 28px"><span style="font-family: 微软雅黑;font-size: 16px">在第二轮回讲解动的部分的时候，我讲了<span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">里面的函数、函子、单子的概念。我已经提到过不管是函数、函子、单子实际上它们都是计算本质中关于形影关系的具体运筹的一些方法。在讲解了单子的概念之后，我们可以把</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">里面静与动两个部分结合起来以考虑</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">的使用，也就是我在讲解</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">教案中关于用的部分——第三个轮回。在上一讲中我已经谈到了</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">的使用，就是说有了单子以后，我们对状态的变化的模拟在</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">中有一种群函数式的方法来进行解决，那么我们这一讲的重点将放在</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">适合从事什么样的创新项目的开发与设计。我会谈得到目前对</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">语言的一些争议，包括关于它的弱点的一些看法，最后我会向大家介绍</span><span style="font-family:宋体">OCaml</span><span style="font-family:微软雅黑">语言。</span></span></p><p style="font-family: Arial;font-size: 14px;line-height: 23.8px;white-space: normal;text-indent: 28px"><span style="font-family: 微软雅黑;font-size: 16px">我们先看第一个方面，<span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">语言究竟适合干什么样的创新项目？这个问题的答案很简单，我前面已经说过多次</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">语言是</span><span style="font-family:宋体">Lisp</span><span style="font-family:微软雅黑">语言的一个现代版本，从这个意义上讲所有</span><span style="font-family:宋体">Lisp</span><span style="font-family:微软雅黑">语言适合干的项目</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">都可以干而且只会干的更好。</span><span style="font-family:宋体">Lisp</span><span style="font-family:微软雅黑">语言和</span><span style="font-family:宋体">Racket</span><span style="font-family:微软雅黑">语言适合做哪些项目，我在前面的讲座中已经做了很多说明在这里就不重复了。这里我想说的是除了传统的</span><span style="font-family:宋体">Lisp</span><span style="font-family:微软雅黑">语言所擅长的那些工作领域以外，</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">还适合做哪些创新项目。每当我被问到这个问题的时候，我的脑袋里面浮想出来的第一个答案就是</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">非常适合大规模的平行计算。前面我已经介绍过</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">语言是纯函数式的编程语言，它的求值模型是惰性求值的，正因为它使用了惰性求值的计算模型，所以它的计算可以被发派到多核计算机的某一个核上面去进行计算，而多核是利用了硬件的并发硬件的多任务处理能力。所以在今天这个时代，</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">语言的这个特点是要得到高度重视的。在谈论这个问题的时候实际上是有两个概念相互关联的，一个叫做并行一个叫做并发。并行是指</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">中的多个线程在不同的内核上进行计算，有许许多多的任务在</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">的系统上运行，这是对并行的理解。还有一个概念叫做并发，并发是指外部的异步事件，外部的异步事件是指同时从外部产生许许多多的事件或者请求数据，请求</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">系统进行处理，换句话讲高并发的应用对于装了</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">的服务器而言是一个高负载的应用场合。关于</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">语言对并行和并发的支持是现在一个很大的热门话题。有一位英国的技术专家</span><span style="font-family:宋体">Simon Marlow&nbsp;</span><span style="font-family:微软雅黑">写了一本书叫作《</span><span style="font-family:宋体">&nbsp;Parallel and ConCurrent Programming in Haskell</span><span style="font-family:微软雅黑">》，他在这本著作里面对于</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">平行、并发计算的主题做了深入的探讨，提出了许多有价值的观点，我在本书第七章讲精灵进程时还会回到这个专题上来。</span></span></p><p style="font-family: Arial;font-size: 14px;line-height: 23.8px;white-space: normal;text-indent: 28px"><span style="font-family: 微软雅黑;font-size: 16px">关于<span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">适合干什么创业项目的问题，我还有一个答案就是</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">语言非常适合团队的协作。它对团队协作的成员具有很大的亲和力，这种亲和力不是凭空产生的而是有扎实的技术基础。第一点就是</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">是强类型的编程语言，所以它有非常严格的类型检查，而通过编译的程序会让团队协作中成员与成员之间的交流变得容易一些。同样根据强类型这个特点，在大型项目分解的时候也做的比较干净，这对于大型项目开发者是非常具有吸引力的。像模块这种机制在</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">中都已经提供了而且做得非常好，这会让单元测试之类的工作变得容易从而保证软件开发的质量。还有一点就是</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">与其它语言比如</span><span style="font-family:宋体">C</span><span style="font-family:微软雅黑">语言这类传统的面向过程编程语言的混合也变得非常容易，这在新出来的</span><span style="font-family:宋体">GHC</span><span style="font-family:微软雅黑">系统里面对</span><span style="font-family:宋体">C</span><span style="font-family:微软雅黑">代码的支持也变得比较容易。这一切都使得</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">非常适合团队协作，这个特点不管是对小型创业团队，还是大型公司的大型项目开发都是具有很大吸引力的。说到这里我产生了一个伟大的想法，我</span><span style="font-family:宋体">2002</span><span style="font-family:微软雅黑">年去印度时发现印度程序员已经很聪明地利用</span><span style="font-family:宋体">Java</span><span style="font-family:微软雅黑">开始了他们的外包商业模式，今天在</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">语言兴起的时候我们中国的程序员能不能利用</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">语言在自主创新设计软件这个领域有所作为，达到印度的商业规模甚至比他们做的更好呢？这是一个有想象力的问题，请大家思考一下。</span></span></p><p style="font-family: Arial;font-size: 14px;line-height: 23.8px;white-space: normal;text-indent: 28px"><span style="font-family: 微软雅黑;font-size: 16px">关于<span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">语言适合干什么创新项目的第三个方向的思考，我认为</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">作为一个现代版本的</span><span style="font-family:宋体">Lisp</span><span style="font-family:微软雅黑">，它在算法的抽象能力上已经超过了传统的</span><span style="font-family:宋体">Lisp</span><span style="font-family:微软雅黑">，而且程序的可读性要比传统</span><span style="font-family:宋体">Lisp</span><span style="font-family:微软雅黑">好的多，因为</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">里面支持中缀表达式。绝大多数编写过</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">和</span><span style="font-family:宋体">Lisp</span><span style="font-family:微软雅黑">程序的程序员告诉我</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">程序的可读性要比传统</span><span style="font-family:宋体">Lisp</span><span style="font-family:微软雅黑">好一些，这也是许多传统</span><span style="font-family:宋体">Lisp</span><span style="font-family:微软雅黑">程序员改行使用</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">编写程序的一个原因。这种在程序可读性上的改进所带来的好处不管如何去评估都是不过分的。换句话讲程序的高可读性使得</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">语言非常适合从事算法密集型的创新项目。已经有大量案例表明，同时具有良好数学功底和编程功力的程序员在把数学建模得到的数学模型转换成</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">程序的时候，他们的速度会非常快，会比用其它编程语言翻译数学模型在速度上快很多而且在质量上也高很多。因为</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">代码对数学模型的模拟真实度、贴近度我认为是现有的语言里最高的。我在《创业九章》这本书的多个地方鼓吹创业者应该把所学到的数学知识应用到实际问题的求解中，然后把数学模型翻译成计算机语言，</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">作为这一种创客道思想方法的一个具体践行的语言选择，我认为是非常合适的。关于</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">语言适合从事什么样的创新项目的话题我先谈到这里。</span></span></p><p style="font-family: Arial;font-size: 14px;line-height: 23.8px;white-space: normal"><span style="font-family: 微软雅黑;font-size: 16px">&nbsp;</span></p><p style="font-family: Arial;font-size: 14px;line-height: 23.8px;white-space: normal;text-indent: 28px"><span style="font-family: 微软雅黑;font-size: 16px">接下来我谈谈第二个问题，就是应用<span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">面临哪些问题。首先我们需要面对的问题是</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">的学习曲线非常的漫长，而且刚开始的学习曲线显得十分陡峭。当然我所说的学习成本过大的问题是针对非数学专业的创客道学员而言的，对于数学专业毕业的学生而言，因为他的数学基本功已经掌握了，所以他们在学习</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">语言时不会感到太困难。但是对于非数学专业的学生而言难度是非常大的，首先要理解</span><span style="font-family:宋体">lambda</span><span style="font-family:微软雅黑">演算、集合论、范畴论还有相关的一些近似代数的内容。这些东西加起来和编程语言相结合会产生非常高的学习成本，这是绝大多数非数学专业的创客道学员不得不正视的一个问题。在以往的黑客道教学中，当我为学员讲解</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">语言的时候，许多学员刚开始热情很高但是进行到中途发现自己的数学功力不行坚持不下去从而退出学习，这种人不少。</span></span></p><p style="font-family: Arial;font-size: 14px;line-height: 23.8px;white-space: normal;text-indent: 28px"><span style="font-family: 微软雅黑;font-size: 16px">学习和应用<span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">的第二个问题就是在已经掌握了</span><span style="font-family:宋体">C/C++</span><span style="font-family:微软雅黑">的程序员看来，</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">语言对于</span><span style="font-family:宋体">I/O</span><span style="font-family:微软雅黑">和状态变化处理的新计算模式将问题复杂化了。当然社团里面也有另外的声音，认为他们的观点似是而非，实际上如果理解了</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">关于</span><span style="font-family:宋体">monad</span><span style="font-family:微软雅黑">的思想，那么对于带状态的模拟的问题包括</span><span style="font-family:宋体">I/O</span><span style="font-family:微软雅黑">的部分实际上在</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">中是比较简洁的。这两派观点究竟谁对谁错，我想请在座的创客道学员自己通过体验给出自己的评判。</span></span></p><p style="font-family: Arial;font-size: 14px;line-height: 23.8px;white-space: normal;text-indent: 28px"><span style="font-family: 微软雅黑;font-size: 16px">第三个要面对的观点与第二个有关联，就是<span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">让程序员不去关注计算机的状态，因为</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">语言里面是没有赋值的，这个特点使得有许多问题并不适合由</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">去解决，比如设备驱动程序，这种程序利用</span><span style="font-family:宋体">C</span><span style="font-family:微软雅黑">语言去做会更好一些。对于这一点社团中也有不同的声音，因为大多数的人会讲写驱动的情况已经在现在的社会里面变得越来越稀少了，绝大多数情况下在我们开发软件项目的时候是需要开发大中型的应用程序项目，这个场合下</span><span style="font-family:宋体">C</span><span style="font-family:微软雅黑">和</span><span style="font-family:宋体">C++</span><span style="font-family:微软雅黑">是不适合的。从计算能力上讲，这些语言从图灵机的等价性来看都是一样的，但是具体到开发成本方面特别是时间成本方面，</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">语言的表现是出类拔萃的。像</span><span style="font-family:宋体">C++</span><span style="font-family:微软雅黑">语言，它提供了尽可能多的机制让你直接掌控一切，包括内存的分配、类型的打造和定义、对象的初始化、初始化之后对象的细构，这些所有的细节</span><span style="font-family:宋体">C++</span><span style="font-family:微软雅黑">语言都提供给程序员直接掌控的能力。而</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">的设计思想是完全相反的方向，它鼓励程序员不去关注计算机的状态而专注算法的打造，从这个意义上讲</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">对于人生产力的解放是一次大的跃进。毫无疑问从程序员生产力解放和提升的角度来讲，通向未来的大门已经敞开而且许多人已经迈出了第一步。对于已经迈出第一步的程序员来讲，你想把他们拉回到以前那种受限制的状态，这种可能性是非常小的，这种情况就像当年</span><span style="font-family:宋体">C</span><span style="font-family:微软雅黑">语言发明以后在嵌入式编程领域和系统编程领域迅速替代汇编语言的道理是一样的。在今天嵌入式设计市场上，你要让开发人员使用汇编语言去开发，绝大多数情况下他是不会干的，因为已经有很好的</span><span style="font-family:宋体">C</span><span style="font-family:微软雅黑">语言开发工具、开发环境，而且</span><span style="font-family:宋体">C</span><span style="font-family:微软雅黑">语言的抽像能力在绝大多数情况下比汇编语言高出许多，只有在使用硬件提供专门的特点的时候程序员才不得不使用汇编语言然后把汇编的模块和</span><span style="font-family:宋体">C</span><span style="font-family:微软雅黑">代码相结合起来。所以今后我们在开发大规模应用程序的时候，你让这些程序员回过头去使用</span><span style="font-family:宋体">C</span><span style="font-family:微软雅黑">、</span><span style="font-family:宋体">C++</span><span style="font-family:微软雅黑">、</span><span style="font-family:宋体">Java</span><span style="font-family:微软雅黑">去开发的话，我想他们中的绝大多数会拒绝你的想法。</span></span></p><p style="font-family: Arial;font-size: 14px;line-height: 23.8px;white-space: normal;text-indent: 28px"><span style="font-family: 微软雅黑;font-size: 16px">说到这里有的听众可能会问除了<span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">这种纯函数式编程语言以外有没有其它函数式编程语言能够支持多范式呢</span><span style="font-family:宋体">?</span><span style="font-family:微软雅黑">答案是绝对肯定的，我前面讲了那么多关于</span><span style="font-family:宋体">Racket</span><span style="font-family:微软雅黑">的内容就说明</span><span style="font-family:宋体">Racket</span><span style="font-family:微软雅黑">是支持函数式编程同时它是支持多范式的一种编程语言，它支持</span><span style="font-family:宋体">oop</span><span style="font-family:微软雅黑">也支持过程式程序的开发。在我讲这门课的时候</span><span style="font-family:宋体">Racket</span><span style="font-family:微软雅黑">里面还有带类型的</span><span style="font-family:宋体">Racket</span><span style="font-family:微软雅黑">叫作</span><span style="font-family:宋体">typed Racket</span><span style="font-family:微软雅黑">，它也吸收了强类型或者叫显式类型声明语言的一些特点。这里我想向大家介绍另外一种函数式编程语言，它跟</span><span style="font-family:宋体">Racket</span><span style="font-family:微软雅黑">和</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">都有很大不同，这个语言叫作</span><span style="font-family:宋体">OCaml</span><span style="font-family:微软雅黑">。</span></span></p><p style="font-family: Arial;font-size: 14px;line-height: 23.8px;white-space: normal;text-indent: 28px"><span style="font-family: 微软雅黑;font-size: 16px">OCaml<span style="font-family:微软雅黑">是</span><span style="font-family:宋体">ML</span><span style="font-family:微软雅黑">语言的直系后代，</span><span style="font-family:宋体">ML</span><span style="font-family:微软雅黑">语言是</span><span style="font-family:宋体">1974</span><span style="font-family:微软雅黑">年在英国发明的，</span><span style="font-family:宋体">ML</span><span style="font-family:微软雅黑">语言出现以后在学术界得到了广泛地传播，后来出现了</span><span style="font-family:宋体">Standard ML</span><span style="font-family:微软雅黑">（</span><span style="font-family:宋体">SML</span><span style="font-family:微软雅黑">）也</span></span><span style="font-family: 微软雅黑;font-size: 16px">就说这个语言还得到了标准化。<span style="font-family:宋体">OCaml</span><span style="font-family:微软雅黑">的前身叫作</span><span style="font-family:宋体">Caml</span><span style="font-family:微软雅黑">，这是法国人搞得，</span><span style="font-family:宋体">Caml</span><span style="font-family:微软雅黑">是</span><span style="font-family:宋体">ML</span><span style="font-family:微软雅黑">的直系后代。这里我要谈一谈法国的程序员群体，前面我在讲</span></span><a style="color: rgb(6, 73, 119)"><span style="font-family: 微软雅黑;font-size: 16px">Ada<span style="font-family:微软雅黑">语言</span></span></a><span style="font-family: 微软雅黑;font-size: 16px">的时候，</span><a style="color: rgb(6, 73, 119)"><span style="font-family: 微软雅黑;font-size: 16px">Ada<span style="font-family:微软雅黑">语言</span></span></a><span style="font-family: 微软雅黑;font-size: 16px">的群体主要分布在法国，在欧洲的时候我发现德国<span style="font-family:宋体">C++</span><span style="font-family:微软雅黑">的群体非常多，所以在</span><span style="font-family:宋体">GUNLinux</span><span style="font-family:微软雅黑">上有一个桌面环境叫作</span><span style="font-family:宋体">KDE</span><span style="font-family:微软雅黑">，</span><span style="font-family:宋体">KDE</span><span style="font-family:微软雅黑">是基于</span><span style="font-family:宋体">QT</span><span style="font-family:微软雅黑">这个库（</span><span style="font-family:宋体">C++</span><span style="font-family:微软雅黑">库）开发的，它出现在德国也就不足为奇了。法国是数学大国，所以在他们传统的数学基础上把计算纳入到他们的研究范围中去也是非常自然的事情。在法国计算科学研究所他们开发了</span><span style="font-family:宋体">OCaml</span><span style="font-family:微软雅黑">，</span><span style="font-family:宋体">OCaml</span><span style="font-family:微软雅黑">就是面向对象的</span><span style="font-family:宋体">Caml</span><span style="font-family:微软雅黑">，</span><span style="font-family:宋体">Caml</span><span style="font-family:微软雅黑">前面已经讲过了，法国的程序员和许多法国人一样他们非常注重形式的高雅，所以法国很多品牌的设计里面有很多艺术的元素，这一点在程序设计语言上也得到了某种程度的折射。在我介绍</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">语言时用到的三个轮回的内容还有讲法基本上可以原封不动地或者平行地推广到</span><span style="font-family:宋体">OCaml</span><span style="font-family:微软雅黑">特性的讲解上。</span><span style="font-family:宋体">OCaml</span><span style="font-family:微软雅黑">语言也用到了</span><span style="font-family:宋体">lambda</span><span style="font-family:微软雅黑">演算和范畴论，只不过在用到范畴论的时候它只用到了函子这个层次没有把单子的概念用到带状态问题的处理中去。总体来看</span><span style="font-family:宋体">OCaml</span><span style="font-family:微软雅黑">语言是函数式语言中比较经典的一种，它的语法简单优美清晰明了而且容易理解，语言的实现非常高效，语言也很严谨</span><span style="font-family:宋体">bug</span><span style="font-family:微软雅黑">比较少。和</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">不一样</span><span style="font-family:宋体">OCaml</span><span style="font-family:微软雅黑">牺牲了一些数学上的纯粹性换来了相对而言比较简单地语义的描述，所以理解</span><span style="font-family:宋体">OCaml</span><span style="font-family:微软雅黑">并不需要十分高深的数学抽象思考，这对于语言的使用层次是十分重要的，因为它照顾到绝大多数现有程序员群体的现状。</span><span style="font-family:宋体">OCaml</span><span style="font-family:微软雅黑">的语言设计师不希望程序员刚刚从机器语言繁琐的运行步骤中走出来又立即掉进同样复杂繁琐的数学模型中去，这是</span><span style="font-family:宋体">OCaml</span><span style="font-family:微软雅黑">的一个设计思想，这个思想在</span><span style="font-family:宋体">OCaml</span><span style="font-family:微软雅黑">的实现里面得到了很好的贯彻。</span><span style="font-family:宋体">OCaml</span><span style="font-family:微软雅黑">作为</span><span style="font-family:宋体">Haskell</span><span style="font-family:微软雅黑">语言的一个良性竞争对手，我认为它会在将来的市场上占有很大的市场份额，而且也是许许多多希望从事</span><span style="font-family:宋体">IT</span><span style="font-family:微软雅黑">领域创新活动的程序员的一个选择。</span></span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">洪峰</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Linux2.6进程调度分析(1)-调度策略
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664604593&amp;idx=1&amp;sn=689075793bf0321acd3aeeeb17758571&amp;chksm=f04d8e54c73a07429175a7a8527eab4af228b2e576ae8dada3410b94188f44db5b65bb7df7b2&amp;scene=27#wechat_redirect&cpage=33' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Linux2.6进程调度分析(1)-调度策略</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        武特
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2017-08-22</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <div class="markdown-here-wrapper" data-md-url="https://mp.weixin.qq.com/cgi-bin/appmsg?t=media/appmsg_edit&amp;action=edit&amp;type=10&amp;appmsgid=517120944&amp;token=1713395364&amp;lang=zh_CN"><p style="margin: 0px 0px 1.2em !important;">对于分时操作系统而言，表面上看起来是多个进程同时在执行，而在系统内部则进行着从一个进程到另一个进程的切换动作。这样的进程并发执行涉及到进程切换（process switch）和进程调度（process scheduling）两大问题。本文主要说明Linux2.6中的<strong>普通进程</strong>调度策略（实时进程和普通进程在调度上稍有不同）问题，即系统何时进行进程切换以及选择哪一个进程进行切换。</p><h2 style="margin: 1.3em 0px 1em; padding: 0px; font-weight: bold;font-size: 1.4em; border-bottom: 1px solid rgb(238, 238, 238);">1.调度策略</h2><p style="margin: 0px 0px 1.2em !important;">理想的进程调度目标应该是：进程响应时间尽可能的快，后台作业吞吐量高，避免某些进程出现饥饿现象，包括低优先级在内的所有进程都有被调度的可能。由此看来，进程调度的工作就是要处理好这几个方面的协调关系，使进程调度的综合性能达到最佳。</p><p style="margin: 0px 0px 1.2em !important;">与进程调度最为密切的因素是进程的优先级，进程优先级通过一个数值来实现，每个进程都与一个值相关联。调度程序根据进程的优先级将CPU适当的分配给某一个进程。进程的优先级又跟进程的许多因素有关，接下来我们将依次分析这些因素与进程优先级的关系。</p><h3 style="margin: 1.3em 0px 1em; padding: 0px; font-weight: bold;font-size: 1.3em;">1.1进程的分类</h3><p style="margin: 0px 0px 1.2em !important;">进程可以被分为两种类型：I/O消耗型和CPU消耗型。前种类型的进程频繁使用I/O设备，并且大部分时间处于等待状态，以得到新的I/O请求，比如键盘活动等。后一种类型的进程则大部分时间都在占用CPU，对I/O设备并没有过多的需求。</p><p style="margin: 0px 0px 1.2em !important;">为了使系统有较强的响应能力，I/O消耗型进程必须很快能被唤醒，以实现进程的切换。否则，用户会感到系统反应迟钝。对于CPU消耗型进程，由于它们常常位于后台运行，并且没有过多的I/O需求，因此系统并不需要对这类进程做出快速反应。</p><p style="margin: 0px 0px 1.2em !important;">正如上面所说的，调度程序通常要处理好这两类进程之间的调度关系：系统既要有迅速的响应能力，又要有最大的CPU利用率（高吞吐量）。这种满足关系其实是矛盾的，如果系统要达到最大利用率，那么CPU就会被一直占用，这样就不能对I/O请求做出迅速响应。调度程序为了调和这种冲突，通常会倾向于I/O消耗型进程。也就是说，调度程序会优先调用这类进程以提高系统的响应能力，而尽量将CPU消耗型进程压后执行。但这并不意味着这类进程就被调度程序忽略。</p><h3 style="margin: 1.3em 0px 1em; padding: 0px; font-weight: bold;font-size: 1.3em;">1.2时间片</h3><p style="margin: 0px 0px 1.2em !important;">Linux的调度是基于分时技术的，多个进程以“时间多路复用”的形式运行，CPU的时间被划分成一小段，即所谓的时间片（slice）。每个进程都会得到一个时间片，在具体某个时间片内，一个进程会独享CPU时间。如果该进程在这个时间片内没有运行完毕，调度程序就会切换该进程使得其他拥有时间片的进程运行。</p><p style="margin: 0px 0px 1.2em !important;">时间片的划分对系统来说也是一件难事，既不能过长又不能过短。过长的时间片会导致系统的响应能力下降；而过短的时间片会导致系统频繁发生进程切换，由此将带来不必要的处理器消耗。显然，I/O消耗型进程希望时间片越短越好，这样那些等待I/O的进程就能被迅速切换；而CPU消耗型进程则希望时间片越长越好，这样它们就可以一直占用CPU。因此，I/O消耗型进程和CPU消耗型进程的矛盾再一次显现出来。</p><p style="margin: 0px 0px 1.2em !important;">Linux调度程序解决这种矛盾的方法是，提供一个较长的默认时间片，但是却提高交互进程的优先级，以使得这些进程运行的更频繁。在Linux的调度算法中，每个进程在诞生时总是继承父进程一半的时间片，而之后的时间片则是调度程序根据进程的静态优先级而分配。</p><h3 style="margin: 1.3em 0px 1em; padding: 0px; font-weight: bold;font-size: 1.3em;">1.3优先级</h3><p style="margin: 0px 0px 1.2em !important;">我们上面说过，调度程序在选取下一个执行的进程时依据的是进程的优先级。通过上面对进程的划分可以看出，不同类型的进程应该有不同的优先级。每个进程与生俱来（即从父进程那里继承而来）都有一个优先级，我们将其称为静态优先级。普通进程的静态优先级范围从100到139，100为最高优先级，139为最低优先级。</p><p style="margin: 0px 0px 1.2em !important;">当进程用完了时间片后，系统就会为该进程分配新的时间片（即基本时间片），静态优先级本质上决定了时间片分配的大小。静态优先级和基本时间片的关系如下：</p><p style="margin: 0px 0px 1.2em !important;"><strong> 静态优先级&lt;120，基本时间片=max((140-静态优先级)*20, MIN_TIMESLICE) </strong></p><p style="margin: 0px 0px 1.2em !important;"><strong> 静态优先级&gt;=120，基本时间片=max((140-静态优先级)*5, MIN_TIMESLICE) </strong></p><p style="margin: 0px 0px 1.2em !important;">其中MIN_TIMESLICE为系统规定的最小时间片。从该计算公式可以看出，静态优先级越高（值越低），进程得到的时间片越长。其结果是，优先级高的进程会获得更长的时间片，而优先级低的进程得到的时间片则较短。</p><p style="margin: 0px 0px 1.2em !important;">进程除了拥有静态优先级外，还有动态优先级，其取值范围是100到139。当调度程序选择新进程运行时就会使用进程的动态优先级，动态优先级和静态优先级的关系可参考下面的公式：</p><p style="margin: 0px 0px 1.2em !important;">动态优先级=max(100 , min(静态优先级 – bonus + 5) , 139)</p><p style="margin: 0px 0px 1.2em !important;">从上面看出，动态优先级的生成是以静态优先级为基础，再加上相应的惩罚或奖励(bonus)。这个bonus并不是随机的产生，而是根据进程过去的平均睡眠时间做相应的惩罚或奖励。</p><p style="margin: 0px 0px 1.2em !important;">所谓平均睡眠时间（sleep_avg，位于task_struct结构中）就是进程在睡眠状态所消耗的总时间数，这里的平均并不是直接对时间求平均数。平均睡眠时间随着进程的睡眠而增长，随着进程的运行而减少。因此，平均睡眠时间记录了进程睡眠和执行的时间，它是用来判断进程交互性强弱的关键数据。如果一个进程的平均睡眠时间很大，那么它很可能是一个交互性很强的进程。反之，如果一个进程的平均睡眠时间很小，那么它很可能一直在执行。另外，平均睡眠时间也记录着进程当前的交互状态，有很快的反应速度。比如一个进程在某一小段时间交互性很强，那么sleep_avg就有可能暴涨（当然它不能超过MAX_SLEEP_AVG），但如果之后都一直处于执行状态，那么sleep_avg就又可能一直递减。</p><p style="margin: 0px 0px 1.2em !important;">理解了平均睡眠时间，那么bonus的含义也就显而易见了。交互性强的进程会得到调度程序的奖励（bonus为正），而那些一直霸占CPU的进程会得到相应的惩罚（bonus为负）。其实bonus相当于平均睡眠时间的缩影，此时只是将sleep_avg调整成bonus数值范围内的大小。</p><p style="margin: 0px 0px 1.2em !important;"><strong>参考：</strong></p><p style="margin: 0px 0px 1.2em !important;"><strong>1.深入理解LINUX内核(第三版) ；（美）博韦，西斯特 著； 陈莉君 张琼声 张宏伟译； 中国电力出版社；</strong></p><p style="margin: 0px 0px 1.2em !important;"><strong>2.Linux内核设计与实现；（美）拉芙（Love，R.）著，陈莉君 等译；机械工业出版社；</strong></p><div title="MDH:PHA+Jm5ic3A75a+55LqO5YiG5pe25pON5L2c57O757uf6ICM6KiA77yM6KGo6Z2i5LiK55yL6LW3
+5p2l5piv5aSa5Liq6L+b56iL5ZCM5pe25Zyo5omn6KGM77yM6ICM5Zyo57O757uf5YaF6YOo5YiZ
+6L+b6KGM552A5LuO5LiA5Liq6L+b56iL5Yiw5Y+m5LiA5Liq6L+b56iL55qE5YiH5o2i5Yqo5L2c
+44CC6L+Z5qC355qE6L+b56iL5bm25Y+R5omn6KGM5raJ5Y+K5Yiw6L+b56iL5YiH5o2i77yIcHJv
+Y2VzcyBzd2l0Y2jvvInlkozov5vnqIvosIPluqbvvIhwcm9jZXNzIHNjaGVkdWxpbmfvvInkuKTl
+pKfpl67popjjgILmnKzmlofkuLvopoHor7TmmI5MaW51eDIuNuS4reeahDxzcGFuIHN0eWxlPSJm
+b250LXdlaWdodDogYm9sZDsgIj4qKuaZrumAmui/m+eoiyoqPC9zcGFuPuiwg+W6puetlueVpe+8
+iOWunuaXtui/m+eoi+WSjOaZrumAmui/m+eoi+WcqOiwg+W6puS4iueojeacieS4jeWQjO+8iemX
+rumimO+8jOWNs+ezu+e7n+S9leaXtui/m+ihjOi/m+eoi+WIh+aNouS7peWPiumAieaLqeWTquS4
+gOS4qui/m+eoi+i/m+ihjOWIh+aNouOAgjxicj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjYjIy
+MjIyOyAiPiMjIDEu6LCD5bqm562W55WlICMjPC9zcGFuPjxicj48YnI+55CG5oOz55qE6L+b56iL
+6LCD5bqm55uu5qCH5bqU6K+l5piv77ya6L+b56iL5ZON5bqU5pe26Ze05bC95Y+v6IO955qE5b+r
+77yM5ZCO5Y+w5L2c5Lia5ZCe5ZCQ6YeP6auY77yM6YG/5YWN5p+Q5Lqb6L+b56iL5Ye6546w6aWl
+6aW/546w6LGh77yM5YyF5ous5L2O5LyY5YWI57qn5Zyo5YaF55qE5omA5pyJ6L+b56iL6YO95pyJ
+6KKr6LCD5bqm55qE5Y+v6IO944CC55Sx5q2k55yL5p2l77yM6L+b56iL6LCD5bqm55qE5bel5L2c
+5bCx5piv6KaB5aSE55CG5aW96L+Z5Yeg5Liq5pa56Z2i55qE5Y2P6LCD5YWz57O777yM5L2/6L+b
+56iL6LCD5bqm55qE57u85ZCI5oCn6IO96L6+5Yiw5pyA5L2z44CCPGJyPjxicj7kuI7ov5vnqIvo
+sIPluqbmnIDkuLrlr4bliIfnmoTlm6DntKDmmK/ov5vnqIvnmoTkvJjlhYjnuqfvvIzov5vnqIvk
+vJjlhYjnuqfpgJrov4fkuIDkuKrmlbDlgLzmnaXlrp7njrDvvIzmr4/kuKrov5vnqIvpg73kuI7k
+uIDkuKrlgLznm7jlhbPogZTjgILosIPluqbnqIvluo/moLnmja7ov5vnqIvnmoTkvJjlhYjnuqfl
+sIZDUFXpgILlvZPnmoTliIbphY3nu5nmn5DkuIDkuKrov5vnqIvjgILov5vnqIvnmoTkvJjlhYjn
+uqflj4jot5/ov5vnqIvnmoTorrjlpJrlm6DntKDmnInlhbPvvIzmjqXkuIvmnaXmiJHku6zlsIbk
+vp3mrKHliIbmnpDov5nkupvlm6DntKDkuI7ov5vnqIvkvJjlhYjnuqfnmoTlhbPns7vjgII8YnI+
+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogI2IyMjIyMjsgIj4jIyMgMS4x6L+b56iL55qE5YiG57G7
+ICMjIzwvc3Bhbj48YnI+PGJyPui/m+eoi+WPr+S7peiiq+WIhuS4uuS4pOenjeexu+Wei++8mkkv
+T+a2iOiAl+Wei+WSjENQVea2iOiAl+Wei+OAguWJjeenjeexu+Wei+eahOi/m+eoi+mikee5geS9
+v+eUqEkvT+iuvuWkh++8jOW5tuS4lOWkp+mDqOWIhuaXtumXtOWkhOS6juetieW+heeKtuaAge+8
+jOS7peW+l+WIsOaWsOeahEkvT+ivt+axgu+8jOavlOWmgumUruebmOa0u+WKqOetieOAguWQjuS4
+gOenjeexu+Wei+eahOi/m+eoi+WImeWkp+mDqOWIhuaXtumXtOmDveWcqOWNoOeUqENQVe+8jOWv
+uUkvT+iuvuWkh+W5tuayoeaciei/h+WkmueahOmcgOaxguOAgjxicj48YnI+5Li65LqG5L2/57O7
+57uf5pyJ6L6D5by655qE5ZON5bqU6IO95Yqb77yMSS9P5raI6ICX5Z6L6L+b56iL5b+F6aG75b6I
+5b+r6IO96KKr5ZSk6YaS77yM5Lul5a6e546w6L+b56iL55qE5YiH5o2i44CC5ZCm5YiZ77yM55So
+5oi35Lya5oSf5Yiw57O757uf5Y+N5bqU6L+f6ZKd44CC5a+55LqOQ1BV5raI6ICX5Z6L6L+b56iL
+77yM55Sx5LqO5a6D5Lus5bi45bi45L2N5LqO5ZCO5Y+w6L+Q6KGM77yM5bm25LiU5rKh5pyJ6L+H
+5aSa55qESS9P6ZyA5rGC77yM5Zug5q2k57O757uf5bm25LiN6ZyA6KaB5a+56L+Z57G76L+b56iL
+5YGa5Ye65b+r6YCf5Y+N5bqU44CCPGJyPjxicj7mraPlpoLkuIrpnaLmiYDor7TnmoTvvIzosIPl
+uqbnqIvluo/pgJrluLjopoHlpITnkIblpb3ov5nkuKTnsbvov5vnqIvkuYvpl7TnmoTosIPluqbl
+hbPns7vvvJrns7vnu5/ml6LopoHmnInov4XpgJ/nmoTlk43lupTog73lipvvvIzlj4jopoHmnInm
+nIDlpKfnmoRDUFXliKnnlKjnjofvvIjpq5jlkJ7lkJDph4/vvInjgILov5nnp43mu6HotrPlhbPn
+s7vlhbblrp7mmK/nn5vnm77nmoTvvIzlpoLmnpzns7vnu5/opoHovr7liLDmnIDlpKfliKnnlKjn
+jofvvIzpgqPkuYhDUFXlsLHkvJrooqvkuIDnm7TljaDnlKjvvIzov5nmoLflsLHkuI3og73lr7lJ
+L0/or7fmsYLlgZrlh7rov4XpgJ/lk43lupTjgILosIPluqbnqIvluo/kuLrkuobosIPlkozov5nn
+p43lhrLnqoHvvIzpgJrluLjkvJrlgL7lkJHkuo5JL0/mtojogJflnovov5vnqIvjgILkuZ/lsLHm
+mK/or7TvvIzosIPluqbnqIvluo/kvJrkvJjlhYjosIPnlKjov5nnsbvov5vnqIvku6Xmj5Dpq5jn
+s7vnu5/nmoTlk43lupTog73lipvvvIzogIzlsL3ph4/lsIZDUFXmtojogJflnovov5vnqIvljovl
+kI7miafooYzjgILkvYbov5nlubbkuI3mhI/lkbPnnYDov5nnsbvov5vnqIvlsLHooqvosIPluqbn
+qIvluo/lv73nlaXjgII8YnI+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogI2IyMjIyMjsgIj4jIyMg
+MS4y5pe26Ze054mHICMjIzwvc3Bhbj48YnI+PGJyPkxpbnV455qE6LCD5bqm5piv5Z+65LqO5YiG
+5pe25oqA5pyv55qE77yM5aSa5Liq6L+b56iL5Lul4oCc5pe26Ze05aSa6Lev5aSN55So4oCd55qE
+5b2i5byP6L+Q6KGM77yMQ1BV55qE5pe26Ze06KKr5YiS5YiG5oiQ5LiA5bCP5q6177yM5Y2z5omA
+6LCT55qE5pe26Ze054mH77yIc2xpY2XvvInjgILmr4/kuKrov5vnqIvpg73kvJrlvpfliLDkuIDk
+uKrml7bpl7TniYfvvIzlnKjlhbfkvZPmn5DkuKrml7bpl7TniYflhoXvvIzkuIDkuKrov5vnqIvk
+vJrni6zkuqtDUFXml7bpl7TjgILlpoLmnpzor6Xov5vnqIvlnKjov5nkuKrml7bpl7TniYflhoXm
+sqHmnInov5DooYzlrozmr5XvvIzosIPluqbnqIvluo/lsLHkvJrliIfmjaLor6Xov5vnqIvkvb/l
+vpflhbbku5bmi6XmnInml7bpl7TniYfnmoTov5vnqIvov5DooYzjgII8YnI+PGJyPuaXtumXtOeJ
+h+eahOWIkuWIhuWvueezu+e7n+adpeivtOS5n+aYr+S4gOS7tumavuS6i++8jOaXouS4jeiDvei/
+h+mVv+WPiOS4jeiDvei/h+efreOAgui/h+mVv+eahOaXtumXtOeJh+S8muWvvOiHtOezu+e7n+ea
+hOWTjeW6lOiDveWKm+S4i+mZje+8m+iAjOi/h+efreeahOaXtumXtOeJh+S8muWvvOiHtOezu+e7
+n+mikee5geWPkeeUn+i/m+eoi+WIh+aNou+8jOeUseatpOWwhuW4puadpeS4jeW/heimgeeahOWk
+hOeQhuWZqOa2iOiAl+OAguaYvueEtu+8jEkvT+a2iOiAl+Wei+i/m+eoi+W4jOacm+aXtumXtOeJ
+h+i2iuefrei2iuWlve+8jOi/meagt+mCo+S6m+etieW+hUkvT+eahOi/m+eoi+WwseiDveiiq+i/
+hemAn+WIh+aNou+8m+iAjENQVea2iOiAl+Wei+i/m+eoi+WImeW4jOacm+aXtumXtOeJh+i2iumV
+v+i2iuWlve+8jOi/meagt+Wug+S7rOWwseWPr+S7peS4gOebtOWNoOeUqENQVeOAguWboOatpO+8
+jEkvT+a2iOiAl+Wei+i/m+eoi+WSjENQVea2iOiAl+Wei+i/m+eoi+eahOefm+ebvuWGjeS4gOas
+oeaYvueOsOWHuuadpeOAgjxicj48YnI+TGludXjosIPluqbnqIvluo/op6PlhrPov5nnp43nn5vn
+m77nmoTmlrnms5XmmK/vvIzmj5DkvpvkuIDkuKrovoPplb/nmoTpu5jorqTml7bpl7TniYfvvIzk
+vYbmmK/ljbTmj5Dpq5jkuqTkupLov5vnqIvnmoTkvJjlhYjnuqfvvIzku6Xkvb/lvpfov5nkupvo
+v5vnqIvov5DooYznmoTmm7TpopHnuYHjgILlnKhMaW51eOeahOiwg+W6pueul+azleS4re+8jOav
+j+S4qui/m+eoi+WcqOivnueUn+aXtuaAu+aYr+e7p+aJv+eItui/m+eoi+S4gOWNiueahOaXtumX
+tOeJh++8jOiAjOS5i+WQjueahOaXtumXtOeJh+WImeaYr+iwg+W6pueoi+W6j+agueaNrui/m+eo
+i+eahOmdmeaAgeS8mOWFiOe6p+iAjOWIhumFjeOAgjxicj48YnI+PHNwYW4gc3R5bGU9ImNvbG9y
+OiAjYjIyMjIyOyAiPiMjIyAxLjPkvJjlhYjnuqcgIyMjPC9zcGFuPjxicj48YnI+5oiR5Lus5LiK
+6Z2i6K+06L+H77yM6LCD5bqm56iL5bqP5Zyo6YCJ5Y+W5LiL5LiA5Liq5omn6KGM55qE6L+b56iL
+5pe25L6d5o2u55qE5piv6L+b56iL55qE5LyY5YWI57qn44CC6YCa6L+H5LiK6Z2i5a+56L+b56iL
+55qE5YiS5YiG5Y+v5Lul55yL5Ye677yM5LiN5ZCM57G75Z6L55qE6L+b56iL5bqU6K+l5pyJ5LiN
+5ZCM55qE5LyY5YWI57qn44CC5q+P5Liq6L+b56iL5LiO55Sf5L+x5p2l77yI5Y2z5LuO54i26L+b
+56iL6YKj6YeM57un5om/6ICM5p2l77yJ6YO95pyJ5LiA5Liq5LyY5YWI57qn77yM5oiR5Lus5bCG
+5YW256ew5Li66Z2Z5oCB5LyY5YWI57qn44CC5pmu6YCa6L+b56iL55qE6Z2Z5oCB5LyY5YWI57qn
+6IyD5Zu05LuOMTAw5YiwMTM577yMMTAw5Li65pyA6auY5LyY5YWI57qn77yMMTM55Li65pyA5L2O
+5LyY5YWI57qn44CCPGJyPjxicj7lvZPov5vnqIvnlKjlrozkuobml7bpl7TniYflkI7vvIzns7vn
+u5/lsLHkvJrkuLror6Xov5vnqIvliIbphY3mlrDnmoTml7bpl7TniYfvvIjljbPln7rmnKzml7bp
+l7TniYfvvInvvIzpnZnmgIHkvJjlhYjnuqfmnKzotKjkuIrlhrPlrprkuobml7bpl7TniYfliIbp
+hY3nmoTlpKflsI/jgILpnZnmgIHkvJjlhYjnuqflkozln7rmnKzml7bpl7TniYfnmoTlhbPns7vl
+poLkuIvvvJo8YnI+PGJyPjxzcGFuIHN0eWxlPSJmb250LXdlaWdodDogYm9sZDsgIj4qKiDpnZnm
+gIHkvJjlhYjnuqcmbHQ7MTIw77yM5Z+65pys5pe26Ze054mHPW1heCgoMTQwLemdmeaAgeS8mOWF
+iOe6pykqMjAsIE1JTl9USU1FU0xJQ0UpICoqPC9zcGFuPjxicj48YnI+PHNwYW4gc3R5bGU9ImZv
+bnQtd2VpZ2h0OiBib2xkOyAiPioqIOmdmeaAgeS8mOWFiOe6pyZndDs9MTIw77yM5Z+65pys5pe2
+6Ze054mHPW1heCgoMTQwLemdmeaAgeS8mOWFiOe6pykqNSwgTUlOX1RJTUVTTElDRSkgKio8L3Nw
+YW4+PGJyPjxicj48YnI+5YW25LitTUlOX1RJTUVTTElDReS4uuezu+e7n+inhOWumueahOacgOWw
+j+aXtumXtOeJh+OAguS7juivpeiuoeeul+WFrOW8j+WPr+S7peeci+WHuu+8jOmdmeaAgeS8mOWF
+iOe6p+i2iumrmO+8iOWAvOi2iuS9ju+8ie+8jOi/m+eoi+W+l+WIsOeahOaXtumXtOeJh+i2iumV
+v+OAguWFtue7k+aenOaYr++8jOS8mOWFiOe6p+mrmOeahOi/m+eoi+S8muiOt+W+l+abtOmVv+ea
+hOaXtumXtOeJh++8jOiAjOS8mOWFiOe6p+S9jueahOi/m+eoi+W+l+WIsOeahOaXtumXtOeJh+WI
+mei+g+efreOAgjxicj48YnI+6L+b56iL6Zmk5LqG5oul5pyJ6Z2Z5oCB5LyY5YWI57qn5aSW77yM
+6L+Y5pyJ5Yqo5oCB5LyY5YWI57qn77yM5YW25Y+W5YC86IyD5Zu05pivMTAw5YiwMTM544CC5b2T
+6LCD5bqm56iL5bqP6YCJ5oup5paw6L+b56iL6L+Q6KGM5pe25bCx5Lya5L2/55So6L+b56iL55qE
+5Yqo5oCB5LyY5YWI57qn77yM5Yqo5oCB5LyY5YWI57qn5ZKM6Z2Z5oCB5LyY5YWI57qn55qE5YWz
+57O75Y+v5Y+C6ICD5LiL6Z2i55qE5YWs5byP77yaPGJyPjxicj7liqjmgIHkvJjlhYjnuqc9bWF4
+KDEwMCAsIG1pbijpnZnmgIHkvJjlhYjnuqcg4oCTIGJvbnVzICsgNSkgLCAxMzkpPGJyPjxicj7k
+u47kuIrpnaLnnIvlh7rvvIzliqjmgIHkvJjlhYjnuqfnmoTnlJ/miJDmmK/ku6XpnZnmgIHkvJjl
+hYjnuqfkuLrln7rnoYDvvIzlho3liqDkuIrnm7jlupTnmoTmg6nnvZrmiJblpZblirEoYm9udXMp
+44CC6L+Z5LiqYm9udXPlubbkuI3mmK/pmo/mnLrnmoTkuqfnlJ/vvIzogIzmmK/moLnmja7ov5vn
+qIvov4fljrvnmoTlubPlnYfnnaHnnKDml7bpl7TlgZrnm7jlupTnmoTmg6nnvZrmiJblpZblirHj
+gII8YnI+PGJyPuaJgOiwk+W5s+Wdh+edoeecoOaXtumXtO+8iHNsZWVwX2F2Z++8jOS9jeS6jnRh
+c2tfc3RydWN057uT5p6E5Lit77yJ5bCx5piv6L+b56iL5Zyo552h55yg54q25oCB5omA5raI6ICX
+55qE5oC75pe26Ze05pWw77yM6L+Z6YeM55qE5bmz5Z2H5bm25LiN5piv55u05o6l5a+55pe26Ze0
+5rGC5bmz5Z2H5pWw44CC5bmz5Z2H552h55yg5pe26Ze06ZqP552A6L+b56iL55qE552h55yg6ICM
+5aKe6ZW/77yM6ZqP552A6L+b56iL55qE6L+Q6KGM6ICM5YeP5bCR44CC5Zug5q2k77yM5bmz5Z2H
+552h55yg5pe26Ze06K6w5b2V5LqG6L+b56iL552h55yg5ZKM5omn6KGM55qE5pe26Ze077yM5a6D
+5piv55So5p2l5Yik5pat6L+b56iL5Lqk5LqS5oCn5by65byx55qE5YWz6ZSu5pWw5o2u44CC5aaC
+5p6c5LiA5Liq6L+b56iL55qE5bmz5Z2H552h55yg5pe26Ze05b6I5aSn77yM6YKj5LmI5a6D5b6I
+5Y+v6IO95piv5LiA5Liq5Lqk5LqS5oCn5b6I5by655qE6L+b56iL44CC5Y+N5LmL77yM5aaC5p6c
+5LiA5Liq6L+b56iL55qE5bmz5Z2H552h55yg5pe26Ze05b6I5bCP77yM6YKj5LmI5a6D5b6I5Y+v
+6IO95LiA55u05Zyo5omn6KGM44CC5Y+m5aSW77yM5bmz5Z2H552h55yg5pe26Ze05Lmf6K6w5b2V
+552A6L+b56iL5b2T5YmN55qE5Lqk5LqS54q25oCB77yM5pyJ5b6I5b+r55qE5Y+N5bqU6YCf5bqm
+44CC5q+U5aaC5LiA5Liq6L+b56iL5Zyo5p+Q5LiA5bCP5q615pe26Ze05Lqk5LqS5oCn5b6I5by6
+77yM6YKj5LmIc2xlZXBfYXZn5bCx5pyJ5Y+v6IO95pq05rao77yI5b2T54S25a6D5LiN6IO96LaF
+6L+HTUFYX1NMRUVQX0FWR++8ie+8jOS9huWmguaenOS5i+WQjumDveS4gOebtOWkhOS6juaJp+ih
+jOeKtuaAge+8jOmCo+S5iHNsZWVwX2F2Z+WwseWPiOWPr+iDveS4gOebtOmAkuWHj+OAgjxicj48
+YnI+55CG6Kej5LqG5bmz5Z2H552h55yg5pe26Ze077yM6YKj5LmIYm9udXPnmoTlkKvkuYnkuZ/l
+sLHmmL7ogIzmmJPop4HkuobjgILkuqTkupLmgKflvLrnmoTov5vnqIvkvJrlvpfliLDosIPluqbn
+qIvluo/nmoTlpZblirHvvIhib251c+S4uuato++8ie+8jOiAjOmCo+S6m+S4gOebtOmcuOWNoENQ
+VeeahOi/m+eoi+S8muW+l+WIsOebuOW6lOeahOaDqee9mu+8iGJvbnVz5Li66LSf77yJ44CC5YW2
+5a6eYm9udXPnm7jlvZPkuo7lubPlnYfnnaHnnKDml7bpl7TnmoTnvKnlvbHvvIzmraTml7blj6rm
+mK/lsIZzbGVlcF9hdmfosIPmlbTmiJBib251c+aVsOWAvOiMg+WbtOWGheeahOWkp+Wwj+OAgjxi
+cj48YnI+PHNwYW4gc3R5bGU9ImZvbnQtd2VpZ2h0OiBib2xkOyAiPioq5Y+C6ICD77yaKio8L3Nw
+YW4+PGJyPjxicj48c3BhbiBzdHlsZT0iZm9udC13ZWlnaHQ6IGJvbGQ7ICI+KioxLua3seWFpeeQ
+huino0xJTlVY5YaF5qC4KOesrOS4ieeJiCkg77yb77yI576O77yJ5Y2a6Z+m77yM6KW/5pav54m5
+IOiRl++8myDpmYjojonlkJsg5byg55C85aOwIOW8oOWuj+S8n+ivke+8myDkuK3lm73nlLXlipvl
+h7rniYjnpL7vvJsqKjwvc3Bhbj48YnI+PGJyPjxzcGFuIHN0eWxlPSJmb250LXdlaWdodDogYm9s
+ZDsgIj4qKjIuTGludXjlhoXmoLjorr7orqHkuI7lrp7njrDvvJvvvIjnvo7vvInmi4noipnvvIhM
+b3Zl77yMUi7vvInokZfvvIzpmYjojonlkJsg562J6K+R77yb5py65qKw5bel5Lia5Ye654mI56S+
+77ybKio8L3NwYW4+PC9wPg==" style="height:0;width:0;max-height:0;max-width:0;overflow:hidden;font-size:0em;padding:0;margin:0;"></div></div>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">武特</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                <div class="reward_qrcode_area reward_area tc" id="js_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                                        <p class="reward_tips"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" id="js_reward_qrcode_img"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

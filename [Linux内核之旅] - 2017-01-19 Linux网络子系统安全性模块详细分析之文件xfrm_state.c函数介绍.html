@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Linux网络子系统安全性模块详细分析之文件xfrm_state.c函数介绍
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664603672&amp;idx=1&amp;sn=2a5720df7ec022a53c2adc930bdfed1f&amp;chksm=f04d8dfdc73a04ebec88192fe69db80b5fca7fb8fd339a98e20c1aaabb8b77a77100c05a2bb5&amp;scene=27#wechat_redirect&cpage=49' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Linux网络子系统安全性模块详细分析之文件xfrm_state.c函数介绍</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        李廷、张超
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2017-01-19</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p><span style="color: rgb(2, 30, 170);"><strong>2.4.4.4 外部函数</strong></span></p><p><span style="color: rgb(2, 30, 170);"></span></p><p style="margin-left:56px"><span style=";font-size:14px">1.&nbsp;</span><span style=";font-size:14px">tasklet_hrtimer_start ( )</span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">函数原型：</span></span></p><p style="margin-left:63px;line-height:24px"><span style=";font-size:14px">static inline&nbsp;</span><span style="font-size: 14px;">int tasklet_hrtimer_start(struct tasklet_hrtimer *ttimer, ktime_t time,&nbsp;</span><span style="font-size: 14px;">const enum hrtimer_mode mode)</span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">函数参数：</span>ttimer<span style="font-family:宋体">为含有定时器的小任务，</span><span style="font-family:Times New Roman">time</span><span style="font-family:宋体">表示时间结构，</span><span style="font-family:Times New Roman">mode</span><span style="font-family:宋体">表示时间的模式是相对时间还是绝对时间。</span></span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">函数功能：设置带有定时器的小任务。</span></span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">返回值：定时器如果在队列中则返回</span>1<span style="font-family:宋体">，否则返回</span><span style="font-family:Times New Roman">0</span><span style="font-family:宋体">。</span></span></p><p><span style="color: rgb(2, 30, 170);"><strong><br  /></strong></span><br  /></p><p><span style="color: rgb(2, 30, 170);"><strong>2.4.4.5 内部函数</strong></span></p><p><br  /></p><p style="margin-left:56px;line-height:24px"><span style=";font-size:14px">1.&nbsp;</span><span style=";font-size:14px">xfrm_state_init</span><span style=";font-family:宋体;font-size:14px">&nbsp;( )</span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">函数原型：</span></span></p><p style="margin-left:63px;line-height:24px"><span style=";font-size:14px">int __net_init xfrm_state_init(struct net *net)</span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">函数参数：</span>net<span style="font-family:宋体">表示网络命名空间，里面包含了部分网络设备的信息，以及协议信息等。</span></span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">函数功能：</span><span style="font-family:宋体">用于安全关联</span>SA<span style="font-family:宋体">的初始化，主要创建了全局的</span><span style="font-family:Times New Roman">SA</span><span style="font-family:宋体">链表，以及建立了目的地址、源地址和</span><span style="font-family:Times New Roman">SPI</span><span style="font-family:宋体">三组</span><span style="font-family:Times New Roman">Hash</span><span style="font-family:宋体">表，每组</span><span style="font-family:Times New Roman">Hash</span><span style="font-family:宋体">表包含</span><span style="font-family:Times New Roman">8</span><span style="font-family:宋体">个链表，函数还初始化了垃圾回收链表和等待队列。</span></span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">返回值：</span><span style="font-family:宋体">成功返回</span>0<span style="font-family:宋体">，失败返回无内存错误。</span></span></p><p style="margin-left:56px;line-height:24px"><span style=";font-size:14px">2.&nbsp;</span><span style=";font-size:14px">xfrm_state_alloc</span><span style=";font-family:宋体;font-size:14px">( )</span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">函数原型：</span></span></p><p style="margin-left:63px;line-height:24px"><span style=";font-size:14px">struct xfrm_state *xfrm_state_alloc(struct net *net)</span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">函数参数：</span>net<span style="font-family:宋体">表示网络命名空间，里面包含了部分网络设备的信息，以及协议信息等。</span></span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">函数功能：分配</span>SA<span style="font-family:宋体">结构，并初始化其中的链表，以及生存期成员。</span></span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">返回值：</span><span style="font-family:宋体">返回</span>SA<span style="font-family:宋体">结构。</span></span></p><p style="margin-left:56px;line-height:24px"><span style=";font-size:14px">3.&nbsp;</span><span style=";font-size:14px">xfrm_state_insert</span><span style=";font-family:宋体;font-size:14px">&nbsp;( )</span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">函数原型：</span></span></p><p style="margin-left:63px;line-height:24px"><span style=";font-size:14px">void xfrm_state_insert(struct xfrm_state *x)</span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">函数参数：参数</span>x<span style="font-family:宋体">为</span><span style="font-family:Times New Roman">SA</span><span style="font-family:宋体">结构，表示要插入到系统链表中的</span><span style="font-family:Times New Roman">SA</span><span style="font-family:宋体">。</span></span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">函数功能：将当前的</span>SA<span style="font-family:宋体">插入到系统的链表，以及目的地址、源地址、</span><span style="font-family:Times New Roman">SPI</span><span style="font-family:宋体">的</span><span style="font-family:Times New Roman">Hash</span><span style="font-family:宋体">表中，并进行定时器相关设置。</span></span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">返回值：无。</span></span></p><p style="margin-left:56px;line-height:24px"><span style=";font-size:14px">4.&nbsp;</span><span style=";font-size:14px">xfrm_state_find</span><span style=";font-family:宋体;font-size:14px">&nbsp;( )</span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">函数原型：</span></span></p><p style="margin-left:63px;line-height:24px"><span style=";font-size:14px">struct xfrm_state *</span></p><p style="margin-left:63px;line-height:24px"><span style=";font-size:14px">xfrm_state_find(const xfrm_address_t *daddr, const xfrm_address_t *saddr,</span></p><p style="margin-left:63px;line-height:24px"><span style=";font-size:14px">const struct flowi *fl, struct xfrm_tmpl *tmpl,</span></p><p style="margin-left:63px;line-height:24px"><span style=";font-size:14px">struct xfrm_policy *pol, int *err,</span></p><p style="margin-left:63px;line-height:24px"><span style=";font-size:14px">unsigned short family)</span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">函数参数：</span>daddr<span style="font-family:宋体">为要查找的目的地址，</span><span style="font-family:Times New Roman">saddr</span><span style="font-family:宋体">为要查找的源地址</span><span style="font-family:Times New Roman">,fl</span><span style="font-family:宋体">表示当前的数据流，</span><span style="font-family:Times New Roman">tmpl</span><span style="font-family:宋体">为</span><span style="font-family:Times New Roman">SA</span><span style="font-family:宋体">模块，与</span><span style="font-family:Times New Roman">SA</span><span style="font-family:宋体">进行匹配，</span><span style="font-family:Times New Roman">pol</span><span style="font-family:宋体">为当前的策略，</span><span style="font-family:Times New Roman">err</span><span style="font-family:宋体">为被调用函数返回错误码，</span><span style="font-family:Times New Roman">family</span><span style="font-family:宋体">表示协议簇。</span></span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">函数功能：</span></span><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">查找</span>SA<span style="font-family:宋体">，</span></span><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">当内核发现一个包符合安全策略时会查找是否有相应的</span>SA, <span style="font-family:宋体">如果有则返回，否则会通知用户空间的</span><span style="font-family:Times New Roman">IKE</span></span><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">工具</span></span><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">进行协商</span>, <span style="font-family:宋体">生成新的</span><span style="font-family:Times New Roman">SA</span><span style="font-family:宋体">。</span></span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">返回值：返回</span>SA<span style="font-family:宋体">。</span></span></p><p style="margin-left:56px;line-height:24px"><span style=";font-size:14px">5.&nbsp;</span><span style=";font-size:14px">xfrm_find_acq</span><span style=";font-family:宋体;font-size:14px">&nbsp;( )</span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">函数原型：</span></span></p><p style="margin-left:63px;line-height:24px"><span style=";font-size:14px">struct xfrm_state *</span></p><p style="margin-left:63px;line-height:24px"><span style=";font-size:14px">xfrm_find_acq(struct net *net, struct xfrm_mark *mark, u8 mode, u32 reqid, u8 proto,</span></p><p style="margin-left:63px;line-height:24px"><span style=";font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const xfrm_address_t *daddr, const xfrm_address_t *saddr,</span></p><p style="margin-left:63px;line-height:24px"><span style=";font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int create, unsigned short family)</span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">函数参数：</span>net<span style="font-family:宋体">为网络命名空间，</span><span style="font-family:Times New Roman">mark</span><span style="font-family:宋体">为</span><span style="font-family:Times New Roman">SA</span><span style="font-family:宋体">的标记，</span><span style="font-family:Times New Roman">mode</span><span style="font-family:宋体">为工作模式，</span><span style="font-family:Times New Roman">reqid</span><span style="font-family:宋体">为序列号，</span><span style="font-family:Times New Roman">proto</span><span style="font-family:宋体">为协议，</span><span style="font-family:Times New Roman">daddr</span><span style="font-family:宋体">和</span><span style="font-family:Times New Roman">saddr</span><span style="font-family:宋体">分别为目的和源地址，</span><span style="font-family:Times New Roman">create</span><span style="font-family:宋体">为创建判断变量，</span><span style="font-family:Times New Roman">family</span><span style="font-family:宋体">为协议簇。</span></span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">函数功能：查找</span>ACQUIRE<span style="font-family:宋体">类型的</span><span style="font-family:Times New Roman">SA</span><span style="font-family:宋体">，此种类型的</span><span style="font-family:Times New Roman">SA</span><span style="font-family:宋体">并非真正意义上的</span><span style="font-family:Times New Roman">SA</span><span style="font-family:宋体">，当内核发现数据需要进行</span><span style="font-family:Times New Roman">I</span></span><span style=";font-size:14px">p</span><span style=";font-family:宋体;font-size:14px">sec<span style="font-family:宋体">处理时会查找是否有相应的</span><span style="font-family:Times New Roman">SA</span><span style="font-family:宋体">，如果没有就向用户空间的</span><span style="font-family:Times New Roman">IKE</span><span style="font-family:宋体">发送</span><span style="font-family:Times New Roman">ACQUIRE</span><span style="font-family:宋体">请求</span><span style="font-family:Times New Roman">, </span><span style="font-family:宋体">并生成一个</span><span style="font-family:Times New Roman">ACQUIRE</span><span style="font-family:宋体">类型的</span><span style="font-family:Times New Roman">SA,</span><span style="font-family:宋体">待用户空间协商成功会生成合适的</span><span style="font-family:Times New Roman">SA</span><span style="font-family:宋体">传内核</span><span style="font-family:Times New Roman">, </span><span style="font-family:宋体">内核就会替换此</span><span style="font-family:Times New Roman">ACQUIRE</span><span style="font-family:宋体">的</span><span style="font-family:Times New Roman">SA</span><span style="font-family:宋体">。</span></span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">返回值：查找到的</span>SA<span style="font-family:宋体">。</span></span></p><p style="margin-left:56px;line-height:24px"><span style=";font-size:14px">6.&nbsp;</span><span style=";font-size:14px">xfrm_state_update</span><span style=";font-family:宋体;font-size:14px">&nbsp;( )</span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">函数原型：</span></span></p><p style="margin-left:63px;line-height:24px"><span style=";font-size:14px">int xfrm_state_update(struct xfrm_state *x)</span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">函数参数：安全关联</span>SA</span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">函数功能：</span></span><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">使用</span></span><span style=";font-family:宋体;font-size:14px">SA<span style="font-family:宋体">更新</span></span><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">系统的</span>SAD<span style="font-family:宋体">，如果该</span><span style="font-family:Times New Roman">SA</span><span style="font-family:宋体">的类型为</span><span style="font-family:Times New Roman">ACQ</span><span style="font-family:宋体">则将其插入到</span><span style="font-family:Times New Roman">SAD</span><span style="font-family:宋体">中</span></span><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">。</span></span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">返回值：成功返回</span>0<span style="font-family:宋体">，否则返回错误码。</span></span></p><p style="margin-left:56px;line-height:24px"><span style=";font-size:14px">7.&nbsp;</span><span style=";font-size:14px">xfrm_state_gc_task</span><span style=";font-family:宋体;font-size:14px">&nbsp;( )</span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">函数原型：</span></span></p><p style="margin-left:63px;line-height:24px"><span style=";font-size:14px">static void xfrm_state_gc_task(struct work_struct *work)</span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">函数参数：</span>work<span style="font-family:宋体">为工作队列。</span></span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">函数功能：释放垃圾链表中的</span>SA<span style="font-family:宋体">，并唤醒等待队列。</span></span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">返回值：无。</span></span></p><p style="margin-left:56px;line-height:24px"><span style=";font-size:14px">8.&nbsp;</span><span style=";font-size:14px">km_state_expired</span><span style=";font-family:宋体;font-size:14px">&nbsp;( )</span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">函数原型：</span></span></p><p style="margin-left:63px;line-height:24px"><span style=";font-size:14px">void km_state_expired(struct xfrm_state *x, int hard, u32 pid)</span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">函数参数：</span></span><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">参数</span></span><span style=";font-family:宋体;font-size:14px">x<span style="font-family:宋体">为</span><span style="font-family:Times New Roman">SA</span><span style="font-family:宋体">结构，</span><span style="font-family:Times New Roman">hard</span><span style="font-family:宋体">为强行通知变量，</span><span style="font-family:Times New Roman">pid</span><span style="font-family:宋体">为进程的</span><span style="font-family:Times New Roman">PID</span><span style="font-family:宋体">。</span></span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">函数功能：调用</span>xfrm_mgr<span style="font-family:宋体">中的</span><span style="font-family:Times New Roman">notity</span><span style="font-family:宋体">函数进行</span><span style="font-family:Times New Roman">SA</span><span style="font-family:宋体">到期的回调通知，并唤醒等待队列。</span></span></p><p style="margin-left:63px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">返回值：无。</span></span></p><p><span style="color: rgb(2, 30, 170);"><strong><br  /></strong></span><br  /></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">李廷、张超</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

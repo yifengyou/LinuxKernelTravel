@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Python 语言在引力波发现中的应用——洪峰老师讲创客道（三十）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=417055500&amp;idx=1&amp;sn=568f4fc33a4d832d18b76c65dbdfd0fe&amp;chksm=7644eee9413367ff75a8a1e8c62bb16ceafa8c10214ebe1f9197c8d672c614fefac7e8438e5b&amp;scene=27#wechat_redirect&cpage=74' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Python 语言在引力波发现中的应用——洪峰老师讲创客道（三十）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        洪峰
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-04-11</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="text-indent:28px"><span style=";font-size:16px"></span></p><p><mpvoice frameborder="0" class="res_iframe js_editor_audio audio_iframe" src="/cgi-bin/readtemplate?t=tmpl/audio_tmpl&amp;name=%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9330&amp;play_length=17:37" name="%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9330" play_length="1057000" voice_encode_fileid="MzI3NzA5MzUxNF80MTcwNTU0OTg="></mpvoice></p><p style="text-indent:28px"><span style=";font-size:16px"></span><br  /></p><p style="text-indent:28px"><span style=";font-size:16px">在上一讲，我们已经介绍了<span style="font-family:Times New Roman">Python</span></span><span style=";font-size:16px;font-family:宋体">语言的三个主要特征，它可以作为一个通用的脚本语言来使用。它可以作为胶水语言语言，作为其他语言的控制和</span><span style=";font-size:16px">C</span><span style=";font-size:16px;font-family:宋体">、</span><span style=";font-size:16px">C++</span><span style=";font-size:16px;font-family:宋体">和</span><span style=";font-size:16px">Java</span><span style=";font-size:16px;font-family:宋体">语言进行混合编程。还有它可以作为计算机专业的入门语言进行学习。除了我上一讲提到的用途之外，&nbsp;目前为止</span><span style=";font-size:16px">Python</span><span style=";font-size:16px;font-family:宋体">的用途很多。比如可以在互联网上写脚本，用来操作数据库，可以用来快速地建模，这个对于黑客道学员学习，创客道学员的创业项目都是有十分重要的意义的。另外还有许多其他的应用，比如说游戏，图形图像的处理，数据挖掘，电子表格等等。</span></p><p style="text-indent:28px"><span style=";font-size:16px">在这一讲中，我想向大家介绍<span style="font-family:Times New Roman">Python</span></span><span style=";font-size:16px;font-family:宋体">语言的一个特别的应用方向，那就是在数据和科学计算领域的编程。在这里我向大家介绍一条刚刚发生的在天体物理学领域一个重大的科学发现，就是美国科学家在</span><span style=";font-size:16px">2016</span><span style=";font-size:16px;font-family:宋体">年的</span><span style=";font-size:16px">2</span><span style=";font-size:16px;font-family:宋体">月</span><span style=";font-size:16px">11</span><span style=";font-size:16px;font-family:宋体">日宣布他们在</span><span style=";font-size:16px">2015</span><span style=";font-size:16px;font-family:宋体">年的九月份首次探测到了引力波，这个引力波是伟大的物理学家阿尔伯特</span><span style=";font-size:16px">·</span><span style=";font-size:16px;font-family:宋体">爱因斯坦</span><span style=";font-size:16px">(Albert&nbsp;Einstein)</span><span style=";font-size:16px;font-family:宋体">在</span><span style=";font-size:16px">100</span><span style=";font-size:16px;font-family:宋体">多年前所寓言的物理学的一个理论，今天终于在宇宙的天文观测中发现了这个引力波。</span></p><p style="text-indent:28px"><span style=";font-size:16px">引力波的发现是现代物理学上的一个巨大进展，它的意义可以从多个方面表现出来，而且会诞生出许许多多新的物理学理论。迄今为止人类在物理学领域发现，自然的作用力有四种基本作用力，一个是引力，牛顿时代就已经定义出来这个概念，而且牛顿发现了万有引力定理。第二个就是电磁，麦克斯韦在总结提炼的麦克斯韦方程组里面，电场、磁场和力满足一个特定的微分方程方程组所刻画的关系。在微观世界还有两种力叫做弱场和强场，弱作用力和强作用力。目前，弱作用力、强作用力和电磁场这三种场都已经被统一起来，但现在引力场还没有被统一到这个场当中来。试图将这四种场统一起来的物理学理论叫做大统一理论。我本人对于大统一理论的最终成形是深信不疑的，只不过现在物理学家还没有找到一个正确的思路，或者说找到一个适当的数学模型来表达它们的思想。引力波的发现将有助于物理学家们在基础物理学理论中开发出新的思路，尝试一个新的场的大统一理论，我对这个尝试将来的最终成功是深信不疑的。</span></p><p style="text-indent:28px"><span style=";font-size:16px">在<span style="font-family:Times New Roman">100</span></span><span style=";font-size:16px;font-family:宋体">多年前爱因斯坦提出的物理学理论里面引力波是一种以光速前进的时空的一个波动，就如同我们将一块石头扔进水面平静的一个水塘里。这个水面会产生一个波纹，波纹会向四周传播，引力波被视为宇宙中时空的一个涟漪。但是我前面讲过，引力作为一个基本的场，它的距离非常远，但是他的强度是非常的弱的。物理学家曾经计算过地球绕太阳公转的速度是每秒</span><span style=";font-size:16px">30</span><span style=";font-size:16px;font-family:宋体">公里，它发出的引力波功率只有</span><span style=";font-size:16px">200w</span><span style=";font-size:16px;font-family:宋体">，甚至不如很多家用电器的功率大。如此微弱的信号要在天文观测里观测到他是十分困难的。所以只有非常巨大的天体而且挨得比较近的时候，他们的相互作用产生的引力波有可能被观测到。这就是美国科学家他们所做出的一个工作的结果。发布结果的科学家来自于一个激光干涉引力波天文台的一个负责人，这个机构的英文简称叫做</span><span style=";font-size:16px">LIGO</span><span style=";font-size:16px;font-family:宋体">。这个机构诞生于上世纪</span><span style=";font-size:16px">90</span><span style=";font-size:16px;font-family:宋体">年代，他们对于引力波的观测已经有</span><span style=";font-size:16px">30</span><span style=";font-size:16px;font-family:宋体">多年的时间，他们观测到的引力波也是一个大数据，在这个数据进行分析过程中他们用到了</span><span style=";font-size:16px">Python</span><span style=";font-size:16px;font-family:宋体">语言。</span></p><p style="text-indent:28px"><span style=";font-size:16px">LIGO</span><span style=";font-size:16px;font-family:宋体">计划在</span><span style=";font-size:16px">92</span><span style=";font-size:16px;font-family:宋体">年的时候由美国的自然科学基金会资助的，这是世界上第一个引力波大规模探测项目，然后具体承担的科研机构有两个，一个是<span style="font-family:Times New Roman">&nbsp;</span></span><span style=";font-size:16px">Caltech</span><span style=";font-size:16px;font-family:宋体">一个是</span><span style=";font-size:16px">MIT</span><span style=";font-size:16px;font-family:宋体">。这个</span><span style=";font-size:16px">Caltech</span><span style=";font-size:16px;font-family:宋体">就是加州理工学院，</span><span style=";font-size:16px">MIT</span><span style=";font-size:16px;font-family:宋体">就是麻省理工学院，在世界上也是两所顶级的大学。</span><span style=";font-size:16px">LIGO</span><span style=";font-size:16px;font-family:宋体">一共建立了两个观测站，一个观测站建立在美国的南部，位于路易斯安那州（</span><span style=";font-size:16px">Louisiana</span><span style=";font-size:16px;font-family:宋体">），叫做</span><span style=";font-size:16px">LOGO&nbsp;Louisiana</span><span style=";font-size:16px;font-family:宋体">，还有一个观测站位于华盛顿州（</span><span style=";font-size:16px">Washington&nbsp;</span><span style=";font-size:16px;font-family:宋体">），叫做</span><span style=";font-size:16px">LOGO&nbsp;Washington</span><span style=";font-size:16px;font-family:宋体">。这两个观测站相距</span><span style=";font-size:16px">3000</span><span style=";font-size:16px;font-family:宋体">多</span><span style=";font-size:16px">Km</span><span style=";font-size:16px;font-family:宋体">，一个在美国本土南部，另一个在美国本土的西北角。这个项目是上个世纪</span><span style=";font-size:16px">90</span><span style=";font-size:16px;font-family:宋体">年代投资建成的，所以机构拥有将近</span><span style=";font-size:16px">30</span><span style=";font-size:16px;font-family:宋体">年的观察数据。</span></p><p style="text-indent:28px"><span style=";font-size:16px">对于观察数据进行观察整理挖掘是由计算机程序来完成的，由此我们联想到当年开普勒在他的老师第谷<span style="font-family:Times New Roman">(Tycho&nbsp;Brahe)</span></span><span style=";font-size:16px;font-family:宋体">的基础上通过数据挖据技术发现了行星运动的三大定理。今天美国的</span><span style=";font-size:16px">LIGO</span><span style=";font-size:16px;font-family:宋体">他所做的从方法论来讲与几百年前开普勒在第谷的数据分析上进行数据挖掘的方法论是一致的。所不同的是</span><span style=";font-size:16px">LIGO</span><span style=";font-size:16px;font-family:宋体">拥有计算机这个超级强大的计算工具。开普勒可能做梦也想不到的一个超级计算工具，一个科学的利器。在计算机上进行科学计算、科学编程的时候，</span><span style=";font-size:16px">Python</span><span style=";font-size:16px;font-family:宋体">语言已经被广泛应用到这个领域。这个领域曾经是</span><span style=";font-size:16px">Fortran</span><span style=";font-size:16px;font-family:宋体">占统治地位的，后来</span><span style=";font-size:16px">C</span><span style=";font-size:16px;font-family:宋体">和</span><span style=";font-size:16px">C++</span><span style=";font-size:16px;font-family:宋体">兴起之后，他们侵蚀了不少</span><span style=";font-size:16px">Fortran</span><span style=";font-size:16px;font-family:宋体">的领地。但是，</span><span style=";font-size:16px">Python</span><span style=";font-size:16px;font-family:宋体">语言兴起之后有不少人也将</span><span style=";font-size:16px">Python</span><span style=";font-size:16px;font-family:宋体">语言引用到数值与科学这个领域。而且开发了一个非常有名的包，叫做</span><span style=";font-size:16px">NumPy<span style="font-family:宋体">（</span><span style="font-family:Times New Roman">Numeric&nbsp;Python</span></span><span style=";font-size:16px;font-family:宋体">）</span><span style=";font-size:16px">，这是高性能的数组编程的包，是在<span style="font-family:Times New Roman">Pyphon</span></span><span style=";font-size:16px;font-family:宋体">编程的基础上扩展得到的一个包。有很多的标准工具，比如数组对象、还有一些标准数学库的一些接口等等，在</span><span style=";font-size:16px">NumPy</span><span style=";font-size:16px;font-family:宋体">中实现了。在这次引力波发现的新闻播出后，有人在</span><span style=";font-size:16px">GitHub&nbsp;</span><span style=";font-size:16px;font-family:宋体">上发现有一个专门用于引力波数据分析的</span><span style=";font-size:16px">Python</span><span style=";font-size:16px;font-family:宋体">的包叫做</span><span style=";font-size:16px">GWPY</span><span style=";font-size:16px;font-family:宋体">。维护者介绍他的代码来自于</span><span style=";font-size:16px">LIGO</span><span style=";font-size:16px;font-family:宋体">和</span><span style=";font-size:16px">Virgo</span><span style=";font-size:16px;font-family:宋体">这两个机构。维护者将两个机构的科学家的代码进行整理，就得到了</span><span style=";font-size:16px">GWPY</span><span style=";font-size:16px;font-family:宋体">的</span><span style=";font-size:16px">Python</span><span style=";font-size:16px;font-family:宋体">包。这个</span><span style=";font-size:16px">Python</span><span style=";font-size:16px;font-family:宋体">包对于用户的界面非常的友好。</span></p><p style="text-indent:28px"><span style=";font-size:16px">在这里我们介绍一下<span style="font-family:Times New Roman">GitHub</span></span><span style=";font-size:16px;font-family:宋体">这个包，</span><span style=";font-size:16px">GitHub</span><span style=";font-size:16px;font-family:宋体">是在</span><span style=";font-size:16px">Git</span><span style=";font-size:16px;font-family:宋体">基础上发明创造。</span><span style=";font-size:16px">Git</span><span style=";font-size:16px;font-family:宋体">目前是全世界最大的公开源代码的自由软件包交换的场所。</span><span style=";font-size:16px">Git</span><span style=";font-size:16px;font-family:宋体">是</span><span style=";font-size:16px">Liunx&nbsp;Kernel</span><span style=";font-size:16px;font-family:宋体">的设计师</span><span style=";font-size:16px">Linux&nbsp;Torvalds&nbsp;</span><span style=";font-size:16px;font-family:宋体">（林纳斯</span><span style=";font-size:16px">·</span><span style=";font-size:16px;font-family:宋体">本纳第克特</span><span style=";font-size:16px">·</span><span style=";font-size:16px;font-family:宋体">托瓦兹）的作品。</span><span style=";font-size:16px">Linux&nbsp;Torvalds</span><span style=";font-size:16px;font-family:宋体">目前完成了两个伟大的发明，一个是</span><span style=";font-size:16px">Liunx&nbsp;Kernel</span><span style=";font-size:16px;font-family:宋体">。</span><span style=";font-size:16px">GIT</span><span style=";font-size:16px;font-family:宋体">是原创于</span><span style=";font-size:16px">Liunx&nbsp;Kernel</span><span style=";font-size:16px;font-family:宋体">中的发行中，在</span><span style=";font-size:16px">Liunx&nbsp;kernel</span><span style=";font-size:16px;font-family:宋体">维护过程中，需要一个版本的管理工具，原来的版本管理工具都不适用。所以他另起炉灶开发了一个管理工具，这个工具叫做</span><span style=";font-size:16px">Git</span><span style=";font-size:16px;font-family:宋体">，</span><span style=";font-size:16px">Git</span><span style=";font-size:16px;font-family:宋体">今天已经成为默认的版本管理工具，在分布式代码管理当中</span><span style=";font-size:16px">Git</span><span style=";font-size:16px;font-family:宋体">有非常出色的特点。从他完成的两个项目中，我认为</span><span style=";font-size:16px">Linux&nbsp;kernel</span><span style=";font-size:16px;font-family:宋体">这个项目是一个创意不太多的。因为在</span><span style=";font-size:16px">Linux&nbsp;kernel</span><span style=";font-size:16px;font-family:宋体">启动时</span><span style=";font-size:16px">Unix</span><span style=";font-size:16px;font-family:宋体">的系统规范已经存在了。而且自由软件基金会已经做了大部分的工作。这就跟烧开水一样，水烧到了</span><span style=";font-size:16px">100</span><span style=";font-size:16px;font-family:宋体">度直至沸腾，他只是烧了最后的</span><span style=";font-size:16px">5</span><span style=";font-size:16px;font-family:宋体">度，而基金会和其他的人已经烧了前面的</span><span style=";font-size:16px">95</span><span style=";font-size:16px;font-family:宋体">度。但是</span><span style=";font-size:16px">Git</span><span style=";font-size:16px;font-family:宋体">项目不一样，他是完全有</span><span style=";font-size:16px">Linux&nbsp;Torvalds&nbsp;</span><span style=";font-size:16px;font-family:宋体">一个人开发出来的。</span><span style=";font-size:16px">Git</span><span style=";font-size:16px;font-family:宋体">项目非常完美地体现出了</span><span style=";font-size:16px">Linux&nbsp;Torvalds</span><span style=";font-size:16px;font-family:宋体">的编程功力。今天基于</span><span style=";font-size:16px">Git</span><span style=";font-size:16px;font-family:宋体">的</span><span style=";font-size:16px">GitHub</span><span style=";font-size:16px;font-family:宋体">是许许多多创新思想的聚集地&nbsp;。在我们中国搞科研与原创创新需要好多的创新思想，我希望创客道学员充分重视充分利用</span><span style=";font-size:16px">GitHub</span><span style=";font-size:16px;font-family:宋体">上的这些资源，根据</span><span style=";font-size:16px">GitHub</span><span style=";font-size:16px;font-family:宋体">维护人员的说法，在计算机上安装</span><span style=";font-size:16px">GWPY&nbsp;Python</span><span style=";font-size:16px;font-family:宋体">包比较容易，只要一条命令就可以完成：</span><span style=";font-size:16px">pip&nbsp;install&nbsp;gwpy</span><span style=";font-size:16px;font-family:宋体">，但是安装的过程比较长，因为它使用的包比较多它要倚赖这个包，包括</span><span style=";font-size:16px">numpy</span><span style=";font-size:16px;font-family:宋体">、<span style="font-family:Times New Roman">&nbsp;</span></span><span style=";font-size:16px">scipy</span><span style=";font-size:16px;font-family:宋体">、<span style="font-family:Times New Roman">&nbsp;</span></span><span style=";font-size:16px">cycler</span><span style=";font-size:16px;font-family:宋体">、</span><span style=";font-size:16px">matplotlib</span><span style=";font-size:16px;font-family:宋体">、</span><span style=";font-size:16px">astropy</span><span style=";font-size:16px;font-family:宋体">等等。</span><span style=";font-size:16px">GWPY&nbsp;</span><span style=";font-size:16px;font-family:宋体">是一个面向对象的一个</span><span style=";font-size:16px">Pyhon</span><span style=";font-size:16px;font-family:宋体">包，也就是说数据对象是其核心。每一个数据对象都体现为一个类实例，包含属性还有一些数据，这些概念对于学过</span><span style=";font-size:16px">Pyphon</span><span style=";font-size:16px;font-family:宋体">语言编程的创客道学员一听就可以理解的。如果要创建一个新的类实例，应该要使用标准的</span><span style=";font-size:16px">constructor</span><span style=";font-size:16px;font-family:宋体">。</span><span style=";font-size:16px">GWPY</span><span style=";font-size:16px;font-family:宋体">一种提供了四种核心的数据对象，用于引力波探测器产生的四种标准数据即四种数据对像，包括时间序列数据、光谱数据、光谱图和</span><span style=";font-size:16px">DataQualityFlag</span><span style=";font-size:16px;font-family:宋体">四种核心的数据对象。一旦有了数据对象加上</span><span style=";font-size:16px">LIGO</span><span style=";font-size:16px;font-family:宋体">提供的数据，就可以完成数据可视化（</span><span style=";font-size:16px">Data&nbsp;Visualization</span><span style=";font-size:16px;font-family:宋体">）。</span><span style=";font-size:16px">Data&nbsp;Visualization</span><span style=";font-size:16px;font-family:宋体">对于数据分析和数据挖掘而言是一个非常直观的一个工具，因为有了数据可视化这个功能以后，隐藏在大数据海量数据里面的规律可以直观地被肉眼所识别出来。这对于引力波的研究是非常有帮助的，据</span><span style=";font-size:16px">LIGO</span><span style=";font-size:16px;font-family:宋体">的人员讲</span><span style=";font-size:16px">GWPY</span><span style=";font-size:16px;font-family:宋体">包被他们用于实现数据的可视化。</span></p><p style="text-indent:28px"><span style=";font-size:16px">数据的可视化需要有多种分析的方法，最终把数据与数据之间、量与量之间相关性、依赖性或者因果关系性以图形的形式直观地显示在计算机屏幕上。这次<span style="font-family:Times New Roman">LIGO</span></span><span style=";font-size:16px;font-family:宋体">组织宣布对引力波的发现就是因为对天文学长期观察的数据进行数据挖掘，在</span><span style=";font-size:16px">GWPY</span><span style=";font-size:16px;font-family:宋体">数据包的帮助下直观地发现了在两个黑洞之间的引力波，因为众所周知黑洞的质量是非常巨大的以至于光都逃不出黑洞的引力。</span></p><p style="text-indent:28px"><span style=";font-size:16px">引力波波动的状态被数据可视化之后直观地显示在计算机上，经过反复地核实和验证，他们觉得他们的发现是真实可靠的，所以这条新闻成为<span style="font-family:Times New Roman">2016</span></span><span style=";font-size:16px;font-family:宋体">年第一条在物理学界重大发现的新闻。我希望通过对这个案例的讲解，有助于大家了解</span><span style=";font-size:16px">Pyphon</span><span style=";font-size:16px;font-family:宋体">语言在数值计算和科学计算方面的应用。另外，我的一位俄罗斯的朋友是一位飞机设计师，他设计过一种新型的飞机叫</span><span style=";font-size:16px">Accord-201<span style="font-family:宋体">。他现在的工作就是在航天领域大量地运用</span><span style="font-family:Times New Roman">Pyphon</span></span><span style=";font-size:16px;font-family:宋体">语言和</span><span style=";font-size:16px">Numpy</span><span style=";font-size:16px;font-family:宋体">进行空气动力学方面的建模。这方面的工作非常有意义，除此之外还会有许多新的发现会应用上</span><span style=";font-size:16px">Pyphon</span><span style=";font-size:16px;font-family:宋体">语言，请全力以赴将</span><span style=";font-size:16px">Pyphon</span><span style=";font-size:16px;font-family:宋体">语言应用到科学计算与科学领域的编程活动。或许你在利用</span><span style=";font-size:16px">Pyphon</span><span style=";font-size:16px;font-family:宋体">进行知行合一的过程中你也能发现像引力波波这样伟大的科学发现。</span></p><p><span style=";font-size:16px">&nbsp;</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">洪峰</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

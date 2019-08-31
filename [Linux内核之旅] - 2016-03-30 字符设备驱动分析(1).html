@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		字符设备驱动分析(1)
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=416854024&amp;idx=2&amp;sn=ddc69b3c6a2ce80439311265fee51d42&amp;chksm=76479ded413014fb1a0607fdf5b521c52d08b6c8e7d47a415d9397a17443719d7b5d64617eaa&amp;scene=27#wechat_redirect&cpage=75' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">字符设备驱动分析(1)</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        武特
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-03-30</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p><span style=";font-size:16px">&nbsp;&nbsp;&nbsp;&nbsp;熟悉了模块编程的基本框架后，我们就可以试着分析一个简单的字符设备驱动。下面以《设备驱动开发详解》一书中的代码<span style="font-family:Times New Roman">6.17</span><span style="font-family:宋体">为例来分析这个字符设备驱动的代码。</span></span></p><p><span style=";font-size:16px">我们现在对于对前文中<span style="font-family:Times New Roman">hello</span><span style="font-family:宋体">，</span><span style="font-family:Times New Roman">kernel</span><span style="font-family:宋体">内核模块进行稍微的改动。我们都知道内核模块的入口函数是</span><span style="font-family:Times New Roman">module_init</span><span style="font-family:宋体">（</span><span style="font-family:Times New Roman">function&nbsp;name</span><span style="font-family:宋体">）内注册的函数。也就是告诉内核</span><span style="font-family:Times New Roman">“</span><span style="font-family:宋体">从这个函数入口</span><span style="font-family:Times New Roman">”</span><span style="font-family:宋体">。那么我们分析字符设备驱动模块，首先应该去看</span><span style="font-family:Times New Roman">globalmem_init</span><span style="font-family:宋体">函数。</span></span></p><p><span style=";font-size:16px">module_init(globalmem_init);</span></p><p><span style=";font-size:16px">module_exit(globalmem_exit);</span></p><p><span style=";font-size:16px">在<span style="font-family:Times New Roman">globalmem_init</span><span style="font-family:宋体">函数中，首先通过宏</span><span style="font-family:Times New Roman">MKDEV</span><span style="font-family:宋体">获得</span><span style="font-family:Times New Roman">32</span><span style="font-family:宋体">位的设备驱动号。通常</span><span style="font-family:Times New Roman">linux</span><span style="font-family:宋体">中的设备号由主设备号和次设备号组成，主设备号对应每一类设备，而次设备号对应该类设备的具体一个设备。</span><span style="font-family:Times New Roman">dev_t</span><span style="font-family:宋体">类型前</span><span style="font-family:Times New Roman">12</span><span style="font-family:宋体">位是主设备号（但事实上主设备号的前四位被屏蔽了，如果去看源码就可得知），后</span><span style="font-family:Times New Roman">20</span><span style="font-family:宋体">位为次设备号。由于可以事先指定主设备号</span><span style="font-family:Times New Roman">globalmem_major</span><span style="font-family:宋体">，因此我们需要用宏</span><span style="font-family:Times New Roman">MKDEV</span><span style="font-family:宋体">来获得</span><span style="font-family:Times New Roman">dev_t</span><span style="font-family:宋体">类型的设备号：</span></span></p><p><span style=";font-size:16px"><span style="font-family:宋体"><br  /></span></span></p><p><span style=";font-size:16px">#define&nbsp;MINORBITS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;20</span></p><p><span style=";font-size:16px">#define&nbsp;MKDEV(ma,mi)&nbsp;&nbsp;&nbsp;&nbsp;(((ma)&nbsp;&lt;&lt;&nbsp;MINORBITS)&nbsp;|&nbsp;(mi))</span></p><p><span style=";font-size:16px"><br  /></span></p><p><span style=";font-size:16px">这个宏通过移位和或运算，巧妙的得到<span style="font-family:Times New Roman">dev_t</span><span style="font-family:宋体">类型的设备号。这个宏可以在</span><span style="font-family:Times New Roman">include/linux/kdev_t.h</span><span style="font-family:宋体">中查找到。网上有的资料中会给出</span><span style="font-family:Times New Roman">MINORBITS</span><span style="font-family:宋体">为</span><span style="font-family:Times New Roman">8</span><span style="font-family:宋体">，这个应该是适合</span><span style="font-family:Times New Roman">16</span><span style="font-family:宋体">位的设备号的情况。</span></span></p><p><span style=";font-size:16px">接着通过全局变量<span style="font-family:Times New Roman">globamem_major</span><span style="font-family:宋体">来判断是否事先分配了起始的设备号。如果是，则继续分配连续的一段设备号，否则动态分配设备号，并且通过</span><span style="font-family:Times New Roman">MAJOR</span><span style="font-family:宋体">宏获得分配以后的主设备号。这里需要强调的是，下面的两种设备号分配函数，都是一次性分配一组连续的设备号（当然也可以只分配一个设备号，调整参数即可）。</span></span></p><p><span style=";font-size:16px">首先我们分析已知起始设备号的情况。通过调用<span style="font-family:Times New Roman">register_chrdev_region</span><span style="font-family:宋体">函数，便可以申请到一组连续范围的设备号。在</span><span style="font-family:Times New Roman">linux/fs/char_dev.c</span><span style="font-family:宋体">中可以看到此函数的原型。</span></span></p><p><span style=";font-size:16px">&nbsp;int&nbsp;register_chrdev_region(dev_t&nbsp;from,&nbsp;unsigned&nbsp;count,&nbsp;const&nbsp;char&nbsp;*name);</span></p><p><span style=";font-size:16px">其中<span style="font-family:Times New Roman">from</span><span style="font-family:宋体">是首设备号，而</span><span style="font-family:Times New Roman">count</span><span style="font-family:宋体">是这组连续设备号的数目。</span><span style="font-family:Times New Roman">name</span><span style="font-family:宋体">为设备名。而《设备》一书中的</span><span style="font-family:Times New Roman">count</span><span style="font-family:宋体">为</span><span style="font-family:Times New Roman">1</span><span style="font-family:宋体">，也就是说，这组设备号的数量为</span><span style="font-family:Times New Roman">1</span><span style="font-family:宋体">。</span></span></p><p><span style=";font-size:16px">其次，当起始设备号并未指定时就要动态的申请了，使用下面的函数：</span></p><p><span style=";font-size:16px">int&nbsp;alloc_chrdev_region(dev_t&nbsp;*dev,&nbsp;unsigned&nbsp;baseminor,&nbsp;unsigned&nbsp;count,const&nbsp;char&nbsp;*name);</span></p><p><span style=";font-size:16px">与上面静态分配函数不同的是，此时<span style="font-family:Times New Roman">dev</span><span style="font-family:宋体">是一个指针类型，因为要返回将要分配的设备号。关于以上两个函数的内核源码分析，具体参见</span></span><a><span style=";font-size:16px">这里</span></a><span style=";font-size:16px">。</span></p><p><span style=";font-size:16px">以上都成功执行后，我们给<span style="font-family:Times New Roman">globalmem_devp</span><span style="font-family:宋体">指针分配内存空间。其中</span><span style="font-family:Times New Roman">globalmem_devp</span><span style="font-family:宋体">是一个指向</span><span style="font-family:Times New Roman">globalmem</span><span style="font-family:宋体">设备结构体的指针。我们通过</span><span style="font-family:Times New Roman">mmset</span><span style="font-family:宋体">对此块内存空间进行初始化之后。接着</span><span style="font-family:Times New Roman">globalmem_setup_cdev</span><span style="font-family:宋体">函数对</span><span style="font-family:Times New Roman">cdev</span><span style="font-family:宋体">初始化并将此字符设备注册到内核。</span></span></p><p><span style=";font-size:16px">//<span style="font-family:宋体">设备驱动模块加载函数</span></span></p><p><span style=";font-size:16px"><span style="font-family:Times New Roman"></span></span></p><p><span style=";font-size:16px">int&nbsp;globalmem_init(void)</span></p><p><span style=";font-size:16px">{</span></p><p><span style=";font-size:16px">&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;result;</span></p><p><span style=";font-size:16px">&nbsp;&nbsp;&nbsp;&nbsp;dev_t&nbsp;devno=MKDEV(globalmem_major,0);&nbsp;</span></p><p><span style=";font-size:16px"><br  /></span></p><p><span style=";font-size:16px">&nbsp;&nbsp;&nbsp;&nbsp;if(globalmem_major) {</span></p><p><span style=";font-size:16px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result=register_chrdev_region(devno,1,&quot;globalmem&quot;);</span></p><p><span style=";font-size:16px">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p><p><span style=";font-size:16px">&nbsp;&nbsp;&nbsp;&nbsp;else&nbsp;</span><span style="line-height: 1.6;">{</span></p><p><span style=";font-size:16px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result=alloc_chrdev_region(&amp;devno,0,1,&quot;globalmem&quot;);</span></p><p><span style=";font-size:16px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;globalmem_major=MAJOR(devno);</span></p><p><span style=";font-size:16px">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p><p><span style=";font-size:16px">&nbsp;&nbsp;&nbsp;&nbsp;if(result&lt;0)</span></p><p><span style=";font-size:16px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;result;</span></p><p><span style=";font-size:16px"><br  /></span></p><p><span style=";font-size:16px">&nbsp;&nbsp;&nbsp;&nbsp;globalmem_devp=kmalloc(sizeof(struct&nbsp;globalmem_dev),GFP_KERNEL);</span></p><p><span style=";font-size:16px"><br  /></span></p><p><span style=";font-size:16px">&nbsp;&nbsp;&nbsp;&nbsp;if(!globalmem_devp) {</span></p><p><span style=";font-size:16px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result=-ENOMEM;</span></p><p><span style=";font-size:16px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;goto&nbsp;fail_malloc;</span></p><p><span style=";font-size:16px">&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;</span></p><p><span style=";font-size:16px">&nbsp;&nbsp;&nbsp;&nbsp;memset(globalmem_devp,0,sizeof(struct&nbsp;globalmem_dev));&nbsp;</span></p><p><span style=";font-size:16px">&nbsp;&nbsp;&nbsp;&nbsp;globalmem_setup_cdev(globalmem_devp,0);return&nbsp;0;</span></p><p><span style=";font-size:16px">&nbsp;&nbsp;&nbsp;&nbsp;fail_malloc:unregister_chrdev_region(devno,1);</span></p><p><span style=";font-size:16px">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;result;</span></p><p><span style=";font-size:16px">}</span></p><p><span style=";font-size:16px"><span style="font-family:Times New Roman"></span></span><br  /></p><p><span style=";font-size:16px">上面的程序已经很<span style="font-family:Times New Roman">“</span><span style="font-family:宋体">整齐</span><span style="font-family:Times New Roman">”</span><span style="font-family:宋体">的说明了</span><span style="font-family:Times New Roman">init</span><span style="font-family:宋体">函数的主要作用。具体如下：</span></span></p><p><span style=";font-size:16px">1.<span style="font-family:宋体">申请设备号</span></span></p><p><span style=";font-size:16px">2.<span style="font-family:宋体">为设备相关的数据结构分配内存</span></span></p><p><span style=";font-size:16px">3.<span style="font-family:宋体">初始化并注册</span><span style="font-family:Times New Roman">cdev(globalmem_setup_cdev</span><span style="font-family:宋体">函数实现</span><span style="font-family:Times New Roman">)</span></span></p><p><span style=";font-size:16px">有了字符设备驱动的加载函数，那么肯定有卸载函数：</span></p><p><span style=";font-size:16px">void&nbsp;globalmem_exit(void) {</span></p><p><span style=";font-size:16px">&nbsp;&nbsp;&nbsp;&nbsp;cdev_del(&amp;globalmem_devp-&gt;cdev);</span></p><p><span style=";font-size:16px">&nbsp;&nbsp;&nbsp;&nbsp;kfree(globalmem_devp);</span></p><p><span style=";font-size:16px">&nbsp;&nbsp;&nbsp;&nbsp;unregister_chrdev_region(MKDEV(globalmem_major,&nbsp;0),&nbsp;1);</span></p><p><span style=";font-size:16px">}</span></p><p><span style=";font-size:16px"><br  /></span></p><p><span style=";font-size:16px">总体来看，<span style="font-family:Times New Roman">globalmem_init</span><span style="font-family:宋体">函数完成的是字符设备的一些初始化工作，以及向系统内注册。而</span><span style="font-family:Times New Roman">globalmem_exit</span><span style="font-family:宋体">就是进行字符设备的释放工作：从内核中删除这个字符设备，释放设备结构体所占的内存，以及释放申请的设备号。从结构上看，它并没有偏离内核模块编程的结构范围，仍然是我们熟悉的</span><span style="font-family:Times New Roman">hello,kernel</span><span style="font-family:宋体">。</span></span></p><p><span style=";font-size:16px">我们在此先暂时将<span style="font-family:Times New Roman">globalmem_setup_cdev</span><span style="font-family:宋体">函数内部的实现用</span><span style="font-family:Times New Roman">return&nbsp;0;</span><span style="font-family:宋体">来代替。那么我们现在用插入内核模块的命令将我们这个字符设备驱动（尽管许多功能还未实现）插入到内核中。成功后我们可以通过</span><span style="font-family:Times New Roman">cat&nbsp;/proc/devices&nbsp;</span><span style="font-family:宋体">命令来查看刚刚字符设备名称以及主设备号。</span><span style="font-family:Times New Roman">/proc</span><span style="font-family:宋体">是一个虚拟的文件系统，这里的虚拟是指这个文件系统并不占用磁盘空间而只存在于内存中。而该目录下的</span><span style="font-family:Times New Roman">devices</span><span style="font-family:宋体">文件中存储着系统字符和块设备的驱动名称以及设备编号。</span></span></p><p><span style=";font-size:16px">接下来，我们可以通过<span style="font-family:Times New Roman">:mknod&nbsp;/dev/globalmem&nbsp;c&nbsp;250&nbsp;0</span><span style="font-family:宋体">命令创建一个设备节点。有了这个设备节点后，就可以对它进行类似普通文件那样的操作了（当然现在还不能，因为并未实现具体的操作函数）。</span></span></p><p><span style=";font-size:16px">这样一个字符驱动的大致上有了雏形。</span></p><p><span style=";font-size:16px">&nbsp;</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">武特</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

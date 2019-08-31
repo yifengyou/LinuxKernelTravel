@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Linux 的逆袭
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664603093&amp;idx=2&amp;sn=ede96f8a658cbdfd3b5033ea4fab573e&amp;chksm=f04db030c73a3926bad22e188a8c8caa1d4ba0b17070e4840fd45e093c067796f651c426ec5a&amp;scene=27#wechat_redirect&cpage=61' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Linux 的逆袭</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                                            
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-09-11</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                <a class="original_area_primary" id="copyright_info" href="##" style="visibility:hidden">
+                    <span class="tips_global_primary">文章转载自公众号</span>
+                    <span class="radius_avatar">
+                                            <img class="avatar" src="http://wx.qlogo.cn/mmhead/Q3auHgzwzM5DcYoQwQib6PxYBULrkbNl9pT6W1YHP1IoSKPaPA7kibjw/0" alt="Linux中国">
+                                          </span>
+                    <span class="original_primary_nickname rich_media_meta_link js_nickname">Linux中国</span>
+                                        <span class="tips_global_primary" id="js_comma">，</span>
+                    <span class="original_primary_author_wrp tips_global_primary" id="js_author">
+                      作者                                            译者：H-mudcup
+                                          </span>
+                                    </a>
+                                
+                
+                
+                
+                                                
+                                <div class="rich_media_thumb_wrp" id="media">
+                    
+                                        
+                                    </div>
+                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p class="article_img" style="word-wrap: break-word; line-height: 2em; text-align: center; font-family: Tahoma, Helvetica, SimSun, sans-serif; font-size: 14px; white-space: normal;"><img src="http://mmbiz.qpic.cn/mmbiz_jpg/W9DqKgFsc68ibAiaibjaOKLyWUhqBaJiaGxLgL7YCtKO18KSBmFkERwhIBPTaBHaFGC8dIbydicn6gicSNf3Klq1MtJQ/0?wx_fmt=jpeg" style="word-wrap: break-word; max-width: 95%; width: 694px;" class="" data-type="jpeg" data-ratio="0.554" data-w="1000"  /></p><p style="word-wrap: break-word; margin-top: 10px; margin-bottom: 10px; line-height: 2em; font-family: Tahoma, Helvetica, SimSun, sans-serif; font-size: 14px; white-space: normal;">Linux 系统在早期的时候被人们嘲笑，它什么也干不了。而现在，Linux 无处不在！</p><p style="word-wrap: break-word; margin-top: 10px; margin-bottom: 10px; line-height: 2em; font-family: Tahoma, Helvetica, SimSun, sans-serif; font-size: 14px; white-space: normal;">我当时还是个在巴西学习计算机工程的大三学生，并同时在一个全球审计和顾问公司兼职系统管理员。公司决定用 Oracle 数据库开发一些企业资源计划（ERP）软件。因此，我得以在 Digital UNIX OS (DEC Alpha) 进行训练，这个训练颠覆了我的三观。</p><p style="word-wrap: break-word; margin-top: 10px; margin-bottom: 10px; line-height: 2em; font-family: Tahoma, Helvetica, SimSun, sans-serif; font-size: 14px; white-space: normal;">UNIX 系统非常的强大，而且给予了我们对机器上包括存储系统、网络、应用和其他一切的绝对控制权。</p><p style="word-wrap: break-word; margin-top: 10px; margin-bottom: 10px; line-height: 2em; font-family: Tahoma, Helvetica, SimSun, sans-serif; font-size: 14px; white-space: normal;">我开始在 ksh 和 Bash 里编写大量的脚本让系统进行自动备份、文件传输、提取转换加载（ETL）操作、自动化 DBA 日常工作，还为各种不同的项目创建了许多服务。此外，调整数据库和操作系统的工作让我更好的理解了如何让服务器以最佳方式运行。在那时，我在自己的个人电脑上使用的是 Windows 95 系统，而我非常想要在我的个人电脑里放进一个 Digital UNIX，或者哪怕是 Solaris 或 HP-UX 也行，但是那些 UNIX 系统都得在特定的硬件才能上运行。我阅读了所有的系统文档，还找过其它的书籍以求获得更多的信息，也在我们的开发环境里对这些疯狂的想法进行了实验。</p><p style="word-wrap: break-word; margin-top: 10px; margin-bottom: 10px; line-height: 2em; font-family: Tahoma, Helvetica, SimSun, sans-serif; font-size: 14px; white-space: normal;">后来在大学里，我从我的同事那听说了 Linux。我那时非常激动的从还在用拨号方式连接的因特网上下载了它。在我的正宗的个人电脑里装上 UNIX 这类系统的这个想法真是太酷了！</p><p style="word-wrap: break-word; margin-top: 10px; margin-bottom: 10px; line-height: 2em; font-family: Tahoma, Helvetica, SimSun, sans-serif; font-size: 14px; white-space: normal;">Linux 不同于 UNIX 系统，它设计用来在各种常见个人电脑硬件上运行，在起初，让它开始工作确实有点困难，Linux 针对的用户群只有系统管理员和极客们。我为了让它能运行，甚至用 C 语言修改了驱动软件。我之前使用 UNIX 的经历让我在编译 Linux 内核，排错这些过程中非常的顺手。由于它不同于那些只适合特定硬件配置的封闭系统，所以让 Linux 跟各种意料之外的硬件配置一起工作真的是件非常具有挑战性的事。</p><p style="word-wrap: break-word; margin-top: 10px; margin-bottom: 10px; line-height: 2em; font-family: Tahoma, Helvetica, SimSun, sans-serif; font-size: 14px; white-space: normal;">我曾见过 Linux 在数据中心获得一席之地。一些具有冒险精神的系统管理员使用它来帮他们完成每天监视和管理基础设施的工作，随后，Linux 作为 DNS 和 DHCP 服务器、打印管理和文件服务器等赢得了更多的使用。企业曾对 Linux 有着很多顾虑（恐惧，不确定性，怀疑(FUD:fear, uncertainty and doubt)）和诟病：谁是它的拥有者？由谁来支持它？有适用于它的应用吗？</p><p style="word-wrap: break-word; margin-top: 10px; margin-bottom: 10px; line-height: 2em; font-family: Tahoma, Helvetica, SimSun, sans-serif; font-size: 14px; white-space: normal;">但现在看来，Linux 在各个地方进行着逆袭！从开发者的个人电脑到大企业的服务器；我们能在智能手机、智能手表以及像树莓派这样的物联网（IoT）设备里找到它。甚至 Mac OS X 有些命令跟我们所熟悉的命令一样。微软在制造它自己的发行版，在 Azure 上运行，然后…… Windows 10 要装备 Bash。</p><p style="word-wrap: break-word; margin-top: 10px; margin-bottom: 10px; line-height: 2em; font-family: Tahoma, Helvetica, SimSun, sans-serif; font-size: 14px; white-space: normal;">有趣的是 IT 市场会不断地创造并迅速的用新技术替代，但是我们所掌握的 Digital UNIX、HP-UX 和 Solaris 这些旧系统的知识还依然有效并跟 Linux 息息相关，不论是为了工作还是玩。现在我们能完全的掌控我们的系统，并使它发挥最大的效用。此外，Linux 有个充满热情的社区。</p><p style="word-wrap: break-word; margin-top: 10px; margin-bottom: 10px; line-height: 2em; font-family: Tahoma, Helvetica, SimSun, sans-serif; font-size: 14px; white-space: normal;">我真的建议想在计算机方面发展的年轻人学习 Linux，不论你处于 IT 界里的哪个分支。如果你深入了解了一个普通的家用个人电脑是如何工作的，你就可以以基本相同的方式来面对任何机器。你可以通过 Linux 学习最基本的计算机知识，并通过它建立能在 IT 界任何地方都有用的能力！</p><hr style="word-wrap: break-word; clear: both; margin-right: 10px; margin-left: 10px; font-family: Tahoma, Helvetica, SimSun, sans-serif; font-size: 14px; line-height: 25.2px; white-space: normal;"  /><p style="word-wrap: break-word; margin-top: 10px; margin-bottom: 10px; line-height: 2em; font-family: Tahoma, Helvetica, SimSun, sans-serif; font-size: 14px; white-space: normal;">via:&nbsp;<a class="ext" rel="external nofollow" target="_blank" style="word-wrap: break-word; color: rgb(77, 138, 216); text-decoration: underline;">https://opensource.com/life/16/8/revenge-linux</a></p><p style="word-wrap: break-word; margin-top: 10px; margin-bottom: 10px; line-height: 2em; font-family: Tahoma, Helvetica, SimSun, sans-serif; font-size: 14px; white-space: normal;">作者：<span style="word-wrap: break-word; text-decoration: underline; color: rgb(77, 138, 216);"><a class="ext" rel="external nofollow" target="_blank" style="word-wrap: break-word; color: rgb(77, 138, 216);">Daniel Carvalho</a></span><span class="sup" style="word-wrap: break-word; font-size: 9px; vertical-align: super; color: rgb(255, 255, 255); transform: scale(0.75); display: inline-block; padding: 1px; line-height: 1em; background-color: rgb(102, 102, 102);">[1]</span>&nbsp;译者：<span style="word-wrap: break-word; text-decoration: underline; color: rgb(77, 138, 216);"><a class="ext" rel="external nofollow" target="_blank" style="word-wrap: break-word; color: rgb(77, 138, 216);">H-mudcup</a></span><span class="sup" style="word-wrap: break-word; font-size: 9px; vertical-align: super; color: rgb(255, 255, 255); transform: scale(0.75); display: inline-block; padding: 1px; line-height: 1em; background-color: rgb(102, 102, 102);">[2]</span>&nbsp;校对：<span style="word-wrap: break-word; text-decoration: underline; color: rgb(77, 138, 216);"><a class="ext" rel="external nofollow" target="_blank" style="word-wrap: break-word; color: rgb(77, 138, 216);">wxy</a></span><span class="sup" style="word-wrap: break-word; font-size: 9px; vertical-align: super; color: rgb(255, 255, 255); transform: scale(0.75); display: inline-block; padding: 1px; line-height: 1em; background-color: rgb(102, 102, 102);">[3]</span></p><p style="word-wrap: break-word; margin-top: 10px; margin-bottom: 10px; line-height: 2em; font-family: Tahoma, Helvetica, SimSun, sans-serif; font-size: 14px; white-space: normal;">本文由&nbsp;<span style="word-wrap: break-word; text-decoration: underline; color: rgb(77, 138, 216);"><a class="ext" rel="external nofollow" target="_blank" style="word-wrap: break-word; color: rgb(77, 138, 216);">LCTT</a></span><span class="sup" style="word-wrap: break-word; font-size: 9px; vertical-align: super; color: rgb(255, 255, 255); transform: scale(0.75); display: inline-block; padding: 1px; line-height: 1em; background-color: rgb(102, 102, 102);">[4]</span>&nbsp;原创翻译，<span style="word-wrap: break-word; text-decoration: underline; color: rgb(77, 138, 216);"><a style="word-wrap: break-word; color: rgb(247, 110, 110);">Linux中国</a></span><span class="sup" style="word-wrap: break-word; font-size: 9px; vertical-align: super; color: rgb(255, 255, 255); transform: scale(0.75); display: inline-block; padding: 1px; line-height: 1em; background-color: rgb(102, 102, 102);">[5]</span>&nbsp;荣誉推出</p><hr width="80%" style="word-wrap: break-word; clear: both; margin-right: 10px; margin-left: 10px; font-family: Tahoma, Helvetica, SimSun, sans-serif; font-size: 14px; line-height: 25.2px; white-space: normal;"  /><p class="show_links" style="word-wrap: break-word; margin-top: 10px; margin-bottom: 10px; padding-left: 10px; color: rgb(102, 102, 102); font-size: 9px; line-height: 2em; font-family: Tahoma, Helvetica, SimSun, sans-serif; white-space: normal;">[1]: https://opensource.com/users/danielscarvalho<br style="word-wrap: break-word;"  />[2]: https://github.com/H-mudcup<br style="word-wrap: break-word;"  />[3]: https://github.com/wxy<br style="word-wrap: break-word;"  />[4]: https://github.com/LCTT/TranslateProject<br style="word-wrap: break-word;"  />[5]: https://linux.cn/<br style="word-wrap: break-word;"  /></p><p><a name="rand" class="ext" rel="external nofollow" target="_blank" style="word-wrap: break-word; color: rgb(77, 138, 216); text-decoration: underline;"></a></p><p class="cap" style="word-wrap: break-word; margin: 10px auto; padding: 8px 15px; line-height: 36px; font-weight: bold; color: rgb(238, 238, 238); font-size: 21px; letter-spacing: 2px; border-left: 10px solid rgb(0, 0, 0); border-right: 10px solid rgb(0, 0, 0); text-shadow: rgb(51, 51, 51) 2px 2px 2px; text-align: center; background-color: rgb(117, 3, 3);">推荐文章</p><table cellpadding="0" width="734"><thead style="word-wrap: break-word; color: rgb(0, 170, 255); background-color: rgb(238, 238, 238);"><tr style="word-wrap: break-word;"><th style="word-wrap: break-word; text-align: center; font-weight: normal; white-space: nowrap;">点击标题或输入文章 ID 直达该文章</th></tr></thead><tbody style="word-wrap: break-word;"><tr style="word-wrap: break-word;"><td align="center" style="word-wrap: break-word; padding: 0px !important; background-image: url(&quot;http://mmbiz.qpic.cn/mmbiz/W9DqKgFsc6ickPxxE9L5jFN9DanOCHVR2DpSaGuZzLWk3oA6FPia004uQGiaYoichxeiaSztib8voic7NxnO8ILfcjM6A/0&quot;); background-size: cover;" height="100"><p style="word-wrap: break-word; margin-top: 160px; line-height: 2em; color: rgb(255, 255, 255); opacity: 0.8; background-color: rgb(0, 0, 0);">976&nbsp;<a href="http://mp.weixin.qq.com/s?__biz=MjM5NjQ4MjYwMQ==&amp;mid=202767059&amp;idx=1&amp;sn=5290520ebac6ad1604328aade8587dc3#rd" target="_blank" style="word-wrap: break-word; color: rgb(255, 255, 255); text-decoration: underline;">就是她，写出了让阿姆斯壮成功登陆月球的代码！</a></p></td></tr><tr style="word-wrap: break-word;"><td align="center" style="word-wrap: break-word; padding: 0px !important; background-image: url(&quot;http://mmbiz.qpic.cn/mmbiz/W9DqKgFsc6ibxfDxbr7EiadU05RWI2wBGvvPoyActHx0ic7WImnrD7xkw1kwJ762VsCOftgLSXq2aUFVVGjXM4xgg/0?wx_fmt=png&quot;); background-size: cover;" height="100"><p style="word-wrap: break-word; margin-top: 160px; line-height: 2em; color: rgb(255, 255, 255); opacity: 0.8; background-color: rgb(0, 0, 0);">4062&nbsp;<a href="http://mp.weixin.qq.com/s?__biz=MjM5NjQ4MjYwMQ==&amp;mid=2664607447&amp;idx=2&amp;sn=787bbb6091960908cd42def86eaea99e#rd" target="_blank" style="word-wrap: break-word; color: rgb(255, 255, 255); text-decoration: underline;">Linux 给了我所有所需的工具</a></p></td></tr><tr style="word-wrap: break-word;"><td align="center" style="word-wrap: break-word; padding: 0px !important; background-image: url(&quot;http://mmbiz.qpic.cn/mmbiz/W9DqKgFsc69icduTmftOscPDSg1ydnYpbS8psJY6LFTgCJ6uw3V2jhFO3IAIX72RP0Tk8LNInh7mzlvLD9ric1pw/0?wx_fmt=jpeg&quot;); background-size: cover;" height="100"><p style="word-wrap: break-word; margin-top: 160px; line-height: 2em; color: rgb(255, 255, 255); opacity: 0.8; background-color: rgb(0, 0, 0);">4237&nbsp;<a href="http://mp.weixin.qq.com/s?__biz=MjM5NjQ4MjYwMQ==&amp;mid=2664607771&amp;idx=2&amp;sn=0102474749af35b450693151bfd08e90#rd" target="_blank" style="word-wrap: break-word; color: rgb(255, 255, 255); text-decoration: underline;">IT 运行在云端，而云运行在 Linux 上</a></p></td></tr></tbody></table><p class="article_img" style="word-wrap: break-word; line-height: 2em; text-align: center; font-family: Tahoma, Helvetica, SimSun, sans-serif; font-size: 14px; white-space: normal;"><img title="将文章分享给朋友是对我们最好的赞赏！" src="http://mmbiz.qpic.cn/mmbiz_png/W9DqKgFsc68ibAiaibjaOKLyWUhqBaJiaGxLgcRrwpHBnksYp7FoJYssSbaZqxCl1tZDSSlj3cQKcHWQelHjiaqbN2A/0?wx_fmt=gif" style="word-wrap: break-word; max-width: 95%; width: 694px;" class="" data-type="gif" data-ratio="0.4" data-w="900"  /></p><p class="article_img_desc" style="word-wrap: break-word; line-height: 2em; text-align: center; font-family: Tahoma, Helvetica, SimSun, sans-serif; font-size: 14px; white-space: normal;"><em style="word-wrap: break-word; color: rgb(153, 153, 153); min-width: 20%; min-height: 22px; display: inline-block; padding: 10px; margin-right: auto; margin-bottom: 10px; margin-left: auto; border-bottom: 1px solid rgb(217, 217, 217); font-size: 13px; line-height: 1.7;">将文章分享给朋友是对我们最好的赞赏！</em></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">译者：H-mudcup</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

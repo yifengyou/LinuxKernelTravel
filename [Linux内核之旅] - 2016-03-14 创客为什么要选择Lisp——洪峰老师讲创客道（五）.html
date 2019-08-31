@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		创客为什么要选择Lisp——洪峰老师讲创客道（五）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=416586312&amp;idx=1&amp;sn=47ad5a17a7a9c5e4c9ec99c2e2d2be84&amp;chksm=764bb7ad413c3ebb501252dc67dcc107f4cddde7e335aa388dcc104838da084ca47880b0f97f&amp;scene=27#wechat_redirect&cpage=77' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">创客为什么要选择Lisp——洪峰老师讲创客道（五）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        洪峰
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-03-14</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p><mpvoice frameborder="0" class="res_iframe js_editor_audio audio_iframe" src="/cgi-bin/readtemplate?t=tmpl/audio_tmpl&amp;name=%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%935&amp;play_length=19:44" name="%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%935" play_length="1184000" voice_encode_fileid="MzI3NzA5MzUxNF80MTY1ODYzMTA="></mpvoice></p><p>Lisp&nbsp;是继FORTRAN之后发明出来的第二种高级编程语言，而且这个语言至今仍在被广泛使用。在漫长的发展过程中Lisp诞生了一个庞大的家族，里面有很多分支。我在黑客道的教学里面重点讲了四种分支，它们分别是：第一种，内嵌在GUN&nbsp;Emacs文本编辑器里面的Emacs&nbsp;Lisp；第二种，工业标准叫做Common&nbsp;Lisp；第三种：Racket，它是Scheme的一个现代的实现，Scheme是1975年诞生在麻省理工学院的一个Lisp方言，它兼有早期Lisp语言和ALGO语言这两种语言的基因，我会在后面的讲座里面花很多时间来介绍Racket，我把这一章的标题定为“字符与球拍”也是针对这个语言而言的；第四种，工作在Java虚拟机上面的Clojure，以后在讲Java虚拟机之上的语言时我再回到这个专题上。</p><p>在所有的Lisp实现里面函数都是低等对象，关于低等对象的概念我前面已经说过了，这里就不再重复了。有了低等对象之后许许多多的编程任务就变得非常简洁。</p><p>这里我举一个例子，在开发图形界面的应用程序时比如一个Email的程序，当你写好一个Email要发送的时候，你需要点击发送按钮（botton），点击发送按钮的时候这个按钮就是一个对象，这个点击事件相当于传递一个函数。这个函数会做什么事情呢？它会把之前你在文本框里面输入的信息还有你的收件人，主题等字段一并地交给发送程序，发送程序会进行网络通信，将信息传递出去。像这样的一些动作我们都可以将它封装到一个函数里面传递给button对象。所以说从这里可以看出来，虽然把函数当做一个参数来传递对于普通听众来说比较抽象，但对程序员来说是一个很自然的事情，而且它的用途是非常广泛的。</p><p>所有的Lisp都已经实现了将函数当做低等对象这种机制，也就是说在我前面提到的活动过程记录，也就是帧框里面涉及的静态链和动态链都已经被Lisp实现了。当然每一种Lisp究竟是怎样去实现这些机制，这样的技术细节我就不继续涉及了，有兴趣的同学可以参照具体实现的源代码自行研究或者是听我在黑客道初段里面的讲解。总而言之，有了对活动过程记录（帧框）里面静态链和动态链的支持以后，那么当我们拷贝一个函数时，也就是把它当做一个参数进行传递的时候，静态连和动态链所参照的数据或者函数都可以被一并打包到函数里被传递，这就是Lisp里面函数作为低等对象被传递的内在实质。</p><p>前面我在讲C的时候已经提到过，C程序的编译时与运行时是两个截然不同的阶段。一个C的应用程序首先必须将源代码进行编译，当通过编译得到这个程序的可执行文件的时候你才能去运行它，这两个阶段是截然不同的。而在Lisp里面这两个阶段是很难分开的。我之前提到的美国著名黑客、风险投资家Paul&nbsp;Graham曾经写过一篇文章叫作《Revenge&nbsp;of&nbsp;the&nbsp;Nerds》，这篇文章归纳总结了Lisp语言的九大基础特征，这篇文章收录在他的一部作品中叫作《Hackers&nbsp;and&nbsp;Painters》（即黑客与画家）。在这九条基础特征中，前面的七条都已经全部或者部分地被其他语言实现了，但是仍然有两条是Lisp所独有的。</p><p>这两条是：第一，在Lisp语言里面，程序和数据的表达形式是一样的，也就是说list列表是一个通用的容器。在list里面可以包罗万象，你可以将数据和函数都放进去。从list的角度来看，函数的传递实际上就是列表的传递。有了list这个数据结构以后，数据与函数在词法形式和句法形式上得到了统一。我们知道list是一个序结构，从数学的角度来说是一个序结构（order&nbsp;结构），而布尔巴基学派讲过基本的数学结构有三大类：第一是拓扑结构，第二是序结构，第三是代数结构。有了序结构就可把前面的拓扑结构与后面的代数结构有机地结合起来。所以我在讲解刻度论的时候提出过一个pm123的概念，其中的二就是指：一方面是指可能世界的逻辑，另一方面是指形式语言特别是计算机编程语言。而计算机编程语言里面我又指定Lisp作为大家学习的一个对象。为什么呢？因为Lisp里面有列表，有序操作这样具体的技术手段，这是第一点。</p><p>Paul&nbsp;Graham提到的第二点就是Lisp的运行时系统是自含的，而且Lisp还有一个很重要的机制叫作macro（宏），这个宏与C里面的宏是不一样的，差别非常大。Lisp语言的宏机制与Lisp语言的运行时系统是自含的结合起来之后，你就很难在Lisp程序中区分哪一部分是处在运行时，哪一部分是处在编译时。也就是说，含有宏的Lisp程序的编译时和运行时是穿错交叉进行的，程序员是很难区分这两者的。有了这个特点之后，Lisp就非常适合用于建模。而对于我们创客道的践行者而言，一个创客想要从事发明创造，前面一个很长的阶段是用于建模。那么这个时候Lisp作为建模的语言推荐给大家，它是一个非常高效的语言。从这个意义上讲，我们学习Lisp语言的价值是非常巨大的。</p><p>前面提到过我在黑客道的教学中选择了四种Lisp的方言进行讲解，这里我谈谈它们的基础特点。其中最后一种Clojure我放在后面再讲，这里我先讲前面的三种Emacs&nbsp;Lisp、Common&nbsp;Lisp和Racket。</p><p>现在来谈谈Emacs&nbsp;Lisp，Emacs&nbsp;Lisp是内嵌在GUN&nbsp;Emacs的Lisp，这个Lisp有一个重要的特点，那就是采用动态辖域，动态辖域是与静态辖域相对而言的，也就是说，一个函数或者一个变量的作用范围是在调用这个函数或变量的时候它所处在的环境决定的，这个特点叫作动态辖域。我曾经问过Stallman为什么要在Emacs里面采用动态辖域。他是这样讲的，因为对于编辑工作有很多的编程任务需要这个特点，那么Emacs&nbsp;Lisp内嵌在GUN&nbsp;Emacs这个文本编辑器中就是为了实现这样一些功能。我们知道在Emacs定制的过程中需要用Emacs&nbsp;Lisp来编程，而Emacs定制主要是指两项任务，一个就是制作major&nbsp;mode（大模式），另一个是制作minor&nbsp;mode（小模式），Emacs编程的主要任务是指这两点。无论是对大模式还是小模式，核心的工作就是要对buffer进行操作。在Emacs&nbsp;Lisp里面buffer就是GUN&nbsp;Emacs的区间，一个终端分为四个区域，上面的菜单、接下来的buffer，就是编辑文本所在的那个区域、状态栏、最底下的回显。</p><p>对于第二个区域也就是编辑文本所在的区域我们叫做buffer，在buffer编辑的时候定制工作包括五个方面。第一是对于buffer里面出现的文本，它有文本属性；第二是某个区间可以采用高亮度或者采用反向高亮度来进行显示；第三是buffer可能会有一些内置的局部变量；第四是你可能会写一些函数绑定到一些特定的键组合上面去；最后一点叫作句法表，对于每一个大模式或小模式而言它有内置的句法表，比方说我们在写C程序的时候，C程序有一套自己的语法规范，在写Lisp程序时又有一套Lisp的语法规范，在用markdown写日志的时候也有一套自己的规范。这些规范比如说显示C语言的关键字、大括号的配对、缩进等，都统统定义到句法表里面去。所以说对Emacs进行定制的时候，就有很多的工作需要使用动态辖域，这个需要给大家简单的说明一下。</p><p>在Lisp编程中动态辖域的威力是十分巨大的，然而它也有一个问题就是对于程序的编写和调试存在一些障碍。有时候会给程序员带来一些困扰，相对动态辖域，静态辖域可以比较好的解决这个问题。所谓静态辖域，一个函数或者一个变量的作用域是在源程序里面给出来的，就是说变量所在的程序，这个程序所给定词法的边界。利用这个来界定范围，这对程序员来说是非常方便的，因为在写程序时，程序在屏幕上可以直接看出来，而不是根据程序调用时候的情况来进行界定。所以说在后期Lisp工业标准里面提供了对静态辖域的支持，当然Common&nbsp;Lisp也可以支持动态辖域。Common&nbsp;Lisp有很多实现。我使用的实现叫作Steel&nbsp;Bank&nbsp;Common&nbsp;Lisp简称SBCL，有兴趣的同学可以下载这个自由软件来尝试一下。</p><p>从技术特点来讲，Common&nbsp;Lisp与Emacs&nbsp;Lisp是比较相近的。Emacs&nbsp;Lisp的源头叫作Mac&nbsp;Lisp，也是MIT设计的一种Lisp。我们知道Lisp最初是诞生在麻省理工学院的，而Stallman院士早年在麻省理工学院的人工智能实验室工作。在早期的Lisp和工业标准Common&nbsp;Lisp中有一个概念非常重要，处于核心地位，那就是symbol（符号）。以C语言编程角度来看，在Lisp里面符号可以看成是有五个字段的struct。五个字段分别是：名称（name）、类型（type）、值、property&nbsp;list、lambda表达式的绑定，这五个字段合起来作为一个symbol结构，这是Lisp设计的一个核心数据结构，我们一定要掌握。曾经有一位作者叫作David&nbsp;Touretzky，他写过一本很好的书，是专门讲Common&nbsp;Lisp的。在那本书里他对这五个字段以及它们在Lisp编程里的作用进行了深入浅出的介绍，是一本非常值得一读的Lisp著作。</p><p>在刚才我讲symbol内在结构时提到了五个字段，其中一个字段叫作property&nbsp;list简称plist，plist怎么翻译呢？汉语里面有属性、禀性等词语，究竟用哪个比较好呢？我以前在读编译原理这方面著作时，发现大量混乱的翻译，非常的误导人，为了澄清这个问题，在这里我做一下特定的说明。从编译原理的角度来看，对符号节点内部的property&nbsp;list我把它翻译成内禀性。而这个符号的子节点，作为一个节点在树里面它可能有子节点，它的儿子或者孙子，我们把它叫做下禀性。当plist中有一个或者多个key-value偶对时，key-value组成一个小小的数据库。我把其中的一个key-value偶对叫做它的属性，key叫做属性的名称，value叫做属性的属性值。我希望通过这个区分帮助大家建立起关于形式语言的一些基本概念。这里的禀性不管是内禀性还是下禀性，我把它对应到英文的property&nbsp;这个单词上去，而把属性对应到英文attribute这个单词上去。在我讲解黑客道六段的时候，我们在完成了编译原理中词法分析和句法分析之后，我们对编译进行语义分析，在那个时候我们要讲综合禀性的计算和继承禀性的计算。在那个地方我们会利用Lisp语言来讲这些计算，我们会发现利用Lisp语言去设计编译器是非常方便的，因为它有list这个结构还有很多函数来进行操作。</p><p><span style="">&nbsp;</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">洪峰</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

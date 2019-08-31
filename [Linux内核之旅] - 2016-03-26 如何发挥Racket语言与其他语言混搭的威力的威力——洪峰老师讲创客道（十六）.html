@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		如何发挥Racket语言与其他语言混搭的威力的威力——洪峰老师讲创客道（十六）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=416801671&amp;idx=1&amp;sn=91c087d7d0fe117c964ec69698ce9e5d&amp;chksm=7648ce62413f47743cb3dbb5252dc587301fd81890ea1873a179fc38d12d0bd6e14f4c4e2d2e&amp;scene=27#wechat_redirect&cpage=76' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">如何发挥Racket语言与其他语言混搭的威力的威力——洪峰老师讲创客道（十六）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        洪峰
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-03-26</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p><span style="">&nbsp;&nbsp;&nbsp;&nbsp;</span></p><p><mpvoice frameborder="0" class="res_iframe js_editor_audio audio_iframe" src="/cgi-bin/readtemplate?t=tmpl/audio_tmpl&amp;name=%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9316&amp;play_length=19:00" name="%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9316" play_length="1140000" voice_encode_fileid="MzI3NzA5MzUxNF80MTY4MDE2Njk="></mpvoice></p><p><span style="">&nbsp;</span><br  /></p><p><span style="">&nbsp;&nbsp;&nbsp;&nbsp;上一讲我介绍的</span><span style="">Racket</span><span style="">的</span><span style="">OOP</span><span style="">的子系统可以让大家在开发软件项目的时候采用许多软件工程的思想和技术。那么有了这些新的技术和其他特点以后，</span><span style="">Racket</span><span style="">在建模的时候所表现出来的威力是十分引人注目的</span><span style="">,&nbsp;</span><span style="">这一点对于我们黑客道的践行者具有十分重要的意义。</span></p><p style="text-indent:28px"><span style="">我们知道对于一个创业项目的创始者而言，从</span><span style="">idea</span><span style="">（创意）到市场这段时间十分重要，这段时间应该是越短越快越好，因为你的创意到底行不行，能不能被市场所接受，那你必须要把你的创意变成计算机软件推向市场，变成一个服务或者一个产品推向市场，让市场来检验你的创意究竟有没有价值，还有哪些功能有待完善等等。所以说从创意到市场的时间越短，那就越有助于你节省创业的成本。有一句话叫做“快速失败”讲的就是这个道理。因为你如果能够快速失败的话你就不会在一个失败的项目上浪费太多的时间，而且你可以从失败里边快速找到经验和教训，这样有助于你将来的开发项目。那么从这个意义上讲，快速建模的技术，特别是</span><span style="">Racket</span><span style="">提供的快速建模的能力，我们叫做</span><span style="">fast&nbsp;prototyping</span><span style="">这种能力是极为有价值的。我观察到许多创业者在创业的初期非常在乎程序的性能，其实我觉得在创业的初期一个原型的推出速度是第一位的，它比性能远远重要。当然我不是说程序的性能不重要，实际上对于程序性能的提高我们有混合编程的模式，具体来讲就是把</span><span style="">Racket</span><span style="">跟</span><span style="">C</span><span style="">语言或者</span><span style="">C++</span><span style="">语言这类编译性语言结合起来，然后利用两者各自的优点在比较短的时间内创造出一个高性能的创业项目。我们知道整个</span><span style="">Racket</span><span style="">的代码都是用</span><span style="">C</span><span style="">语言开发的，这样就为我们扩展</span><span style="">Racket</span><span style="">提供了可能性。因为其他</span><span style="">Racket</span><span style="">里边所没有的功能&nbsp;我们可以把</span><span style="">C</span><span style="">的语言通过某种方式打包到</span><span style="">Racket</span><span style="">的引擎里来实现新的功能。比方说，</span><span style="">Racket</span><span style="">里边对</span><span style="">Unix</span><span style="">系统调用的一些模块不一定全部提供。这个时候我可以利用</span><span style="">C</span><span style="">语言去创建一些调用系统调用的功能模块，比如说对文件系统进行操作的、对系统进行管理的一些功能模块我会用</span><span style="">C</span><span style="">语言去写，这个对于</span><span style="">C</span><span style="">语言来讲是非常容易实现的，然后写好之后我们就可以把</span><span style="">C</span><span style="">的程序打包成一个</span><span style="">Racket</span><span style="">所认识的动态链接库。一旦这个动态链接库（也可以叫做共享文件）被加入到</span><span style="">Racket</span><span style="">里边之后，</span><span style="">Racket</span><span style="">就可以直接调用</span><span style="">C</span><span style="">写的函数，从表面上看</span><span style="">C</span><span style="">写的函数跟普通</span><span style="">Racket</span><span style="">函数是没有什么两样的，但是在这个时候实际的执行会用</span><span style="">C</span><span style="">写的函数进行执行，这个时候程序的效率，特别是涉及到对文件系统进行操作、对操作系统所要完成的功能进行调用的时候表现出非常高的性能。我们可以利用</span><span style="">C</span><span style="">语言的对内存的分配管理回收机制也可以让</span><span style="">Racket</span><span style="">的程序具有某种管理内存的机制。要注意写这些程序的时候必须把</span><span style="">C</span><span style="">部分搞得比较干净，不会产生内存泄露、悬挂指针等的问题。有了这种开发方式以后，我们可以快速利用</span><span style="">Racket</span><span style="">进行建模，马上拿去运行，接受市场的检验，一旦市场有反馈之后，我们可以根据反馈意见完善代码，提高</span><span style="">Racket</span><span style="">性能，这是混合编程的一个方向。</span></p><p style="text-indent:28px"><span style="">混合编程的另一个方向就是我可以把</span><span style="">Racket</span><span style="">程序嵌入到我们的</span><span style="">C</span><span style="">程序里边去，这跟我刚才说的方向是相反的。因为</span><span style="">Racket</span><span style="">程序也是</span><span style="">C</span><span style="">程序，所以</span><span style="">Racket</span><span style="">里边已经提供了一些数据结构，对这些数据结构的一些操作可能是</span><span style="">C</span><span style="">语言里没有的而且也是</span><span style="">C</span><span style="">语言所希望的，比如说对链表的操作，在</span><span style="">Racket</span><span style="">里边有非常多的函数可以对链表进行操作，而</span><span style="">C</span><span style="">语言里没有提供对链表这种数据结构的支持，需要你去手工打造。有了</span><span style="">Racket</span><span style="">之后这种比较信息没有了，你可以把</span><span style="">Racket</span><span style="">的引擎直接嵌入到所写的</span><span style="">C</span><span style="">语言中去，让你在</span><span style="">C</span><span style="">语言里节省掉很多的开发时间成本。我刚才讲过</span><span style="">Racket</span><span style="">的整个代码是用</span><span style="">C</span><span style="">写的，我们知道用</span><span style="">C</span><span style="">语言写的代码硬件平台的移植性是非常好的，实际情况也是如此。</span><span style="">Racket</span><span style="">已经被移植到很多硬件平台上边去，常见的</span><span style="">intel</span><span style="">还有后起之秀</span><span style="">arm</span><span style="">平台都有</span><span style="">Racket</span><span style="">的实现。现在我们看到在手机上已经有</span><span style="">Racket</span><span style="">的</span><span style="">port,&nbsp;</span><span style="">将来还有些新的硬件出来后我们也可以把</span><span style="">Racket</span><span style="">的虚拟机移植到新的硬件平台上去。因为是</span><span style="">C</span><span style="">语言写的，所以这个移植工作是有章可循而且是容易完成的。在这些已有的硬件平台上（除了</span><span style="">x86</span><span style="">以外），我认为对</span><span style="">arm</span><span style="">的支持使得</span><span style="">Racket</span><span style="">社团非常有吸引力，因为手机市场是目前增长最快的一个计算机市场，就是说手机的出货量已经高于</span><span style="">PC</span><span style="">，许多人不一定有</span><span style="">PC</span><span style="">机，但是他有手机甚至有多个手机。所以说为手机市场开发应用对于许多应用程序开发人员不管是是服务器还是客户端的开发人员都是有吸引力的。那么在对手机应用开发的市场中我可以预计</span><span style="">Racket</span><span style="">会占有一席之地。</span></p><p style="text-indent:28px"><span style="">对于一个编程语言的选择而言，使用这个语言的群体是十分重要的，而这个群体的规模大小和质量高低又与许多其它因素相关联。其中很重要的一点就是这个语言的</span><span style="">license</span><span style="">（也就是许可证），我在前面这一章开始的时候就跟大家说过我一定会向大家推荐使用自由版本的编程语言，</span><span style="">Racket</span><span style="">的许可证是按照</span><span style="">Lesser&nbsp;GPL</span><span style="">（就是</span><span style="">LGPL</span><span style="">）发布的，这是自由软件基金会定义的一个软件许可证，&nbsp;它是一个自由软件的许可证。而且</span><span style="">LGPL</span><span style="">所受到的约束不如</span><span style="">GPL</span><span style="">强，也就是说你可以用</span><span style="">Racket</span><span style="">去开发代码，不开放软件也是许可证所允许的，就是说你开发的软件里可以把你的代码封装起来，可以把</span><span style="">Racket</span><span style="">嵌入进去。</span><span style="">Racket</span><span style="">本身是自由软件，但你开发的代码不一定要发布，因为你可以做一个服务器上的程序，只是运行在你的服务器上，这时候你没有必要公布你的源代码，这样会提高你代码的安全性和网站网络应用的安全性。这样的一些优势是</span><span style="">Racket</span><span style="">提供的。另外，</span><span style="">Racket</span><span style="">开发人员的活跃程度非常高，它的开发人员在美国遍布很多大城市，像芝加哥、犹他还有伊利诺伊州等这些地方的大学。它在美国之外的用户群体也非常庞大，在印度就有很多人使用</span><span style="">Racket</span><span style="">开发计算机程序。它的软件中心库、</span><span style="">GIT</span><span style="">库位于美国，有好几个映像，而且大家可以看一看它的访问提交记录是非常活跃的。</span></p><p style="text-indent:28px"><span style="">我前面已经讲过</span><span style="">Racket</span><span style="">一年有四个比较大的版本要发布，二月份应该有一个版本发布，四五月份或者六月份会有一个版本发布，这是上半年的情况。下半年的发布时间一般是在每年的八月份和十一月份两次，这是四个版本的发布情况，我说的是重大版本的发布情况。前面我已经提到</span><span style="">Racket</span><span style="">面向的主要对象是大学的教育市场，教育市场是它的主要用户群体。所以说它的开发人员也来自于大学里边，所以从这个意义上讲，它比某个商业公司提供支持开发的软件要好很多，而且大学里边思想活跃程度非常高，有很多新的思想，源自学术界的思想可以非常快的在</span><span style="">Racket</span><span style="">里面得到反应。我们从最近一些新的</span><span style="">Racket</span><span style="">特性可以看出这种交互是非常频繁的。比方说现在已经有</span><span style="">Typed&nbsp;Racket,</span><span style="">就是说原来的</span><span style="">Racket</span><span style="">是不让你显式地声明这个类型的，但是现在也可以使用它的一个方言让你显式地声明参数的类型，这样的话就是说一旦参数的类型被显式声明之后，编译器可以进行优化、类型检查，而且这个检查可以在编译时完成。这样的一些特点都是通过学术界首先流行起来之后然后再推广到市场上去的。而这样的一些特点已经在</span><span style="">Racket</span><span style="">里边找到很多，大家可以看看相关文档。当然语言的特性丰富会带来相应的学习成本，这一点是毋庸置疑的。但是我想说的是如果一个语言有丰富的特性并且你知晓这些特性，那么你在使用这些语言的时候那么它会有助于提高你的生产力，我是说你的开发效率会大大提高。而且</span><span style="">Racket</span><span style="">提供了许多工具、思想、库让你提高你的开发效率，这一点已经是在很多人的开发项目里边得到验证。所以我请大家注意学习的付出一定会产生相应回报，幸运的是请大家不要高估了这种学习的难度，因为你只要前面真正掌握了紫皮书的思想（关于计算本质的思想），那么你这个时候可以把</span><span style="">Racket</span><span style="">作为学习紫皮书的一个工具来使用，这恰好是</span><span style="">Racket</span><span style="">设计小组当时开发这个语言的初衷，所以说你现在学习紫皮书的时候不一定要使用原来</span><span style="">MIT</span><span style="">的</span><span style="">Scheme</span><span style="">，你可以直接使用</span><span style="">Racket</span><span style="">来验证书中的一些代码，从代码中得到感悟和启发。&nbsp;你也可以从一些小的项目开始来学会使用</span><span style="">Racket</span><span style="">的一些特性，当然不要刚开始一次把所有特性学完，也没有这种必要。你刚开始可以学一些简单的、常用的语言特性。一旦你掌握了这些基本的用法之后，然后再看高级特性的用法，那么你掌握的这些高级特性用法越来越多，实际上你的编程经验也会不断地增长。</span></p><p style="text-indent:28px"><span style="">这里我列举</span><span style="">Racket</span><span style="">中的三个语言特性，这些不是</span><span style="">Racket</span><span style="">最重要的语言特性，但是是在编程中常用的。第一个是正则表达式，</span><span style="">Racket</span><span style="">中的正则表达式设计得非常好，</span><span style="">POSIX</span><span style="">风格和它自己的正则表达式都设计得非常好。&nbsp;如果你拥有其它语言关于使用正则表达式的一些经验的话，那么在使用</span><span style="">Racket</span><span style="">的正则表达式的时候你会非常容易上手，而且它有很多内置的一些用法让你很快地搞定正则表达式的计算任务。第二个是关于它的输入输出库设计得非常漂亮，有很多非常精简的函数，比方说原来我没有</span><span style="">porttostring</span><span style="">的时候要写很多的代码才能把一个</span><span style="">port</span><span style="">的数据读到</span><span style="">Racket</span><span style="">程序内部，然后进行处理&nbsp;。有了</span><span style="">porttostring&nbsp;</span><span style="">函数之后，所有来自网络上的远程的请求数据会被一次性地转化成一个字符串，这个性能很好。同时它可以把文件一次性地转化成一个字符串，一个文本文件如果能一次性地转化成一个字符串来处理的话是非常漂亮的。而且在</span><span style="">Racket</span><span style="">里边对字符串有一个字符串的</span><span style="">port</span><span style="">，就是说它可以把</span><span style="">Racket</span><span style="">的一个字符串当成是具有一个指针结构的、具有一个计数器结构的向文件的</span><span style="">file&nbsp;position</span><span style="">这样的指针结构来进行读取，你可以在</span><span style="">string&nbsp;port</span><span style="">中移动这个指针来对字符串的任意字符部分进行读和写。它还有很多小的设计非常好，比如说它区分</span><span style="">b</span><span style="">ytes(byte&nbsp;strings)和</span><span style="">bits</span><span style="">两者的区别，这个在它的输入输出系统里边是设计的非常漂亮的一部分。第三个值得称道的机制是</span><span style="">Racket</span><span style="">不像老的&nbsp;</span><span style="">Common&nbsp;Lisp</span><span style="">可以动态地支持模块的</span><span style="">loading</span><span style="">和动态地</span><span style="">unloading</span><span style="">，但是它有一个机制可以帮你绕过去，就是说它有模块向名称空间的转换机制。也就是说，你可以先写一个模块，然后在</span><span style="">Racket</span><span style="">程序里边把这个模块转换成一个名称空间，而这个名称空间是可以通过</span><span style="">parameterize</span><span style="">（参数化配置）来配置到当前的名称空间上。有个</span><span style="">current&nbsp;namespace&nbsp;</span><span style="">，这样的话你可以不断地编写新模块，一旦你编写好了之后你就可以把新的模块变成名称空间。一旦变成名称空间之后可以通过</span><span style="">parameterize</span><span style="">切换名称空间，这样就实现了模块的动态绑定、载入乃至切换。那么这个特性在编写大型服务器的时候，在不让系统停止，不让系统重启的情况下是非常有用的。所以这些特性都体现了</span><span style="">Racket</span><span style="">设计师们体贴入微的良好编程能力。总之</span><span style="">Racket</span><span style="">虽然是作为教学语言设计的，但是它对于创客们搞创业项目而言是一门非常好的建模语言，这一点请大家高度重视。</span></p><p><span style="">&nbsp;</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">洪峰</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

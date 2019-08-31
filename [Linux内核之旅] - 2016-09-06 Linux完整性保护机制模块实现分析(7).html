@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Linux完整性保护机制模块实现分析(7)
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664603050&amp;idx=1&amp;sn=388c5fc5a103f2c32298cdb24d464bf2&amp;chksm=f04db04fc73a39595e498f7e00ef87b349c01623b506c98991725636df7bbf8a78912279f093&amp;scene=27#wechat_redirect&cpage=62' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Linux完整性保护机制模块实现分析(7)</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        任燕博
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-09-06</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                <div class="rich_media_thumb_wrp" id="media">
+                    
+                                        
+                                    </div>
+                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <h4><strong><span style="font-family: 宋体;font-size: 19px">2.4.2.3<span style="font-family:宋体">结构体定义</span></span></strong></h4><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体;font-size: 14px"><span style="font-family:宋体">在文件</span>sync.c<span style="font-family:宋体">中涉及到的结构体定义有：</span></span><span style="text-align: center;"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><img data-s="300,640" data-type="png" src="data:image/PNG;base64,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 " src="SeWfibBcBT0F0tmGFhsL5Sia5I9kAm9U7anwSxRDweBAX21l5XDlp2e4fxricguyCbTHTuHNJgMAibbL7J1tEZGS9Q"  style="text-align: center;" data-ratio="0.3728448275862069" data-w="464"  /></p><p style="text-indent:28px;line-height:24px"><span style="   z-index: 1; left: 0px; margin-left: 23.8px; margin-top: 5.2667px; width: 510px; height: 186px; text-align: center; "></span><span style="font-family: 宋体;font-size: 14px">&nbsp;</span><span style="font-family: 宋体; font-size: 14px;">在该定义中</span><span style="font-family: 宋体; font-size: 14px;">work</span><span style="font-family: 宋体; font-size: 14px;">代表要进行的回写同步工作，然后给</span><span style="font-size: 14px; font-family: &#39;Times New Roman&#39;;">work</span><span style="font-family: 宋体; font-size: 14px;">分配内存，通过调用</span><span style="font-size: 14px; font-family: &#39;Times New Roman&#39;;">do_sync_work</span><span style="font-family: 宋体; font-size: 14px;">函数进行两次同步操作。</span></p><h4><strong><span style="font-family: 宋体;font-size: 19px">2.4.2.4<span style="font-family:宋体">外部函数</span></span></strong></h4><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体;font-size: 14px"><span style="font-family:宋体">在</span>sync.c<span style="font-family:宋体">文件中主要涉及到的外部函数主要有：</span></span></p><p style="margin-left:24px;line-height:24px"><span style=";font-size: 14px">1.&nbsp;</span><span style="font-family: 宋体;font-size: 14px"><span style="font-family:宋体">函数名称：</span>sync_inodes_sb<span style="font-family:宋体">（）</span></span></p><p style="text-indent:28px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">函数原型：</span>void sync_inodes_sb(struct super_block *sb)<span style="font-family:宋体">。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体;font-size: 14px"><span style="font-family:宋体">函数功能：该函数回写并且等待对应超级块的所有脏</span>inode<span style="font-family:宋体">。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体;font-size: 14px"><span style="font-family:宋体">参数：</span>sb<span style="font-family:宋体">表示锁定的超级块。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体;font-size: 14px"><span style="font-family:宋体">返回值：无返回值。</span></span></p><p style="margin-left:24px;line-height:24px"><span style=";font-size: 14px">2.&nbsp;</span><span style="font-family: 宋体;font-size: 14px"><span style="font-family:宋体">函数名称：</span>writeback_inodes_sb<span style="font-family:宋体">（）</span></span></p><p style="text-indent:28px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">函数原型：</span>void writeback_inodes_sb(struct super_block *sb, enum wb_reason reason)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体;font-size: 14px"><span style="font-family:宋体">函数功能：回写给定的超级块的脏</span>inode</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体;font-size: 14px"><span style="font-family:宋体">参数：</span>sb<span style="font-family:宋体">表示锁定的对应超级块。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体;font-size: 14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reason<span style="font-family:宋体">表示进行回写工作开始的原因。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体;font-size: 14px"><span style="font-family:宋体">该函数通过调用</span>writeback_inodes_sb_nr<span style="font-family:宋体">（）函数进行实质性回写操作。</span></span></p><p style="margin-left:24px;line-height:24px"><span style=";font-size: 14px">3.&nbsp;</span><span style="font-family: 宋体;font-size: 14px"><span style="font-family:宋体">函数名称：</span>__sync_blockdev<span style="font-family:宋体">（）</span></span></p><p style="text-indent:28px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">函数原型：</span>int __sync_blockdev(struct block_device *bdev, int wait)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体;font-size: 14px"><span style="font-family:宋体">函数功能：块设备中的数据同步。</span></span></p><p style="text-indent:28px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">参数：</span>bdev<span style="font-family:宋体">表示指定的块设备。</span></span></p><p style="text-indent:28px;line-height:24px"><span style=";font-family:宋体;font-size:14px">wait<span style="font-family:宋体">表示是否等待正在操作的数据完成后再进行同步。</span></span></p><p style="margin-left:24px;line-height:24px"><span style=";font-size: 14px">4.&nbsp;</span><span style="font-family: 宋体;font-size: 14px"><span style="font-family:宋体">函数名称：</span>iterate_supers<span style="font-family:宋体">（）</span></span></p><p style="text-indent:28px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">函数原型：</span>void iterate_supers(void (*f)(struct super_block *, void *), void *arg)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体;font-size: 14px"><span style="font-family:宋体">函数功能：调用函数所有活动的超级块。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体;font-size: 14px"><span style="font-family:宋体">参数：</span>f<span style="font-family:宋体">表示要调用的函数。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体;font-size: 14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;arg<span style="font-family:宋体">表示要传递的参数。</span></span></p><p style="margin-left:24px;line-height:24px"><span style=";font-size: 14px">5.&nbsp;</span><span style="font-family: 宋体;font-size: 14px"><span style="font-family:宋体">函数名称：</span>wakeup_flusher_threads<span style="font-family:宋体">（）</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体;font-size: 14px"><span style="font-family:宋体">函数原型：</span>void wakeup_flusher_threads(long nr_pages, enum wb_reason reason)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体;font-size: 14px"><span style="font-family:宋体">函数功能：开始写回</span>nr_pages<span style="font-family:宋体">的页。如果</span><span style="font-family:Times New Roman">nr_pages</span><span style="font-family:宋体">是零，则全部进行回写。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体;font-size: 14px"><span style="font-family:宋体">参数：</span>nr_pages<span style="font-family:宋体">表示要进行回写的页。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体;font-size: 14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reason<span style="font-family:宋体">表示进行回写操作的原因。</span></span></p><p style="margin-left:24px;line-height:24px"><span style=";font-size: 14px">6.&nbsp;</span><span style="font-family: 宋体;font-size: 14px"><span style="font-family:宋体">函数名称：</span></span><strong><span style=";color: rgb(0, 0, 255);font-size: 19px">&nbsp;</span></strong><span style="font-family: 宋体;font-size: 14px">filemap_fdatawait_range<span style="font-family:宋体">（）</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体;font-size: 14px"><span style="font-family:宋体">函数原型：</span>int filemap_fdatawait_range(struct address_space *mapping, loff_t start_byte, </span><span style="font-family: 宋体;font-size: 14px">loff_t end_byte)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体;font-size: 14px"><span style="font-family:宋体">函数功能：等待回写操作完成。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体;font-size: 14px"><span style="font-family:宋体">参数：</span>mapping<span style="font-family:宋体">表示等待的地址空间结构。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体;font-size: 14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;start_byte<span style="font-family:宋体">表示开始的偏移量范围。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体;font-size: 14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end_byte<span style="font-family:宋体">表示结束的偏移量范围。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体;font-size: 14px"><span style="font-family:宋体">返回值：成功返回</span>0<span style="font-family:宋体">，失败返回</span><span style="font-family:Times New Roman">-1.</span></span></p><p style="margin-left:24px;line-height:24px"><span style=";font-size: 14px">7.&nbsp;</span><span style="font-family: 宋体;font-size: 14px"><span style="font-family:宋体">函数名称：</span> laptop_sync_completion<span style="font-family:宋体">（）</span></span></p><p style="text-indent:28px;line-height:24px"><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">函数原型：</span>void laptop_sync_completion(void)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体;font-size: 14px"><span style="font-family:宋体">函数功能：在笔记本模式下完成同步。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体;font-size: 14px"><span style="font-family:宋体">参数：无参数。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体;font-size: 14px"><span style="font-family:宋体">返回值：无返回值。</span></span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">任燕博</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

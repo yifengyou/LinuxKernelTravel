@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Linux页框分配函数的实现（3）-快速分配函数
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664604586&amp;idx=1&amp;sn=5e7ad11c9a7caa19de649f8b4fd3126c&amp;chksm=f04d8e4fc73a0759f55a52070bf391c2e5c5e94971668da71db938301c07df29ad0f3884862f&amp;scene=27#wechat_redirect&cpage=33' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Linux页框分配函数的实现（3）-快速分配函数</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        武特
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2017-08-18</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <div class="markdown-here-wrapper" data-md-url="https://mp.weixin.qq.com/cgi-bin/appmsg?t=media/appmsg_edit_v2&amp;action=edit&amp;isNew=1&amp;type=10&amp;lang=zh_CN&amp;token=653298424"><p style="margin: 0px 0px 1.2em !important;">关于页框分配函数的实现，前文中已经对主体实现函数和慢速分配函数作了简单说明。这两个函数主要的功能即根据系统内存实时的使用情况及时调整分配限制，并再次调用快速分配函数get_page_from_freelist()。</p><p style="margin: 0px 0px 1.2em !important;">该函数可以看作是伙伴系统的前置函数，它通过传递进来的分配标志和分配阶，并结合系统当时的内存使用情况来判断是否可以进行内存分配。如果可以分配，那么进行实际的内存分配工作，既调用那些基于伙伴算法而实现的内存分配函数。</p><h2 style="margin: 1.3em 0px 1em; padding: 0px; font-weight: bold;font-size: 1.4em; border-bottom: 1px solid rgb(238, 238, 238);">3.快速分配函数</h2><pre style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace;margin: 0px 0.15em; padding: 0px 0.3em; white-space: pre-wrap; border: 1px solid rgb(234, 234, 234); background-color: rgb(248, 248, 248); border-radius: 3px; display: inline;white-space: pre; overflow: auto; border-radius: 3px; border: 1px solid rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important;">static struct page *
+get_page_from_freelist(gfp_t gfp_mask, nodemask_t *nodemask, unsigned int order,
+ &nbsp; &nbsp; &nbsp; &nbsp;struct zonelist *zonelist, int high_zoneidx, int alloc_flags,
+ &nbsp; &nbsp; &nbsp; &nbsp;struct zone *preferred_zone, int migratetype)
+{
+ &nbsp; &nbsp;struct zoneref *z;
+ &nbsp; &nbsp;struct page *page = NULL;
+ &nbsp; &nbsp;int classzone_idx;
+ &nbsp; &nbsp;struct zone *zone;
+ &nbsp; &nbsp;nodemask_t *allowednodes = NULL;/* zonelist_cache approximation */
+ &nbsp; &nbsp;int zlc_active = 0; &nbsp; &nbsp; &nbsp; &nbsp;/* set if using zonelist_cache */
+ &nbsp; &nbsp;int did_zlc_setup = 0; &nbsp; &nbsp; &nbsp; &nbsp;/* just call zlc_setup() one time */
+
+ &nbsp; &nbsp;classzone_idx = zone_idx(preferred_zone);</code></pre><p style="margin: 0px 0px 1.2em !important;">现在开始遍历指定zonelist上的zone。在通过for_each_zone_zonelist_nodemask()遍历时，该函数会过滤掉那些索引值大于high_zoneidx的zone。比如当前high_zoneidx所指定的zone为ZONE_NORMAL，那么当前遍历的zone只能为ZONE_DMA或ZONE_NORMAL类型，而不能是ZONE_HIGH，这些关系判断的依据即为这些类型对应的索引值。因为内存管理区的类型是通过枚举类型来描述的，因此索引值也就是这些类型对应的枚举值。</p><pre style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace;margin: 0px 0.15em; padding: 0px 0.3em; white-space: pre-wrap; border: 1px solid rgb(234, 234, 234); background-color: rgb(248, 248, 248); border-radius: 3px; display: inline;white-space: pre; overflow: auto; border-radius: 3px; border: 1px solid rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important;">zonelist_scan:
+ &nbsp; &nbsp;for_each_zone_zonelist_nodemask(zone, z, zonelist,
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;high_zoneidx, nodemask) {
+ &nbsp; &nbsp; &nbsp; &nbsp;if (NUMA_BUILD &amp;&amp; zlc_active &amp;&amp;
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;!zlc_zone_worth_trying(zonelist, z, allowednodes))
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;continue;
+ &nbsp; &nbsp; &nbsp; &nbsp;if ((alloc_flags &amp; ALLOC_CPUSET) &amp;&amp;
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;!cpuset_zone_allowed_softwall(zone, gfp_mask))
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;goto try_next_zone;</code></pre><p style="margin: 0px 0px 1.2em !important;">即便当前zone的索引小于high_zoneidx，也不能急于分配内存，还要检查这个内存管理区是空闲的页框是否充足。这个过程通过上述两个if语句来完成。接下来，如果分配标志中设置了ALLOC_NO_WATERMARKS，即表明此刻不再考虑分配水位线。否则就要分析此刻内存的水位线。</p><p style="margin: 0px 0px 1.2em !important;">通过分配标志从水位线数组中获得当前的水位线mark，再传入zone_watermark_ok()判断在当前的水位线下是否可以分配内存。如果可以分配内存则跳入try_this_zone。</p><pre style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace;margin: 0px 0.15em; padding: 0px 0.3em; white-space: pre-wrap; border: 1px solid rgb(234, 234, 234); background-color: rgb(248, 248, 248); border-radius: 3px; display: inline;white-space: pre; overflow: auto; border-radius: 3px; border: 1px solid rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important;">BUILD_BUG_ON(ALLOC_NO_WATERMARKS &lt; NR_WMARK); &nbsp; &nbsp; &nbsp; &nbsp; if (!(alloc_flags &amp; ALLOC_NO_WATERMARKS)) { &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; unsigned long mark; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; int ret; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; mark = zone-&gt;watermark[alloc_flags &amp; ALLOC_WMARK_MASK];
+ &nbsp; &nbsp;if (zone_watermark_ok(zone, order, mark,
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;classzone_idx, alloc_flags))
+ &nbsp; &nbsp; &nbsp; &nbsp;goto try_this_zone;
+
+ &nbsp; &nbsp;if (zone_reclaim_mode == 0)
+ &nbsp; &nbsp; &nbsp; &nbsp;goto this_zone_full;</code></pre><p style="margin: 0px 0px 1.2em !important;">如果运行到此处，说明此刻空闲内存不足，那么通过zone_reclaim()进行内存回收，回收的情况通过ret来描述。如果结果是ZONE_RECLAIM_NOSCAN，说明并没有进行回收，那么直接尝试下一个zone；如果结果是ZONE_RECLAIM_FULL，说明虽然进行了回收但是并没有回收到；默认的情况则是没有回收到足够多的内存。后两种情况均跳入this_zone_full处。</p><pre style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace;margin: 0px 0.15em; padding: 0px 0.3em; white-space: pre-wrap; border: 1px solid rgb(234, 234, 234); background-color: rgb(248, 248, 248); border-radius: 3px; display: inline;white-space: pre; overflow: auto; border-radius: 3px; border: 1px solid rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important;"> &nbsp; &nbsp;ret = zone_reclaim(zone, gfp_mask, order);
+ &nbsp; &nbsp;switch (ret) {
+ &nbsp; &nbsp;case ZONE_RECLAIM_NOSCAN:
+ &nbsp; &nbsp; &nbsp; &nbsp;/* did not scan */
+ &nbsp; &nbsp; &nbsp; &nbsp;goto try_next_zone;
+ &nbsp; &nbsp;case ZONE_RECLAIM_FULL:
+ &nbsp; &nbsp; &nbsp; &nbsp;/* scanned but unreclaimable */
+ &nbsp; &nbsp; &nbsp; &nbsp;goto this_zone_full;
+ &nbsp; &nbsp;default:
+ &nbsp; &nbsp; &nbsp; &nbsp;/* did we reclaim enough */
+ &nbsp; &nbsp; &nbsp; &nbsp;if (!zone_watermark_ok(zone, order, mark,
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;classzone_idx, alloc_flags))
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;goto this_zone_full;
+ &nbsp; &nbsp;}
+}</code></pre><p style="margin: 0px 0px 1.2em !important;">如果跳到此标号处说明可以在当前zone上分配内存，随即调用buffered_rmqueue()进入伙伴算法。</p><pre style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace;margin: 0px 0.15em; padding: 0px 0.3em; white-space: pre-wrap; border: 1px solid rgb(234, 234, 234); background-color: rgb(248, 248, 248); border-radius: 3px; display: inline;white-space: pre; overflow: auto; border-radius: 3px; border: 1px solid rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important;">try_this_zone:
+ &nbsp; &nbsp; &nbsp; &nbsp;page = buffered_rmqueue(preferred_zone, zone, order,
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;gfp_mask, migratetype);
+ &nbsp; &nbsp; &nbsp; &nbsp;if (page)
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;break;</code></pre><p style="margin: 0px 0px 1.2em !important;">跳到此处说明当前zone的空闲内存不足，那么标记它。这样下次分配时直接将其忽略。</p><pre style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace;margin: 0px 0.15em; padding: 0px 0.3em; white-space: pre-wrap; border: 1px solid rgb(234, 234, 234); background-color: rgb(248, 248, 248); border-radius: 3px; display: inline;white-space: pre; overflow: auto; border-radius: 3px; border: 1px solid rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important;">this_zone_full:
+ &nbsp; &nbsp; &nbsp; &nbsp;if (NUMA_BUILD)
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;zlc_mark_zone_full(zonelist, z);</code></pre><p style="margin: 0px 0px 1.2em !important;">此处说明当前zone上的空闲内存不足，则需要在其他zone上尝试分配。</p><pre style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace;margin: 0px 0.15em; padding: 0px 0.3em; white-space: pre-wrap; border: 1px solid rgb(234, 234, 234); background-color: rgb(248, 248, 248); border-radius: 3px; display: inline;white-space: pre; overflow: auto; border-radius: 3px; border: 1px solid rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important;">try_next_zone:
+ &nbsp; &nbsp; &nbsp; &nbsp;if (NUMA_BUILD &amp;&amp; !did_zlc_setup &amp;&amp; nr_online_nodes &gt; 1) {
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;allowednodes = zlc_setup(zonelist, alloc_flags);
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;zlc_active = 1;
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;did_zlc_setup = 1;
+ &nbsp; &nbsp; &nbsp; &nbsp;}
+ &nbsp; &nbsp;}</code></pre><p style="margin: 0px 0px 1.2em !important;">此时，遍历zone的循环结束。如果第一次循环结束后page仍未空，则进行第二次分配，即跳入zonelist_scan重新遍历。当第二次分配结束后不管结果如何均返回。循环的次数由alc_active控制。</p><pre style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace;margin: 0px 0.15em; padding: 0px 0.3em; white-space: pre-wrap; border: 1px solid rgb(234, 234, 234); background-color: rgb(248, 248, 248); border-radius: 3px; display: inline;white-space: pre; overflow: auto; border-radius: 3px; border: 1px solid rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important;"> &nbsp; &nbsp;if (unlikely(NUMA_BUILD &amp;&amp; page == NULL &amp;&amp; zlc_active)) {
+ &nbsp; &nbsp; &nbsp; &nbsp;/* Disable zlc cache for second zonelist scan */
+ &nbsp; &nbsp; &nbsp; &nbsp;zlc_active = 0;
+ &nbsp; &nbsp; &nbsp; &nbsp;goto zonelist_scan;
+ &nbsp; &nbsp;}
+ &nbsp; &nbsp;return page;
+}</code></pre><p style="margin: 0px 0px 1.2em !important;">至此，快速分配函数分析完毕。</p><div title="MDH:PHA+4oCLJm5ic3A75YWz5LqO6aG15qGG5YiG6YWN5Ye95pWw55qE5a6e546w77yM5YmN5paH5Lit
+5bey57uP5a+55Li75L2T5a6e546w5Ye95pWw5ZKM5oWi6YCf5YiG6YWN5Ye95pWw5L2c5LqG566A
+5Y2V6K+05piO44CC6L+Z5Lik5Liq5Ye95pWw5Li76KaB55qE5Yqf6IO95Y2z5qC55o2u57O757uf
+5YaF5a2Y5a6e5pe255qE5L2/55So5oOF5Ya15Y+K5pe26LCD5pW05YiG6YWN6ZmQ5Yi277yM5bm2
+5YaN5qyh6LCD55So5b+r6YCf5YiG6YWN5Ye95pWwZ2V0X3BhZ2VfZnJvbV9mcmVlbGlzdCgp44CC
+PGJyPjxicj7or6Xlh73mlbDlj6/ku6XnnIvkvZzmmK/kvJnkvLTns7vnu5/nmoTliY3nva7lh73m
+lbDvvIzlroPpgJrov4fkvKDpgJLov5vmnaXnmoTliIbphY3moIflv5flkozliIbphY3pmLbvvIzl
+ubbnu5PlkIjns7vnu5/lvZPml7bnmoTlhoXlrZjkvb/nlKjmg4XlhrXmnaXliKTmlq3mmK/lkKbl
+j6/ku6Xov5vooYzlhoXlrZjliIbphY3jgILlpoLmnpzlj6/ku6XliIbphY3vvIzpgqPkuYjov5vo
+oYzlrp7pmYXnmoTlhoXlrZjliIbphY3lt6XkvZzvvIzml6LosIPnlKjpgqPkupvln7rkuo7kvJnk
+vLTnrpfms5XogIzlrp7njrDnmoTlhoXlrZjliIbphY3lh73mlbDjgII8YnI+PGJyPjxzcGFuIHN0
+eWxlPSJjb2xvcjogI2IyMjIyMjsgIj4jIyAzLuW/q+mAn+WIhumFjeWHveaVsCAjIzwvc3Bhbj48
+YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyAiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+Ozwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyAiPiZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwO3N0YXRpYyBzdHJ1Y3QgcGFnZSAqPC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29s
+b3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Z2V0X3BhZ2VfZnJvbV9mcmVl
+bGlzdChnZnBfdCBnZnBfbWFzaywgbm9kZW1hc2tfdCAqbm9kZW1hc2ssIHVuc2lnbmVkIGludCBv
+cmRlciw8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsgIj4mbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDtzdHJ1Y3Qgem9uZWxpc3QgKnpvbmVsaXN0LCBpbnQgaGlnaF96b25laWR4LCBpbnQgYWxs
+b2NfZmxhZ3MsPC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7c3RydWN0IHpvbmUgKnByZWZlcnJlZF96b25lLCBpbnQgbWlncmF0ZXR5cGUpPC9z
+cGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7ezwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyAiPiZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO3N0cnVjdCB6b25lcmVmICp6
+Ozwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyAiPiZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO3N0cnVjdCBwYWdlICpwYWdlID0gTlVM
+TDs8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsgIj4mbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtpbnQgY2xhc3N6b25lX2lkeDs8L3Nw
+YW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsgIj4mbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtzdHJ1Y3Qgem9uZSAqem9uZTs8L3NwYW4+PGJy
+PjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsgIj4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtub2RlbWFza190ICphbGxvd2Vkbm9kZXMgPSBOVUxMOy8q
+IHpvbmVsaXN0X2NhY2hlIGFwcHJveGltYXRpb24gKi88L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJj
+b2xvcjogIzAwODAwMDsgIj4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDtpbnQgemxjX2FjdGl2ZSA9IDA7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Lyogc2V0IGlmIHVzaW5nIHpvbmVsaXN0X2NhY2hlICovPC9zcGFu
+Pjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7aW50IGRpZF96bGNfc2V0dXAgPSAwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOy8qIGp1c3QgY2FsbCB6bGNf
+c2V0dXAoKSBvbmUgdGltZSAqLzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAw
+OyAiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9y
+OiAjMDA4MDAwOyAiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwO2NsYXNzem9uZV9pZHggPSB6b25lX2lkeChwcmVmZXJyZWRfem9uZSk7PC9zcGFuPjxicj48
+YnI+546w5Zyo5byA5aeL6YGN5Y6G5oyH5a6aem9uZWxpc3TkuIrnmoR6b25l44CC5Zyo6YCa6L+H
+Zm9yX2VhY2hfem9uZV96b25lbGlzdF9ub2RlbWFzaygp6YGN5Y6G5pe277yM6K+l5Ye95pWw5Lya
+6L+H5ruk5o6J6YKj5Lqb57Si5byV5YC85aSn5LqOaGlnaF96b25laWR455qEem9uZeOAguavlOWm
+guW9k+WJjWhpZ2hfem9uZWlkeOaJgOaMh+WumueahHpvbmXkuLpaT05FX05PUk1BTO+8jOmCo+S5
+iOW9k+WJjemBjeWOhueahHpvbmXlj6rog73kuLpaT05FX0RNQeaIllpPTkVfTk9STUFM57G75Z6L
+77yM6ICM5LiN6IO95pivWk9ORV9ISUdI77yM6L+Z5Lqb5YWz57O75Yik5pat55qE5L6d5o2u5Y2z
+5Li66L+Z5Lqb57G75Z6L5a+55bqU55qE57Si5byV5YC844CC5Zug5Li65YaF5a2Y566h55CG5Yy6
+55qE57G75Z6L5piv6YCa6L+H5p6a5Li+57G75Z6L5p2l5o+P6L+w55qE77yM5Zug5q2k57Si5byV
+5YC85Lmf5bCx5piv6L+Z5Lqb57G75Z6L5a+55bqU55qE5p6a5Li+5YC844CCPGJyPjxicj48c3Bh
+biBzdHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7em9uZWxp
+c3Rfc2Nhbjo8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsgIj4mbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtmb3JfZWFjaF96b25lX3pv
+bmVsaXN0X25vZGVtYXNrKHpvbmUsIHosIHpvbmVsaXN0LDwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9
+ImNvbG9yOiAjMDA4MDAwOyAiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwO2hpZ2hfem9uZWlkeCwgbm9kZW1hc2spIHs8L3NwYW4+PGJyPjxzcGFu
+IHN0eWxlPSJjb2xvcjogIzAwODAwMDsgIj4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtpZiAoTlVNQV9CVUlMRCAm
+YW1wOyZhbXA7IHpsY19hY3RpdmUgJmFtcDsmYW1wOzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNv
+bG9yOiAjMDA4MDAwOyAiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyF6
+bGNfem9uZV93b3J0aF90cnlpbmcoem9uZWxpc3QsIHosIGFsbG93ZWRub2RlcykpPC9zcGFuPjxi
+cj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Y29udGludWU7PC9zcGFuPjxi
+cj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7aWYgKChhbGxv
+Y19mbGFncyAmYW1wOyBBTExPQ19DUFVTRVQpICZhbXA7JmFtcDs8L3NwYW4+PGJyPjxzcGFuIHN0
+eWxlPSJjb2xvcjogIzAwODAwMDsgIj4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDshY3B1c2V0X3pvbmVfYWxsb3dlZF9zb2Z0d2FsbCh6b25lLCBnZnBfbWFzaykpPC9zcGFu
+Pjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Z290byB0cnlfbmV4dF96
+b25lOzwvc3Bhbj48YnI+PGJyPuWNs+S+v+W9k+WJjXpvbmXnmoTntKLlvJXlsI/kuo5oaWdoX3pv
+bmVpZHjvvIzkuZ/kuI3og73mgKXkuo7liIbphY3lhoXlrZjvvIzov5jopoHmo4Dmn6Xov5nkuKrl
+hoXlrZjnrqHnkIbljLrmmK/nqbrpl7LnmoTpobXmoYbmmK/lkKblhYXotrPjgILov5nkuKrov4fn
+qIvpgJrov4fkuIrov7DkuKTkuKppZuivreWPpeadpeWujOaIkOOAguaOpeS4i+adpe+8jOWmguae
+nOWIhumFjeagh+W/l+S4reiuvue9ruS6hkFMTE9DX05PX1dBVEVSTUFSS1PvvIzljbPooajmmI7m
+raTliLvkuI3lho3ogIPomZHliIbphY3msLTkvY3nur/jgILlkKbliJnlsLHopoHliIbmnpDmraTl
+iLvlhoXlrZjnmoTmsLTkvY3nur/jgII8YnI+PGJyPumAmui/h+WIhumFjeagh+W/l+S7juawtOS9
+jee6v+aVsOe7hOS4reiOt+W+l+W9k+WJjeeahOawtOS9jee6v21hcmvvvIzlho3kvKDlhaV6b25l
+X3dhdGVybWFya19vaygp5Yik5pat5Zyo5b2T5YmN55qE5rC05L2N57q/5LiL5piv5ZCm5Y+v5Lul
+5YiG6YWN5YaF5a2Y44CC5aaC5p6c5Y+v5Lul5YiG6YWN5YaF5a2Y5YiZ6Lez5YWldHJ5X3RoaXNf
+em9uZeOAgjxicj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyAiPiZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwO0JVSUxEX0JVR19PTihBTExPQ19OT19XQVRFUk1BUktTICZsdDsgTlJfV01B
+UkspOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+O2lmICghKGFsbG9jX2ZsYWdzICZhbXA7IEFMTE9DX05PX1dBVEVSTUFSS1MpKSB7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7dW5zaWduZWQgbG9uZyBtYXJrOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO2ludCBy
+ZXQ7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7bWFyayA9IHpvbmUtJmd0O3dhdGVybWFya1thbGxvY19m
+bGFncyAmYW1wOyBBTExPQ19XTUFSS19NQVNLXTs8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xv
+cjogIzAwODAwMDsgIj4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDtpZiAoem9uZV93YXRlcm1hcmtfb2soem9uZSwgb3JkZXIsIG1hcmssPC9zcGFuPjxicj48
+c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Y2xhc3N6b25lX2lkeCwgYWxsb2NfZmxhZ3MpKTwvc3Bhbj48YnI+PHNwYW4g
+c3R5bGU9ImNvbG9yOiAjMDA4MDAwOyAiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO2dvdG8gdHJ5X3RoaXNfem9u
+ZTs8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsgIj4mbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDs8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsgIj4mbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtpZiAoem9uZV9yZWNs
+YWltX21vZGUgPT0gMCk8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsgIj4m
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDtnb3RvIHRoaXNfem9uZV9mdWxsOzwvc3Bhbj48YnI+PGJyPuWmguaenOi/
+kOihjOWIsOatpOWkhO+8jOivtOaYjuatpOWIu+epuumXsuWGheWtmOS4jei2s++8jOmCo+S5iOmA
+mui/h3pvbmVfcmVjbGFpbSgp6L+b6KGM5YaF5a2Y5Zue5pS277yM5Zue5pS255qE5oOF5Ya16YCa
+6L+HcmV05p2l5o+P6L+w44CC5aaC5p6c57uT5p6c5pivWk9ORV9SRUNMQUlNX05PU0NBTu+8jOiv
+tOaYjuW5tuayoeaciei/m+ihjOWbnuaUtu+8jOmCo+S5iOebtOaOpeWwneivleS4i+S4gOS4qnpv
+bmXvvJvlpoLmnpznu5PmnpzmmK9aT05FX1JFQ0xBSU1fRlVMTO+8jOivtOaYjuiZveeEtui/m+ih
+jOS6huWbnuaUtuS9huaYr+W5tuayoeacieWbnuaUtuWIsO+8m+m7mOiupOeahOaDheWGteWImeaY
+r+ayoeacieWbnuaUtuWIsOi2s+Wkn+WkmueahOWGheWtmOOAguWQjuS4pOenjeaDheWGteWdh+i3
+s+WFpXRoaXNfem9uZV9mdWxs5aSE44CCPGJyPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgw
+MDA7ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7cmV0
+ID0gem9uZV9yZWNsYWltKHpvbmUsIGdmcF9tYXNrLCBvcmRlcik7PC9zcGFuPjxicj48c3BhbiBz
+dHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7c3dpdGNoIChyZXQpIHs8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xv
+cjogIzAwODAwMDsgIj4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDtjYXNlIFpPTkVfUkVDTEFJTV9OT1NDQU46PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29s
+b3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7LyogZGlkIG5vdCBzY2FuICovPC9zcGFuPjxi
+cj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Z290byB0cnlf
+bmV4dF96b25lOzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyAiPiZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO2Nhc2UgWk9ORV9SRUNM
+QUlNX0ZVTEw6PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Lyogc2Nhbm5lZCBidXQgdW5yZWNsYWltYWJsZSAqLzwvc3Bhbj48YnI+PHNwYW4g
+c3R5bGU9ImNvbG9yOiAjMDA4MDAwOyAiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO2dvdG8gdGhpc196b25lX2Z1
+bGw7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7ZGVmYXVsdDo8L3NwYW4+PGJyPjxz
+cGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsgIj4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsvKiBkaWQgd2UgcmVj
+bGFpbSBlbm91Z2ggKi88L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsgIj4m
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDtpZiAoIXpvbmVfd2F0ZXJtYXJrX29rKHpvbmUsIG9yZGVyLCBtYXJrLDwv
+c3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyAiPiZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO2NsYXNzem9uZV9p
+ZHgsIGFsbG9jX2ZsYWdzKSk8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsg
+Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtnb3RvIHRoaXNfem9uZV9m
+dWxsOzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyAiPiZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO308L3NwYW4+PGJyPjxzcGFuIHN0
+eWxlPSJjb2xvcjogIzAwODAwMDsgIj4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDt9PC9zcGFuPjxi
+cj48YnI+5aaC5p6c6Lez5Yiw5q2k5qCH5Y+35aSE6K+05piO5Y+v5Lul5Zyo5b2T5YmNem9uZeS4
+iuWIhumFjeWGheWtmO+8jOmaj+WNs+iwg+eUqGJ1ZmZlcmVkX3JtcXVldWUoKei/m+WFpeS8meS8
+tOeul+azleOAgjxicj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyAiPiZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwO3RyeV90aGlzX3pvbmU6PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29s
+b3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7cGFnZSA9IGJ1ZmZlcmVkX3JtcXVldWUocHJl
+ZmVycmVkX3pvbmUsIHpvbmUsIG9yZGVyLDwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAj
+MDA4MDAwOyAiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwO2dmcF9tYXNrLCBtaWdyYXRldHlwZSk7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29s
+b3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7aWYgKHBhZ2UpPC9zcGFuPjxicj48c3BhbiBz
+dHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7YnJlYWs7PC9zcGFuPjxicj48YnI+6Lez5Yiw5q2k5aSE6K+05piO5b2T5YmNem9uZeea
+hOepuumXsuWGheWtmOS4jei2s++8jOmCo+S5iOagh+iusOWug+OAgui/meagt+S4i+asoeWIhumF
+jeaXtuebtOaOpeWwhuWFtuW/veeVpeOAgjxicj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4
+MDAwOyAiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO3RoaXNfem9uZV9mdWxsOjwvc3Bhbj48YnI+
+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyAiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO2lmIChOVU1BX0JV
+SUxEKTwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyAiPiZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO3psY19t
+YXJrX3pvbmVfZnVsbCh6b25lbGlzdCwgeik7PC9zcGFuPjxicj48YnI+5q2k5aSE6K+05piO5b2T
+5YmNem9uZeS4iueahOepuumXsuWGheWtmOS4jei2s++8jOWImemcgOimgeWcqOWFtuS7lnpvbmXk
+uIrlsJ3or5XliIbphY3jgII8YnI+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsgIj4m
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDt0cnlfbmV4dF96b25lOjwvc3Bhbj48YnI+PHNwYW4gc3R5
+bGU9ImNvbG9yOiAjMDA4MDAwOyAiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO2lmIChOVU1BX0JVSUxEICZhbXA7
+JmFtcDsgIWRpZF96bGNfc2V0dXAgJmFtcDsmYW1wOyBucl9vbmxpbmVfbm9kZXMgJmd0OyAxKSB7
+PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7YWxsb3dlZG5vZGVzID0gemxjX3NldHVwKHpvbmVsaXN0
+LCBhbGxvY19mbGFncyk7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7emxjX2FjdGl2ZSA9IDE7PC9z
+cGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7ZGlkX3psY19zZXR1cCA9IDE7PC9zcGFuPjxicj48c3BhbiBz
+dHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7fTwvc3Bhbj48YnI+PHNwYW4g
+c3R5bGU9ImNvbG9yOiAjMDA4MDAwOyAiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwO308L3NwYW4+PGJyPjxicj7mraTml7bvvIzpgY3ljoZ6b25l55qE5b6q
+546v57uT5p2f44CC5aaC5p6c56ys5LiA5qyh5b6q546v57uT5p2f5ZCOcGFnZeS7jeacquepuu+8
+jOWImei/m+ihjOesrOS6jOasoeWIhumFje+8jOWNs+i3s+WFpXpvbmVsaXN0X3NjYW7ph43mlrDp
+gY3ljobjgILlvZPnrKzkuozmrKHliIbphY3nu5PmnZ/lkI7kuI3nrqHnu5PmnpzlpoLkvZXlnYfo
+v5Tlm57jgILlvqrnjq/nmoTmrKHmlbDnlLFhbGNfYWN0aXZl5o6n5Yi244CCPGJyPjxicj48c3Bh
+biBzdHlsZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7aWYgKHVubGlrZWx5KE5VTUFfQlVJTEQgJmFtcDsmYW1wOyBwYWdl
+ID09IE5VTEwgJmFtcDsmYW1wOyB6bGNfYWN0aXZlKSkgezwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9
+ImNvbG9yOiAjMDA4MDAwOyAiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOy8qIERpc2FibGUgemxjIGNhY2hlIGZv
+ciBzZWNvbmQgem9uZWxpc3Qgc2NhbiAqLzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAj
+MDA4MDAwOyAiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO3psY19hY3RpdmUgPSAwOzwvc3Bhbj48YnI+PHNwYW4g
+c3R5bGU9ImNvbG9yOiAjMDA4MDAwOyAiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO2dvdG8gem9uZWxpc3Rfc2Nh
+bjs8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsgIj4mbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDt9PC9zcGFuPjxicj48c3BhbiBzdHls
+ZT0iY29sb3I6ICMwMDgwMDA7ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7cmV0dXJuIHBhZ2U7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMw
+MDgwMDA7ICI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7fTwvc3Bhbj48YnI+PGJyPuiHs+atpO+8
+jOW/q+mAn+WIhumFjeWHveaVsOWIhuaekOWujOavleOAgjwvcD4=" style="height:0;width:0;max-height:0;max-width:0;overflow:hidden;font-size:0em;padding:0;margin:0;"></div></div>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">武特</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

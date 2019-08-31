@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		register_chrdev_region函数源码分析
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664604185&amp;idx=2&amp;sn=894f5b90737626edb57895f2d53edfbf&amp;chksm=f04d8ffcc73a06ea50bc6ebe6229af67aaa8d8723165e8aa414ba30c234a7faab48c741fa7d3&amp;scene=27#wechat_redirect&cpage=37' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">register_chrdev_region函数源码分析</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        武特
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2017-06-12</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="margin: 0px 0px 1.2em !important;">如何找到一个有效的切入点去深入分析内核源码，这是一个令人深思的问题。本文以前文中未详细说明的函数为切入点，深入分析char_dev.c文件的代码。如果你已经拥有了C语言基础和一些数据结构基础，那么还等什么？Let’s go！</p><p style="margin: 0px 0px 1.2em !important;">在《字符设备驱动分析》一文中，我们说到register_chrdev_region函数的功能是在已知起始设备号的情况下去申请一组连续的设备号。不过大部分驱动书籍都没有去深入说明此函数，可能是因为这个函数内部封装了__register_chrdev_region(unsigned int major, unsigned int baseminor, int minorct, const char *name)函数的原因。不过我们不用苦恼，这正好促使我们去分析这个函数。</p><pre style="font-size: 0.85em; font-family: Consolas,Inconsolata,Courier,monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace; margin: 0px 0.15em; white-space: pre; overflow: auto; border-radius: 3px; border: 1px solid rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important; background-color: rgb(248, 248, 248);"> 194int register_chrdev_region(dev_t from, unsigned count, const char *name)
+ 195{
+ 196 &nbsp; &nbsp; &nbsp; &nbsp;struct char_device_struct *cd;
+ 197 &nbsp; &nbsp; &nbsp; &nbsp;dev_t to = from + count;
+ 198 &nbsp; &nbsp; &nbsp; &nbsp;dev_t n, next;
+ 199
+ 200 &nbsp; &nbsp; &nbsp; &nbsp;for (n = from; n &lt;\ to; n = next) {
+ 201 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;next = MKDEV(MAJOR(n)+1, 0);
+ 202 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (next &gt;\ to)
+ 203 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;next = to;
+ 204 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;cd = __register_chrdev_region(MAJOR(n), MINOR(n),
+ 205 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; next - n, name);
+ 206 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (IS_ERR(cd))
+ 207 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;goto fail;
+ 208 &nbsp; &nbsp; &nbsp; &nbsp;}
+ 209 &nbsp; &nbsp; &nbsp; &nbsp;return 0;
+ 210fail:
+ 211 &nbsp; &nbsp; &nbsp; &nbsp;to = n;
+ 212 &nbsp; &nbsp; &nbsp; &nbsp;for (n = from; n &lt;\ to; n = next) {
+ 213 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;next = MKDEV(MAJOR(n)+1, 0);
+ 214 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;kfree(__unregister_chrdev_region(MAJOR(n), MINOR(n), next - n));
+ 215 &nbsp; &nbsp; &nbsp; &nbsp;}
+ 216 &nbsp; &nbsp; &nbsp; &nbsp;return PTR_ERR(cd);
+ 217}</code></pre><p style="margin: 0px 0px 1.2em !important;">首先值得我们注意的是，这个函数每次分配的是一组设备编号。其中from参数是这组连续设备号的起始设备号，count是这组设备号的大小（也是次设备号的个数），name参数处理本组设备的驱动名称。另外，当次设备号数目过多（count过多）的时候，次设备号可能会溢出到下一个主设备。因此我们在for语句中可以看到，首先得到下一个主设备号（其实也是一个设备号，只不过此时的次设备号为0）并存储于next中。然后判断在from的基础上再追加count个设备是否已经溢出到下一个主设备号。如果没有溢出（next小于to），那么整个for语句就只执行个一次<strong>register_chrdev_region函数；否则当设备号溢出时，会把当前溢出的设备号范围划分为几个小范围，分别调用</strong>register_chrdev_region函数。</p><p style="margin: 0px 0px 1.2em !important;">如果在某个小范围调用__register_chrdev_region时出现了失败，那么会将此前分配的设备号都释放。</p><p style="margin: 0px 0px 1.2em !important;">其实register_chrdev_region函数还没有完全说清除设备号分配的具体过程，因为具体某个小范围的设备号是由__register_chrdev_region函数来完成的。可能你已经注意到在register_chrdev_region函数源码中出现了struct char_device_struct结构，我们首先来看这个结构体：</p><pre style="font-size: 0.85em; font-family: Consolas,Inconsolata,Courier,monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace; margin: 0px 0.15em; white-space: pre; overflow: auto; border-radius: 3px; border: 1px solid rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important; background-color: rgb(248, 248, 248);">50static struct char_device_struct {
+51 &nbsp; &nbsp; &nbsp; &nbsp;struct char_device_struct *next;
+52 &nbsp; &nbsp; &nbsp; &nbsp;unsigned int major;
+53 &nbsp; &nbsp; &nbsp; &nbsp;unsigned int baseminor;
+54 &nbsp; &nbsp; &nbsp; &nbsp;int minorct;
+55 &nbsp; &nbsp; &nbsp; &nbsp;char name[64];
+56 &nbsp; &nbsp; &nbsp; &nbsp;struct cdev *cdev; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;/* will die */
+57} *chrdevs[CHRDEV_MAJOR_HASH_SIZE];</code></pre><p style="margin: 0px 0px 1.2em !important;">在register_chrdev_region函数中，在每个字符设备号的小范围上调用__register_chrdev_region函数，都会返回一个struct char_device_struct类型的指针。因此我们可以得知，struct char_device_struct类型对应的并不是每一个字符设备，而是具有连续设备号的一组字符设备。从这个结构体内部的字段也可以看出，这组连续的设备号的主设备号为major，次设备号起始为baseminor，次设备号范围为minorct，这组设备号对应的设备驱动名称为name，cdev为指向这个字符设备驱动的指针。</p><p style="margin: 0px 0px 1.2em !important;">这里要特别说明的是，内核中所有已分配的字符设备编号都记录在一个名为chrdevs散列表里。该散列表中的每一个元素是一个 char_device_struct结构，这个散列表的大小为255（CHRDEV_MAJOR_HASH_SIZE），这是因为系统屏蔽了12位主设备号的前四位。既然说到散列表，那么肯定会出现冲突现象，因此next字段就是冲突链表中的下一个元素的指针。</p><p style="margin: 0px 0px 1.2em !important;">接下来我们详细来析__register_chrdev_region函数。首先为cd变量分配内存并用零来填充（这就是用kzalloc而不是kmalloc的原因）。接着通过P操作使得后续要执行的语句均处于临界区。</p><pre style="font-size: 0.85em; font-family: Consolas,Inconsolata,Courier,monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace; margin: 0px 0.15em; white-space: pre; overflow: auto; border-radius: 3px; border: 1px solid rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important; background-color: rgb(248, 248, 248);"> 92static struct char_device_struct *
+ 93__register_chrdev_region(unsigned int major, unsigned int baseminor,
+ 94 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; int minorct, const char *name)
+ 95{
+ 96 &nbsp; &nbsp; &nbsp; &nbsp;struct char_device_struct *cd, **cp;
+ 97 &nbsp; &nbsp; &nbsp; &nbsp;int ret = 0;
+ 98 &nbsp; &nbsp; &nbsp; &nbsp;int i;
+ 99
+100 &nbsp; &nbsp; &nbsp; &nbsp;cd = kzalloc(sizeof(struct char_device_struct), GFP_KERNEL);
+101 &nbsp; &nbsp; &nbsp; &nbsp;if (cd == NULL)
+102 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return ERR_PTR(-ENOMEM);
+103
+104 &nbsp; &nbsp; &nbsp; &nbsp;mutex_lock(&amp;chrdevs_lock);</code></pre><p style="margin: 0px 0px 1.2em !important;">如果major为0，也就是未指定一个具体的主设备号，需要动态分配。那么接下来的if语句就在整个散列表中为这组设备寻找合适的位置，即从散列表的末尾开始寻找chrdevs[i]为空的情况。若找到后，那么i不仅代表这组设备的主设备号，也代表其在散列表中的关键字。当然，如果主设备号实现已指定，那么可不去理会这部分代码。</p><pre style="font-size: 0.85em; font-family: Consolas,Inconsolata,Courier,monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace; margin: 0px 0.15em; white-space: pre; overflow: auto; border-radius: 3px; border: 1px solid rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important; background-color: rgb(248, 248, 248);">105
+106 &nbsp; &nbsp; &nbsp; &nbsp;/* temporary */
+107 &nbsp; &nbsp; &nbsp; &nbsp;if (major == 0) {
+108 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;for (i = ARRAY_SIZE(chrdevs)-1; i &gt; 0; i--) {
+109 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (chrdevs[i] == NULL)
+110 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;break;
+111 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}
+112
+113 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (i == 0) {
+114 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ret = -EBUSY;
+115 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;goto out;
+116 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}
+117 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;major = i;
+118 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ret = major;
+119 &nbsp; &nbsp; &nbsp; &nbsp;}</code></pre><p style="margin: 0px 0px 1.2em !important;">接着对将参数中的值依次赋给cd变量的对应字段。当主设备号非零，即事先已知的话，那么还要通过major_to_index函数对其进行除模255运算，因此整个散列表关键字的范围是0～254。</p><pre style="font-size: 0.85em; font-family: Consolas,Inconsolata,Courier,monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace; margin: 0px 0.15em; white-space: pre; overflow: auto; border-radius: 3px; border: 1px solid rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important; background-color: rgb(248, 248, 248);">120
+121 &nbsp; &nbsp; &nbsp; &nbsp;cd-&gt;major = major;
+122 &nbsp; &nbsp; &nbsp; &nbsp;cd-&gt;baseminor = baseminor;
+123 &nbsp; &nbsp; &nbsp; &nbsp;cd-&gt;minorct = minorct;
+124 &nbsp; &nbsp; &nbsp; &nbsp;strlcpy(cd-&gt;name, name, sizeof(cd-&gt;name));
+125
+126 &nbsp; &nbsp; &nbsp; &nbsp;i = major_to_index(major);</code></pre><p style="margin: 0px 0px 1.2em !important;">至此，我们通过上面的代码会得到一个有效的主设备号（如果可以继续执行下面代码的话），那么接下来还不能继续分配。正如你所知的那样，散列表中的冲突是在所难免的。因此我们得到major的值后，我们要去遍历冲突链表，为当前我们所述的char_device_struct类型的变量cd去寻找正确的位置。更重要的是，我们要检查当前的次设备号范围，即baseminor~baseminor+minorct，是否和之前的已分配的次设备号（前提是major相同）范围有重叠。</p><p style="margin: 0px 0px 1.2em !important;">下面的for循环就是在冲突链表中查找何时的位置，当出现以下三种情况时，for语句会停止。</p><p style="margin: 0px 0px 1.2em !important;">(1)如果冲突表中正被遍历的结点的主设备号（<em>(cp)-&gt;major）大于我们所分配的主设备号(major)，那么就可以跳出for语句，不再继续查找。此时应该说设备号分配成功了，那么cd结点只需等待被插到冲突链表当中（</em>cp节点之前）。</p><p style="margin: 0px 0px 1.2em !important;">(2)如果(*cp)结点和cd结点的主设备号相同，但是前者的次设备号起点比cd结点的大，那么跳出for语句，等待下一步的范围重叠的检测。</p><p style="margin: 0px 0px 1.2em !important;">(3)如果(<em>cp)结点和cd结点的主设备号相同，但是cd结点的次设备号起点小于(</em>cp)结点的次设备号的终点，那么会跳出for语句。此时很可能两个范围的次设备号发生了重叠。</p><p style="margin: 0px 0px 1.2em !important;">由上面的分析可以看出，冲突表中是按照设备号递增的顺序排列的。</p><pre style="font-size: 0.85em; font-family: Consolas,Inconsolata,Courier,monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace; margin: 0px 0.15em; white-space: pre; overflow: auto; border-radius: 3px; border: 1px solid rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important; background-color: rgb(248, 248, 248);">127
+128 &nbsp; &nbsp; &nbsp; &nbsp;for (cp = &amp;chrdevs[i]; *cp; cp = &amp;(*cp)-&gt;next)
+129 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if ((*cp)-&gt;major &gt; major ||
+130 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;((*cp)-&gt;major == major &amp;&amp;
+131 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; (((*cp)-&gt;baseminor &gt;= baseminor) ||
+132 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;((*cp)-&gt;baseminor + (*cp)-&gt;minorct &gt; baseminor))))
+133 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;break;</code></pre><p style="margin: 0px 0px 1.2em !important;">接下来检测当主设备号相同时，次设备范围是否发生了重叠。首先依次计算出新老次设备号的范围，接着进行范围判断。第一个判断语句是检测新范围的终点是否在老范围的之间；第二个判断语句是检测新范围的起点是否在老范围之间。</p><pre style="font-size: 0.85em; font-family: Consolas,Inconsolata,Courier,monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace; margin: 0px 0.15em; white-space: pre; overflow: auto; border-radius: 3px; border: 1px solid rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important; background-color: rgb(248, 248, 248);">134
+135 &nbsp; &nbsp; &nbsp; &nbsp;/* Check for overlapping minor ranges. &nbsp;*/
+136 &nbsp; &nbsp; &nbsp; &nbsp;if (*cp &amp;&amp; (*cp)-&gt;major == major) {
+137 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;int old_min = (*cp)-&gt;baseminor;
+138 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;int old_max = (*cp)-&gt;baseminor + (*cp)-&gt;minorct - 1;
+139 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;int new_min = baseminor;
+140 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;int new_max = baseminor + minorct - 1;
+141
+142 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;/* New driver overlaps from the left. &nbsp;*/
+143 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (new_max &gt;= old_min &amp;&amp; new_max &lt;= old_max) {
+144 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ret = -EBUSY;
+145 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;goto out;
+146 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}
+147
+148 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;/* New driver overlaps from the right. &nbsp;*/
+149 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (new_min &lt;= old_max &amp;&amp; new_min &gt;= old_min) {
+150 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ret = -EBUSY;
+151 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;goto out;
+152 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}
+153 &nbsp; &nbsp; &nbsp; &nbsp;}</code></pre><p style="margin: 0px 0px 1.2em !important;">当一切都正常后，就将char_device_struct描述符插入到中途链表中。至此，一次小范围的设备号分配成功。并且此时离开临界区，进行V操作。如果上述过程中有任何失败，则会跳转到out处，返回错误信息。</p><pre style="font-size: 0.85em; font-family: Consolas,Inconsolata,Courier,monospace;font-size: 1em; line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace; margin: 0px 0.15em; white-space: pre; overflow: auto; border-radius: 3px; border: 1px solid rgb(204, 204, 204); padding: 0.5em 0.7em; display: block !important; background-color: rgb(248, 248, 248);">154
+155 &nbsp; &nbsp; &nbsp; &nbsp;cd-&gt;next = *cp;
+156 &nbsp; &nbsp; &nbsp; &nbsp;*cp = cd;
+157 &nbsp; &nbsp; &nbsp; &nbsp;mutex_unlock(&amp;chrdevs_lock);
+158 &nbsp; &nbsp; &nbsp; &nbsp;return cd;
+159out:
+160 &nbsp; &nbsp; &nbsp; &nbsp;mutex_unlock(&amp;chrdevs_lock);
+161 &nbsp; &nbsp; &nbsp; &nbsp;kfree(cd);
+162 &nbsp; &nbsp; &nbsp; &nbsp;return ERR_PTR(ret);
+163}</code></pre><p style="margin: 0px 0px 1.2em !important;">至此，我们已经分析完了字符设备号分配函数。</p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">武特</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                <div class="reward_qrcode_area reward_area tc" id="js_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                                        <p class="reward_tips"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" id="js_reward_qrcode_img"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

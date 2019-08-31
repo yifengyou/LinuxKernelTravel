@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Linux Kernel中AEP的现状和发展
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664606448&amp;idx=1&amp;sn=a364cb917467bef729e525b7dc53d799&amp;chksm=f04d8715c73a0e03452e3abd67bc32be4eda1995ed78c1d27a34d7f317ee58c5cda18964719d&amp;scene=27#wechat_redirect&cpage=5' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Linux Kernel中AEP的现状和发展</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        阿里 石洋
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2019-05-13</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <section class="" style="max-width: 100%;font-variant-numeric: normal;font-variant-east-asian: normal;white-space: normal;widows: 1;font-size: 16px;color: rgb(62, 62, 62);line-height: 1.6;letter-spacing: 0px;font-family: &quot;Helvetica Neue&quot;, Helvetica, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;, Arial, sans-serif;background-color: rgb(255, 255, 255);box-sizing: border-box !important;overflow-wrap: break-word !important;"><h1 style="margin-top: 1.5em;margin-bottom: 1.5em;font-weight: bold;font-size: 1.6em;max-width: 100%;color: inherit;line-height: inherit;box-sizing: border-box !important;overflow-wrap: break-word !important;"><span style="max-width: 100%;font-size: inherit;color: inherit;line-height: inherit;box-sizing: border-box !important;overflow-wrap: break-word !important;">AEP简介</span></h1><p style="margin-top: 1.5em;margin-bottom: 1.5em;max-width: 100%;min-height: 1em;font-size: inherit;color: inherit;line-height: inherit;box-sizing: border-box !important;overflow-wrap: break-word !important;">AEP是Intel推出的一种新型的非易失Optane Memory设备，又被称作Apache Pass，所以一般习惯称作AEP。在这之前也有类似的设备称作NVDIMM或PMEM，目前Linux创建的AEP设备节点也是叫做pmem（如/dev/pmem0），<br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  />所以本文中NVDIMM或PMEM都指AEP。<br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  />但是本文不是为了科普AEP，如果想了解AEP的一些基本知识，可以参考以下几篇文章：<br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  />NVDIMM Enabling in SUSE Linux Enterprise Part 1<br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  />NVDIMM Enabling in SUSE Linux Enterprise Part 2<br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  />Persistent Memory Wiki</p><h1 style="margin-top: 1.5em;margin-bottom: 1.5em;font-weight: bold;font-size: 1.6em;max-width: 100%;color: inherit;line-height: inherit;box-sizing: border-box !important;overflow-wrap: break-word !important;"><span style="max-width: 100%;font-size: inherit;color: inherit;line-height: inherit;box-sizing: border-box !important;overflow-wrap: break-word !important;">DAX</span></h1><p style="margin-top: 1.5em;margin-bottom: 1.5em;max-width: 100%;min-height: 1em;font-size: inherit;color: inherit;line-height: inherit;box-sizing: border-box !important;overflow-wrap: break-word !important;">目前Linux Kernel中主要把PMEM看成一个类似于磁盘的块设备，所以可以在PMEM设备上创建文件系统，使它看起来和一般的磁盘没什么区别。但是设备的具体物理属性完全不一样，比如读写的latency，PMEM可以达到<br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  />和DRAM接近的程度，磁盘当然是望尘莫及的。所以，这就带来一个问题，众所周知，一般在Linux上常见的文件系统，比如ext4，xfs等，都是给磁盘设计的，都用到了page cache来缓存磁盘上的数据来提高性能。<br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  />但是，对于PMEM设备来说，它的访问延迟已经和内存接近了，为什么还需要内存中的page cache呢？所以，目前Linux Kernel中对这一块最大的改进就是支持DAX（Direct Access）。一句话解释DAX，就是DAX bypass了page cache。无论读写都是直接操作PMEM上的数据。<br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  />DAX需要在文件系统层面支持，如果要使用DAX，那么需要在mount文件系统时传入“-o dax”参数，比如：</p><pre style="max-width: 100%;font-size: inherit;color: inherit;line-height: inherit;box-sizing: border-box !important;overflow-wrap: break-word !important;"><code class="" style="margin-right: 2px;margin-left: 2px;padding: 0.5em;max-width: 100%;line-height: 15px;font-size: 11px;word-spacing: -3px;letter-spacing: 0px;font-family: Consolas, Inconsolata, Courier, monospace;border-radius: 0px;color: rgb(51, 51, 51);background: rgb(248, 248, 248);box-sizing: border-box !important;display: block !important;overflow-wrap: normal !important;word-break: normal !important;overflow: auto !important;"><span class="" style="padding-right: 20px;max-width: 100%;font-size: inherit;line-height: inherit;color: rgb(0, 128, 128);word-spacing: 0px;box-sizing: border-box !important;overflow-wrap: inherit !important;word-break: inherit !important;">1</span>&nbsp;/dev/pmem0&nbsp;<span class="" style="max-width: 100%;font-size: inherit;line-height: inherit;font-weight: bold;box-sizing: border-box !important;overflow-wrap: inherit !important;word-break: inherit !important;">on</span>&nbsp;/mnt&nbsp;<span class="" style="max-width: 100%;font-size: inherit;line-height: inherit;font-weight: bold;box-sizing: border-box !important;overflow-wrap: inherit !important;word-break: inherit !important;">type</span>&nbsp;xfs&nbsp;(rw,relatime,seclabel,attr2,dax,inode64,noquota)<br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  /></code></pre><p style="margin-top: 1.5em;margin-bottom: 1.5em;max-width: 100%;min-height: 1em;font-size: inherit;color: inherit;line-height: inherit;box-sizing: border-box !important;overflow-wrap: break-word !important;">DAX极大地提高了文件系统在PMEM设备上的性能，但是还有一些问题没有解决，比如：<br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  /><strong style="max-width: 100%;font-size: inherit;color: inherit;line-height: inherit;box-sizing: border-box !important;overflow-wrap: break-word !important;">1. 文件系统的metadata还是需要使用page cache或buffer cache。</strong><br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  /><strong style="max-width: 100%;font-size: inherit;color: inherit;line-height: inherit;box-sizing: border-box !important;overflow-wrap: break-word !important;">2. “-o dax”mount option是对整个文件系统的，不能做更细粒度的控制。</strong><br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  /><strong style="max-width: 100%;font-size: inherit;color: inherit;line-height: inherit;box-sizing: border-box !important;overflow-wrap: break-word !important;">3. 没有一个API来告诉应用访问的文件是不是可以DAX访问的。</strong><br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  />虽然DAX还有这些问题，但是目前DAX还是Linux Kernel中的主流使用方式。</p><h1 style="margin-top: 1.5em;margin-bottom: 1.5em;font-weight: bold;font-size: 1.6em;max-width: 100%;color: inherit;line-height: inherit;box-sizing: border-box !important;overflow-wrap: break-word !important;"><span style="max-width: 100%;font-size: inherit;color: inherit;line-height: inherit;box-sizing: border-box !important;overflow-wrap: break-word !important;">PMEM用作NUMA node</span></h1><p style="margin-top: 1.5em;margin-bottom: 1.5em;max-width: 100%;min-height: 1em;font-size: inherit;color: inherit;line-height: inherit;box-sizing: border-box !important;overflow-wrap: break-word !important;">既然PMEM就是memory，只是带宽和latency上差一点，那么自然会想到能不能就把PMEM当做memory用呢？答案当然是可以的。目前支持SRAT或者HMAT的硬件，都可以把PMEM识别为一个或多个NUMA node。Dave Hansen的<br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  />这组patch，Allow persistent memory to be used like normal RAM，就是通过memory hotplug的方式把PMEM添加到Linux的buddy allocator里面。新添加的PMEM会以一个或<br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  />多个NUMA node的形式出现，Linux Kernel就可以分配PMEM上的memory，这样和使用一般DRAM没什么区别。目前看这组patch已经没有什么blocking issues，不出什么问题的话，很快就会合并进入内核主线。<br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  />但是，到这里只是解决了第一步的问题，怎么把PMEM“用好”的问题还没有解决。比如，当内核分配内存时，如果从PMEM上分配了memory，并且这块内存上的数据是被经常访问的，那么由于物理特性上的差异，一般应&gt;用都会体会到性能的下降。那么怎么更明智的使用PMEM就是一个亟待解决的问题。<br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  />吴峰光的一组patch，PMEM NUMA node and hotness accounting/migration，来尝试解决这个问题。<br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  />这组patch主要提供了下面几个功能：<br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  /><strong style="max-width: 100%;font-size: inherit;color: inherit;line-height: inherit;box-sizing: border-box !important;overflow-wrap: break-word !important;">1. 隔离DRAM和PMEM。为PMEM单独构造了一个zonelist，这样一般的内存分配是不会分配到PMEM上的。</strong><br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  /><strong style="max-width: 100%;font-size: inherit;color: inherit;line-height: inherit;box-sizing: border-box !important;overflow-wrap: break-word !important;">2. 跟踪内存的冷热。利用内核中已经有的idle page tracking功能（目前主线内核只支持系统全局的tracking），在per process的粒度上跟踪内存的冷热。</strong><br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  /><strong style="max-width: 100%;font-size: inherit;color: inherit;line-height: inherit;box-sizing: border-box !important;overflow-wrap: break-word !important;">3. 利用现有的page reclaim，在reclaim时将冷内存迁移到PMEM上（只能迁移匿名页）。</strong><br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  /><strong style="max-width: 100%;font-size: inherit;color: inherit;line-height: inherit;box-sizing: border-box !important;overflow-wrap: break-word !important;">4. 利用一个userspace的daemon和idle page tracking，来将热内存（在PMEM上的）迁移到DRAM中。</strong><br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  />这组patch发到LKML以后，引来了很激烈的讨论，主要集中在两个方面：<br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  /><strong style="max-width: 100%;font-size: inherit;color: inherit;line-height: inherit;box-sizing: border-box !important;overflow-wrap: break-word !important;">1. 为什么要单独构造一个zonelist把PMEM和DRAM分开？</strong><br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  />其实在这块，我们也遇到了相似的问题。我们在某些项目要求做到控制每个进程使用的DRAM和PMEM的比例（比如8：2），但是目前的NUMA API做不到。目前的NUMA API只能控制从哪个node分配，但是不能控制比例，&gt;比如mbind()，只能告诉进程这段VMA可以用哪些node，但是不能控制具体多少memory从哪个node来。要想做到更细粒度的控制，需要改造目前的NUMA API。而且目前memory hierarchy越来越复杂，比如device memory，这都是目前的NUMA API所不能很好解决的。<br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  /><strong style="max-width: 100%;font-size: inherit;color: inherit;line-height: inherit;box-sizing: border-box !important;overflow-wrap: break-word !important;">2. 能不能把冷热内存迁移通用化？</strong><br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  />冷热内存迁移这个方向是没有问题的，问题在于目前patch中的处理太过于PMEM specific了。内核中的NUMA balancing是把“热”内存迁移到最近的NUMA node来提高性能。但是却没有对“冷”内存的处理。所以能不能实<br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  />现一种更通用的NUMA rebalancing？比如，在reclaim时候，不是直接reclaim内存，而是把内存迁移到一个远端的，或者空闲的，或者低速的NUMA node，类似于NUMA balancing所做的，只不过是往相反的方向。<br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  />笔者的一组patch，Another Approach to Use PMEM as NUMA Node(https://lore.kernel.org/linux-mm/1554955019-29472-1-git-send-email-yang.shi@linux.alibaba.com/)，就体现了这种思路。利用Kernel中&gt;已经很成熟的memory reclaim路径把“冷”内存迁移到PMEM node中，NUMA Balancing访问到这个page的时候可以选择是否把这个页迁移回DRAM，相当于是一种比较粗粒度的“热”内存识别。<br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  />社区中还有一种更加激进的想法就是不区分PMEM和DRAM，在memory reclaim时候只管把“冷”内存迁移到最近的remote node，如果target node也有内存压力，那就在target node上做同样的迁移。但是这种方法有可能<br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  />引入一个内存迁移“环”，导致内存在NUMA node中间不停地迁移，有可能引入unbounded time问题。而且一旦node增多，可能会迅速恶化问题。<br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  />在笔者看来，在内存回收方面还有一个更可能立竿见影的方案就是把PMEM用作swap设备或者swap文件。目前swap的最大问题就是传统磁盘的延迟问题，很容易造成系统无响应，这也是为什么有zswap这样的技术出现。<br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  />PMEM的低延迟特性完全可以消除swap的延迟问题。在这个方面，我们也正在做一些探索和实验。</p><h1 style="margin-top: 1.5em;margin-bottom: 1.5em;font-weight: bold;font-size: 1.6em;max-width: 100%;color: inherit;line-height: inherit;box-sizing: border-box !important;overflow-wrap: break-word !important;"><span style="max-width: 100%;font-size: inherit;color: inherit;line-height: inherit;box-sizing: border-box !important;overflow-wrap: break-word !important;">PMEM用作RAM（DRAM作为Cache）</span></h1><p style="margin-top: 1.5em;margin-bottom: 1.5em;max-width: 100%;min-height: 1em;font-size: inherit;color: inherit;line-height: inherit;box-sizing: border-box !important;overflow-wrap: break-word !important;">这个标题看起来有点歧义，上面已经说了PMEM可以作为NUMA node使用，这不已经是作为RAM了吗？怎么这里还要说用作RAM？这就涉及到AEP的另一个用法了，那就是所谓的“memory mode”。当在memory mode时，DRAM&gt;并不是和PMEM并列的，而是变成了PMEM透明的Cache，PMEM就成了DRAM。这时候PMEM和DRAM的关系就变成了DRAM和Cache的关系。而且，DRAM是一个direct mapped的Cache（这点很重要）。<br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  />这时疑问就来了，这样不是更没有什么可做的？既不需要管理NUMA，也没有冷热内存的问题了，热的自然就被Cache了。是的，但是这会引入另外一个问题，就是Cache冲突的问题。上面已经提到，在这种情况下，DRAM是一个direct mapped的Cache，就是在同样索引下只有一个cache line命中，这样会带来比较严重的Cache冲突问题，从而降低Cache的命中率，带来性能问题。对于这个问题的详细解释，请参见这篇文章(http://www.nersc.gov/research-and-development/knl-cache-mode-performance-coe/)<br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  />为了解决这个Cache冲突的问题，Dan Williams提出了这组patch，mm: Randomize free memory。这组patch的想法很简单，就是通过randomize free area的方式来降低Cache&gt;冲突。<br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  />目前这组patch已经合并入-mm tree，不出意外应该会在5.1时合并入内核主线。<br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  />但是这种配置的问题就是不够灵活，需要在BIOS中配置，一旦配置不可在运行时更改。</p><h1 style="margin-top: 1.5em;margin-bottom: 1.5em;font-weight: bold;font-size: 1.6em;max-width: 100%;color: inherit;line-height: inherit;box-sizing: border-box !important;overflow-wrap: break-word !important;"><span style="max-width: 100%;font-size: inherit;color: inherit;line-height: inherit;box-sizing: border-box !important;overflow-wrap: break-word !important;">NVDIMM专用文件系统</span></h1><p style="margin-top: 1.5em;margin-bottom: 1.5em;max-width: 100%;min-height: 1em;font-size: inherit;color: inherit;line-height: inherit;box-sizing: border-box !important;overflow-wrap: break-word !important;">前面提到PMEM可以作为一个块设备部署文件系统，但是现在支持的文件系统，比如ext4，xfs等，在设计时更多的考虑了怎样针对磁盘优化。但是PMEM是性质完全不同的存储介质，虽然经过一些改造，这些传统的文件<br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  />系统可以比较好的工作在PMEM上，但是还是会有很多不适合PMEM的地方，比如metadata还要经过page cache等。所以，NVDIMM专用文件系统就应用而生了。</p><h2 style="margin-top: 1.5em;margin-bottom: 1.5em;font-weight: bold;font-size: 1.4em;max-width: 100%;color: inherit;line-height: inherit;box-sizing: border-box !important;overflow-wrap: break-word !important;"><span style="max-width: 100%;font-size: inherit;color: inherit;line-height: inherit;box-sizing: border-box !important;overflow-wrap: break-word !important;">NOVA</span></h2><p style="margin-top: 1.5em;margin-bottom: 1.5em;max-width: 100%;min-height: 1em;font-size: inherit;color: inherit;line-height: inherit;box-sizing: border-box !important;overflow-wrap: break-word !important;">NOVA Filesystem就是专门为PMEM设计的文件系统。笔者对文件系统研究不深，而且对NOVA也没有很深入的研究，所以就不在这里班门弄斧了。感兴趣的读者可以参考NOVA的github link(https://github.com/NVSL/linux-nova)<br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  />之前，NOVA曾发到LKML上，但是好像社区里的maintainer们没有时间仔细review一个新的文件系统，所以合入社区的努力暂时停止了，但是还在github上继续开发中。</p><h2 style="margin-top: 1.5em;margin-bottom: 1.5em;font-weight: bold;font-size: 1.4em;max-width: 100%;color: inherit;line-height: inherit;box-sizing: border-box !important;overflow-wrap: break-word !important;"><span style="max-width: 100%;font-size: inherit;color: inherit;line-height: inherit;box-sizing: border-box !important;overflow-wrap: break-word !important;">ZUFS</span></h2><p style="margin-top: 1.5em;margin-bottom: 1.5em;max-width: 100%;min-height: 1em;font-size: inherit;color: inherit;line-height: inherit;box-sizing: border-box !important;overflow-wrap: break-word !important;">ZUFS(https://github.com/NetApp/zufs-zuf/blob/zuf-upstream/Documentation/filesystems/zufs.txt)是来自于NetApp的一个项目，ZUFS的意思是Zero-copy User Filesystem。声称是实现了完全的zero-copy，<br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  />甚至文件系统的metadata都是zero-copy的。ZUFS主要是为了PMEM设计，但是也可以支持传统的磁盘设备，相当于是FUSE的zero-copy版本，是对FUSE的性能的提升。<br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  />目前作者正在尝试将ZUFS的kernel部分upstream，据他说RHEL已经同意将ZUFS作为一个module加入RHEL 8。</p></section><p><em style="max-width: 100%;font-family: &quot;Tahoma For Number&quot;, &quot;Chinese Quote&quot;, -apple-system, system-ui, &quot;Segoe UI&quot;, Roboto, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;, &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;font-size: 14px;text-align: start;text-indent: 28px;white-space: normal;letter-spacing: 0.544px;background-color: rgb(255, 255, 255);caret-color: rgb(0, 82, 255);color: rgb(0, 82, 255);box-sizing: border-box !important;overflow-wrap: break-word !important;">本文转自内核月谈</em></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">阿里 石洋</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://mp.weixin.qq.com/s/zH93CYAVjgr-efHiiNFYJw#rd' target='_blank'>
+			阅读全文
+		</a>
+	</div>
+</body>

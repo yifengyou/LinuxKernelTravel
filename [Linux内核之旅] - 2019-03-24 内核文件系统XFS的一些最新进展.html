@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		内核文件系统XFS的一些最新进展
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664606320&amp;idx=1&amp;sn=63e485fa3988fcb9f7df5a9c6ae6d862&amp;chksm=f04d8795c73a0e83fd6d5d71de6b196b5479781a516a61363a423b164cbffde4f9d01a42b478&amp;scene=27#wechat_redirect&cpage=7' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">内核文件系统XFS的一些最新进展</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        关尔昱
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2019-03-24</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <h2 style="margin-top: 1.2em;margin-bottom: 0.6em;font-weight: bold;font-size: 34.4px;max-width: 100%;box-sizing: border-box;color: inherit;font-family: inherit;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;white-space: normal;widows: 1;line-height: 1.1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">New tricks for XFS</h2><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;line-height: 1.6;white-space: normal;widows: 1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">LWN原文链接：https://lwn.net/Articles/747633/</p><h3 style="margin-top: 1.2em;margin-bottom: 0.6em;font-weight: bold;font-size: 27.2px;max-width: 100%;box-sizing: border-box;color: inherit;font-family: inherit;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;white-space: normal;widows: 1;line-height: 1.6;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">简介</h3><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;line-height: 1.6;white-space: normal;widows: 1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">XFS文件系统进入内核已有15个年头，并且在那之前它就已经被用在运行IRIX的生产系统上5年之久。但是，就像Dave Chinner在他linux.conf.au 2018的演讲上一开始说的那样，现在也许是时候教这条文件系统界的“老狗”一些新的花招了。与一些更加现代的文件系统相比，XFS还缺少不少新特性，比如快照(snapshots)和子卷(subvolumes)；但是Dave正在思考如何给XFS增加这些特性并着手编码。</p><h3 style="margin-top: 1.2em;margin-bottom: 0.6em;font-weight: bold;font-size: 27.2px;max-width: 100%;box-sizing: border-box;color: inherit;font-family: inherit;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;white-space: normal;widows: 1;line-height: 1.6;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">作者</h3><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;line-height: 1.6;white-space: normal;widows: 1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">关尔昱，Linux系统工程师，来自阿里云系统组。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;line-height: 1.6;white-space: normal;widows: 1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">本文中若有任何疏漏错误，有任何建议和意见，请回复内核月谈微信公众号，或通过eguan at linux.alibaba.com或者 tao.ma at linux.alibaba.com反馈。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;line-height: 1.6;white-space: normal;widows: 1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">阿里云系统团队，是由原淘宝内核组扩建而成，2013年淘宝内核组响应阿里巴巴集团的号召，整建制转入阿里云，开始为云计算底层系统构建完善的系统支持。 阿里云系统团队是由一群具有高度使命感和自我追求的内核开发人员组成，团队中的大多数人，都是活跃的社区内核开发人员。目前的工作领域主要涉及（但不限于） Linux内核的内存管理、文件系统、网络和内核维护构建，以及和内核相关联的用户态库和工具。如果你对我们的工作很感兴趣，欢迎加入我们，请将简历发送至 tao.ma at linux.alibaba.com或者 boyu.mt at alibaba-inc.com。</p><h3 style="margin-top: 1.2em;margin-bottom: 0.6em;font-weight: bold;font-size: 27.2px;max-width: 100%;box-sizing: border-box;color: inherit;font-family: inherit;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;white-space: normal;widows: 1;line-height: 1.6;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">一些背景信息</h3><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;line-height: 1.6;white-space: normal;widows: 1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">XFS是“初始的B树文件系统”，因为文件系统存储的所有内容都是以B树形式组织的。然而它们并不是传统意义上的B树，它们是B+树的一种。其中的区别在于B+树的每个节点都有一个指向其兄弟节点的指针，这个指针让树的横向遍历成为可能。而这种横向遍历对于像写时复制(CoW)等特性至关重要。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;line-height: 1.6;white-space: normal;widows: 1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">XFS文件系统在内部被分成“像迷你系统一样”的分配组(allocation groups)；每个分配组都有自己的空闲空间索引B树，索引节点B树，反向映射(reverse-mapping)B树等等。文件数据也是用基于B树的extent来索引的。“文件夹和扩展属性就是更多的B树”，其中文件夹B树是最复杂的，因为为了可扩展性，它被设计为“虚拟映射的，具有各种散列的多索引B树”。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;line-height: 1.6;white-space: normal;widows: 1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">XFS使用预写日志机制(writeahead journaling)来抵御系统崩溃导致的不一致。它的基于检查点的日志记录是为了减轻因修改日志中已有的块而导致的写放大。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;line-height: 1.6;white-space: normal;widows: 1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">他随后简要介绍了CoW文件系统。当CoW文件系统写入一个数据或元数据块时，它首先做一份拷贝并在拷贝上做修改; 然后它需要更新索引树条目以指向新块。这导致需要修改保存这些索引条目的块，这又需要一次块拷贝，因此需要修改父索引条目，以此类推，一直要修改到文件系统的根节点。所有这些更新可以在文件系统的任何位置一起被写入，这样可以进行大量优化。它还保证了on-disk磁盘结构的一致性，因为可以在对根级索引进行原子更改之前写入整个更新。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;line-height: 1.6;white-space: normal;widows: 1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">所有这些都对系统崩溃的恢复很有用，但缺点是这需要为这些磁盘更新预先分配空间。这个空间分配过程需要更新元数据，这意味着元数据树的更新，因此需要为此分配更多空间。这导致一个问题，那就是文件系统无法确切知道给定CoW操作所需的确切空间。“这会在未来导致其他的问题。”</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;line-height: 1.6;white-space: normal;widows: 1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">正是这些对索引树的更新操作使得许多与CoW文件系统相关的特性成为可能，Chinner说，“共享，快照，子卷等等”。它们都是在具有引用计数对象的索引树结构基础上的自然扩展;这种扩展允许多个索引通过增加引用计数来指向相同的对象。快照只是继续保留一颗已被取代的索引树; 这可以通过增加对那棵树的引用来完成。复制(replication)是通过创建一颗树及其所有对象的副本来完成的，这是一个复杂的过程，但是“确实为我们提供了用户熟悉的发送-接收式复制(send-receive-style replication)”。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;line-height: 1.6;white-space: normal;widows: 1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">XFS中的CoW是不同的。由于使用的是B+树，XFS不能只完成一般CoW文件系统所做的从叶到根的更新，它还需要做横向更新；这在最坏的情况下意味着更新整个文件系统。因此XFS中仅对数据做CoW。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;line-height: 1.6;white-space: normal;widows: 1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">纯数据CoW限制了XFS可以提供的功能；像数据去重和文件级克隆这种特性是可能实现的，但其他的则不然了。Chinner表示，XFS能够提供的那些特性对overlayfs和NFS等项目是非常有用。纯数据CoW的优点是不会影响非共享数据或元数据。另外，XFS总是可以确切计算出CoW操作需要多少空间，因为只有数据被拷贝，元数据则在原地更新。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;line-height: 1.6;white-space: normal;widows: 1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">但是，由于元数据更新没有使用CoW，要做到安全的从系统崩溃中恢复要更困难一些 - 这不是像创建一个树的新分支然后以原子方式切换到它那么简单。Chinner说，XFS实现了一种“延迟操作”(deferred operations)，这是一种“意图记录机制”(intent logging mechanism)。延迟操作过去被用于释放extent，但现在已被扩展到对引用计数和反向B树映射进行更新。这允许把CoW更新作为恢复的一部分一起做日志回放。</p><h3 style="margin-top: 1.2em;margin-bottom: 0.6em;font-weight: bold;font-size: 27.2px;max-width: 100%;box-sizing: border-box;color: inherit;font-family: inherit;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;white-space: normal;widows: 1;line-height: 1.6;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">什么是子卷</h3><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;line-height: 1.6;white-space: normal;widows: 1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">关于CoW的这一切让Chinner开始思考使用纯数据CoW能够做什么。每个人似乎都希望能够对子卷做快照，但这似乎需要对元数据做CoW操作。我们是否可以换个角度来思考该问题以便实现相同的功能呢？当然，这是我们最终的目标。首先要了解文件系统为了实现子卷到底需要什么。而且还有其他的实现可以供我们参考学习，他说，“我们应该避免什么？他们做对了什么？”好的想法是可以被借用的 - “因为这是最简单的方法”。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;line-height: 1.6;white-space: normal;widows: 1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">让我们回到最初的概念上来看问题，他问道：“什么是子卷？它提供了什么？” 据他所知，有三个属性定义了一个子卷。子卷具有灵活的容量，因此它可以在没有任何影响的情况下增长或缩小。子卷也是一个功能完备的文件系统，支持像在文件中打洞(punch hole)或者克隆文件这样的操作。但是，作为快照的粒度单元是一个子卷最主要的属性。其他一切都建立在这三个属性之上。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;line-height: 1.6;white-space: normal;widows: 1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">他随后问：是否可以用在文件系统之上构造命名空间的形式来实现子卷？绑定挂载和挂载命名空间(bind mounts and mount namespaces)已经存在于VFS中，他想知道是否可以使用这些来创建“一个看起来像子卷”的东西。如果你在绑定挂载之上添加针对目录层次结构配额功能，就会得到一种灵活的空间管理方式。如果你“从另外一种足够大的角度来看”，他说道，这就是一个像子卷的东西。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;line-height: 1.6;white-space: normal;widows: 1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">同样的，使用–reflink=always的递归拷贝操作可以实现一种快照。它仍然复制元数据，但绝大多数结构已被克隆，而不拷贝数据。可以使用rsync和tar完成复制; “当然，这很慢”，但有些工具确实是这么做的。Chinner说，这种子卷跟Btrfs子卷很不一样，但它仍然可以提供相同的功能。此外，overlayfs拷贝数据并复制元数据，这表示你确实可以用“纯数据CoW的方式”来实现“一些看起来像子卷的东西”。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;line-height: 1.6;white-space: normal;widows: 1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">另一个可能的想法是通过在文件系统下层的设备来实现子卷。事实上，这种方法已经存在了。文件系统镜像可以存储在一个稀疏文件中，然后通过loopback方式挂载。该镜像文件可以使用纯数据CoW进行克隆，从而实现快速快照。这种方法的空间管理是“相对灵活的”，但还是受限于块层提供的功能和文件系统的实现。复制就是一个简单的文件拷贝。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;line-height: 1.6;white-space: normal;widows: 1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">这表明“我们所想的这种子卷其实我们已经在使用了”，Chinner说，构建子卷所需的基础设施已经在那里了，人们只是以其他方式在使用它们而不会让人想到它们是子卷。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;line-height: 1.6;white-space: normal;widows: 1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">但是，loopback文件系统方案还会遇到经典的ENOSPC问题。如果保存镜像文件的底层文件系统空间不足，它将返回ENOSPC来指示这种情况，但镜像内的文件系统并不会针对此情况做任何准备并处理该故障，它只会遭到严重的损毁：“blammo！”。精简配置设备(thin provisioning)也有相同的问题。它比CoW文件系统ENOSPC问题更糟糕，因为你无法预测问题何时会发生，并且当问题发生后你也无法恢复。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;line-height: 1.6;white-space: normal;widows: 1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">然后Chinner把话题转回了从别人那里学习。他说到，Overlayfs和Btrfs(在较小程度上)教会我们，通过挂载选项指定子卷是“非常非常笨重”的方法。Btrfs子卷共享相同的超级块，这可能导致查找或备份等各种工具产生一些微妙的问题。一个子卷需要作为一个独立的VFS实体来实现，而不仅仅是行为表现像一个VFS实体。“通过欺骗只能隐藏一时。”</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;line-height: 1.6;white-space: normal;widows: 1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">解决ENOSPC问题很重要。问题的根源在于上下层级之间（无论如何定义）对空闲空间可用性有不同的看法，而且这两层之间不会就此进行通信。我们已经就此问题在LSFMM上讨论过多次（例如，2017年和2016年），但没有取得任何实质性进展。但是一段时间之前，Christoph Hellwig提出了一个在XFS上运行的并行NFS（pNFS）服务器的文件接口; 它允许pNFS客户端从服务器远程映射文件并从服务器分配块。实际的数据存储在其他地方，并且客户端会从这些位置执行实际的读写操作；也就是客户端在服务器上进行文件系统块分配，然后在其他地方执行I/O。这为空间统计和管理的跨层沟通提供了一个“非常具有启发性”的模型。</p><h3 style="margin-top: 1.2em;margin-bottom: 0.6em;font-weight: bold;font-size: 27.2px;max-width: 100%;box-sizing: border-box;color: inherit;font-family: inherit;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;white-space: normal;widows: 1;line-height: 1.6;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">一种新的子卷</h3><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;line-height: 1.6;white-space: normal;widows: 1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">Chinner在构思一种新型子卷的时候把将这一切都加入到考虑范围内；这种新型子卷在行为上跟传统CoW子卷一致，但实现方式完全不同。我们可以修改内核以便可以直接挂载镜像文件（而不通过loopback设备），并且可以新增一种设备空间管理API。如果一个文件系统实现了该API的两端(主机端和客户端)，则可以将相同文件系统类型的镜像文件当作子卷来使用。API可用于获取映射信息，这将允许子卷直接对宿主文件系统的块设备执行其I/O操作。这打破了长期以来文件系统必须使用块设备的要求; 有了这个变化，文件系统现在可以直接使用文件。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;line-height: 1.6;white-space: normal;widows: 1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">但是这种机制仍然可以用于块设备，这对精简配置情况也很有用。精简配置块设备（如dm-thin）可以实现空间管理API的主机端; 文件系统可以使用客户端API进行空间统计和I /O映射。这样，底层块设备将在文件系统修改其结构和发出I/O之前报告ENOSPC。这是一种额外奖励，他说，但如果他的想法真的同时解决了两个问题，那么这让他有理由认为他正走在正确的轨道上。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;line-height: 1.6;white-space: normal;widows: 1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">快照“在这个模型中非常容易”。冻结子卷然后克隆镜像文件。它即快速又高效。实际上，即使其文件系统没有实现针对元数据的CoW操作，该子卷的元数据也是写时复制的；因为下层文件系统（镜像文件所在的地方）的纯数据CoW提供了子卷元数据的CoW。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;line-height: 1.6;white-space: normal;widows: 1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">复制可以通过拷贝镜像文件来完成，但还有更好的方法。可以比较两个镜像文件以确定哪些块在两个快照之间发生了变化。这很简单，并且不需要知道正在被复制的文件中的内容。他用200行shell脚本和xfs_io工具实现了一个针对loopback设备上的XFS的工具原型。 “它基本上是一个增量拷贝”，并且与文件系统映像中的内容是无关的；如果你有两个ext4文件系统的快照，那么相同的代码也可以工作。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;line-height: 1.6;white-space: normal;widows: 1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">有人想要一些已有的CoW文件系统（例如Btrfs，ZFS）无法提供的功能，但是这种新的方案可以。当前，许多数据在磁盘上是可以在文件间被共享的，但数据一旦被加载到页面缓存就不能继续被共享了。比如500个基于同一个镜像的容器，你可以创建多个快照，但每个容器在缓存中都有同一个文件的一份拷贝。“所以你在内存中拥有500份/bin/bash”，他说。Overlayfs把这件事情做对了，因为它可以把一份未被修改的Bash镜像缓存在内存中并被所有容器共享。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;line-height: 1.6;white-space: normal;widows: 1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">他的目标是让这个新子卷模型拥有同样的行为。这需要在页面缓存中共享shared extents中的数据。Chinner说，这是一个复杂而困难的问题，因为页面缓存是按文件和偏移索引的，而shared extent中唯一可用信息是它们在文件系统中的物理位置（即块号）。为了查看一个shared extent是否已经被缓存而在页面缓存中进行彻底搜索不是可取的方法，相反，他建议添加一个按块号索引的buffer cache。XFS已经有一个buffer cache，但它没有办法在多个文件之间共享页面。Chinner表示，Matthew Wilcox正在努力解决这个问题；解决方案“也许会在下周发出来”，他笑着说。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;line-height: 1.6;white-space: normal;widows: 1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">很长一段时间以来，人们一直在说不需要为子卷加密，因为容器是相互隔离的，但是随后出现了Meltdown和Specter，这打破了所有的隔离。他认为这可能会导致一些人想要更多的防御层，以便在隔离失效时更难以窃取他们的数据。在XFS中使用VFS文件加密API将允许XFS对镜像文件和/或子卷内的单个文件进行加密。将密钥管理添加到空间管理API中也可能会有其他收获。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;line-height: 1.6;white-space: normal;widows: 1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">Chinner说，看起来XFS是可以提供“加密的，可快照的，克隆的子卷”的。当然，这其中还有很多工作要做，它仍处于早期阶段。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;line-height: 1.6;white-space: normal;widows: 1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">用户的管理接口尚未确定；他当前更专注于让这些技术变得可行，而在此之前他不会去关心策略管理的问题。子卷要如何呈现，宿主卷(host volume)对用户来说是什么样子，以及是否所有东西都是子卷，以上这些都是当前需要解决的问题。此外，还需要将此工作与Anaconda和Docker等工具进行集成。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;line-height: 1.6;white-space: normal;widows: 1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">目前，代码尚未得到其他人的任何审阅；代码都还在他的笔记本电脑和服务器上。补丁一旦被发布，就会有大量相关讨论。就此可能还会产生“一些圣战，大声争吵，毕竟有冲突矛盾电视剧才好看”。他推荐边吃爆米花边看热闹。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;line-height: 1.6;white-space: normal;widows: 1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">随后他做了一个现场展示（YouTube的视频中大约36:56开始,），他演示了迄今为止能够工作的内容。这是一个相当典型的早期演示，但他尽量避免使用subvolume和snapshot关键字，在演示中它们分别是“blammo”和“kaboom”。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;font-variant-numeric: normal;font-variant-east-asian: normal;letter-spacing: 0.4352px;line-height: 1.6;white-space: normal;widows: 1;background-color: rgb(255, 255, 255);overflow-wrap: break-word !important;outline: none !important;">演示结束后，Chinner对这次演讲（和这项工作）做了总结。他首先研究如何在不实现元数据的CoW的情况下获得与子卷相同的功能。最终结论是将文件用作子卷并将子卷视为文件系统。这为XFS这条老狗提供了与CoW文件系统相同的功能。</p><p><br  /></p><p><span style="color: rgb(255, 0, 0);font-size: 15px;"><em>文章转自公众号“内核月谈”</em></span></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">关尔昱</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://mp.weixin.qq.com/s/bfXVZoKU43wtIxyg-nz27Q#rd' target='_blank'>
+			阅读全文
+		</a>
+	</div>
+</body>

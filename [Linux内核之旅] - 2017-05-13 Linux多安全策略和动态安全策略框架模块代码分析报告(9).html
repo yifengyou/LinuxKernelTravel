@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Linux多安全策略和动态安全策略框架模块代码分析报告(9)
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664604025&amp;idx=2&amp;sn=c5f6c646e81ec85df3689c4d687a8890&amp;chksm=f04d8c9cc73a058ad3439f1382b9454a1617de59f18f6bd71019209d5cb162a4ebdc5ba4b43c&amp;scene=27#wechat_redirect&cpage=40' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Linux多安全策略和动态安全策略框架模块代码分析报告(9)</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        苗磊
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2017-05-13</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p><span style="color: rgb(0, 82, 255); font-size: 18px;"><strong>角色属性</strong></span></p><p>role_datum用来表示角色属性，定义在security/selinux/ss/policydb.h中，具体定义如下：</p><p><br  /></p><p><span style="color: rgb(255, 41, 65);">struct role_datum {</span></p><p><span style="color: rgb(255, 41, 65);">&nbsp; &nbsp; &nbsp; &nbsp; u32 value; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;/* internal role value */</span></p><p><span style="color: rgb(255, 41, 65);">&nbsp; &nbsp; &nbsp; &nbsp; u32 bounds; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /* boundary of role */</span></p><p><span style="color: rgb(255, 41, 65);">&nbsp; &nbsp; &nbsp; &nbsp; struct ebitmap dominates; &nbsp; &nbsp; &nbsp; /* set of roles dominated by this role */</span></p><p><span style="color: rgb(255, 41, 65);">&nbsp; &nbsp; &nbsp; &nbsp; struct ebitmap types; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /* set of authorized types for role */</span></p><p><span style="color: rgb(255, 41, 65);">};</span></p><p><span style="color: rgb(255, 41, 65);"><br  /></span></p><p><span style="color: rgb(255, 41, 65);"></span></p><p>如上所示，代码中已经对各字段的含义进行解释，这里不再赘述。其结构图如图2-4所示：</p><p>&nbsp;</p><p style="text-align: center;"><img data-s="300,640" data-type="png" src="data:image/PNG;base64,iVBORw0KGgoAAAANSUhEUgAAARIAAADTCAIAAADClgvRAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAACC9SURBVHhe7Z159FXT+8eLZMgYkSiVjGURZY5KImMZatEyhCUNEssQMi9kqFRKX7NiKbVoycoykzmZiQZDhkLmefZ7re/+/Pb3uOfse/c+5+xzzr2f5/7B/dz2+N7P++zhPPv9NPhHPoKAIOCIQAPH9JJcEBAE/hHaiBEIAs4ICG2cIZMMNghstdVW9913XzjlTjvtNHXqVPX79ttvf/fdd9uUVrQ0QpuijUiNtMdEm+nTpy9cuFBoUyPDLN2Ih8DPP/88ZcqUvffee5ttthkzZsy3336ryoE248aN6969+4Ybbjh8+PCPP/5Y/a5nm6FDh66yyiobbLDBZpttduyxx6osN9xww/7777/eeusdeOCBFMWf/MikBNlU9tGjR2+55ZZrr732AQcccNddd+k2k+zSSy/t0qXLdtttF6wuXqcq5pLZpiJEkqAcAqeddlqPHj1eeeWVjz766Mgjj8RkNW022WSTWbNmff755wMHDuzcuXMJbcKLNEy/Xbt2c+bM+fDDD/fcc0/YcvLJJ/N92rRpa6yxxq+//koW+PP+++///vvvDzzwwFprraUnLvK2adNmwYIFf/zxx+WXX66r8zR4QhtPwNaLYv/888/mzZu//vrrqrcY8aabbvr333+rqWPQoEHq92+++aZRo0ZqwimztyHLeeedp7JMnDiRLF999ZX6s2XLlo888kgJpscdd9wVV1yhWXr66aer7z/++OOqq66q5zcfIyG08YFqfSnzpZdeWmmllVhl6c+666777rvvKtrceuutGgiWcEwaFWmjTxH4Qgk6+y677HLbbbfx52OPPQZbtt56a4hEXUcccYSmTWR1nkZCaOMJ2HpRLIslti5vv/12uLcY/eDBg9Xv7FLYxoRnG2aekv1Jedr88ssvLPw4iFM7qJNOOunwww/XtGFFp74zR6288soy29QLE6zSTp5xxhk9e/Z8/vnn//rrry+++GLGjBnajpkQZs+ezd6G1VqnTp3U78FF2imnnMLWiIw6S3naUD6bnA8++ID0cJWDgSBtYBTZP/vsM+ikq/OEqsw2noCtL8WykeAkrVevXhhx27ZtoYHm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 " src="SeWfibBcBT0FK2Je5BPD5iaLQYicEr1mWwVEvEmc7rEPTb4hLF0M56yCmic6YGCBmcgibU6TBZtTjmuh0ASE6uibuQhg"  style="width: 100%; height: auto;" data-ratio="0.7700729927007299" data-w="274"  /></p><p style="text-align:center"><span style="font-size: 16px;"><span style="font-family: 宋体;">图</span>2-4 role_datum<span style="font-family: 宋体;">相关结构体之间的关系图</span></span></p><p style="text-align:center"><br  /></p><p>在SELinux中，某些主体可以通过修改其所属的角色来获得不同的权限，这样的规则称为角色转换规则，在SELinux中用role_trans结构表示，其定义在security/selinux/ss/policydb.h中，具体定义如下：</p><p><br  /></p><p>&nbsp;<span style="color: rgb(255, 41, 65);">struct role_trans {</span></p><p><span style="color: rgb(255, 41, 65);">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;u32 role; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /* current role */</span></p><p><span style="color: rgb(255, 41, 65);">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;u32 type; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /* program executable type, or new object type */</span></p><p><span style="color: rgb(255, 41, 65);">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;u32 tclass; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;/* process class, or new object class */ &nbsp; &nbsp; &nbsp;</span></p><p><span style="color: rgb(255, 41, 65);">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;u32 new_role; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /* new role */</span></p><p><span style="color: rgb(255, 41, 65);">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;struct role_trans *next;</span></p><p><span style="color: rgb(255, 41, 65);">&nbsp; &nbsp;};</span></p><p><br  /></p><p>如上所示，代码中已对各字段的含义进行了解释，这里不再赘述。</p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">苗磊</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                <div class="reward_qrcode_area reward_area tc" id="js_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                                        <p class="reward_tips"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" id="js_reward_qrcode_img"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

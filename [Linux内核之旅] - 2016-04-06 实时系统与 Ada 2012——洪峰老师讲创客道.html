@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		实时系统与 Ada 2012——洪峰老师讲创客道
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=416966948&amp;idx=1&amp;sn=25961159658fb8c5c764680894e326f2&amp;chksm=764544c14132cdd77306d035590202f7b96b3631dfd51c02e3311f34381f4c58832c18713307&amp;scene=27#wechat_redirect&cpage=75' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">实时系统与 Ada 2012——洪峰老师讲创客道</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        洪峰
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-04-06</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="text-indent:28px"><span style=""></span></p><p><mpvoice frameborder="0" class="res_iframe js_editor_audio audio_iframe" src="/cgi-bin/readtemplate?t=tmpl/audio_tmpl&amp;name=%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9325&amp;play_length=22:11" name="%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9325" play_length="1331000" voice_encode_fileid="MzI3NzA5MzUxNF80MTY5NjY5NDY="></mpvoice></p><p style="text-indent:28px"><span style=""></span><br  /></p><p style="text-indent:28px"><span style="">前面介绍的C，C++，</span><span style="">Java</span><span style="">还有</span><span style="">Go语言</span><span style="">，它们的语法特点从编译原理的角度来看都是C系列的，它们的句法形式都非常相似。如果在掌握了C语言后，再去学习C++，</span><span style="">Java</span><span style="">，还有</span><span style="">Go语言</span><span style="">都非常的容易。在C语言获得系统编程的统治地位之前，Pascal语言曾经辉煌过，而且到今天Pascal语言仍然在使用。但是Pascal的垄断地位被C替代掉了。Pascal语言有一些后续的语言，有着旺盛的生命力。&nbsp;在今天这一讲里，将会讲其中一个Pascal</span><span style="">直系</span><span style="">的后代——Ada语言，这个Ada语言是用于设计实时系统的一个首选语言，实时系统在市场上有非常广泛的应用。目前在各行各业都可以看到它的身影，在采矿、冶金、石油、化工、汽车生产线、批量生产的控制系统、供电网络的监控、能源的管理、燃气供应、城市污水和工业废水处理系统，水厂的水质监控、邮包的传送网络、大型的物理装置、宇航开发、飞行模拟器的训练，还有一些联机的商务系统的开发，还有许多的仪器仪表，还有各种机床机电产品，在这些系统中，实时系统应用的非常广泛。在国防工业，也就是武器系统的研发中实时系统应用的就非常多，比如说导弹、空间站、火箭、战斗机、飞机和轰炸机等这些武器系统中对实时系统的要求都是非常高的。&nbsp;实时系统一般的定义是，能够在确定的时间内执行其功能，并对外部的异步事件做出相应的响应的计算机系统，这样的系统称之为实时系统。在这个定义中，确定的时间内做出适当的反应，是一个非常重要的指标。比方说，如果一个系统能够在大多数情况下在100μs</span><span style="">内</span><span style="">做出响应，而它偶然某些情况下需要1ms（也就是1000μs）或者更长的时间才能做出响应，这种计算机系统很难把它定义为实时系统，相比较之下如果这个系统能够在任何情况下都能够以500μs的时间对外部的事件做出响应，这种系统称之为实时系统。&nbsp;不同的实时系统对外部事件的响应时间有不同的要求，有些系统要求在100ns进行</span><span style="">响应</span><span style="">，有的则要求在1s做出</span><span style="">响应</span><span style="">即可。一般来说，实时系统是一个计算机控制系统，它用来控制一个过程，或者说有一个被控系统，比方说现在在无人机领域，对无人机上飞机发动机的控制系统我们采用Faldic系统，Faldic系统是一个专用的实时系统，它用于对飞机的发动机进行控制。高级的Faldic系统一方面对发动机进行控制，另一方面还要与飞机上的指控系统进行通信和联络，因为飞机的状态控制需要发动机的配合。这个时候飞机上的计算机要对Faldic系统发出指令，这个指令被转换成对发动机的控制，而发动机的状态又反馈给Faldic系统，Faldic会把重要的参数又返回给飞机上的计算机。发动机是飞机的心脏，对于高性能的无人机系统来讲，发动机系统以及Faldic系统对高端的无人机来说是非常关键的一个子系统，从这个案例可以看出实时系统的重要性。&nbsp;对于实时系统有很多分类的方法，其中一个非常重要的分类方法，就是把实时系统分成强实时系统和弱实时系统这两个种类。下面说一下什么叫强实时系统，什么叫弱实时系统。在弱实时系统里各个任务到达系统之后会有一个队列，而且每一个任务根据它的类型有不同的优先级，在这些就绪待命的任务队列里，弱实时系统会选择优先级最高的任务先进行处理，其它优先级比较低的任务继续处在待命的状态，队列中优先级最高的任务被执行之后系统会回过头来在队列中处理优先级次之的任务。在强实时系统里必须明确的定义响应时间的长短，也就是说系统中对各个任务的调度必须满足各自限定时间的要求，这个限定时间一般称之为Deadline，这个Deadline必须被满足，它是指一个任务不被处理的最长的时间，是不能被超过的。换句话讲，强实时系统必须对限定时间要有调度的功能，在一些复杂的强实时系统中，各个任务的优先级是可以变化的，比如导弹，它在起飞阶段还有巡航阶段以及最后进入战斗攻击的阶段，这三个阶段它的系统上的许多任务的优先级是不一样的，需要根据各个阶段进行调度。像这样的系统使得实时系统的设计变得复杂起来。因为这些系统里面限定时间的长度Deadline取何值是处于一种变化的情况下，实时系统的设计是非常复杂的，因为实时系统除了要有足够的计算能力之外，满足处理的时间要求，处理的性能要求之外，还要有足够的中断处理能力，因为系统的调度是通过中断这个</span><span style="">资源</span><span style="">来完成的，外部的事件被转换成外部的中断事件，另外对于数据处理比较多的实时系统，还有比较高的I/O吞吐率，以满足在时间上要求苛刻的这种应用。要设计一个好的实时系统必需综合考虑多方面的因素，要对系统的芯片，系统的总线，系统中断的设计以及指令集乃至算法等各个方面做出综合的权衡之后，才能够得到一个比较满意的实时系统。</span></p><p><span style="">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="">已经有许多语言被发明出来用于支持实时系统的应用，前面</span><span style="">提到的</span><span style="">Forth</span><span style="">语言</span><span style="">当年就是为了控制</span><span style="">“</span><span style="">天文望远镜的运动</span><span style="">”</span><span style="">这种实时应用而被设计出来的。对于很多其它的应用，美国国防部曾经指导过一种叫做Ada的语言的设计。</span></p><p style="text-indent:28px"><span style="">Ada语言的设计要求是要满足以下六个方面：&nbsp;第一，要能够用于大规模实时的嵌入式的系统的开发，而且这些系统要满足并发的，</span><span style="">容错</span><span style="">的（即对一些错误要进行</span><span style="">容错</span><span style="">处理），高可靠性，以及能够长期运行的这种系统。这是美国国防部当时提出的一个需求。Ada语言第一个规范的提出在1983年，到1995年又提出了一个更新的版本，到2005年因为环境的变化，在嵌入式系统Ada语言的设计中这个社团也与时俱进推出了2005年的版本（算是一个过渡版）。2012年出现了Ada2012，这个版本是目前最好的一个版本，也是Ada语言真正走向成熟的标志性的一个语言规范，关于Ada语言的作者是一个英国人叫做Jean&nbsp;Ichbiah写了Program&nbsp;In&nbsp;Ada，这本书有好几个版本分别针对Ada83、Ada95、Ada2005以及Ada2012，每一个重大的版本语言规范推出去后都写了一个更新版，在他的著作里边作者对Ada关键设计的目标提出了自己的观点。他认为Ada程序首先要满足很好的可读性，因为可读性是项目维护的一个重要基础（涉及到Ada这个语言推出的一个背景材料，在Ada语言推出以前，美国国防部进行很多的采购，向社会采购武器系统，而参与系统投标的公司相互之间语言不兼容，系统也不兼容，导致所采购系统的维护费用十分高昂，所以想要设计出一种新的语言，让所有投标的生产厂家都采用Ada语言来提供满足美国海陆空三军的武器系统的研发），那么程序的可读性与维护性是密切关联的，所以Ada语言在可读性方面是非常优秀的。</span></p><p><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="">第二，Ada语言是一个强类型（strong&nbsp;type）语言，强类型理解为类型显示声明的语言，前面说过C语言是显示声明的弱检查的一种语言，C++继承了这个优点。Ada语言自1983年推出就是显示声明的语言，有了显示声明语言的特性之后，对许多错误的检查就会在程序编译的时候被发现进而排除。这对高可靠性系统的研发是有重要意义的一种选择。&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;第三，Ada语言必须要有一些机制用于大规模的实时系统的开发。Ada2012的语言规范中已经出现了大量的这种机制，例如合同机制，模块化的编译，宏机制，标准库组织的一些技巧，以及以前所追求的OOP、容器、接口等等，这些机制都被用于开发大型的系统，这一点已经在Ada语言特性里边得到了充分的体现。如果大家对Rocket语言的特性比较了解，那么在掌握Rocket语言特性之后学习和使用Ada语言会有种似曾相识的感觉</span><span style="">。</span><span style="">第四，Ada语言必须要</span><span style="">容错</span><span style="">，所以对例外的处理的功能要十分的健壮，前面讲</span><span style="">Java</span><span style="">语言时，提到过</span><span style="">Java</span><span style="">语言有个很好的设计特点就是对例外</span><span style="">（Exception）</span><span style="">的处理。而在Ada中对例外的处理比</span><span style="">Java</span><span style="">更为健壮，有许许多多的机制来保障健壮性的实施，以及对</span><span style="">容错</span><span style="">性的支持，所谓</span><span style="">容错</span><span style="">性就是说一个系统上某一个部分不工作失效以后，它会有另外的系统来代替它进行工作，这是高可靠性计算机系统必须要满足的一个特点。Ada语言从1983年的版本开始，对于类型检查，数组边界的检查，取值范围的检查等等这样的检查都已经设计的很完善。并且对于例外的定义和报错，还有检查的机制也有很详细的设计，在对例外的出现的捕获上面以及对例外的说明方面都有相应的处理机制，这个需要仔细的学习。最后一点，对于例外的处理会交给谁，在一个怎样的范围内起作用都设计的比较周到。这些都是设计大型应用程序所需要的一些特点。&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;第五，Ada语言有足够的数据抽象能力，抽象是计算机编程非常本质的一个特征。&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;第六，要有面向对象的编程能力，对面向对象的编程能力的支持，从Ada83开始到Ada2012走过了一个漫长的过程，最终到Ada2012这个版本定型时，Ada2012已经发展成一个完全的面向对象的编程语言。前面介绍</span><span style="">Java</span><span style="">语言时讲过，因为有了面向对象，所以软件工程的那些技术，包括UML建模，设计模式，反模式，以及软件项目的重构，像这样的一些技术都可以应用到</span><span style="">Java</span><span style="">语言中，同样的道理，这些软件工程技术有了OOP的支持以后也可应用到Ada2012的开发项目中来。&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;第七，Ada必须提供对多任务的支持，前面已经讲过要开发实时系统的话必须对异步的一些事件进行响应。异步的事件实际上就是同时外部有多个事件并发产生，所以对multitasking的支持必反映到Ada语言的设计中来。&nbsp;&nbsp;&nbsp;&nbsp;第八，要有宏的单元（就是在C++中讲的泛型设计），在Ada2012中对于泛型也就是参数化的类型也得到了支持。</span></p><p style="text-indent:28px"><span style="">第九，要有通信能力，语言必须要有联网的能力，因为将来越来越多的嵌入式系统要求与外部有通信功能，前面讲了发动机的Faldic系统就要有一定的通信功能。在语言设计的时候，Ada2012被设计成为具有联网的功能。&nbsp;由于Ada2012支持支持这么多的优秀的特性，所以Ada2012在实时系统领域获得广泛的应用就不足为奇。除了在国防工业获得广泛的应用，Ada语言现在也越来越多的进入民用的系统。例如，核电站的控制系统，我们知道核电站对于系统的可靠性的要求是极高的，必须要做到万无一失，在核电站的设计里面，对软件系统的可靠性提出了极高的要求，而目前在计算机工业界能够满足核电工业所提出的苛刻要求的编程语言我认为也只有Ada2012这一种，其它的语言还达不到这种要求。再例如，对于飞机场的塔台的空中管制系统，它也是具有非常强实时要求和非常高可靠性的一个应用系统，因为飞机的飞行状态是动态的，进港和出港的航班都是处在动态的变化中，而且都有实时的要求，弄得不好的话，飞机的调度出现问题的话可能会造成飞机的相撞。这类的系统都可以用Ada语言来开发，对于发射的外太空的空间站，空间站是需要在外太空长期运行的，且因为发射的成本十分高昂，所以不可能频繁的发射宇宙飞船把宇航员送到空间站上进行维修，所以空间站上运行的软件系统需要长期可靠的运行，这类软件的开发也有它非常独特的技术要求。</span></p><p><span style="">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="">这里对于利用Ada去开发实时系统应用提出几点看法。首先，这个门槛非常高，理解Ada语言的诸多语言特性这个是有漫长的一个学习过程的，这个过程从入门到熟练的掌握和应用有一个非常高昂的时间成本。第二点，用Ada语言去开发这类领域非常特定的这些应用，你的准入门槛会非常高，比如说核电公司在选择开发软件的团队时，可能会对团队的资质有一些比较苛刻的考核指标，也就是说很难进入到那个圈圈里去，一旦进去了，相对于其它的软件开发团队就非常安全了，因为可以和一个非常大的公司进行合作，软件开发业务有非常稳定的保障。第三点，开发这样一些实时的应用，不光说是一个软件编程的一个活动，必须要有系统设计的思想，前面已经提到过，设计一个好的实时系统，必须要兼顾芯片、体系架构，还有中断资源以及被控对象的特点等等，只有把所有的因素综合起来考虑之后才能得到一个比较满意的答案，这个门槛是非常高的，所以利用Ada去开发这类应用不仅仅是一个软件编程活动，它还有许多其它的工程领域乃至管理方面的一些领域要结合起来，要统筹考虑，才能够提供一个满意的解决方案，无论怎么样，这个领域是一个具有挑战性的领域。</span></p><p><span style="">&nbsp;</span></p><p><span style="">&nbsp;</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">洪峰</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

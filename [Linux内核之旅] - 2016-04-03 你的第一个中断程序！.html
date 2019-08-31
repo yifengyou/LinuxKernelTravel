@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		你的第一个中断程序！
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=416916265&amp;idx=2&amp;sn=bfed49be7953669dab0ddb4a3e8ffdae&amp;chksm=76468ecc413107da1137c5a434490f06f7ac2686a784e2eac05403a2f6bec7cd65a904089a69&amp;scene=27#wechat_redirect&cpage=75' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">你的第一个中断程序！</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        武特
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-04-03</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style=""><span style="font-size: 16px;">本文通过一个简单的中断程序来描述一般中断程序的基本框架。</span></p><p style=""><span style="font-size: 16px;">中断程序一般会包含在某个设备的驱动程序中，因此，接下来的程序本质上还是一个内核模块。说到内核模块，你应该知道首先去看什么了吧？对了，就是内核模块加载函数。</span></p><pre class="brush:c" style="border: 0px; font-size: 13px; margin-top: 0px; margin-bottom: 0px; outline: 0px; padding: 0px; color: rgb(36, 38, 38); line-height: 20px; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">static int __init myirq_init()
+{
+	printk(&quot;Module is working..\n&quot;);
+	if(request_irq(irq,myirq_handler,IRQF_SHARED,devname,&amp;mydev)!=0)
+	{
+		printk(&quot;%s request IRQ:%d failed..\n&quot;,devname,irq);
+		return -1;
+	}
+	printk(&quot;%s rquest IRQ:%d success..\n&quot;,devname,irq);
+	return 0;
+}</span></pre><p style=""><span style="font-size: 16px;">在内核加载函数中，我们除了显示一些信息外，最重要的工作就是申请一根中断请求线，也就是注册中断处理程序。很明显，这一动作是通过request_irq函数来完成的。这个函数的原型如下：</span></p><pre class="brush:c" style="border: 0px; font-size: 13px; margin-top: 0px; margin-bottom: 0px; outline: 0px; padding: 0px; color: rgb(36, 38, 38); line-height: 20px; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">static int request_irq(unsigned int irq, irq_handler_t handler, unsigned long flags,const char *name, void *dev);</span></pre><p style=""><span style="font-size: 16px;">第一个参数是中断号，这个中断号对应的就是中断控制器上IRQ线的编号。</span></p><p style=""><span style="font-size: 16px;">第二个参数是一个irq_handler_t类型个函数指针：</span></p><pre class="brush:c" style="border: 0px; font-size: 13px; margin-top: 0px; margin-bottom: 0px; outline: 0px; padding: 0px; color: rgb(36, 38, 38); line-height: 20px; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">typedef irqreturn_t (*irq_handler_t)(int, void *);</span></pre><p style=""><span style="font-size: 16px;">handler所指向的函数即为中断处理程序，需要具体来实现。</span></p><p style=""><span style="font-size: 16px;">第三个参数为标志位，可以取IRQF_DISABLED、IRQF_SHARED和IRQF_SAMPLE_RANDOM之一。在本实例程序中取IRQF_SHARED，该标志表示多个设备共享一条IRQ线，因此相应的每个设备都需要各自的中断服务例程。一般某个中断线上的中断服务程序在执行时会屏蔽请求该线的其他中断，如果取IRQF_DISABLED标志，则在执行该中断服务程序时会屏蔽所有其他的中断。取IRQF_SAMPLE_RANDOM则表示设备可以被看做是事件随见的发生源。</span></p><p style=""><span style="font-size: 16px;">第四个参数是请求中断的设备的名称。可以在/proc/interface中查看到具体设备的名称，与此同时也可以查看到这个设备对应的中断号以及请求次数，甚至中断控制器的名称。</span></p><p style=""><span style="font-size: 16px;">第五个参数为一个指针型变量。注意此参数为void型，也就是说通过强制转换可以转换为任意类型。这个变量在IRQF_SHARED标志时使用，目的是为即将要释放中断处理程序提供唯一标志。因为多个设备共享一条中断线，因此要释放某个中断处理程序时，必须通过此标志来唯一指定这个中断处理程序。习惯上，会给这个参数传递一个与设备驱动程序对应的设备结构体指针。关于中断程序，可参考</span><a target="_blank" style="border: 0px; outline: 0px; color: rgb(0, 77, 153); font-size: 16px; text-decoration: underline;"><span style="font-size: 16px;">这里</span></a><span style="font-size: 16px;">的文章。</span></p><p style=""><span style="font-size: 16px;">以上就是request_irq函数各个参数的意义。</span></p><p style=""><span style="font-size: 16px;">与中断处理程序的注册相对应的是free_irq函数，它会注销相应的中断处理程序，并释放中断线。这个函数一般被在内核模块卸载函数中被调用。</span></p><pre class="brush:c" style="border: 0px; font-size: 13px; margin-top: 0px; margin-bottom: 0px; outline: 0px; padding: 0px; color: rgb(36, 38, 38); line-height: 20px; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">static void __exit myirq_exit()
+{
+	printk(&quot;Module is leaving..\n&quot;);
+	free_irq(irq,&amp;mydev);
+	printk(&quot;%s request IRQ:%d success..\n&quot;,devname,irq);
+}</span></pre><p style=""><span style="font-size: 16px;">如果该中断线不是共享的，那么该函数在释放中断处理程序的同时也将禁用此条中断线。如果是共享中断线，只是释放与mydev对应的中断处理程序。除非该中断处理程序恰好为该中断线上的最后一员，此条中断线才会被禁用。在此处，你也可以感受到mydev的重要性。</span></p><p style=""><span style="font-size: 16px;">下面具体分析中断处理函数。该函数的功能很简单，只是显示一些提示信息。</span></p><pre class="brush:c" style="border: 0px; font-size: 13px; margin-top: 0px; margin-bottom: 0px; outline: 0px; padding: 0px; color: rgb(36, 38, 38); line-height: 20px; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">static irqreturn_t myirq_handler(int irq,void* dev)
+{
+	struct myirq mydev;
+	static int count=1;
+	mydev=*(struct myirq*)dev;
+	printk(&quot;key: %d..\n&quot;,count);
+	printk(&quot;devid:%d ISR is working..\n&quot;,mydev.devid);
+	printk(&quot;ISR is leaving..\n&quot;);
+	count++;
+	return IRQ_HANDLED;
+}</span></pre><p style=""><span style="font-size: 16px;">另外，本内核模块在插入时还需要附带参数，下面的语句首先定义两个参数，然后利用宏module_param宏来接受参数。</span></p><pre class="brush:c" style="border: 0px; font-size: 13px; margin-top: 0px; margin-bottom: 0px; outline: 0px; padding: 0px; color: rgb(36, 38, 38); line-height: 20px; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">static int irq;
+static char* devname;
+
+module_param(devname,charp,0644);
+module_param(irq,int,0644);</span></pre><p style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);">使用方法：</strong></span></p><p style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);">1.通过cat /proc/interrupts查看中断号，以确定一个即将要共享的中断号。本程序因为是与键盘共享1号中断线，因此irq=1；</strong></span></p><p style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);">2.使用如下命令就可以插入内核：</strong></span></p><p style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);">sudo insmod filename.ko irq=1 devname=myirq</strong></span></p><p style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);">3.再次查看/proc/interrupts文件，可以发现1号中断线对应的的设备名处多了myirq设备名；</strong></span></p><p style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);">4.dmesg查看内核日志文件，可看到在中断处理程序中所显示的信息；</strong></span></p><p style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);">5.卸载内核模块；</strong></span></p><p style=""><span style="font-size: 16px;">可以看到，内核模块加载后，我们所写中断处理程序是被自动调用的，主要是因为该中断线上有键盘所发出的中断请求，因此内核会执行该中断线上的所有中断处理程序，当然就包括我们上述所写的那个中断处理程序。</span></p><p style=""><span style="font-size: 16px;">这样，一个最基本的中断程序就编写完成了！try！</span></p><p style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);">后记：</strong></span></p><p style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);">这个程序调试起来并不难，但是我们并不能仅仅局限在这个程序本身。以它为入口点深入学习中断的基本原理再好不过。下面给出几个学习的入口点。</strong></span></p><p style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);">1.为何我们的中断程序和其他设备共享了一个中断线后会被执行？或者说，共享中断线上的所有中断服务例程是怎么执行的？</strong></span></p><p style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);">2.中断涉及到那些基本的数据结构？这些数据结构之间有什么关系？</strong></span></p><p style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);">3.do_IRQ()函数的大体执行流程是什么？</strong></span></p><p style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);">亲们，要学习的东西还很多，让我们一起加油吧！</strong></span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">武特</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://edsionte.com/techblog/archives/1521' target='_blank'>
+			阅读全文
+		</a>
+	</div>
+</body>

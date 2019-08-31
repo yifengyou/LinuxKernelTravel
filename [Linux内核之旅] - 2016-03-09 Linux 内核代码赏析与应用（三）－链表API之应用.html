@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Linux 内核代码赏析与应用（三）－链表API之应用
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=416491337&amp;idx=1&amp;sn=723be1ae5aa7e9873a06a749f82de7f4&amp;chksm=764c0aac413b83baa49c902011e32d2ad2021b34dd6abf54bea5f7a87f4e2b8fad89a82d2f20&amp;scene=27#wechat_redirect&cpage=77' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Linux 内核代码赏析与应用（三）－链表API之应用</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        陈莉君
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-03-09</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style=""><span style="font-size: 18px;">如前文所述，Linux内核中的代码，经过稍加改造后，可以在用户态下使用。<br style="box-sizing: border-box;"  />l</span><tt style="box-sizing: border-box;"><a title="include/linux/list.h" style="box-sizing: border-box; color: rgb(33, 150, 243); transition: all 0.3s; -webkit-transition: all 0.3s; font-size: 18px; text-decoration: underline; background-color: transparent;"><span style="font-size: 18px;">include/linux/list.h</span></a></tt><span style="font-size: 18px;">&nbsp;中的函数和宏，是一组精心设计的API，有比较完整的注释和清晰的思路。在用户态下使用list.h，查看改造后的</span><a title="list.h" style="box-sizing: border-box; color: rgb(33, 150, 243); transition: all 0.3s; -webkit-transition: all 0.3s; font-size: 18px; text-decoration: underline; background-color: transparent;"><span style="font-size: 18px;">list.h</span></a><br style="box-sizing: border-box;"  /><span style="font-size: 18px;">1. 举例<br style="box-sizing: border-box;"  />下面是用户态下的例子，用以创建、增加、删除和遍历一个双向链表。</span></p><pre style=""><span style="font-size: 18px;">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+#include &quot;list.h&quot;
+
+struct kool_list{
+	int to;
+	struct list_head list;
+	int from;
+	};
+
+int main(int argc, char **argv){
+
+	struct kool_list *tmp;
+	struct list_head *pos, *q;
+	unsigned int i;
+
+	struct kool_list mylist;
+	INIT_LIST_HEAD(&amp;mylist.list); /*初始化链表头*/
+
+	/* 给mylist增加元素 */
+	for(i=5; i!=0; --i){
+	tmp= (struct kool_list *)malloc(sizeof(struct kool_list));
+
+	/* 或者INIT_LIST_HEAD(&amp;tmp-&gt;list); */
+	printf(&quot;enter to and from:&quot;);
+	scanf(&quot;%d %d&quot;, &amp;tmp-&gt;to, &amp;tmp-&gt;from);
+
+	list_add(&amp;(tmp-&gt;list), &amp;(mylist.list));
+	/* 也可以用list_add_tail() 在表尾增加元素*/
+	}
+	printf(&quot;\n&quot;);
+
+	printf(&quot;traversing the list using list_for_each()\n&quot;);
+	list_for_each(pos, &amp;mylist.list){
+
+	/* 在这里 pos-&gt;next 指向next 节点, pos-&gt;prev指向前一个节点.这里的节点是
+ &nbsp; &nbsp; &nbsp; &nbsp;struct kool_list类型. 但是，我们需要访问节点本身，</span></pre><pre style=""><span style="font-size: 18px;"> &nbsp; &nbsp; &nbsp; &nbsp;而不是节点中的list字段，宏list_entry()正是为此目的。*/</span></pre><pre style=""><span style="font-size: 18px;">	tmp= list_entry(pos, struct kool_list, list);
+
+	printf(&quot;to= %d from= %d\n&quot;, tmp-&gt;to, tmp-&gt;from);
+
+	}
+	printf(&quot;\n&quot;);
+	/* 因为这是循环链表，也可以以相反的顺序遍历它，
+	*为此，只需要用&#39;list_for_each_prev&#39;代替&#39;list_for_each&#39;，</span></pre><pre style=""><span style="font-size: 18px;">	* 也可以调用list_for_each_entry() 对给定类型的节点进行遍历。
+	* 例如:
+	*/
+	printf(&quot;traversing the list using list_for_each_entry()\n&quot;);
+	list_for_each_entry(tmp, &amp;mylist.list, list)
+	printf(&quot;to= %d from= %d\n&quot;, tmp-&gt;to, tmp-&gt;from);
+	printf(&quot;\n&quot;);
+
+	/*现在，我们可以释放 kool_list节点了.我们本可以调用&nbsp;list_del()删除节点元素，</span></pre><pre style=""><span style="font-size: 18px;">	*&nbsp;但为了避免遍历链表的过程中删除元素出错，因此调用另一个更加安全的宏 list_for_each_safe()，</span></pre><pre style=""><span style="font-size: 18px;">	* 具体原因见后面的分析＊/
+
+	printf(&quot;deleting the list using list_for_each_safe()\n&quot;);
+	list_for_each_safe(pos, q, &amp;mylist.list){
+	tmp= list_entry(pos, struct kool_list, list);
+	printf(&quot;freeing item to= %d from= %d\n&quot;, tmp-&gt;to, tmp-&gt;from);
+	list_del(pos);
+	free(tmp);
+	}
+
+	return 0;
+}</span></pre><p style=""><span style="font-size: 18px;">2. 关于删除元素的不安全性<br style="box-sizing: border-box;"  />为什么说调用list_del()删除元素有安全隐患？具体看源代码：<br style="box-sizing: border-box;"  />/*<br style="box-sizing: border-box;"  />* Delete a list entry by making the prev/next entries<br style="box-sizing: border-box;"  />* point to each other.<br style="box-sizing: border-box;"  />*<br style="box-sizing: border-box;"  />* This is only for internal list manipulation where we know<br style="box-sizing: border-box;"  />* the prev/next entries already!<br style="box-sizing: border-box;"  />*/<br style="box-sizing: border-box;"  />static inline void __list_del(struct list_head * prev, struct list_head * next)<br style="box-sizing: border-box;"  />{<br style="box-sizing: border-box;"  />next-&gt;prev = prev;<br style="box-sizing: border-box;"  />prev-&gt;next = next;<br style="box-sizing: border-box;"  />}<br style="box-sizing: border-box;"  />/**<br style="box-sizing: border-box;"  />* list_del – deletes entry from list.<br style="box-sizing: border-box;"  />* @entry: the element to delete from the list.<br style="box-sizing: border-box;"  />* Note: list_empty on entry does not return true after this, the entry is<br style="box-sizing: border-box;"  />* in an undefined state.<br style="box-sizing: border-box;"  />*/<br style="box-sizing: border-box;"  />static inline void list_del(struct list_head *entry)<br style="box-sizing: border-box;"  />{<br style="box-sizing: border-box;"  />__list_del(entry-&gt;prev, entry-&gt;next);<br style="box-sizing: border-box;"  />entry-&gt;next = LIST_POISON1;<br style="box-sizing: border-box;"  />entry-&gt;prev = LIST_POISON2;<br style="box-sizing: border-box;"  />}<br style="box-sizing: border-box;"  />可以看出，当执行删除操作的时候， 被删除的节点的两个指针被指向一个固定的位置（entry-&gt;next = LIST_POISON1;<br style="box-sizing: border-box;"  />entry-&gt;prev = LIST_POISON2;）。而list_for_each(pos, head)中的pos指针在遍历过程中向后移动，即pos = pos-&gt;next，如果执行了list_del()操作，pos将指向这个固定位置的next, prev,而此时的next, prev没有任何意义，别无选择，出错。<br style="box-sizing: border-box;"  />而list_for_each_safe(p, n, head) 宏解决了上面的问题：<br style="box-sizing: border-box;"  />/**<br style="box-sizing: border-box;"  />* list_for_each_safe&nbsp;&nbsp;&nbsp; –&nbsp;&nbsp;&nbsp; iterate over a list safe against removal of list entry<br style="box-sizing: border-box;"  />* @pos:&nbsp;&nbsp;&nbsp; the &amp;struct list_head to use as a loop counter.<br style="box-sizing: border-box;"  />* @n:&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; another &amp;struct list_head to use as temporary storage<br style="box-sizing: border-box;"  />* @head:&nbsp;&nbsp;&nbsp; the head for your list.<br style="box-sizing: border-box;"  />*/<br style="box-sizing: border-box;"  />#define list_for_each_safe(pos, n, head) \<br style="box-sizing: border-box;"  />for (pos = (head)-&gt;next, n = pos-&gt;next; pos != (head); \<br style="box-sizing: border-box;"  />pos = n, n = pos-&gt;next)<br style="box-sizing: border-box;"  />它采用了一个同pos同样类型的指针n 来暂存将要被删除的节点指针pos，从而使得删除操作不影响pos指针！</span></p><p style=""><span style="font-size: 18px;">实际上，list.h的设计可谓精益求精，煞费苦心，用简洁的代码突破计算机科学中传统的链表实际机制，不仅考虑了单处理机，还利用了Paul E. McKenney提出的RCU（读拷贝更新）的技术，从而提高了多处理机环境下的性能。关于RCU，请看<span style="font-size: 18px; box-sizing: border-box;">http://www.rdrop.com/users/paulmck/rclock/</span></span></p><p style=""><span style="box-sizing: border-box; font-size: 18px;">后记：<br style="box-sizing: border-box; color: rgb(111, 168, 220);"  />链表，是一个古老而没有新意的话题，关于其分析的文章，也随处可见。之所以重提旧话题，是因为在讲课的过程中，每当我对那些复杂的事物进行剖析 时，剥去一层层外衣，发现，最终的实现都掉落在计算机科学最根本的问题上，比如各种最基本的数据结构，可这些，往往又是学生们不屑一顾的。在此，把链表那拿出来分析，是希冀学子们有时间关注计算机科学的根本问题。</span><a style="box-sizing: border-box; color: rgb(33, 150, 243); transition: all 0.3s; -webkit-transition: all 0.3s; font-size: 18px; text-decoration: underline; background-color: transparent;"><span style="font-size: 18px;">.</span></a></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">陈莉君</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

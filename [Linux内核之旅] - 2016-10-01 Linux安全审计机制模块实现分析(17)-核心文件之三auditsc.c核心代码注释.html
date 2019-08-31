@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Linux安全审计机制模块实现分析(17)-核心文件之三auditsc.c核心代码注释
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664603191&amp;idx=1&amp;sn=0f4d52cbe7b728c96b4a874c53673e2c&amp;chksm=f04db3d2c73a3ac4475d4327bd5d3f4a42c291e735d22c2728bbf4646c4e35e2597779746bdb&amp;scene=27#wechat_redirect&cpage=59' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Linux安全审计机制模块实现分析(17)-核心文件之三auditsc.c核心代码注释</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        吴宪萍
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-10-01</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                <div class="rich_media_thumb_wrp" id="media">
+                    
+                                        
+                                    </div>
+                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <h4><strong><span style="font-family: 宋体; color: rgb(2, 30, 170);">2.4.3.6核心代码注释</span></strong></h4><p style="text-indent:28px;line-height:24px"><span style=";font-family:Calibri;font-size:14px">//<span style="font-family:宋体">进入系统调用时，将一些必要的信息暂存到审计上下文。</span></span></p><p style="text-indent:28px;line-height:24px"><span style=";font-family:Calibri;font-size:14px">void __audit_syscall_entry(int arch, int major, unsigned long a1, unsigned long a2, unsigned long a3, unsigned long a4)</span></p><p style="text-indent:28px;line-height:24px"><span style=";font-family:Calibri;font-size:14px">{ &nbsp;&nbsp;</span></p><p style="text-indent:28px;line-height:24px"><span style=";font-family:Calibri;font-size:14px">struct task_struct *tsk = current;</span></p><p style="text-indent:28px;line-height:24px"><span style=";font-family:Calibri;font-size:14px">struct audit_context *context = tsk-&gt;audit_context; &nbsp;&nbsp;//<span style="font-family:宋体">获取进程审计上下文</span></span></p><p style="text-indent:28px;line-height:24px"><span style=";font-family:Calibri;font-size:14px">enum audit_state &nbsp;&nbsp;&nbsp;&nbsp;state;</span></p><p style="text-indent:28px;line-height:24px"><span style=";font-family:Calibri;font-size:14px">if (!context)</span></p><p style="text-indent:28px;line-height:24px"><span style=";font-family:Calibri;font-size:14px">return;</span></p><p style="text-indent:28px;line-height:24px"><br  /></p><p style="text-indent:28px;line-height:24px"><span style=";font-family:Calibri;font-size:14px">if (context-&gt;in_syscall) { &nbsp;&nbsp;&nbsp;//<span style="font-family:宋体">在系统调用中</span></span></p><p style="text-indent:28px;line-height:24px"><span style=";font-family:Calibri;font-size:14px">struct audit_context *newctx;</span></p><p style="text-indent:28px;line-height:24px"><span style=";font-family:Calibri;font-size:14px">//<span style="font-family:宋体">分配一个新的审计上下文</span></span></p><p style="text-indent:28px;line-height:24px"><span style=";font-family:Calibri;font-size:14px">newctx = audit_alloc_context(context-&gt;state);</span></p><p style="text-indent:28px;line-height:24px"><span style=";font-family:Calibri;font-size:14px">if (newctx) {</span></p><p style="text-indent:28px;line-height:24px"><span style=";font-family:Calibri;font-size:14px">newctx-&gt;previous &nbsp;&nbsp;= context;</span></p><p style="text-indent:28px;line-height:24px"><span style=";font-family:Calibri;font-size:14px">context</span><span style=";font-family:Calibri;font-size:14px">&nbsp;&nbsp;&nbsp;= newctx;</span></p><p style="text-indent:28px;line-height:24px">tsk-&gt;audit_context = newctx;</p><p style="text-indent:28px;line-height:24px">} else{ &nbsp;//<span style="font-family:宋体">分配不成功</span></p><p style="text-indent:28px;line-height:24px">audit_zero_context(context, context-&gt;state); &nbsp;//<span style="font-family:宋体">将原来的上下文清空</span></p><p style="text-indent:28px;line-height:24px">}</p><p style="text-indent:28px;line-height:24px">}</p><p style="text-indent:28px;line-height:24px">if (!audit_enabled) &nbsp;&nbsp;&nbsp;&nbsp;//<span style="font-family:宋体">审计没开启</span></p><p style="text-indent:28px;line-height:24px">return;</p><p style="text-indent:28px;line-height:24px">&nbsp;&nbsp;//<span style="font-family:宋体">记下系统调用执行的信息</span></p><p style="text-indent:28px;line-height:24px">context-&gt;arch&nbsp;&nbsp;&nbsp;&nbsp;= arch; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p><p style="text-indent:28px;line-height:24px">&nbsp;&nbsp;&nbsp;context-&gt;major &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= major;</p><p style="text-indent:28px;line-height:24px">context-&gt;argv[0] &nbsp;&nbsp;&nbsp;= a1;</p><p style="text-indent:28px;line-height:24px">context-&gt;argv[1] &nbsp;&nbsp;&nbsp;= a2;</p><p style="text-indent:28px;line-height:24px">context-&gt;argv[2] &nbsp;&nbsp;&nbsp;= a3;</p><p style="text-indent:28px;line-height:24px">context-&gt;argv[3] &nbsp;&nbsp;&nbsp;= a4;</p><p style="text-indent:28px;line-height:24px">&nbsp;</p><p style="text-indent:28px;line-height:24px">state = context-&gt;state;</p><p style="text-indent:28px;line-height:24px">context-&gt;dummy = !audit_n_rules;</p><p style="text-indent:28px;line-height:24px">if (!context-&gt;dummy &amp;&amp; state == AUDIT_BUILD_CONTEXT) {</p><p style="text-indent:28px;line-height:24px">context-&gt;prio = 0;</p><p style="text-indent:28px;line-height:24px">//<span style="font-family:宋体">用</span><span style="font-family:Times New Roman">entry</span><span style="font-family:宋体">链表进行过滤，是否允许审计？如</span><span style=";font-family:宋体"><span style="font-family:宋体">果允许</span></span><span style="font-family:宋体">审计</span><span style=";font-family:宋体"><span style="font-family:宋体">，其</span></span><span style="font-family:宋体">结果返回到</span>state<span style="font-family:宋体">变量中</span></p><p style="text-indent:28px;line-height:24px">state = audit_filter_syscall(tsk, context, &amp;audit_filter_list[AUDIT_FILTER_ENTRY]);</p><p style="text-indent:28px;line-height:24px">}</p><p style="text-indent:28px;line-height:24px">if (state == AUDIT_DISABLED) &nbsp;&nbsp;&nbsp;&nbsp;//<span style="font-family:宋体">该进程不允许被审计，返回</span></p><p style="text-indent:28px;line-height:24px">return; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p><p style="text-indent:28px;line-height:24px">&nbsp;&nbsp;&nbsp;//<span style="font-family:宋体">允许审计，记录最初的审计信息</span></p><p style="text-indent:28px;line-height:24px">context-&gt;serial &nbsp;&nbsp;&nbsp;&nbsp;= 0; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//<span style="font-family:宋体">本次系统调用第一条审计消息的序列号</span></p><p style="text-indent:28px;line-height:24px">context-&gt;ctime &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= CURRENT_TIME; &nbsp;//<span style="font-family:宋体">进入系统调用的时间</span></p><p style="text-indent:28px;line-height:24px">context-&gt;in_syscall = 1; &nbsp;//<span style="font-family:宋体">在系统调用中</span></p><p style="text-indent:28px;line-height:24px">context-&gt;current_state &nbsp;= state; &nbsp;//<span style="font-family:宋体">审计动作</span></p><p style="text-indent:28px;line-height:24px">context-&gt;ppid &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= 0; &nbsp;&nbsp;//<span style="font-family:宋体">父进程的</span><span style="font-family:Times New Roman">pid</span></p><p style="text-indent:28px;line-height:24px">}</p><p style="text-indent:28px;line-height:24px">//<span style="font-family:宋体">系统调用结束时，写出审计上文中的有关信息</span></p><p style="text-indent:28px;line-height:24px">void __audit_syscall_exit(int success, long return_code)</p><p style="text-indent:28px;line-height:24px">{</p><p style="text-indent:28px;line-height:24px">struct task_struct *tsk = current;</p><p style="text-indent:28px;line-height:24px">struct audit_context *context;</p><p style="text-indent:28px;line-height:24px">context = audit_get_context(tsk, success, return_code); &nbsp;//<span style="font-family:宋体">获取审计上下文</span></p><p style="text-indent:28px;line-height:24px">if (!context)</p><p style="text-indent:28px;line-height:24px">return;</p><p style="text-indent:28px;line-height:24px">&nbsp;</p><p style="text-indent:28px;line-height:24px">if (context-&gt;in_syscall &amp;&amp; context-&gt;current_state == AUDIT_RECORD_CONTEXT)</p><p style="text-indent:28px;line-height:24px">&nbsp;//<span style="font-family:宋体">如果审计上下文中的内容允许生成审计消息，调用</span><span style="font-family:Times New Roman">audit_log_exit</span><span style="font-family:宋体">生成相应的消息</span></p><p style="text-indent:28px;line-height:24px">audit_log_exit(context, tsk);</p><p style="text-indent:28px;line-height:24px">context-&gt;in_syscall = 0; &nbsp;//<span style="font-family:宋体">系统调用结束</span></p><p style="text-indent:28px;line-height:24px">if (context-&gt;previous) {//<span style="font-family:宋体">本次如果系统调用嵌套在其它系统调用中，释放本次的上下文，把上一个上下文作为本进程的上下文</span></p><p style="text-indent:28px;line-height:24px">struct audit_context *new_context = context-&gt;previous;</p><p style="text-indent:28px;line-height:24px">context-&gt;previous &nbsp;= NULL;</p><p style="text-indent:28px;line-height:24px">audit_free_context(context);</p><p style="text-indent:28px;line-height:24px">tsk-&gt;audit_context = new_context;</p><p style="text-indent:28px;line-height:24px">} else { &nbsp;&nbsp;//<span style="font-family:宋体">释放进程上下文的审计项目、审计辅助数据等内容</span></p><p style="text-indent:28px;line-height:24px">audit_free_names(context);</p><p style="text-indent:28px;line-height:24px">unroll_tree_refs(context, NULL, 0);</p><p style="text-indent:28px;line-height:24px">audit_free_aux(context);</p><p style="text-indent:28px;line-height:24px">context-&gt;aux = NULL;</p><p style="text-indent:28px;line-height:24px">context-&gt;aux_pids = NULL;</p><p style="text-indent:28px;line-height:24px">context-&gt;target_pid = 0;</p><p style="text-indent:28px;line-height:24px">context-&gt;target_sid = 0;</p><p style="text-indent:28px;line-height:24px">context-&gt;sockaddr_len = 0;</p><p style="text-indent:28px;line-height:24px">context-&gt;type = 0;</p><p style="text-indent:28px;line-height:24px">context-&gt;fds[0] = -1;</p><p style="text-indent:28px;line-height:24px">if (context-&gt;state != AUDIT_RECORD_CONTEXT) {</p><p style="text-indent:28px;line-height:24px">kfree(context-&gt;filterkey);</p><p style="text-indent:28px;line-height:24px">context-&gt;filterkey = NULL;</p><p style="text-indent:28px;line-height:24px">}</p><p style="text-indent:28px;line-height:24px">tsk-&gt;audit_context = context;</p><p style="text-indent:28px;line-height:24px">}</p><p style="text-indent:28px;line-height:24px">}</p><p style="text-indent:28px;line-height:24px">//<span style="font-family:宋体">系统调用结束时，把审计上下文中的有关信息生成审计消息</span></p><p style="text-indent:28px;line-height:24px">static void audit_log_exit(struct audit_context *context, struct task_struct *tsk)</p><p style="text-indent:28px;line-height:24px">{</p><p style="text-indent:28px;line-height:24px">const struct cred *cred;</p><p style="text-indent:28px;line-height:24px">int i, call_panic = 0;</p><p style="text-indent:28px;line-height:24px">struct audit_buffer *ab;</p><p style="text-indent:28px;line-height:24px">struct audit_aux_data *aux;</p><p style="text-indent:28px;line-height:24px">const char *tty;</p><p style="text-indent:28px;line-height:24px">struct audit_names *n;</p><p style="text-indent:28px;line-height:24px">&nbsp;&nbsp;&nbsp;&nbsp;//<span style="font-family:宋体">记录进程的信用信息</span></p><p style="text-indent:28px;line-height:24px">context-&gt;pid = tsk-&gt;pid;</p><p style="text-indent:28px;line-height:24px">if (!context-&gt;ppid)</p><p style="text-indent:28px;line-height:24px">context-&gt;ppid = sys_getppid();</p><p style="text-indent:28px;line-height:24px">cred = current_cred();</p><p style="text-indent:28px;line-height:24px">context-&gt;uid &nbsp;&nbsp;= cred-&gt;uid;</p><p style="text-indent:28px;line-height:24px">context-&gt;gid &nbsp;&nbsp;= cred-&gt;gid;</p><p style="text-indent:28px;line-height:24px">context-&gt;euid &nbsp;= cred-&gt;euid;</p><p style="text-indent:28px;line-height:24px">context-&gt;suid &nbsp;= cred-&gt;suid;</p><p style="text-indent:28px;line-height:24px">context-&gt;fsuid = cred-&gt;fsuid;</p><p style="text-indent:28px;line-height:24px">context-&gt;egid &nbsp;= cred-&gt;egid;</p><p style="text-indent:28px;line-height:24px">context-&gt;sgid &nbsp;= cred-&gt;sgid;</p><p style="text-indent:28px;line-height:24px">context-&gt;fsgid = cred-&gt;fsgid;</p><p style="text-indent:28px;line-height:24px">context-&gt;personality = tsk-&gt;personality;</p><p style="text-indent:28px;line-height:24px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//<span style="font-family:宋体">创建一个审计缓冲区，里面存放的审计消息的类型是</span><span style="font-family:Times New Roman">AUDIT_SYSCALL</span></p><p style="text-indent:28px;line-height:24px">ab = audit_log_start(context, GFP_KERNEL, AUDIT_SYSCALL);</p><p style="text-indent:28px;line-height:24px">//<span style="font-family:宋体">把系统调用的体系结构、系统调用号写入审计缓冲区</span></p><p style="text-indent:28px;line-height:24px">audit_log_format(ab, "arch=%x syscall=%d", context-&gt;arch, context-&gt;major);</p><p style="text-indent:28px;line-height:24px">if (context-&gt;return_valid) &nbsp;//<span style="font-family:宋体">系统调用返回有效，写入返回码</span></p><p style="text-indent:28px;line-height:24px">audit_log_format(ab, " success=%s exit=%ld",</p><p style="text-indent:28px;line-height:24px">&nbsp;(context-&gt;return_valid==AUDITSC_SUCCESS)?"yes":"no",</p><p style="text-indent:28px;line-height:24px">&nbsp;context-&gt;return_code);</p><p style="text-indent:28px;line-height:24px">&nbsp;</p><p style="text-indent:28px;line-height:24px">spin_lock_irq(&amp;tsk-&gt;sighand-&gt;siglock);</p><p style="text-indent:28px;line-height:24px">if (tsk-&gt;signal &amp;&amp; tsk-&gt;signal-&gt;tty &amp;&amp; tsk-&gt;signal-&gt;tty-&gt;name)</p><p style="text-indent:28px;line-height:24px">tty = tsk-&gt;signal-&gt;tty-&gt;name;</p><p style="text-indent:28px;line-height:24px">else</p><p style="text-indent:28px;line-height:24px">tty = "(none)";</p><p style="text-indent:28px;line-height:24px">spin_unlock_irq(&amp;tsk-&gt;sighand-&gt;siglock);</p><p style="text-indent:28px;line-height:24px">&nbsp;&nbsp;//<span style="font-family:宋体">写入下列信息</span></p><p style="text-indent:28px;line-height:24px">audit_log_format(ab,</p><p style="text-indent:28px;line-height:24px">&nbsp;&nbsp;" a0=%lx a1=%lx a2=%lx a3=%lx items=%d"</p><p style="text-indent:28px;line-height:24px">&nbsp;&nbsp;" ppid=%d pid=%d auid=%u uid=%u gid=%u"</p><p style="text-indent:28px;line-height:24px">&nbsp;&nbsp;" euid=%u suid=%u fsuid=%u"</p><p style="text-indent:28px;line-height:24px">&nbsp;&nbsp;" egid=%u sgid=%u fsgid=%u tty=%s ses=%u",</p><p style="text-indent:28px;line-height:24px">&nbsp;&nbsp;context-&gt;argv[0],</p><p style="text-indent:28px;line-height:24px">&nbsp;&nbsp;context-&gt;argv[1],</p><p style="text-indent:28px;line-height:24px">&nbsp;&nbsp;context-&gt;argv[2],</p><p style="text-indent:28px;line-height:24px">&nbsp;&nbsp;context-&gt;argv[3],</p><p style="text-indent:28px;line-height:24px">&nbsp;&nbsp;context-&gt;name_count,</p><p style="text-indent:28px;line-height:24px">&nbsp;&nbsp;context-&gt;ppid,</p><p style="text-indent:28px;line-height:24px">&nbsp;&nbsp;context-&gt;pid,</p><p style="text-indent:28px;line-height:24px">&nbsp;&nbsp;tsk-&gt;loginuid,</p><p style="text-indent:28px;line-height:24px">&nbsp;&nbsp;context-&gt;uid,</p><p style="text-indent:28px;line-height:24px">&nbsp;&nbsp;context-&gt;gid,</p><p style="text-indent:28px;line-height:24px">&nbsp;&nbsp;context-&gt;euid, context-&gt;suid, context-&gt;fsuid,</p><p style="text-indent:28px;line-height:24px">&nbsp;&nbsp;context-&gt;egid, context-&gt;sgid, context-&gt;fsgid, tty,</p><p style="text-indent:28px;line-height:24px">&nbsp;&nbsp;tsk-&gt;sessionid);</p><p style="text-indent:28px;line-height:24px">//<span style="font-family:宋体">写入内存映射、关键词信息</span></p><p style="text-indent:28px;line-height:24px">audit_log_task_info(ab, tsk);</p><p style="text-indent:28px;line-height:24px">audit_log_key(ab, context-&gt;filterkey);</p><p style="text-indent:28px;line-height:24px">&nbsp;&nbsp;&nbsp;//<span style="font-family:宋体">发送审计缓冲区中的内容</span></p><p style="text-indent:28px;line-height:24px">audit_log_end(ab);</p><p style="text-indent:28px;line-height:24px">&nbsp;&nbsp;&nbsp;&nbsp;//<span style="font-family:宋体">为审计辅助数据创建审计缓冲区，写入审计辅助数据，并发送出去</span></p><p style="text-indent:28px;line-height:24px">for (aux = context-&gt;aux; aux; aux = aux-&gt;next) {</p><p style="text-indent:28px;line-height:24px">&nbsp;</p><p style="text-indent:28px;line-height:24px">ab = audit_log_start(context, GFP_KERNEL, aux-&gt;type);</p><p style="text-indent:28px;line-height:24px">if (!ab)</p><p style="text-indent:28px;line-height:24px">continue; /* audit_panic has been called */</p><p style="text-indent:28px;line-height:24px">&nbsp;</p><p style="text-indent:28px;line-height:24px">switch (aux-&gt;type) {</p><p style="text-indent:28px;line-height:24px">&nbsp;</p><p style="text-indent:28px;line-height:24px">case AUDIT_EXECVE: {</p><p style="text-indent:28px;line-height:24px">struct audit_aux_data_execve *axi = (void *)aux;</p><p style="text-indent:28px;line-height:24px">audit_log_execve_info(context, &amp;ab, axi);</p><p style="text-indent:28px;line-height:24px">break; }</p><p style="text-indent:28px;line-height:24px">&nbsp;</p><p style="text-indent:28px;line-height:24px">case AUDIT_BPRM_FCAPS: {</p><p style="text-indent:28px;line-height:24px">struct audit_aux_data_bprm_fcaps *axs = (void *)aux;</p><p style="text-indent:28px;line-height:24px">audit_log_format(ab, "fver=%x", axs-&gt;fcap_ver);</p><p style="text-indent:28px;line-height:24px">audit_log_cap(ab, "fp", &amp;axs-&gt;fcap.permitted);</p><p style="text-indent:28px;line-height:24px">audit_log_cap(ab, "fi", &amp;axs-&gt;fcap.inheritable);</p><p style="text-indent:28px;line-height:24px">audit_log_format(ab, " fe=%d", axs-&gt;fcap.fE);</p><p style="text-indent:28px;line-height:24px">audit_log_cap(ab, "old_pp", &amp;axs-&gt;old_pcap.permitted);</p><p style="text-indent:28px;line-height:24px">audit_log_cap(ab, "old_pi", &amp;axs-&gt;old_pcap.inheritable);</p><p style="text-indent:28px;line-height:24px">audit_log_cap(ab, "old_pe", &amp;axs-&gt;old_pcap.effective);</p><p style="text-indent:28px;line-height:24px">audit_log_cap(ab, "new_pp", &amp;axs-&gt;new_pcap.permitted);</p><p style="text-indent:28px;line-height:24px">audit_log_cap(ab, "new_pi", &amp;axs-&gt;new_pcap.inheritable);</p><p style="text-indent:28px;line-height:24px">audit_log_cap(ab, "new_pe", &amp;axs-&gt;new_pcap.effective);</p><p style="text-indent:28px;line-height:24px">break; }</p><p style="text-indent:28px;line-height:24px">&nbsp;</p><p style="text-indent:28px;line-height:24px">}</p><p style="text-indent:28px;line-height:24px">audit_log_end(ab);</p><p style="text-indent:28px;line-height:24px">}</p><p style="text-indent:28px;line-height:24px">if (context-&gt;type) &nbsp;//<span style="font-family:宋体">处理一些特殊数据</span></p><p style="text-indent:28px;line-height:24px">show_special(context, &amp;call_panic);</p><p style="text-indent:28px;line-height:24px">&nbsp;</p><p style="text-indent:28px;line-height:24px">//<span style="font-family:宋体">向审计缓冲区写入审计项目</span></p><p style="text-indent:28px;line-height:24px">i = 0;</p><p style="text-indent:28px;line-height:24px">list_for_each_entry(n, &amp;context-&gt;names_list, list)</p><p style="text-indent:28px;line-height:24px">audit_log_name(context, n, i++, &amp;call_panic);</p><p style="text-indent:28px;line-height:24px">&nbsp;&nbsp;&nbsp;&nbsp;//<span style="font-family:宋体">写入审计消息结束标志并发送，表明本次审计上下文处理完毕。</span></p><p style="text-indent:28px;line-height:24px">ab = audit_log_start(context, GFP_KERNEL, AUDIT_EOE);</p><p style="text-indent:28px;line-height:24px">if (ab)</p><p style="text-indent:28px;line-height:24px">audit_log_end(ab);</p><p style="text-indent:28px;line-height:24px">……</p><p style="text-indent:28px;line-height:24px">}</p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">吴宪萍</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Linux内核“问题门”——学习问题、经验集锦（持续更新中……）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=415730229&amp;idx=1&amp;sn=d129558ab66ff09630117d24a15c2a6b&amp;chksm=7658a7d0412f2ec66352977c3f49a2529d0e3ff180c8a20c99cb346f583c55b1b90152d937a2&amp;scene=27#wechat_redirect&cpage=80' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Linux内核“问题门”——学习问题、经验集锦（持续更新中……）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        fudan_abc
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-01-18</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                <div class="rich_media_thumb_wrp" id="media">
+                    
+                                        
+                                    </div>
+                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p><span style="color: rgb(64, 118, 0);"><strong>编者按：几年前看fudan_abc的文字，感觉作者与你坐在一起面对面聊天，他在嬉笑怒骂中把自己的法宝传递给了你，你也在不知不觉中喜滋滋接过所扔来的东西，如此，让Linux内核这样一个看似冷冰冰庞然大物有了趣味和生命力。最近，又有读者提问如何学习内核，想起了这一些列文章，同时也希望你不仅仅在读，也有疑产生，还愿意分享...</strong></span></p><p><br  /></p><p>宪章说：“学贵有疑，小疑则小进，大疑则大进。疑者，觉悟之机也，一番觉悟一番长进。”</p><p>培根说：“多问的人将多得。”</p><p>还在学校的时候导师在激情讲演之后对着会议室里形态各异但均静默不语的我们痛心疾首的说：“会提问题很重要啊，同志们！不会提问题怎么有资格做研究！”</p><p>这样铿锵有力的训诫今日想起仍觉深受刺激，于是就要不可避免得要做出一些反应来。不过一是因为咱这年代还没有非主流的说法，二是因为也没有冯仰妍同学的性别优势，不可能受到刺激就整出个门来。咱能够做到的最大反应也就是在这里开贴专门探讨探讨内核学习的相关问题，为了稍微增加那么一些广告效应，就称为“问题门”吧。</p><p><br  /></p><p>使用“问题门”的称呼，一是内心里潜藏的那点低级趣味想去沾点近些年层出不穷各种各样的“门”的仙气，二是在内核的学习过程中的确实实在在的存在着这样的一个“门”，横亘在我们的面前，跨过去便海阔天空是另一番世界，但却是让无数人竞折腰，百思不得其钥匙。</p><p>另外，这个“问题门”也算是为拙作《Linux内核修炼之道》制作的一个小插曲，以感谢精华篇发布过程中很多朋友的关心与支持，希望通过对大家内核学习过程中遇到的问题与经验心得做一番展示，来帮助还在门外的朋友寻找到这扇门的钥匙。</p><p>我先对网友提出最多的问题进行解答，“抛砖引玉”，来作为这个“问题门”的雏形，大家也可以在评论里提出自己的问题和分享自己的学习心得，我会及时地对其进行整理汇总，大家一起将“问题门”逐步完善，帮助后来者和有需要地人不再为“入门”而苦恼, 希望这是一篇能够成长得文章！</p><p><br  /></p><p><strong><span style="font-size: medium">提出你的问题，不要“陪公子读书”，祝早日“入门”！</span></strong></p><p><br  /></p><p><strong>“</strong><strong>问题门</strong><strong>”</strong><strong>第</strong><strong>6</strong><strong>回：研究内核源码的切入点在哪里，或者说从哪个模块开始研究对新手比较适合，是否有一些必读的基础型的模块源代码？（</strong><strong>Roger_jin</strong><strong>提出）</strong></p><p><strong>fudan_abc</strong><strong>的回答：</strong></p><p>没有那些所谓的必读的基础性源代码，呵呵，只要按照韩峰同志的那种态度去分析选定部分的源代码，那些所谓基础性的东东都会在分析过程中明白理解的。有上下文的帮助，反而会更容易理解那些之前理解不了的“基础知识”。</p><p>至于切入点，没有什么特别的推荐，主要是依赖自己的兴趣或者开发需要了。</p><p><br  /></p><p><strong>“问题门”第5回：学习Linux内核，应该从Linux哪个版本代码开始阅读更好呢？</strong> <br  /></p><p><br  /></p><p><strong>fudan_abc的回答：</strong></p><p><br  /></p><p>个人建议从新的内核开始，固然新内核的代码非常庞大，但并没有说非要求大求全，追求每个部分都要理解。</p><p><br  /></p><p>学内核忌讳求大而全，如果对哪部分比较感兴趣，研究相关的源码和change就行了，当然仁者见仁智者见智，自己如果觉得从低版本开始更好更适合，那采用这种方式也未尝不可，毕竟各人的路还是各自走的。</p><p><br  /></p><p><strong>“问题门”第3回：通常，语言及其库的学习分为几个层次，1.熟练使用，2.阅读源码，了解实现原理，3.对源码进行扩展。那么linux kernel怎么划分层次，每个层次如何达到？（hust_tulip提出）</strong></p><p><strong>fudan_abc的回答：</strong></p><p>问题中的三个层次对应到linux内核的学习上：“熟练使用”就是要能够熟练的使用linux系统；“阅读源码”就是指“学习内核就是学习内核源代码”，必须勇敢的去学习内核源码；“对源码进行扩展”可以对应于融入内核社区，参与内核的开发。</p><p>这也正好在一定程度上锲合了本书前言里对内核学习划分的几个层次：全面了解抓基本，兴趣导向深钻研；融入社区做贡献，坚持坚持再坚持。</p><p>       ——详见修炼之道 之 前言</p><p><strong>“问题门”第4回：每个层次的学习都有什么对应的参考资料以及网络资源？（hust_tulip提出）</strong></p><p><strong>fudan_abc的回答：</strong></p><p>首先是“全面了解抓基本”，这个层次，最好的书自然就是lkd和ulk了，这两本书，一本提纲挈领，一本全面深入，都能很好的帮助全面的理解内核的整体机制。新人的话，一本lkd就足亦了。</p><p>第二个层次“兴趣导向深钻研”，这个层次就是要以内核源码为中心，选择内核中一个自己感兴趣的部分，以韩峰同志对待日记的态度，严谨而细致的仔细分析它的代码，不懂的地方就通过社区、邮件列表或者直接发Email给maintainer请教等途径弄懂，切勿得过且过。至于这个层次的参考书么，网络子系统的有《深入理解LINUX网络内幕》，内存管理的有《深入理解Linux虚拟内存管理》，推荐看英文版，呵呵，usb的可以看我们的《Linux那些事儿》，其它子系统的还没注意到有什么专门讲解的，不过内核源码本身就是最好的参考资料了。</p><p>至于第三个层次“融入社区做贡献”，就是要努力融入到内核的开发社区，经过前两个层次的修炼，此时你已经不会再是社区中潜水小白的角色，而是会针对某个问题发表自己的见解。可以尝试参与到内核的开发中去。相关资源有很多，详细可以参考修炼之道精华篇的（9）内核学习资源</p><p>最后一层就是坚持了，不管遇到什么挫折都不放弃，就像咱们的袁教授不管遭受到什么样的辱骂都要坚持不断的发疯一样，有这样的精神，何愁在linux内核的学习道路上修不成大道那？</p><p><br  /></p><p><strong>“问题门”第1回：我是一个初学者，两眼一抹黑，我该如何学习内核？</strong></p><p><strong>fudan_abc的回答：</strong></p><p>这个问题每个初学者都无法回避，它非常之大，完全可以做为整个“问题门”的框架而存在，其他的各种问题都不过是在这个框架上装饰和完善。</p><p>同时这个问题并没有一个标准的答案，只有一些学习的脉络可以遵循，祝早日“入门”。</p><p>第一步：先会使用它。连Linux是什么、基本操作都不会就去研究内核，纯属扯淡，“门”都没有。</p><p>第二步：看懂内核源码需要一些操作系统、C语言等的基础。</p><p>第三步：找本合适的内核参考书，让它帮助你对内核有个整体的理解和认识，</p><p>第四步：要能够动手配置编译内核，还要基本看得懂内核中的Kconfig和Makefile文件。</p><p>最后，记住：“学习内核，就是学习内核的源代码，任何内核有关的书籍都是基于内核，而又不高于内核的。内核源码本身就是最好的参考资料，其他任何经典或非经典的书最多只是起到个辅助作用，不能也不应该取代内核代码在我们学习过程中的主导地位。”</p><p>因此你要做得是选择内核的一个部分或子系统，以韩峰同志对待日记的态度，严谨而细致得理解每一段代码的实现，多问多想多记。切勿抱着走马观花，得过且过的态度。</p><p><strong>“问题门”第2回：学习内核需要什么基础知识？</strong> <br  /></p><p><strong>albcamus的回答：</strong></p><p>（1）需要掌握操作系统理论的最初级的知识。</p><p>不需要通读并理解《操作系统概念》《现代操作系统》等巨著，但总要知道分时（time-shared）和实时（real-time）的区别是什么，进程是个什么东西，CPU和系统总线、内存的关系（很粗略即可），等等。</p><p>（2）熟练使用C语言。</p><p>不需要已经很精通C语言，只要能熟练编写C程序，能看懂链表、散列表等数据结构的C实现，用过gcc编译器，就可以了。当然，如果已经精通C语言显然是大占便宜的。</p><p>（3）了解CPU的相关知识，</p><p><br  /></p><p><strong><span style="font-size: medium">Linux内核学习经验</span></strong></p><p>1. 内核学习的心理误区</p><p>心理上的问题主要有两个，一个是盲目，就是在能够熟练使用Linux之前，对Linux为何物还说不出个道道来，就迫不及待的盲目的去研究内核的源代码。重述Linus的那句话：要先会使用它。</p><p>第二个就是恐惧。人类进化这么多年，面对复杂的物体和事情还是总会有天生的惧怕感，体现在内核学习上面就是：那么庞大复杂的内核代码，让人面对起来该情何以堪啊！</p><p>有了这种恐惧无力感存在，心理上就会去排斥面对接触内核源码，宁愿去抱着情景分析，搜集各种各样五花八门的内核书籍放在那里屯着，看了又忘，忘了又看，也不大情愿去认真细致得浏览源码。<br  />          ——详见修炼之道精华篇（9）内核学习的心理问题</p><p>2. 学习内核就是学习内核的源代码</p><p>学习内核，就是学习内核的源代码，任何内核有关的书籍都是基于内核，而又不高于内核的。内核源码本身就是最好的参考资料，其他任何经典或非经典的书最多只是起到个辅助作用，不能也不应该取代内核代码在我们学习过程中的主导地位。</p><p>3. 要抱着严谨细致的态度分析内核源码</p><p>既然要学习内核源码，就要经常对内核代码进行分析，而内核代码千千万，还前仆后继的不断往里加，这就让大部分人都有种雾里看花花不见的无助感。不过不要怕，孔老夫子早就留给我们了应对之策：敏于事而慎于言，就有道而正焉，可谓好学也已。这就是说，做事要踏实才是好学生好同志，要遵循严谨的态度，去理解每一段代码的实现，多问多想多记。如果抱着走马观花，得过且过的态度，结果极有可能就是一边看一边丢，没有多大的收获。</p><p>只要你使用这样的态度开始分析内核，那么无论你选择内核的哪个部分作为切入点，比如USB，比如进程管理，在花费相对不算很多的时间之后，你就会发现你对内核的理解会上升到另外一个高度，一个抱着情景分析，抱着0.1内核完全注释，抱着各种各样的内核书籍翻来覆去的看很多遍又忘很多遍都无法达到的高度。<br  />           ——详见修炼之道精华篇（6） 与精华篇（7） 分析内核源码如何入手？</p><p>4. 通过Kconfig与Makefile定位目标代码</p><p>毫不夸张地说，Kconfig和Makefile是我们浏览内核代码时最为依仗的两个文件。基本上，Linux内核中每一个目录下边都会有一个Kconfig文件和一个Makefile文件。 对于一个希望能够在Linux内核的汪洋代码里看到一丝曙光的人来说，将它们放在怎么重要的地位都不过分。</p><p>Kconfig和Makefile就是Linux Kernel迷宫里的地图。地图引导我们去认识一个城市，而Kconfig和Makefile则可以让我们了解一个Kernel目录下面的结构。我们每次浏览kernel寻找属于自己的那一段代码时，都应该首先看看目录下的这两个文件。就像利用地图寻找目的地一样，我们需要利用Kconfig和Makefile来寻找所要研究的目标代码。<br  />          ——详见修炼之道精华篇（5）Kernel地图：Kconfig与Makefile</p><p><br  /></p><ul class="digg digg_disable list-paddingleft-2" style="display: inline-block;float: left;width: 72px;height: 72px;overflow: hidden;margin-right: 2px;margin-left: 2px;color: rgb(255, 255, 255);background: rgb(153, 153, 153)"><li><p>顶</p></li><li><p>0</p></li></ul><ul class="digg digg_disable list-paddingleft-2" style="display: inline-block;float: left;width: 72px;height: 72px;overflow: hidden;margin-right: 2px;margin-left: 2px;color: rgb(255, 255, 255);background: rgb(153, 153, 153)"><li><p>踩</p></li></ul><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">fudan_abc</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://blog.csdn.net/fudan_abc/article/details/5403021' target='_blank'>
+			阅读全文
+		</a>
+	</div>
+</body>

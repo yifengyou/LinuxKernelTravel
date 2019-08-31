@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		初识multipath
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664605083&amp;idx=1&amp;sn=8ad71b10a0e05352691ec0456c88a9f2&amp;chksm=f04d887ec73a01680b3da654c363839286bacf437ee6b841e83c77e87f58ea3494dc92d91126&amp;scene=27#wechat_redirect&cpage=26' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">初识multipath</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        任镇
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2018-01-15</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <h1 style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;font-size: 24px;color: rgb(61, 70, 77);">Multipath Intro</h1><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;color: rgb(61, 70, 77);">Multipath即多路径，是个通用概念。这里要介绍的是开源的存储多路径技术，也就是DM multipath。有关multipath介绍不少，这里 主要记录我对multipath最初几个问题和答案：</p><ul style="margin-left: 30px;" class=" list-paddingleft-2"><li><p>在没有企业存储的情况下，怎么玩multipath？</p></li><li><p>multipath device 是如何命名的？</p></li><li><p>这种以冒号分割4个数字的设备地址如2:0:0:1怎么解释？</p></li><li><p>什么是path group?</p></li><li><p>path grouping policy and IO scheduling policy?</p></li></ul><h1 style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;font-size: 24px;color: rgb(61, 70, 77);"><br  /></h1><h1 style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;font-size: 24px;color: rgb(61, 70, 77);">在没有企业存储的情况下，怎么玩multipath？</h1><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;color: rgb(61, 70, 77);">使用虚拟机和iscsi。装一虚拟机，添加块设备，添加两个网卡，再用这个块设备建一个iscsi target。然后在一个想玩multipath的机器 上面，用iscsi client去连接iscsi target。至此，用lsblk会查看到原来的块设备有两个设备节点。</p><h1 style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;font-size: 24px;color: rgb(61, 70, 77);">multipath device 是如何命名的？</h1><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;color: rgb(61, 70, 77);">有时看到一串16进制数字(WWID), 有时是以mpath为前缀的名字(user-friendly name), 有时是任意字母串(alia name)。multipath默 认用的是WWID，为什么不用好记的名字呢？ 好记的名字不能工作的一个情景：根文件系统不能在multipath设备上面。好记的名字和 WWID之间的映射是保存在/etc/multipath/bindings文件里的。要访问这个文件，根文件系统必须已经挂载上了，而multipath服务在initrd里就要开始工作，那个时候还没有根系统。因此，默认设置为wwid是为了安全。</p><h1 style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;font-size: 24px;color: rgb(61, 70, 77);">这种以冒号分割4个数字的设备地址如2:0:0:1怎么解释？<br  /></h1><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;color: rgb(61, 70, 77);"><code style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;border-radius: 3px;padding: 2px;font-size: 13px;">2:0:0:1</code>设备地址，数字分别对应：<code style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;border-radius: 3px;padding: 2px;font-size: 13px;">Host:Bus:Target:Lun</code><span class="Apple-converted-space">&nbsp;</span>。比如我们让iscsi target走了两个IP地址，那么对于同一个设备只有<span class="Apple-converted-space">&nbsp;</span><code style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;border-radius: 3px;padding: 2px;font-size: 13px;">host</code>字段不同。比如：<code style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;border-radius: 3px;padding: 2px;font-size: 13px;">2:0:0:1</code>和<code style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;border-radius: 3px;padding: 2px;font-size: 13px;">3:0:01</code>。</p><h1 style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;font-size: 24px;color: rgb(61, 70, 77);">什么是path group?</h1><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;color: rgb(61, 70, 77);">起初，我对这个概念有混淆：认为一个真实设备对应的所有路径为一个path group，即认为下面是一个path group:</p><pre class="hljs tcl" style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;overflow-x: auto;padding: 2px;color: rgb(220, 220, 220);border-radius: 3px;line-height: 1.4;word-wrap: normal;font-size: 13px;"><code class="hljs tcl" style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;display: block;overflow-x: auto;padding: 10px;border-radius: 4px;line-height: 1.4;word-wrap: normal;"><span style="color: rgb(0, 0, 0);">multipath-demo:~ # multipath -l<span class="hljs-number" style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;">14945540000000000</span>ccb70d0ceeee4280f8450284d6298b59 dm<span class="hljs-number" style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;">-0</span> IET,VIRTUAL-DISK
+size=<span class="hljs-number" style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;">10</span>G features=<span class="hljs-string" style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;">'1 retain_attached_hw_handler'</span> hwhandler=<span class="hljs-string" style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;">'0'</span> wp=rw
+|-+- policy=<span class="hljs-string" style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;">'service-time 0'</span> prio=<span class="hljs-number" style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;">0</span> status=active
+| `- <span class="hljs-number" style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;">2</span>:<span class="hljs-number" style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;">0</span>:<span class="hljs-number" style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;">0</span>:<span class="hljs-number" style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;">0</span> sda <span class="hljs-number" style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;">8</span>:<span class="hljs-number" style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;">0</span> &nbsp;active undef <span class="hljs-keyword" style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;">unknown</span>`-+- policy=<span class="hljs-string" style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;">'service-time 0'</span> prio=<span class="hljs-number" style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;">0</span> status=enabled
+ &nbsp;`- <span class="hljs-number" style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;">3</span>:<span class="hljs-number" style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;">0</span>:<span class="hljs-number" style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;">0</span>:<span class="hljs-number" style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;">0</span> sdc <span class="hljs-number" style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;">8</span>:<span class="hljs-number" style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;">32</span> active undef <span class="hljs-keyword" style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;">unknown</span></span></code></pre><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;color: rgb(61, 70, 77);">其实，dm-0设备有两个path group，每个PG都只有一个路径（真实环境有多条），状态<code style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;border-radius: 3px;padding: 2px;font-size: 13px;">active</code>的是正在工作的路径，状态<code style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;border-radius: 3px;padding: 2px;font-size: 13px;">enabled</code>处于备用状态，并不下发IO。 为此，请教了做multipath的同事Martin：</p><pre class="hljs cs" style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;overflow-x: auto;padding: 2px;color: rgb(220, 220, 220);border-radius: 3px;line-height: 1.4;word-wrap: normal;font-size: 13px;"><code class="hljs cs" style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;display: block;overflow-x: auto;padding: 10px;border-radius: 4px;line-height: 1.4;word-wrap: normal;"><span style="color: rgb(0, 0, 0);">Please have a look at
+http:<span class="hljs-comment" style="color: rgb(0, 0, 0);box-sizing: inherit;-webkit-tap-highlight-color: transparent;">//christophe.varoqui.free.fr/refbook.html</span>Path groups are mainly used <span class="hljs-keyword" style="color: rgb(0, 0, 0);box-sizing: inherit;-webkit-tap-highlight-color: transparent;">for</span> active/passive setups, and <span class="hljs-keyword" style="color: rgb(0, 0, 0);box-sizing: inherit;-webkit-tap-highlight-color: transparent;">for</span> cases<span class="hljs-keyword" style="color: rgb(0, 0, 0);box-sizing: inherit;-webkit-tap-highlight-color: transparent;">where</span> some paths have a higher latency/<span class="hljs-function" style="color: rgb(0, 0, 0);box-sizing: inherit;-webkit-tap-highlight-color: transparent;"><span class="hljs-function" style="color: rgb(0, 0, 0);box-sizing: inherit;-webkit-tap-highlight-color: transparent;">lower bandwidth than others(<span class="hljs-function" style="color: rgb(0, 0, 0);box-sizing: inherit;-webkit-tap-highlight-color: transparent;">imagine a mirrored storage with mirror legs in different physical
+locations, disaster avoidance: the local mirror will be much faster
+than remote mirrors</span>).
+
+Only one path group is "active" at any given time. The others are
+serving as standby, for the case that all paths in the currently activegroup fail. Depending on the storage array, the host may need to takeexplicit action to switch from one path group to another (<span class="hljs-function" style="color: rgb(0, 0, 0);box-sizing: inherit;-webkit-tap-highlight-color: transparent;">e.g. send a
+certain SCSI command that forces the storage to activate the stand-by
+ports</span>). 
+
+If the active path group contains multiple paths, switching between
+these paths (<span class="hljs-function" style="color: rgb(0, 0, 0);box-sizing: inherit;-webkit-tap-highlight-color: transparent;">more precisely: between those paths in the path groupwhich are not in failed state</span>) is controlled by the "path_selector"
+algorithm in the kernel. The are 3 algorithms: "round-robin", "queue-
+length", and "service-time". See multipath.conf(<span class="hljs-number" style="color: rgb(0, 0, 0);box-sizing: inherit;-webkit-tap-highlight-color: transparent;">5</span>). Switching of paths
+inside a path group, unlike switching between path groups, is assumed
+to be instanteneous, and to require no explicit action. Regardless
+which path selector is in use, every healthy path will receive IO
+sooner or later, unless the multipath device is completely idle.
+
+How the paths are grouped into path groups at discovery time isdetermined by the "path_grouping_policy". It's "failover" by default,
+meaning that there's a dedicated path group for every path. But
+multipath's builtin </span>hardware table sets different defaults <span class="hljs-keyword" style="color: rgb(227, 206, 171);box-sizing: inherit;-webkit-tap-highlight-color: transparent;">for</span> many
+real-world storage arrays. For modern setups, "group_by_prio" <span class="hljs-keyword" style="color: rgb(227, 206, 171);box-sizing: inherit;-webkit-tap-highlight-color: transparent;">is</span> often
+the best, combined with "detect_prio yes" or or a "prio" setting that
+assigns different priority to paths with different <span class="hljs-title" style="color: rgb(239, 239, 143);box-sizing: inherit;-webkit-tap-highlight-color: transparent;">quality</span> (e.g.<span class="hljs-string" style="color: rgb(204, 147, 147);box-sizing: inherit;-webkit-tap-highlight-color: transparent;">"alua"</span>, <span class="hljs-string" style="color: rgb(204, 147, 147);box-sizing: inherit;-webkit-tap-highlight-color: transparent;">"rdac"</span>, or <span class="hljs-string" style="color: rgb(204, 147, 147);box-sizing: inherit;-webkit-tap-highlight-color: transparent;">"path_latency"</span>).
+
+Path groups are assigned a priority which <span class="hljs-keyword" style="color: rgb(227, 206, 171);box-sizing: inherit;-webkit-tap-highlight-color: transparent;">is</span> calculated <span class="hljs-keyword" style="color: rgb(227, 206, 171);box-sizing: inherit;-webkit-tap-highlight-color: transparent;">as</span> the average
+of all non-failed paths <span class="hljs-keyword" style="color: rgb(227, 206, 171);box-sizing: inherit;-webkit-tap-highlight-color: transparent;">in</span> the path <span class="hljs-keyword" style="color: rgb(227, 206, 171);box-sizing: inherit;-webkit-tap-highlight-color: transparent;">group</span>. At startup, the path <span class="hljs-keyword" style="color: rgb(227, 206, 171);box-sizing: inherit;-webkit-tap-highlight-color: transparent;">group</span>with the highest prio <span class="hljs-keyword" style="color: rgb(227, 206, 171);box-sizing: inherit;-webkit-tap-highlight-color: transparent;">is</span> <span class="hljs-keyword" style="color: rgb(227, 206, 171);box-sizing: inherit;-webkit-tap-highlight-color: transparent;">set</span> <span class="hljs-keyword" style="color: rgb(227, 206, 171);box-sizing: inherit;-webkit-tap-highlight-color: transparent;">as</span> active PG. When all paths <span class="hljs-keyword" style="color: rgb(227, 206, 171);box-sizing: inherit;-webkit-tap-highlight-color: transparent;">in</span> <span class="hljs-keyword" style="color: rgb(227, 206, 171);box-sizing: inherit;-webkit-tap-highlight-color: transparent;">this</span> PG
+fail, the kernel will <span class="hljs-keyword" style="color: rgb(227, 206, 171);box-sizing: inherit;-webkit-tap-highlight-color: transparent;">switch</span> to the next-best PG. When paths <span class="hljs-keyword" style="color: rgb(227, 206, 171);box-sizing: inherit;-webkit-tap-highlight-color: transparent;">in</span> the
+best PG return to good state, the "failback" configuration on
+determines <span class="hljs-keyword" style="color: rgb(227, 206, 171);box-sizing: inherit;-webkit-tap-highlight-color: transparent;">if</span>, and <span class="hljs-keyword" style="color: rgb(227, 206, 171);box-sizing: inherit;-webkit-tap-highlight-color: transparent;">when</span>, to <span class="hljs-keyword" style="color: rgb(227, 206, 171);box-sizing: inherit;-webkit-tap-highlight-color: transparent;">switch</span> back to the best PG.</span></span></code></pre><h1 style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;font-size: 24px;color: rgb(61, 70, 77);"><br  /></h1><h1 style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;font-size: 24px;color: rgb(61, 70, 77);">path grouping policy and IO scheduling policy?</h1><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;color: rgb(61, 70, 77);">path grouping policy 默认是<code style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;border-radius: 3px;padding: 2px;font-size: 13px;">failover</code>, 如martin所说，各设备厂商默认策略不同，主流的在用<code style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;border-radius: 3px;padding: 2px;font-size: 13px;">group_by_prio</code>，作用就是把路径分组。IO scheduling policy默认是<code style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;border-radius: 3px;padding: 2px;font-size: 13px;">service time</code>, 负责如何在一个PG的路径中分配IO。对此，Martin给出了详细的解释。</p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">任镇</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                <div class="reward_qrcode_area reward_area tc" id="js_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                                        <p class="reward_tips"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" id="js_reward_qrcode_img"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://my.oschina.net/u/2475751/blog/1574955?from=groupmessage\x26amp;isappinstalled=0' target='_blank'>
+			阅读全文
+		</a>
+	</div>
+</body>

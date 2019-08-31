@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		中断下半部-tasklet
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=416966948&amp;idx=2&amp;sn=4b9373833561940651c3caadb0ede036&amp;chksm=764544c14132cdd71e5d28a781f0460e12a022e957f0641af28046a5c8aed943ec329112ab20&amp;scene=27#wechat_redirect&cpage=75' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">中断下半部-tasklet</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        武特
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-04-06</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);"><em style="border: 0px; outline: 0px;">本文包含那些内容？<br  />tasklet机制概述；tasklet机制的使用方法；一个阐述tasklet机制调用关系的举例。<br  />本文适合那些人阅读？<br  />想了解linuxer；学习驱动开发的beginner；学习内核模块编程beginner；其他super linux NBer；<br  />参考书籍：<br  /></em></strong><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);"><em style="border: 0px; outline: 0px;">Linux内核设计与实现</em></strong><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);"><em style="border: 0px; outline: 0px;"><br  /></em></strong><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);"><em style="border: 0px; outline: 0px;">Linux操作系统原理与应用</em></strong><br  /><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);"><br  /></strong><br  /><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);"><br  /></strong></span></p><h4 style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px;">tasklet的实现</strong></span></h4><p><span style="font-size: 16px;"><strong style=""></strong></span></p><p style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);"></strong><br  />tasklet（小任务）机制是中断处理下半部分最常用的一种方法，其使用也是非常简单的。正如在前文中你所知道的那样，一个使用tasklet的中断程序首先会通过执行中断处理程序来快速完成上半部分的工作，接着通过调用tasklet使得下半部分的工作得以完成。可以看到，下半部分被上半部分所调用，至于下半部分何时执行则属于内核的工作。对应到我们此刻所说的tasklet就是，在中断处理程序中，除了完成对中断的响应等工作，还要调用tasklet，如下图示。</span></p><p style=""><a rel="attachment wp-att-1552" style="border: 0px; outline: 0px; color: rgb(0, 77, 153);"><img class="aligncenter size-medium wp-image-1552" title="Screenshot" src="data:image/PNG;base64,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 " src="SeWfibBcBT0F3k2yRyWN9SlcesLOpycXsVqMyiaP6gfZX3lIsLcGhiasiaia7R4UzPW3ff6oPmL4oCy7iaJdrr0oZmtg"  width="300" height="217" style="border: 0px; margin-right: auto; margin-left: auto; outline: 0px; display: block; max-width: 576px;" data-type="png" data-ratio="0.7233333333333334" data-w="300"  /></a><span style="font-size: 16px;">tasklet由tasklet_struct结构体来表示，每一个这样的结构体就表示一个tasklet。在&lt;linux/interrupt.h&gt;中可以看到如下的定义：</span></p><pre class="brush:c" style="border: 0px; font-size: 13px; margin-top: 0px; margin-bottom: 0px; outline: 0px; padding: 0px; color: rgb(36, 38, 38); line-height: 20px; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">tasklet_struct
+{
+	struct tasklet_struct *next;
+	unsigned long state;
+	atomic_t count;
+	void (*func)(unsigned long);
+	unsigned long data;
+};</span></pre><p style=""><span style="font-size: 16px;">在这个结构体中，第一个成员代表链表中的下一个tasklet。第二个变量代表此刻tasklet的状态，一般为TASKLET_STATE_SCHED,表示此tasklet已被调度且正准备运行；此变量还可取TASKLET_STATE_RUN，表示正在运行，但只用在多处理器的情况下。count成员是一个引用计数器，只有当其值为0时候，tasklet才会被激活；否则被禁止，不能被执行。而接下来的func变量很明显是一个函数指针，它指向tasklet处理函数，这个处理函数的唯一参数为data。<br  /><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);"><br  /></strong></span></p><h4 style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px;">使用tasklet</strong></span></h4><p><span style="font-size: 16px;"><strong style=""></strong></span></p><p style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);"></strong><br  />在使用tasklet前，必须首先创建一个tasklet_struct类型的变量。通常有两种方法：静态创建和动态创建。这样官方的说法仍然使我们不能理解这两种创建到底是怎么一回事。不够透过源码来分析倒是可以搞明白。</span></p><p style=""><span style="font-size: 16px;">在&lt;linux/interrupt.h&gt;中的两个宏：</span></p><pre class="brush:c" style="border: 0px; font-size: 13px; margin-top: 0px; margin-bottom: 0px; outline: 0px; padding: 0px; color: rgb(36, 38, 38); line-height: 20px; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;"> 464#define DECLARE_TASKLET(name, func, data) \
+ 465struct tasklet_struct name = { NULL, 0, ATOMIC_INIT(0), func, data }
+ 466
+ 467#define DECLARE_TASKLET_DISABLED(name, func, data) \
+ 468struct tasklet_struct name = { NULL, 0, ATOMIC_INIT(1), func, data }</span></pre><p style=""><span style="font-size: 16px;">就是我们进行静态创建tasklet的两种方法。通过第一个宏创建的tasklet处于激活状态，再通过调度函数被挂起尽而被内核执行；而通过第二个宏创建的tasklet处于禁止状态。从两个宏的定义可以看到，所谓的静态创建就是直接定义个一个名为name的tasklet_struct类型的变量，并将宏中各个参数相应的赋值给这个name变量的各个成员。注意，两个宏在功能上差异就在于对name变量count成员的赋值上，具体原因在第一部分已经说明。也许你对ATOMIC_INIT这样的初始化方式感到疑惑，那么看完定义后，你就会一目了然：</span></p><pre class="brush:c" style="border: 0px; font-size: 13px; margin-top: 0px; margin-bottom: 0px; outline: 0px; padding: 0px; color: rgb(36, 38, 38); line-height: 20px; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;"> //在arch/x86/include/asm/atomic.h中
+ 15#define ATOMIC_INIT(i) &nbsp;{ (i) }
+ //在linux/types.h中
+ 190typedef struct {
+ 191 &nbsp; &nbsp; &nbsp; &nbsp;int counter;
+ 192} atomic_t;</span></pre><p style=""><span style="font-size: 16px;">与静态创建相对的是动态创建，通过给tasklet_init函数传递一个事先定义的指针，来动态创建一个tasklet。这个函数源码如下。</span></p><pre class="brush:c" style="border: 0px; font-size: 13px; margin-top: 0px; margin-bottom: 0px; outline: 0px; padding: 0px; color: rgb(36, 38, 38); line-height: 20px; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;"> 470void tasklet_init(struct tasklet_struct *t,
+ 471 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;void (*func)(unsigned long), unsigned long data)
+ 472{
+ 473 &nbsp; &nbsp; &nbsp; &nbsp;t-&gt;next = NULL;
+ 474 &nbsp; &nbsp; &nbsp; &nbsp;t-&gt;state = 0;
+ 475 &nbsp; &nbsp; &nbsp; &nbsp;atomic_set(&amp;t-&gt;count, 0);
+ 476 &nbsp; &nbsp; &nbsp; &nbsp;t-&gt;func = func;
+ 477 &nbsp; &nbsp; &nbsp; &nbsp;t-&gt;data = data;
+ 478}</span></pre><p style=""><span style="font-size: 16px;">相信你在阅读上面的代码是基本上没有什么难以理解的地方，不过这里还是要特别说明一下atomic_set函数：</span></p><pre class="brush:c" style="border: 0px; font-size: 13px; margin-top: 0px; margin-bottom: 0px; outline: 0px; padding: 0px; color: rgb(36, 38, 38); line-height: 20px; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;"> &nbsp;//在arch/x86/include/asm/atomic.h中
+ &nbsp;35static inline void atomic_set(atomic_t *v, int i)
+ &nbsp;36{
+ &nbsp;37 &nbsp; &nbsp; &nbsp; &nbsp;v-&gt;counter = i;
+ &nbsp;38}</span></pre><p style=""><span style="font-size: 16px;">首先tasklet_init当中，将&amp;t-&gt;count传递给了此函数。也就是说将atomic_t类型的成员count的地址传递给了atomic_set函数。而我们在此函数中却要为count变量中的成员counter赋值。如果说我们当前要使用i，那么应该是如下的引用方法：t-》count.i。明白了吗？</span></p><p style=""><span style="font-size: 16px;">ok，通过上述两种方法就可以创建一个tasklet了。同时，你应该注意到不管是上述那种创建方式都有func参数。透过上述分析的源码，我们可以看到func参数是一个函数指针，它指向的是这样的一个函数：</span></p><pre class="brush:c" style="border: 0px; font-size: 13px; margin-top: 0px; margin-bottom: 0px; outline: 0px; padding: 0px; color: rgb(36, 38, 38); line-height: 20px; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">void tasklet_handler(unsigned long data);</span></pre><p style=""><span style="font-size: 16px;">如同上半部分的中断处理程序一样，这个函数需要我们自己来实现。</span></p><p style=""><span style="font-size: 16px;">创建好之后，我们还要通过如下的方法对tasklet进行调度：</span></p><pre class="brush:c" style="border: 0px; font-size: 13px; margin-top: 0px; margin-bottom: 0px; outline: 0px; padding: 0px; color: rgb(36, 38, 38); line-height: 20px; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">tasklet_schedule(&amp;my_tasklet)</span></pre><p style=""><span style="font-size: 16px;">通过此函数的调用，我们的tasklet就会被挂起，等待机会被执行<br  /><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);"><br  /></strong><br  /><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);"><br  /></strong></span></p><h4 style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px;">一个举例</strong></span></h4><p><span style="font-size: 16px;"><strong style=""></strong></span></p><p style=""><span style="font-size: 16px;"><strong style="border: 0px; outline: 0px; color: rgb(46, 46, 46);"></strong><br  />在此只分析上下两部分的调用关系</span><span style="font-size: 16px;">。</span></p><pre class="brush:c" style="border: 0px; font-size: 13px; margin-top: 0px; margin-bottom: 0px; outline: 0px; padding: 0px; color: rgb(36, 38, 38); line-height: 20px; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">//define a argument of tasklet struct
+static struct tasklet_struct mytasklet;
+
+static void mytasklet_handler(unsigned long data)
+{
+	printk(&quot;This is tasklet handler..\n&quot;);
+}
+
+static irqreturn_t myirq_handler(int irq,void* dev)
+{
+	static int count=0;
+	if(count&lt;10)
+	{
+		printk(&quot;-----------%d start--------------------------\n&quot;,count+1);
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;	printk(&quot;The interrupt handeler is working..\n&quot;);
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 	printk(&quot;The most of interrupt work will be done by following tasklet..\n&quot;);
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;	tasklet_init(&amp;mytasklet,mytasklet_handler,0);
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;	tasklet_schedule(&amp;mytasklet);
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 	printk(&quot;The top half has been done and bottom half will be processed..\n&quot;);
+	}
+	count++;
+ &nbsp; &nbsp; &nbsp;	return IRQ_HANDLED;
+}</span></pre><p style=""><span style="font-size: 16px;">从代码中可以看到，在上半部中通过调用tasklet，使得对时间要求宽松的那部分中断程序推后执行。</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">武特</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://edsionte.com/techblog/archives/1547' target='_blank'>
+			阅读全文
+		</a>
+	</div>
+</body>

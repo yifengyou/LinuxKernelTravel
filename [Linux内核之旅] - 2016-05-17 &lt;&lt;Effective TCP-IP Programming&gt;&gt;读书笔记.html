@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		&lt;&lt;Effective TCP-IP Programming&gt;&gt;读书笔记
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664601916&amp;idx=1&amp;sn=d746bc617736df32c59c5c500244bb4f&amp;chksm=f04db4d9c73a3dcfd8d814c9be06befa083ed42d513cc671f23361a76341f2a1faf3099e90e4&amp;scene=27#wechat_redirect&cpage=71' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">&lt;&lt;Effective TCP/IP Programming&gt;&gt;读书笔记</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        张义飞
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-05-17</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                <div class="rich_media_thumb_wrp" id="media">
+                    
+                                        
+                                    </div>
+                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <h2 style=""><span style="color: rgb(255, 0, 0); font-size: 16px;">技巧1 理解基于连接和无连接协议之间的差异</span></h2><p><span style="color: rgb(255, 0, 0); font-size: 16px;"></span></p><pre style=""><code style=""><span style="font-size: 16px;">TCP/IP分为四层，分别是接口层/物理层/链路层--&gt;传输层--&gt;网络层--&gt;应用层
+传输层主要就是IP层，该层提供了一个很好的高效的，不可靠的，无连接的服务，负责接收来自上层的数据包，然后封<br  />到一个IP数据包中，并路由该数据包到正确的硬件接口上。
+TCP在IP层上增加了三个服务，以用来实现TCP的可靠的面向连接的服务:
+1.为TCP段提供了校验位，这就能保证到达目的地的数据不会在网络上传输时被破坏
+2.为每个字节分配一个序列号，如果数据不按顺序到达目的地那么接受者可以重新进行组合
+3.TCP提供了一个确认和重传机制来保证每一个段最终都会递交到目的地
+
+UDP在IP层上增加了两个服务:
+1.校验和
+2.端口 提供了一个多路输出数据到适当的应用程序的方法<br  /></span></code></pre><p><span style="color: rgb(255, 0, 0); font-size: 16px;"></span></p><h2 style=""><span style="color: rgb(255, 0, 0); font-size: 16px;">技巧2 理解子网和CIDR</span></h2><pre style=""><code style=""><span style="font-size: 16px;">A类网络: 0.0.0.0 ～ 127.255.255.255 &nbsp;网络位8位，第0位是0
+B类网络: 128.0.0.0 ~ 191.255.255.255 网络位16位 第0位为1
+C类网络: 192.0.0.0 ~ 223.255.255.255 网络位24位 第0,1位为1
+还有D类网络主要是用于多点广播地址
+E类网络是保留的
+
+广播类型：
+1.有线广播 255.255.255.255 不会被路由器转发
+2.网络直接广播 主机位全是1,会被传递给网络中所有主机
+3.子网直接广播 
+4.全子网直接广播</span></code></pre><h2 style=""><span style="font-size: 16px; color: rgb(255, 0, 0);">技巧3 理解私有地址和NAT</span></h2><pre style=""><code style=""><span style="font-size: 16px;">私有地址:
+1.10.0.0.0 ～ 10.255.255.255 （10/8 前缀）
+2.172.16.0.0 ～ 172.31.255.255 (172.16/12 前缀)
+3.192.168.0.0 ～ 192.168.255.255 (192.168/16 前缀)
+NAT转换机制:
+1.静态模式 一一映射
+2.缓冲池模式 多对多映射
+3.PAT模式 单一全局分配地址，通过端口来区分不同的私有地址</span></code></pre><h2 style=""><span style="font-size: 16px; color: rgb(255, 0, 0);">技巧4 开发和使用应用程序框架</span></h2><pre style=""><code style=""><span style="font-size: 16px;">建立自己的socket开发框架，屏蔽底层细节</span></code></pre><h2 style=""><span style="font-size: 16px; color: rgb(255, 0, 0);">技巧5 选择套接字接口而不是XTI/TLI</span></h2><h2 style=""><span style="font-size: 16px; color: rgb(255, 0, 0);">技巧6 记住TCP是一个流协议</span></h2><pre style=""><code style=""><span style="font-size: 16px;">对于TCP来说，没有用户可见的数据包的概念，需要用户指定协议，通过协议对TCP的数据流进行切分，
+划分是数据包的概念。</span></code></pre><h2 style=""><span style="font-size: 16px; color: rgb(255, 0, 0);">技巧7 不要低估TCP的性能</span></h2><pre style=""><code style=""><span style="font-size: 16px;">UDP并不一定比TCP提供更好的性能，许多因素都可以影响两个协议的相对性能。</span></code></pre><h2 style=""><span style="font-size: 16px; color: rgb(255, 0, 0);">技巧8 不要彻底改造TCP</span></h2><h2 style=""><span style="font-size: 16px; color: rgb(255, 0, 0);">技巧9 注意TCP是可靠的协议，但并非是不会出错的协议</span></h2><pre style=""><p style="line-height: 1.5em;"><code style=""><span style="font-size: 16px;">发送方的TCP层对于到达接收方的TCP段是不会做任何保证的，接受方的TCP层唯一知道的是这个数据段
+达到了，但是这个段可能是被破坏的，可能是重复的数据，可能是乱序的，还有一些其它可能。
+然后接受方将会对发送方的TCP做出保证，该保证就是它确认的任何数据以及在它之前到达的所有数据在TCP层上
+以及正确接收到了，但是这并不意味这该数据已经传递给应用程序了，也不意味它一定会传递到。例如，接收方
+主机可能在确认数据之后但是在应用程序读取数据之前崩溃。因此编写应用程序的人需要考虑到这一失败模式。
+TCP层给予应用程序的保证就是达到的数据是有序的，并且是没有被破坏的。
+
+
+失败模式:
+ &nbsp; &nbsp;1.TCP确认的数据实际上有可能不会达到它的目的应用程序
+ &nbsp; &nbsp;2.网络中断(只要双方保持连接，TCP就能保证按顺序递交数据并且数据不会被破坏)
+
+发生连接中断的情况: &nbsp;
+ &nbsp; &nbsp;1.可能发生永久的或暂时的网络紊乱
+ &nbsp; &nbsp; &nbsp;发送端重发报文，直到发送方TCP放弃,(在报文重发的这段时间进行写操作的时候是正常的，写操作其实是
+ &nbsp; &nbsp; &nbsp;将数据拷贝到了内核缓冲区，由内核负责进行发送)当超时重发结束后链接会被中断此时如果有读操作挂起，
+ &nbsp; &nbsp; &nbsp;就返回一个错误条件设置errno为ETIEMDOUT，如果没有挂起的读操作，那么下一个写操作就会失败，设置errno为
+ &nbsp; &nbsp; &nbsp;ETIMEDOUT，再进行一次写操作就会返回一个SIGPIPE信号，如果该信号被忽略或捕捉到了就返回一个EPIPE错误。
+ &nbsp; &nbsp; &nbsp;如果数据包无法转发到目的主机，会给原来的主机发送一个ICMP消息说明网络或主机不可达到。
+ &nbsp; &nbsp; &nbsp;设置errno为ENETUNREACH或EHOSTUNREACH作为错误返回
+
+ &nbsp; &nbsp;2.对等方的应用程序可能奔溃
+ &nbsp; &nbsp; &nbsp;对等方奔溃和对等方调用close和exit是可不区分，在这两种情况下，对等方的TCP都是发送一个FIN消息给我们
+ &nbsp; &nbsp; &nbsp;的TCP，FIN消息可以充当EOF，指示发送方没有任何数据可以发送了。如果此时有读操作挂起会立刻返回0，
+ &nbsp; &nbsp; &nbsp;如果又写操作挂起那么会导致写操作成功，但是会导致对等方发送一个RST报文重置链接，那么当再次有写操作的时候
+ &nbsp; &nbsp; &nbsp;就会导致产生EPIPE错误了
+
+ &nbsp; &nbsp;3.对等方应用程序运行的主机可能奔溃
+ &nbsp; &nbsp; &nbsp; &nbsp;对于这种情况来说，对等方的TCP是不能通过FIN信号通知本方应用程序对等方不再运行了，这个错误和网络紊乱，
+ &nbsp; &nbsp; &nbsp; &nbsp;失败模式相似，本方应用程序的TCP继续传输没有确认的段，最后如果对等方主机不重启启动，它就放弃并返回
+ &nbsp; &nbsp; &nbsp; &nbsp;ETIMEDOUT错误给本方应用程序,如果在超时之前对等方主机重启了，那么这会导致对等方主机响应一个RST报文，
+ &nbsp; &nbsp; &nbsp; &nbsp;那么此时本方应用程序如果有读操作挂起就会返回ECONNRESET错误，或者是下一个读操作导致SIGPIPE信号或者
+ &nbsp; &nbsp; &nbsp; &nbsp;EPIPE错误。
+
+连接错误情况:
+1.连接一个不存在的端口(端口没有应用程序在监听连接，操作系统会响应RST报文)(但地址是可到达的)会出现111号ECONNREFUSED错误。
+2.连接一个不可达的地址(路由器会返回一个ICMP错误给主机)会出现113号错误ECONNREFUSED
+3.连接一个可达的地址，并且端口上也有监听的程序，但是因为防火墙或者是网络紊乱等问题，导致TCP层报文不段的重发，直到超时出现111号ETIMEDOUT错误</span></code></p></pre><h2 style=""><span style="font-size: 16px; color: rgb(255, 0, 0);">技巧10 TCP/IP不是轮询</span></h2><pre style=""><code style=""><span style="font-size: 16px;">TCP不提供及时连接中断通知的最重要的原因在于TCP需要利用它的一个主要设计目标:网络突然终端时仍可以维持通信的能力，
+通常网络紊乱是暂时的，路由器也可能知道连接的另一条路径。这样就可以实现在终端应用程序意识到中断之前TCP就已经处理
+好紊乱了。然后TCP也提供了一个称作keep-alive的机制用于检测死连接，如果应用程序启用keepalive机制TCP就会在连接已经
+空闲一段时间间隔后发送一个特殊的段给对等方，如果对等方主机可达到，并且对等方应用程序仍然在允许，对等方TCP就响应
+一个ACK应答，然后重置TCP的keepalive空闲时间为0. 如果对等方可达到，但是对等方的应用程序不再运行，那么对等方的
+OS会负责返回一个RST报文，本端TCP就会撤销连接，并返回ECONNRESET错误，如果对等方主机没有响应ACK或RST，那么本端
+就会继续发送keepalive探询消息，直到它认为对等方不可到达或已经奔溃，这时本端TCP连接返回ETIMEDOUT错误，如果路由器
+已经返回主机网络不可达到的ICMP消息的话就返回EHOSTUNREACH错误。
+UNPV3 24.5章节提到TCP保活定时器不是按照每个套接字维护的，因此改动他们将会影响所有开启该选项的套接字，另外保持存
+活选项的用意绝不是这个目的(高频率地轮询),24.5章节通过带外数据实现了心跳报，通过定时器函数alarm定时互相发送心跳包
+当接收到心跳报重置计数器，直到计数器的值超过某一个阀值就认为网络紊乱，或者是对等方出现了问题了。
+通过在引用程序中实现一个相同机制的应用层心跳包机制就可以轻松解决keepalive监控连接中断带来的问题。</span></code></pre><h2 style=""><span style="font-size: 16px; color: rgb(255, 0, 0);">技巧11 为来自对等方的不符合要求的行为做准备</span></h2><pre style=""><code style=""><span style="font-size: 16px;">不能假设对等方会严格遵守应用程序协议，甚至是在我们实现双方协议的时候也应该这样。
+1.检查客户端的终止
+2.检查输入的有效性</span></code></pre><h2 style=""><span style="font-size: 16px; color: rgb(255, 0, 0);">技巧12 不要认为成功的LAN策略一定移植到WAN上</span></h2><pre style=""><code style=""><span style="font-size: 16px;">LAN和WAN可能存在网络性能问题，又或者是为分包的数据在LAN上正常，移植到WAN上可能会出现致命的错误。</span></code></pre><h2 style=""><span style="font-size: 16px; color: rgb(255, 0, 0);">技巧13 学习协议是如何工作的</span></h2><pre style=""><code style=""><span style="font-size: 16px;">通过学习协议底层是如何工作的，才能更好的掌握TCP/IP的参数调整的意义。通过RFC文档和TCP/IP卷1来学习
+TCP/IP协议。</span></code></pre><h2 style=""><span style="font-size: 16px; color: rgb(255, 0, 0);">技巧14 不要把OSI七层参考模型看得太重要了</span></h2><h2 style=""><span style="font-size: 16px; color: rgb(255, 0, 0);">技巧15 理解TCP的写操作</span></h2><pre style=""><code style=""><span style="font-size: 16px;">只是讲数据拷贝到内核缓冲区进行排队发送，数据可能会丢失，如果网络紊乱，或者是对等方程序奔溃，那么
+本端会不断的进行数据的重发，除非TCP的发送缓冲区满了，否则写操作是不会阻塞的。这意味着写操作总是
+立即返回，对于TCP的写操作是何如处理错误呢，TCP的写操作通常会返回给写操作一个错误，因为写操作可能
+在数据实际传送之前返回，所以错误经常是通过下一个操作返回的，这些错误包括:
+ &nbsp; &nbsp;1.套接字描述符非法
+ &nbsp; &nbsp;2.没有指向套接字的文件描述符
+ &nbsp; &nbsp;3.调用里指定的套接字不存在或套接字没有连接
+对于TCP的写操作可以理解为拷贝数据到发送队列中并通知TCP队列中又了新数据。</span></code></pre><h2 style=""><span style="font-size: 16px; color: rgb(255, 0, 0);">技巧16 理解TCP顺序释放操作</span></h2><pre style=""><code style=""><span style="font-size: 16px;">TCP是全双工的连接，通过shutdown系统调用可以实现半关闭，对于shutdown来说其第二个参数有三个可选的值。
+=0 为0的时候表示关闭连接的接收方，不能再接受数据了,如果应用程序有挂起的读操作就返回EOF，对于那些
+ &nbsp; 还在缓冲区排队的数据linux内核会将其丢弃。
+=1 关闭发送方的连接，套接字不能再发送任何额外的数据，以后任何试图在套接字上发布的写操作将导致错误，当
+ &nbsp; 发送缓冲区中的数据发送出去后TCP就会发送一份FIN消息给对方，告诉它不会又数据再发送过去了。
+=2 关闭双方的连接，和close系统调用不是等同的。对于close来说只是减少套接字的引用计数，当引用计数等于0的
+ &nbsp; 时候TCP才会发送FIN报文给对等方，但是shutdown则不是，shutdown系统调用会引发TCP发送FIN报文
+
+对于UDP来说，shutdown也是可以用于UDP的，因为UDP不需要关闭连接，当参数值为1和2的时候是又问题的，当参数
+值为0的时候可以用来防止特定UDP端口接收数据包。
+
+顺序释放确保在连接撤销之前保证双方接收来自对等方的所有数据。
+当close断开连接时，如果缓冲区中又未被读取的数据，则tcp不会发送正常的FIN包，而发送RST给对端。
+调用close的时候会试图把发送缓冲区中的数据尽量发送出去，把接收缓冲区的数据清除。通过linger选项可以修改
+调用close的行为。
+
+客户端和服务器端都不知道何时被关闭，倘若客户端关闭了socket，但是服务器端却不知道，导致服务器端给客户端发送了
+数据，很显然这个数据不会发送成功的(write会成功返回，但是实际上客户端已经无法接收到这个数据了)，这会导致客户端响应一个RST报文，
+那么为了避免这个问题，客户端可以调用shutdown关闭写端，这个时候服务器端发送的数据客户端就可以接收到了，然后服务器端再关闭链接
+按照这样的一个关闭顺序就可以很好的确保数据不会丢失。</span></code></pre><h2 style=""><span style="font-size: 16px; color: rgb(255, 0, 0);">技巧17 考虑让inetd启动应用程序</span></h2><pre style=""><code style=""><span style="font-size: 16px;">inetd守候程序负责监听连接或到达的数据包，映射套接字到标准输入，标准输出和标准错误输出，然后启动应用程序，</span></code></pre><p style=""><span style="font-size: 16px;">应用程序就可以从标准输入，标准输出和标准错误输出中读取或写入数据而不闭担心甚至知道它正和网络进行会话。</span></p><h2 style=""><span style="font-size: 16px; color: rgb(255, 0, 0);">技巧18 考虑让tcpmux指定服务器的已知端口</span></h2><pre style=""><code style=""><span style="font-size: 16px;">如果通过服务名称来访问应用程序呢？，就好比使用域名代替ip地址一样，通过tcpmux监听在1号端口，客户端通过访问1号端口，并传递服务名称。
+tcpmux解析到服务名称找到对应的可执行程序开始运行。</span></code></pre><h2 style=""><span style="font-size: 16px; color: rgb(255, 0, 0);">技巧19 考虑使用两个TCP连接</span></h2><h2 style=""><span style="font-size: 16px; color: rgb(255, 0, 0);">技巧20 21 考虑使用程序事件驱动</span></h2><pre style=""><code style=""><span style="font-size: 16px;">使用基于IO多路服用的事件驱动机制，可以同时监控多个描述符。</span></code></pre><h2 style=""><span style="font-size: 16px; color: rgb(255, 0, 0);">技巧22 不要使用TIME-WAIT ASSASSINATION 关闭连接</span></h2><pre style=""><code style=""><span style="font-size: 16px;">什么是TIME-WAIT状态?，TIME-WAIT状态产生和结束的条件? 为什么会有TIME-WAIT状态?
+TCP/IP四次挥手的过程中，主动断开的一方，发送FIN报文后变成了FIN_WAIT1,当接收到对方的ACK后变成了FIN_WAIT2,
+此时对方变成了close_wait状态那么这个时候已经是半关闭了，然后对方发送FIN,那么主动断开的一方发送完ACK后就
+变成了TIME_WAIT状态了，这个状态会持续2MSL。通常情况下只有主动断开的一方会进入TIME-WAIT状态，不同的系统和平台
+对于MSL定义的时间不同，为什么需要TIME-WAIT状态呢? 有下面两个原因!
+1.当由主动关闭方发送最后的ACK消息丢失并导致另一方重新发送FIN消息时，TIME_WAIT维护连接状态。
+2.TIME-WAIT为连接中的，&quot;离群的段&quot; 提供从网络中消失的时间。
+TCP的TIME-WAIT状态TCP可靠性的保证，当处于TIME-WAIT状态的套接字接收到一个RST报文会导致TCP立刻关闭连接(称为
+TIMEOUT,又的协议栈实现了 这一特性)。
+
+还有另外一个问题就是当一方执行close后，会立即返回，如果发送缓冲区中还有未发送的数据，那么操作系统内核会试图
+递交任何没有发送出去的数据，但是应用程序并不知道递交是否成功。为了防止这个问题，可以设置SO_LINGER来解决这个
+问题，当SO_LINGERZHONG的l_onoff为非零值的时候，它就为操作系统内核停留一段时间，等待任何将要发送和确认的挂起数据，也就是
+close会直到数据被递交或时间间隔到时才会返回。如果当停留时间终止时还有数据没有发送出去，close返回EWOULDBLOCK,没有递交的数据就
+又可能丢失。</span></code></pre><h2 style=""><span style="font-size: 16px; color: rgb(255, 0, 0);">技巧23 服务器应当设置SO_REUSEADDR选项</span></h2><pre style=""><code style=""><span style="font-size: 16px;">如果没有特殊原因，尽可能是使用SO_REUSEADDR选项，因为这个选项可以避免TIME-WAIT状态下，再次绑定相同的地址和端口号。，有人认为
+开启TIME-WAIT状态会导致产生相同的套接字对象(4元组)，这是不对的，即使开启了SO_REUSEADDR也不允许监听相同的地址和端口了两次，
+对于客户端来说，可以绑定相同的地址和端口多次，但是第二次虽然成功返回绑定成功了，但是要是连接到第一次连接的服务器上，TCP会拒绝这次
+连接。</span></code></pre><h2 style=""><span style="font-size: 16px; color: rgb(255, 0, 0);">技巧24 尽量使用大型写操作代替多个小规模写操作</span></h2><pre style=""><code style=""><span style="font-size: 16px;">原因又二，其中一个是很显而易见的，就是多个写操作会导致多个系统调用的执行，然而系统调用会导致大量的上下文切换
+开销较大，那么其二是过多的小规模写操作会因为Nagle算法和ACK延迟确认相互阻塞。
+详细分析下Nagle算法和ACK延迟确认是如何影响程序的。
+Nagle算法要求一个TCP连接上最多只能有一个未被确认的未完成的小分组，在该分组的确认未到达之前不能发送其他的
+小分组，TCP收集这些少量分组并在确认到来之时以一个分组的形式发送出去。然而Nagle算法可能很槽糕地影响后面的
+TCP的另外一个特性---延时的ACK消息。当对等方的段到达时，TCP延迟发送ACK消息，希望应用程序对刚接收到的数据
+做出响应，以便ACK消息可以在新数据中捎带出去。该延时值通常为200毫秒。
+Nagle算法和ACK延迟确认算法相互影响，导致数据发送和接收有较大的延迟，在具有大量小规模的写操作的时候应该,如果对数据实时性
+有要求的应用尽量不要开启nagle算法，如果又多个规模的写操作可以使用writev来进行合并，在确认有理由关闭Nagle算法的情况下
+可以使用setsocopt来关闭nagle算法。</span></code></pre><h2 style=""><span style="font-size: 16px; color: rgb(255, 0, 0);">技巧25 理解如何使connect调用具有超时机制</span></h2><pre style=""><code style=""><span style="font-size: 16px;">使用connect建立连接的时候connect会等待对syn报文的ack到达后才返回，这至少需要等待一个RTT时间，如果对等方繁忙，或是网络紊乱
+这会导致连接超时，最大超时时间为75秒。为了避免connect等待，应该让connect具备超时特性。为了实现带有超时机制的connect，有两种
+方法，一个是利用计时器，另外一个则是使用select+非阻塞来实现，对于第一种方法来说，是利用时钟中断信号，导致connect被打断，从而实现了
+超时机制，但是因为不是每一个平台系统调用都可以被打断，有的平台是会自动重启的，或许可以使用sigaction来设置不重启，但是不是每一个平台
+都具有这个系统调用。第二种方法则是使用select+非阻塞实现。对于第二种方案实现起来步骤如下:
+1.设置fd为非阻塞，然后connect建立连接，连接会立即返回，如果返回0，那么直接可以使用了，如果返回-1，并且错误是EINPROESS那么转2,否则出错
+2.调用select并设置超时时间，若返回错误，或者超时，那么就报告错误或者超时，然后返回。否则
+3.使用getsockopt获取fd的错误，如果没有发生错误，那么连接成功，否则连接失败
+注: fd如果连接成功，那么fd就是可写的，如果fd连接发生错误，那么fd即可读也可写，但是在select连接之前，fd可能已经连接上，并且是可读的
+所以当select返回的时候，无法确定是连接还是错误，所以需要借助getsockopt来判断下。</span></code></pre><h2 style=""><span style="font-size: 16px; color: rgb(255, 0, 0);">技巧26 避免数据拷贝</span></h2><pre style=""><code style=""><span style="font-size: 16px;">1.当要发送包头包体的时候，避免去调用多次write，换成writev或者是声明一段buf,将开始部分强制为包头结构体，后面部分是包体。然后调用一次
+ &nbsp;write将其发送出去。另外一种就是直接把包头和包体封装在一起作为一个整个结构体来使用。
+2.当涉及多个进程之间共享数据的时候需要避免多次拷贝，可以使用共享内存来避免，在多个进程之间传递索引号，通过索引号来找到对应的共享内存即可 &nbsp; 
+ &nbsp;需要注意的地方就是多个进程访问共享内存的时候需要对数据进行同步。</span></code></pre><h2 style=""><span style="font-size: 16px;">技巧27 在使用之前置sockaddr_in为零</span></h2><pre style=""><code style=""><span style="font-size: 16px;">有些版本的sockaddr_in的实现内部会有一个sin_zero字段，该字段在某些平台下强制为零用于填充sockaddr_in结构体为16字节。所以
+尽可能的在使用sockaddr_in的时候将其置为零。</span></code></pre><h2 style=""><span style="font-size: 16px; color: rgb(255, 0, 0);">技巧28 不要忘记字节的性别</span></h2><pre style=""><code style=""><span style="font-size: 16px;">根据体系结构的不同，现代计算机按照不同的方式存储整数，存储方式又两种一种是大端存储，另外一种则是小端存储。 &nbsp; 
+对于大端存储来说:0x12345678，存储格式为: 12 34 56 78低地址存地位，高地址存高位。而小端存储的格式则是:78 56 34 12
+对于网络传输来说，为了避免大小端问题，可以在传输的时候都统一按照网络字节序(大端存储)来存储，所以在发送之前需要先将其統一转换为
+网络字节序，可以使用htoll htons ntohl ntohs等,对于getservbyname和gethostbynames等系列函数来说，其返回的是网络字节序所以在使用
+之前需要将其转换为主机字节序(也就数本机的体系结构)。</span></code></pre><h2 style=""><span style="font-size: 16px; color: rgb(255, 0, 0);">技巧29 不要在应用程序中对IP地址和端口号做硬编码</span></h2><h2 style=""><span style="font-size: 16px; color: rgb(255, 0, 0);">技巧30 理解已连接UDP套接字</span></h2><pre style=""><code style=""><span style="font-size: 16px;">UDP中使用connect将导致绑定远程主机和端口到本地套接字上，(bind是绑定本地地址和端口到本地套接字上)，除此之外
+UDP中使用connect会使其具备一些功能:
+1.不用每次发送数据的时候绑定远程主机和端口到本地套接字，从而导致性能有所提升。
+2.能够接收到对等方或者是路由器发送过来的ICMP错误
+3.可以只接收指定远程主机和端口发送给来的数据</span></code></pre><h2 style=""><span style="font-size: 16px; color: rgb(255, 0, 0);">技巧31 记住这个世界并不全是C语言</span></h2><h2 style=""><span style="font-size: 16px; color: rgb(255, 0, 0);">技巧32 理解缓冲区大小的影响</span></h2><pre style=""><code style=""><span style="font-size: 16px;">TCP的性能和它的发送和接收缓冲区的大小又很大的关系，高效的大数据传输的应用程序的最优缓冲区大小由bandwidth-delay product决定
+但是这个发现在实际的应用程序中受到了限制。虽然应用bandwidth-delay(带宽和延迟的乘积)规则很困难，但是有一个规则很容易而且我们
+应当总是注意使用它我们应当让发送缓冲区总是至少3倍于Mss(最大报文段长度)的大小。</span></code></pre><h2 style=""><span style="font-size: 16px; color: rgb(255, 0, 0);">技巧33 熟悉ping实用程序</span></h2><pre style=""><code style=""><span style="font-size: 16px;">ping实用程序是最基本的网络连接测试程序之一，因为它只需要操作低层次的网络服务，所以在验证连接是否正常时很有用，它可以验证高层次
+的服务如TCP或应用程序层如telent是否正常工作，使用ping，通过观察应答的RTT变化值以及丢失的响应就可以推断网络环境了。</span></code></pre><h2 style=""><span style="font-size: 16px; color: rgb(255, 0, 0);">技巧34 学会使用tcpdump或一个类似的工具</span></h2><pre style=""><code style=""><span style="font-size: 16px;">tcpdump有两个组成部分:从网络中捕获以及过滤数据包的核心部分以及处理用户界面，格式化和过滤的用户空间部分。
+tcpdump的用户空间部分使用libpcap和核心部分进行通信，BPG检查通过链路层的每个数据包并拿他和用户指定的过滤器进行匹配，如果过滤器
+选择了数据包就放置数据包的一份拷贝到内核缓冲区中，提供给关联到这个过滤器的应用程序使用。</span></code></pre><h2 style=""><span style="font-size: 16px; color: rgb(255, 0, 0);">技巧35 学会如何使用traceroute</span></h2><pre style=""><code style=""><span style="font-size: 16px;">linux下的traceroute是基于udp来实现的，windows则是基于ICMP的echo来实现的，对于linux来说，首先把TTL的值设置为１的udp发给目标主机，
+路由器发现TTL值是１会丢弃这个数据包然后返回一个ICMP错误信息给发起者，这样就知道了第一个路由器的ip地址了，然后接着再设置TTL=2，
+以此类推,直到发送一个udp数据包到达目的主机的时候，会将其TTL值减去１，但是目的主机并不会对其进行转发，但是因为发送的数据包目的端口
+是一个不会又应用程序使用的端口，所以会导致目标主机返回ICMP port unreachable的错误消息，当发起方接收到这个消息，它就知道它已经找到了
+目的主机了。路径追踪过程就会随之终止。因为udp是一个不可靠的协议，所以存在数据报丢去的可能性，因此tracroute对每一个路由器或主机探询多次。
+，默认情况下tracroute探询每个节点３次。但是可以通过-q标志改变该值。同时traceroute必须决定用多长时间来等待每个探询返回的icmp消息，默认
+情况下等待时间为５秒，但是它可以由-w标志改变。如果ICMP在该时间间隔内没有接收到就输出*代替rtt值，除此之外还有很多异常情况。</span></code></pre><h2 style=""><span style="font-size: 16px; color: rgb(255, 0, 0);">技巧36 学会使用ttcp</span></h2><h2 style=""><span style="font-size: 16px; color: rgb(255, 0, 0);">技巧37 学会使用lsof</span></h2><h2 style=""><span style="font-size: 16px; color: rgb(255, 0, 0);">技巧38 学会使用netstat</span></h2><h2 style=""><span style="font-size: 16px; color: rgb(255, 0, 0);">技巧39 学会使用系统调用跟踪工具</span></h2><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">张义飞</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

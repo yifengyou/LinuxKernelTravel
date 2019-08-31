@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Linux内核代码赏析与应用（二）－链表之实现
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=416463736&amp;idx=1&amp;sn=45dbf988833e64794bd9ed7585fdcd36&amp;chksm=764d969d413a1f8b7f47f989ed32641a30d3c0d218d27390c40f606ba02f04bdec6c2a159b5f&amp;scene=27#wechat_redirect&cpage=77' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Linux内核代码赏析与应用（二）－链表之实现</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        陈莉君
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-03-08</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="box-sizing: border-box; margin-bottom: 10px;">抽象是软件设计中一项基本技术，如上所述，在众多数据结构中，选取双向链表作为基本数据结构，这就是一种提取和抽象。<br style="box-sizing: border-box;"  />1. 简约而又不简单的链表定义</p><p style="box-sizing: border-box; margin-bottom: 10px;">于双向链表而言，内核中定义了如下简单结构：</p><p style="box-sizing: border-box; margin-bottom: 10px;"><span style="box-sizing: border-box; background-color: rgb(243, 243, 243);"></span><span style="box-sizing: border-box; background-color: rgb(243, 243, 243);">struct list_head {&nbsp;</span><br style="box-sizing: border-box; background-color: rgb(243, 243, 243);"  /><span style="box-sizing: border-box; background-color: rgb(243, 243, 243);">struct list_head *next, *prev;&nbsp;</span><br style="box-sizing: border-box; background-color: rgb(243, 243, 243);"  /><span style="box-sizing: border-box; background-color: rgb(243, 243, 243);">};</span><span style="box-sizing: border-box; background-color: rgb(243, 243, 243);"></span></p><p style="box-sizing: border-box; margin-bottom: 10px;">这个不含任何数据项的结构，注定了它的通用性和未来使用的灵活性，例如前面的例子就可以按如下方式定义：</p><pre style=""><span style="box-sizing: border-box; background-color: rgb(255, 255, 255);">struct my_list{ </span><br style="box-sizing: border-box; background-color: rgb(255, 255, 255);"  /><span style="box-sizing: border-box; background-color: rgb(255, 255, 255);">	void *mydata; </span><br style="box-sizing: border-box; background-color: rgb(255, 255, 255);"  /><span style="box-sizing: border-box; background-color: rgb(255, 255, 255);">	struct list_head list;</span><br style="box-sizing: border-box; background-color: rgb(255, 255, 255);"  /><span style="box-sizing: border-box; background-color: rgb(243, 243, 243);"><span style="box-sizing: border-box; background-color: rgb(255, 255, 255);">	}; &nbsp; </span></span></pre><p style="box-sizing: border-box; margin-bottom: 10px;">在此，进一步说明几点：<br style="box-sizing: border-box;"  />1）list字段，隐藏了链表的指针特性，但正是它，把我们要链接的数据组织成了链表。<br style="box-sizing: border-box;"  />2）struct list_head可以位于结构的任何位置<br style="box-sizing: border-box;"  />3）可以给struct list_head起任何名字。<br style="box-sizing: border-box;"  />4）在一个结构中可以有多个list</p><p style="box-sizing: border-box; margin-bottom: 10px;">例如，我们对要完成的任务进行描述，而任务中又包含子任务，于是有如下结构：</p><p style="box-sizing: border-box; margin-bottom: 10px;">————————————————————————————————–<span style="box-sizing: border-box;">———————–</span></p><pre style="">struct todo_tasks{
+	char *task_name;
+	unsigned int name_len;
+	short int status;
+
+	int sub_tasks;
+
+	int subtasks_completed;
+	struct list_head completed_subtasks;/* 已完成的子任务形成链表 */
+
+	int subtasks_waiting;
+	struct list_head waiting_subtasks; /* 待完成的子任务形成链表 */
+
+	struct list_head todo_list;	/* 要完成的任务形成链表 */
+	};
+-----------------------------------------------------------------------</pre><p style="box-sizing: border-box; margin-bottom: 10px;">简约而又不简单struct list_head，以此为基本对象，就衍生了对链表的插入、删除、合并以及遍历等各种操作：<br style="box-sizing: border-box;"  />2. 链表的声明和初始化宏<br style="box-sizing: border-box;"  />实际上， struct list_head只定义了链表节点，并没有专门定义链表头，那么一个链表结构是如何建立起来的？让我们来看看下面两个宏：</p><pre class="displaycode" style="">#define LIST_HEAD_INIT(name) { &amp;(name), &amp;(name) }
+#define LIST_HEAD(name) struct list_head name = LIST_HEAD_INIT(name)</pre><p style="box-sizing: border-box; margin-bottom: 10px;">如果我们要申明并定义自己的链表头mylist，直接调用LIST_HEAD：</p><p style="box-sizing: border-box; margin-bottom: 10px;">LIST_HEAD(mylist)</p><p style="box-sizing: border-box; margin-bottom: 10px;">则mylist的next、prev指针都初始化为指向自己，这样，我们就有了一个空链表，如何判断链表是否为空，自己写一下这个简单的函数<a title="list_empty" style="box-sizing: border-box; color: rgb(33, 150, 243); transition: all 0.3s;">list_empty</a>&nbsp;，也就是让头指针的next指向自己而已。</p><p style="box-sizing: border-box; margin-bottom: 10px;">3. staitic inline函数－隐藏并展开<br style="box-sizing: border-box;"  />在list.h中定义的函数大都是 staitic inline f()形式？为什么这样定义？<br style="box-sizing: border-box;"  />关键字“static”加在函数前，表示这个函数是静态函数，所谓静态函数，实际上是对函数作用域的限制，指该函数的作用域仅<br style="box-sizing: border-box;"  />局限于本文件。所以说，static具有信息隐藏作用。<br style="box-sizing: border-box;"  />而关键字”inline“加在函数前，说明这个函数对编译程序是可见的，也就是说，编译程序在调用这个函数时就立即展开该函数。所以，关键字inline 必须与函数定义体放在一起才能使函数成为内联。inline函数一般放在头文件中。</p><p style="box-sizing: border-box; margin-bottom: 10px;">4.&nbsp; 无处不在的隐藏特性<br style="box-sizing: border-box;"  />我们分析一下在链表中增加一个节点的函数实现：<br style="box-sizing: border-box;"  />有三个函数：<br style="box-sizing: border-box;"  />static inline void __list_add();<br style="box-sizing: border-box;"  />static inline void list_add();<br style="box-sizing: border-box;"  />static inline void list_add_tail();</p><p style="box-sizing: border-box; margin-bottom: 10px;">————————————————————————————————-<br style="box-sizing: border-box;"  />/*<br style="box-sizing: border-box;"  />* Insert a new entry between two known consecutive entries.<br style="box-sizing: border-box;"  />*<br style="box-sizing: border-box;"  />* This is only for internal list manipulation where we know<br style="box-sizing: border-box;"  />* the prev/next entries already!<br style="box-sizing: border-box;"  />*/<br style="box-sizing: border-box;"  />static inline void __list_add(struct list_head *new,<br style="box-sizing: border-box;"  />struct list_head *prev,<br style="box-sizing: border-box;"  />struct list_head *next)<br style="box-sizing: border-box;"  />{<br style="box-sizing: border-box;"  />next-&gt;prev = new;<br style="box-sizing: border-box;"  />new-&gt;next = next;<br style="box-sizing: border-box;"  />new-&gt;prev = prev;<br style="box-sizing: border-box;"  />prev-&gt;next = new;<br style="box-sizing: border-box;"  />}<br style="box-sizing: border-box;"  />————————————————————————————————–<br style="box-sizing: border-box;"  />/**<br style="box-sizing: border-box;"  />* list_add – add a new entry<br style="box-sizing: border-box;"  />* @new: new entry to be added<br style="box-sizing: border-box;"  />* @head: list head to add it after<br style="box-sizing: border-box;"  />*<br style="box-sizing: border-box;"  />* Insert a new entry after the specified head.<br style="box-sizing: border-box;"  />* This is good for implementing stacks.<br style="box-sizing: border-box;"  />*/<br style="box-sizing: border-box;"  />static inline void list_add(struct list_head *new, struct list_head *head)<br style="box-sizing: border-box;"  />{<br style="box-sizing: border-box;"  />__list_add(new, head, head-&gt;next);<br style="box-sizing: border-box;"  />}<br style="box-sizing: border-box;"  />————————————————————————————————–<br style="box-sizing: border-box;"  />/**<br style="box-sizing: border-box;"  />* list_add_tail – add a new entry<br style="box-sizing: border-box;"  />* @new: new entry to be added<br style="box-sizing: border-box;"  />* @head: list head to add it before<br style="box-sizing: border-box;"  />*<br style="box-sizing: border-box;"  />* Insert a new entry before the specified head.&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;<img style="box-sizing: border-box; border: 0px; vertical-align: middle;" data-ratio="NaN" data-w="0"  /><img style="box-sizing: border-box; border: 0px; vertical-align: middle;" data-ratio="NaN" data-w="0"  /><img style="box-sizing: border-box; border: 0px; vertical-align: middle;" data-ratio="NaN" data-w="0"  /><br style="box-sizing: border-box;"  /><img style="box-sizing: border-box; border: 0px; vertical-align: middle;" data-ratio="NaN" data-w="0"  /><br style="box-sizing: border-box;"  />* This is useful for implementing queues.<br style="box-sizing: border-box;"  />*/<br style="box-sizing: border-box;"  />static inline void list_add_tail(struct list_head *new, struct list_head *head)<br style="box-sizing: border-box;"  />{<br style="box-sizing: border-box;"  />__list_add(new, head-&gt;prev, head);<br style="box-sizing: border-box;"  />}</p><p style="box-sizing: border-box; margin-bottom: 10px;">————————————————————————————————–</p><p style="box-sizing: border-box; margin-bottom: 10px;">仔细体会其实现代码，看起来简单有效，但实际上也是一种抽象和封装的体现。首先__list_add()函数做基本的操作，该函数仅仅是增加一个节点，至 于这个节点加到何处，暂不考虑。list_add（）调用__list_add()这个内部函数，在链表头增加一个节点，实际上实现了栈在头部增加节点的 操作，而list_add_tail()在尾部增加一个节点，实际上实现了队的操作。</p><p style="box-sizing: border-box; margin-bottom: 10px;">至于链表的删除、搬移和合并，比较简单，不再此一一讨论</p><p style="box-sizing: border-box; margin-bottom: 10px;">5. 链表遍历－似走过千山万水<br style="box-sizing: border-box;"  />遍历链表本是简单的，list.h中就定义了如下的宏：<br style="box-sizing: border-box;"  />————————————————————————————————–<br style="box-sizing: border-box;"  /><span style="box-sizing: border-box;">**<br style="box-sizing: border-box;"  />* list_for_each&nbsp;&nbsp; &nbsp;–&nbsp;&nbsp; &nbsp;iterate over a list<br style="box-sizing: border-box;"  />* @pos:&nbsp;&nbsp; &nbsp;the &amp;struct list_head to use as a loop counter.<br style="box-sizing: border-box;"  />* @head:&nbsp;&nbsp; &nbsp;the head for your list.<br style="box-sizing: border-box;"  />*/<br style="box-sizing: border-box;"  />#define list_for_each(pos, head) \<br style="box-sizing: border-box;"  />for (pos = (head)-&gt;next; pos != (head); \<br style="box-sizing: border-box;"  />pos = pos-&gt;next)</span></p><p style="box-sizing: border-box; margin-bottom: 10px;">————————————————————————————————–<br style="box-sizing: border-box;"  />这种遍历仅仅是找到一个个节点在链表中的位置pos，难点在于，如何通过pos获得节点的地址，从而可以使用节点中的数据？ 于是 list.h中定义了晦涩难懂的list_entry（）宏：</p><p style="box-sizing: border-box; margin-bottom: 10px;">————————————————————————————————–<br style="box-sizing: border-box;"  /><span style="box-sizing: border-box;">/**<br style="box-sizing: border-box;"  />* list_entry – get the struct for this entry<br style="box-sizing: border-box;"  />* @ptr:&nbsp;&nbsp; &nbsp;the &amp;struct list_head pointer.<br style="box-sizing: border-box;"  />* @type:&nbsp;&nbsp; &nbsp;the type of the struct this is embedded in.<br style="box-sizing: border-box;"  />* @member:&nbsp;&nbsp; &nbsp;the name of the list_struct within the struct.<br style="box-sizing: border-box;"  />*/<br style="box-sizing: border-box;"  />#define list_entry(ptr, type, member) \<br style="box-sizing: border-box;"  />((type *)((char *)(ptr)-(unsigned long)(&amp;((type *)0)-&gt;member)))<br style="box-sizing: border-box;"  /></span><br style="box-sizing: border-box;"  />————————————————————————————————–<span style="box-sizing: border-box;"><br style="box-sizing: border-box;"  /></span><span style="box-sizing: border-box;">指针ptr指向结构体type中的成员member；通过指针ptr，返回结构体type的起始地址，如图2。</span><br style="box-sizing: border-box;"  /><span style="box-sizing: border-box;"><br style="box-sizing: border-box;"  />type</span></p><p style="box-sizing: border-box; margin-bottom: 10px;"><span style="box-sizing: border-box;"></span>|———-|<br style="box-sizing: border-box;"  /><span style="box-sizing: border-box;"></span>|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; |<br style="box-sizing: border-box;"  /><span style="box-sizing: border-box;"></span>|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; |<br style="box-sizing: border-box;"  /><span style="box-sizing: border-box;"></span>|———-|<br style="box-sizing: border-box;"  />ptr–&gt; | member –|<br style="box-sizing: border-box;"  /><span style="box-sizing: border-box;"></span>|———-|<br style="box-sizing: border-box;"  /><span style="box-sizing: border-box;"></span>|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; |<br style="box-sizing: border-box;"  /><span style="box-sizing: border-box;"></span>|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; |<br style="box-sizing: border-box;"  /><span style="box-sizing: border-box;"></span>|———-|</p><p style="box-sizing: border-box; margin-bottom: 10px;">图2&nbsp;<span style="box-sizing: border-box;">list_entry（）宏的示意图</span><br style="box-sizing: border-box;"  /><span style="box-sizing: border-box;"><br style="box-sizing: border-box;"  />为了便于理解，在此给予进一步说明。<br style="box-sizing: border-box;"  />例如</span><span style="box-sizing: border-box; background-color: rgb(255, 255, 255);">my_list结构：</span></p><pre style=""><span style="box-sizing: border-box; background-color: rgb(255, 255, 255);">struct my_list{ </span><br style="box-sizing: border-box; background-color: rgb(255, 255, 255);"  /><span style="box-sizing: border-box; background-color: rgb(255, 255, 255);">	void *mydata; </span><br style="box-sizing: border-box; background-color: rgb(255, 255, 255);"  /><span style="box-sizing: border-box; background-color: rgb(255, 255, 255);">	struct list_head list;</span><br style="box-sizing: border-box; background-color: rgb(255, 255, 255);"  /><span style="box-sizing: border-box; background-color: rgb(243, 243, 243);"><span style="box-sizing: border-box; background-color: rgb(255, 255, 255);">	}; </span></span></pre><p style="box-sizing: border-box; margin-bottom: 10px;"><span style="box-sizing: border-box; background-color: rgb(255, 255, 255);">struct list_head *pos;</span></p><p style="box-sizing: border-box; margin-bottom: 10px;">则<span style="box-sizing: border-box;">list_entry(pos, mylist, list)宏，就可以根据pos的值，获取</span><span style="box-sizing: border-box;">mylist的地址，也就是指向</span><span style="box-sizing: border-box;">mylist的指针，这样，我们就可以存取</span><span style="box-sizing: border-box;">mylist-&gt;mydata字段了。</span></p><p style="box-sizing: border-box; margin-bottom: 10px;">可为什么能够达到这样的效果？<br style="box-sizing: border-box;"  /><span style="box-sizing: border-box;">list_entry(pos, mylist, list) 展开以后为：</span></p><p style="box-sizing: border-box; margin-bottom: 10px;">(<span style="box-sizing: border-box; color: rgb(255, 0, 0);">(</span>struct my_list *<span style="box-sizing: border-box; color: rgb(255, 0, 0);">)</span><span style="box-sizing: border-box; color: rgb(0, 255, 0);">(</span>(char *)(pos) – (unsigned long)<span style="box-sizing: border-box; color: rgb(0, 0, 255);">(</span>&amp;<span style="box-sizing: border-box; color: rgb(202, 68, 0);">(</span>(struct my_list *)0<span style="box-sizing: border-box; color: rgb(202, 68, 0);">)</span>-&gt;list<span style="box-sizing: border-box; color: rgb(0, 0, 255);">)</span><span style="box-sizing: border-box; color: rgb(0, 255, 0);">)</span>)</p><p style="box-sizing: border-box; margin-bottom: 10px;">这看起来会使大多数人眩晕，但仔细分析一下，实际很简单。<br style="box-sizing: border-box;"  /><span style="box-sizing: border-box;">((size_t) &amp;(type *)0)-&gt;member)把0地址转化为type结构的指针，然后获取该结构中member成员的指针，并将其强制转换为size_t类型。于是，由于结构从0地址开始定义，因此，这样求出</span><span style="box-sizing: border-box;">member</span><span style="box-sizing: border-box;">的成员地址，实际上就是它在结构中的偏移量。为了更好的理解这些，我们可以写一段程序来验证:<br style="box-sizing: border-box;"  />—————————————————————————————</span></p><p style="box-sizing: border-box; margin-bottom: 10px;">#include &lt;stdio.h&gt;</p><pre style="">#include &lt;stdlib.h&gt;
+
+struct foobar{
+	unsigned int foo;
+	char bar;
+	char boo;
+};
+
+int main(int argc, char** argv){
+
+	struct foobar tmp;
+
+	printf(&quot;address of &amp;tmp is= %p\n\n&quot;, &amp;tmp);
+	printf(&quot;address of tmp-&gt;foo= %p \t offset of tmp-&gt;foo= %lu\n&quot;, &amp;tmp.foo, (unsigned long) &amp;((struct foobar *)0)-&gt;foo);
+	printf(&quot;address of tmp-&gt;bar= %p \t offset of tmp-&gt;bar= %lu\n&quot;, &amp;tmp.bar, (unsigned long) &amp;((struct foobar *)0)-&gt;bar);
+	printf(&quot;address of tmp-&gt;boo= %p \t offset of tmp-&gt;boo= %lu\n\n&quot;, &amp;tmp.boo, (unsigned long) &amp;((struct foobar *)0)-&gt;boo);
+
+	printf(&quot;computed address of &amp;tmp using:\n&quot;);
+	printf(&quot;\taddress and offset of tmp-&gt;foo= %p\n&quot;,
+	(struct foobar *) (((char *) &amp;tmp.foo) - ((unsigned long) &amp;((struct foobar *)0)-&gt;foo)));
+	printf(&quot;\taddress and offset of tmp-&gt;bar= %p\n&quot;,
+	(struct foobar *) (((char *) &amp;tmp.bar) - ((unsigned long) &amp;((struct foobar *)0)-&gt;bar)));
+	printf(&quot;\taddress and offset of tmp-&gt;boo= %p\n&quot;,
+	(struct foobar *) (((char *) &amp;tmp.boo) - ((unsigned long) &amp;((struct foobar *)0)-&gt;boo)));
+
+	return 0;
+}</pre><p style="box-sizing: border-box; margin-bottom: 10px;">Output from this code is:</p><pre style="">address of &amp;tmp is= 0xbfffed00
+
+address of tmp-&gt;foo= 0xbfffed00 offset of tmp-&gt;foo= 0
+address of tmp-&gt;bar= 0xbfffed04 offset of tmp-&gt;bar= 4
+address of tmp-&gt;boo= 0xbfffed05 offset of tmp-&gt;boo= 5
+
+computed address of &amp;tmp using:
+address and offset of tmp-&gt;foo= 0xbfffed00
+address and offset of tmp-&gt;bar= 0xbfffed00
+address and offset of tmp-&gt;boo= 0xbfffed00</pre><p style="box-sizing: border-box; margin-bottom: 10px;">—————————————————————————————-</p><p style="box-sizing: border-box; margin-bottom: 10px;">到此，我们对链表的实现机制有所了解，但在此止步的话，我们依然无法领略这风景背后的韵味。<br style="box-sizing: border-box;"  />尽管list.h是内核代码中的头文件，但我们可以把它移植到用户空间使用。且看下一讲，链表API之应用<a style="box-sizing: border-box; color: rgb(33, 150, 243); transition: all 0.3s;">.</a></p><p><footer class="entry-meta" style=""></footer></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">陈莉君</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

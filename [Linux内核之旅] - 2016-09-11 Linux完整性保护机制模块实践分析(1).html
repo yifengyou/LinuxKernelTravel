@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Linux完整性保护机制模块实践分析(1)
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664603093&amp;idx=1&amp;sn=7c12677c39e0dae0bdfc5f26df486eae&amp;chksm=f04db030c73a39266d39162eb840519846dc8d7bcbfb9724cf4b90acf56cad4a0a5854ecca42&amp;scene=27#wechat_redirect&cpage=61' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Linux完整性保护机制模块实践分析(1)</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        任燕博
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-09-11</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                <div class="rich_media_thumb_wrp" id="media">
+                    
+                                        
+                                    </div>
+                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <h1><span style="font-size: 16px;"><strong><span style="font-family: 黑体;"><a name="_Toc344745141"></a><a name="_Toc344745321"></a><a name="_Toc344981456"></a><a name="_Toc344981618"></a><a name="_Toc344982103" style="color: rgb(2, 30, 170); text-decoration: underline;"><span style="font-size: 16px; font-family: 黑体; color: rgb(2, 30, 170);">3 <span style="color: rgb(2, 30, 170); font-family: 黑体;">验证方案及结果</span></span></a></span></strong></span></h1><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">在</span><span style="font-size: 14px;">Linux</span><span style="font-family: 宋体; font-size: 14px;"><span style="font-size: 16px; font-family: 宋体;">操作系统中</span>,<span style="font-size: 16px; font-family: 宋体;">审计系统使用</span><span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">inotify</span><span style="font-size: 16px; font-family: 宋体;">机制监视文件系统的变化，并将监视的结果通过审计系统记录到</span><span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">log</span><span style="font-size: 16px; font-family: 宋体;">文件中。</span></span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">该实验通过用户态程序调用文件系统的</span><span style="font-size: 14px;">inotify</span><span style="font-family: 宋体; font-size: 14px;"><span style="font-size: 16px; font-family: 宋体;">监视机制</span>,<span style="font-size: 16px; font-family: 宋体;">监视指定路径的目录或文件</span><span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">,</span><span style="font-size: 16px; font-family: 宋体;">用户对目录或文件的操作如打开</span><span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">,</span><span style="font-size: 16px; font-family: 宋体;">删除</span><span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">,</span><span style="font-size: 16px; font-family: 宋体;">读</span><span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">,</span><span style="font-size: 16px; font-family: 宋体;">写</span><span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">,</span><span style="font-size: 16px; font-family: 宋体;">等都会在终端输出</span><span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">,</span><span style="font-size: 16px; font-family: 宋体;">这样保证了文件的安全操作</span><span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">,</span><span style="font-size: 16px; font-family: 宋体;">更重要的是</span><span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">,</span><span style="font-size: 16px; font-family: 宋体;">当有非法入侵操作时</span><span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">,</span><span style="font-size: 16px; font-family: 宋体;">用户需要知道非法入侵都对文件做了哪些操作</span><span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">,</span><span style="font-size: 16px; font-family: 宋体;">这是可以通过调用</span></span><span style="font-size: 14px;">log</span><span style="font-family: 宋体; font-size: 14px;"><span style="font-size: 16px; font-family: 宋体;">文件来查看</span>,<span style="font-size: 16px; font-family: 宋体;">因为</span></span><span style="font-size: 14px;">inotify</span><span style="font-family: 宋体; font-size: 14px;"><span style="font-size: 16px; font-family: 宋体;">机制在监视文件的同时会将用户对文件的操作写入审计</span>,<span style="font-size: 16px; font-family: 宋体;">保证了文件系统的完整性</span></span></span></p><h2><span style="font-size: 16px;"><strong><span style="font-family: 宋体; font-size: 20px;"><a name="_Toc344745142"></a><a name="_Toc344745322"></a><a name="_Toc344981457"></a><a name="_Toc344981619"></a><a name="_Toc344982104" style="text-decoration: underline; font-family: 宋体; font-size: 16px; color: rgb(2, 30, 170);"><span style="font-family: 宋体; font-size: 16px; color: rgb(2, 30, 170);">3.1 演示验证方案</span></a></span></strong></span></h2><p style="margin-left:24px;line-height:24px"><span style="font-size: 16px;"><span style="font-size: 14px;">1.&nbsp;</span><span style="font-size: 16px; font-family: 宋体;">演示目标</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">通过用户态调用inotify监视机制的接口<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">,</span>对指定的文件或目录添加监视<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">group</span>以及具体监视事件达到为指定目标监视的作用。</span></p><p style="margin-left:24px;line-height:24px"><span style="font-size: 16px;"><span style="font-size: 14px;">2.&nbsp;</span><span style="font-size: 16px; font-family: 宋体;">技术原理</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;"><span style="font-family: 宋体; font-size: 14px; background: rgb(255, 255, 255);">i</span><span style="font-size: 14px; background: rgb(255, 255, 255);">notify </span><span style="font-size: 16px; font-family: 宋体; background: rgb(255, 255, 255);">机制</span><span style="font-size: 14px; background: rgb(255, 255, 255);"><span style="font-size: 16px; font-family: 宋体;">是一个</span> Linux</span><span style="font-size: 16px; font-family: 宋体; background: rgb(255, 255, 255);">操作系统中用来</span><span style="font-size: 16px; font-family: 宋体; background: rgb(255, 255, 255);">监控文件系统操作</span><span style="font-size: 16px; font-family: 宋体; background: rgb(255, 255, 255);">的</span><span style="font-size: 16px; font-family: 宋体; background: rgb(255, 255, 255);">，如读取、写入和创建</span><span style="font-family: 宋体; font-size: 14px; background: rgb(255, 255, 255);"><span style="font-size: 16px; font-family: 宋体;">，并将操作内容写入审计系统的</span>log<span style="font-size: 16px; font-family: 宋体;">文件进行记录。 </span></span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">inotify是基于<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">inode</span>节点的，它可以监视文件和目录的变化，为了截获文件系统的变化，<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">inotify</span>机制在文件系统的各个操作函数中加入了<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">hook</span>函数，当文件系统调用了这些操作函数并改变了文件系统中的文件或目录时，就调用<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">hook</span>函数发出相应的事件。文件系统的每个节点都有一个指针<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">inotify_watches</span>，这个指针指向<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">watch(</span>监视<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">)</span>链表。<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">inotify</span>机制的监视就是通过<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">watch</span>实现的。一个<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">watch</span>是一个结构<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">inotify_watch</span>实例，结构<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">inotify_watch</span>含有事件掩码，<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">watch</span>处理器实例等。监视（<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">watch</span>）处理实例是结构<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">inotify_handle</span>实例，这个实例包括事件的处理函数集。当文件系统执行文件的访问操作时，<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">inotify</span>机制<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">hook</span>函数通过文件系统的节点的成员<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">inotify_watches</span>找到<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">watch</span>链表，然后，通过<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">watch</span>找到<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">watch</span>处理实例，再找到事件的处理函数集，调用相应的事件处理函数。</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">该实验是基于文件系统的</span><span style="font-size: 14px;">inotify</span><span style="font-family: 宋体; font-size: 14px;"><span style="font-size: 16px; font-family: 宋体;">监视机制进行监视的</span>,inotify<span style="font-size: 16px; font-family: 宋体;">机制</span></span><span style="font-family: 宋体; font-size: 14px; background: rgb(255, 255, 255);"><span style="font-size: 16px; font-family: 宋体;">可以同时监视一些文件和一些目录下文件状态的变化，如被访问，被修改，在目录上创建文件等</span>.程序通过调用</span><span style="font-size: 14px; background: rgb(255, 255, 255);">inotify</span><span style="font-family: 宋体; font-size: 14px; background: rgb(255, 255, 255);"><span style="font-size: 16px; font-family: 宋体;">机制的用户态接口</span>:</span><span style="color: rgb(102, 102, 102); font-size: 14px;">&nbsp;</span><span style="font-size: 14px;">sys_inotify_init</span><span style="font-family: 宋体; font-size: 14px;">&nbsp;,</span><span style="font-size: 14px;">sys_inotify_add_watch</span><span style="font-family: 宋体; font-size: 14px;">&nbsp;, </span><span style="font-size: 14px;">sys_inotify_rm_watch</span><span style="font-family: 宋体; font-size: 14px;">&nbsp;,<span style="font-size: 16px; font-family: 宋体;">来实现</span></span><span style="font-size: 16px; font-family: 宋体; background: rgb(255, 255, 255);">。</span></span></p><p style="margin-left:24px;line-height:24px"><span style="font-size: 16px;"><span style="font-size: 14px;">3.&nbsp;</span><span style="font-size: 16px; font-family: 宋体;">环境部署</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">操作系统：3.5.4</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">发行版本信息：Ubuntu12.10</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">编译器：gcc 版本 <span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">4.7.2 (Ubuntu/Linaro 4.7.2-2ubuntu1)</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;"><span style="font-family: 宋体; font-size: 14px;"><span style="font-size: 16px; font-family: 宋体;">编译器：</span>VIM </span><span style="font-size: 14px;">–</span><span style="font-family: 宋体; font-size: 14px;">&nbsp;Vi I</span><span style="font-size: 14px;">m</span><span style="font-family: 宋体; font-size: 14px;">proved 7.3</span></span></p><h2><span style="font-size: 16px;"><strong><span style="font-family: 宋体; font-size: 20px;"><a name="_Toc344745143"></a><a name="_Toc344745323"></a><a name="_Toc344981458"></a><a name="_Toc344981620"></a><a name="_Toc344982105" style="text-decoration: underline; font-family: 宋体; font-size: 16px; color: rgb(2, 30, 170);"><span style="font-family: 宋体; font-size: 16px; color: rgb(2, 30, 170);">3.2 演示验证结果</span></a></span></strong></span></h2><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">在终端1下运行该程序<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">,</span>然后再打开一个终端<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">2</span>在当前目录下进行操作<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">,</span>创建一个目录<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">test1,</span>此时发现在程序运行的终端下会打印出如图所示：</span></p><p style="text-indent: 28px; line-height: 24px; text-align: center;"><span style="font-family: 宋体; font-size: 16px;"><img data-s="300,640" data-type="png" src="http://mmbiz.qpic.cn/mmbiz_png/SeWfibBcBT0HYJnnfbhexicKJ3rI7nMSUwrm4IkrEZGH3YggicX0VFNNsWfgDWRYKhQfvba3HVvb72gwLAkJ7va1A/0?wx_fmt=png" data-ratio="0.16548042704626334" data-w="562"  /><br  /></span><span style="font-family: 宋体; text-align: center;">图3-1:创建目录输出</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">如图3-1所示<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">,</span>首先打印出有事件发生，然后说明事件是发生在目录下还是文件下，以及发生事件的路径，事件掩码，且该事件在程序中有定义即<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">subfile was created,</span>然后程序继续进行下一轮事件的监视。现在在终端<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">2</span>下打开一个文件，观察终端<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">1</span>发现打印出如图所示：</span></p><p style="text-indent: 28px; line-height: 24px; text-align: center;"><span style="font-family: 宋体; font-size: 16px;"><img data-s="300,640" data-type="png" src="http://mmbiz.qpic.cn/mmbiz_png/SeWfibBcBT0HYJnnfbhexicKJ3rI7nMSUwmHX6f5VFXOehM0CS9qDyM9QfaUg6BUuTqricMbCJBZbrR9JciaDnSZ0g/0?wx_fmt=png" data-ratio="0.16134751773049646" data-w="564"  /><br  /></span><span style="font-family: 宋体; text-align: center; text-indent: 32px;">图3-2：打开文件输出</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">图3-2中可以看出首先打印有事件发生，然后说明事件是发生在当前目录下的，事件掩码，该事件为文件被打开，正是用户在终端<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">1</span>中的操作。当用户对文件进行修改后终端<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">1</span>会打印出，如图<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">3-3</span>所示：</span></p><p style="text-indent: 28px; line-height: 24px; text-align: center;"><span style="font-family: 宋体; font-size: 16px;"><img data-s="300,640" data-type="png" src="http://mmbiz.qpic.cn/mmbiz_png/SeWfibBcBT0HYJnnfbhexicKJ3rI7nMSUwoqNtO6GNTccy6AC5DXUVQURic3hfLkLTKjw4gtojgiaoibn0tft8OxDqQ/0?wx_fmt=png" data-ratio="0.18021201413427562" data-w="566"  /><br  /></span><span style="font-family: 宋体; text-align: center; text-indent: 32px;">图3-3：对打开文件进行修改输出</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">正如图3-3中所示该事件是发生在当前目录下的文件中，操作的对象是文件，操作的事件是<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">File was modified,</span>即文件被写入修改。再来当前目录下的一个文件移动到主目录下，终端<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">1</span>输出如图<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">3-4</span>所示：</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;"><img data-s="300,640" data-type="png" src="http://mmbiz.qpic.cn/mmbiz_png/SeWfibBcBT0HYJnnfbhexicKJ3rI7nMSUwTKic06sZwNM0onTo6AfgY3bxI3BabhfczP1EmxicEkC85yu575wOLfiaw/0?wx_fmt=png" data-ratio="0.17482517482517482" data-w="572"  /></span></p><p style="text-indent: 28px; line-height: 24px; text-align: center;"><span style="font-family: 宋体; text-align: center; text-indent: 32px;">图3-4：移动文件输出</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">从图3-4中可以看出事件发生在当前路径下的文件中，发生的时间为文件被移动，下面再来执行文件系统中常用的操作，删除操作，这里删除一个目录就是在删除图<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">3-1</span>中创建的目录，再来看终端<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">1</span>会有什么输出：</span></p><p style="text-indent: 28px; line-height: 24px; text-align: center;"><span style="font-family: 宋体; font-size: 16px;"><img data-s="300,640" data-type="png" src="http://mmbiz.qpic.cn/mmbiz_png/SeWfibBcBT0HYJnnfbhexicKJ3rI7nMSUwphm8DZRosI0bHZjIJibRWa61X1t12lHdicqemSPaoyibCoHkO8fV5dDOA/0?wx_fmt=png" data-ratio="0.16123499142367068" data-w="583"  /><br  /></span><span style="font-family: 宋体; text-align: center; text-indent: 32px;">图3-5：删除目录输出</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">从图3-5中可以明显的看出事件发生在当前目录下，发生的事件为目录被删除。</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">由此可以看出，该程序实现了应用内核中inotify机制监视文件系统，并将对文件系统的操作信息打印到终端帮助实现文件系统的完整性。</span></p><h1><span style="font-size: 16px;"><strong><span style="font-family: 黑体; font-size: 35px;"><a name="_Toc344745144"></a><a name="_Toc344745324"></a><a name="_Toc344981459"></a><a name="_Toc344981621"></a><a name="_Toc344982106" style="text-decoration: underline; font-family: 黑体; font-size: 16px; color: rgb(2, 30, 170);"><span style="font-family: 黑体; font-size: 16px; color: rgb(2, 30, 170);">4 待解决问题</span></a></span></strong></span></h1><p style="margin-left:0;text-indent:0;line-height:24px"><span style="font-size: 16px;"><span style="font-size: 14px;">1.&nbsp;</span><span style="font-size: 16px; font-family: 宋体;">对于文件系统调用同步机制后的具体回写机制未作详细分析，回写机制是具体实现将内存中写入磁盘的机制。</span></span></p><p style="margin-left:0;text-indent:0;line-height:24px"><span style="font-size: 16px;"><span style="font-size: 14px;">2.&nbsp;</span><span style="font-size: 16px; font-family: 宋体;">对于文件系统监视机制中所涉及的审计系统未作详细分析，文件系统监视机制是属于审计系统的一部分。审计是事后认定违反安全规则行为的分析技术，安全审计为管理员在用户违反安全法则时提供及时的警告信息，实现对系统信息的追踪、审查、统计和报告等功能。</span></span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">任燕博</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

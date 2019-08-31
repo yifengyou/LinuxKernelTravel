@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Linux下守护进程认识
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664602553&amp;idx=1&amp;sn=33f66ca61fc663547b4d55468fd0a1a5&amp;chksm=f04db65cc73a3f4a254d48d80cd0ba43d373c7575c85b5658564659832fd44bfdd987179e0a1&amp;scene=27#wechat_redirect&cpage=67' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Linux下守护进程认识</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        许振文
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-07-14</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                <div class="rich_media_thumb_wrp" id="media">
+                    
+                                        
+                                    </div>
+                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style=""><span style="font-size: 16px;">守护进程（Daemon）是运行在后台的一种特殊进程。它独立于控制终端并且周期性地执行某种任务或等待处理某些发生的事件。守护进程是一种很有用的进 程。Linux的大多数服务器就是用守护进程实现的。比如，Web服务器httpd等。同时，守护进程完成许多系统任务。比如，作业规划进程crond， 打印进程lpd等。下面将我理解的Linux下守护进程做一些解释和说明。同时将网上一个常用的解说Linux下守护进程的程序作为实例介绍一下。<br style="box-sizing: border-box;"  /><span style="box-sizing: border-box;"></span><br style="box-sizing: border-box;"  /><span style="font-size: 16px; color: rgb(2, 30, 170);"><strong>Linux下的守护进程</strong></span><br style="box-sizing: border-box;"  />守护进程有三个最基本的特点：后台运行，独立于终端，完成一定的任务。<br style="box-sizing: border-box;"  />首先所谓的后台运行过程是一般是在图形界面或是终端不可见的；而独立于终端是说它不和终端联系，运行之后一般不接受终端的输入也不向终端输出；而完成一点的任务是每一个守护进程的运行都是为了完成一定的任务而运行的，这些任务一般都是系统相关的任务。<br style="box-sizing: border-box;"  />也就是控制台除开这些特殊性以外，守护进程与普通进程基本上没有什么区别。因此，守护进程可以由一个普通进程按照上述的守护进程的特性而改造成为守护进程。<br style="box-sizing: border-box;"  />这里首先要说几个概念，进程组，会话和控制终端<br style="box-sizing: border-box;"  /><span style="font-size: 16px; color: rgb(2, 30, 170);"><strong>进程组</strong></span>：每运行一个程序或是命令就会产生一个进程组，而每一个进程组有以个领头进程，一般进程组的第一个进程是领头进程，领头进程fork的进程也属于同一个进程组，但是子进程一旦执行exec等就会不属于该进程组。当然子进程也可以成为领头进程，下面的例子就是这样的。<br style="box-sizing: border-box;"  /><span style="font-size: 16px; color: rgb(2, 30, 170);"><strong>会话:</strong></span>一次登录形成一个会话 一个会话可包含多个进程组, 但只能有一个前台进程组. setsid 可建立一个新的会话<br style="box-sizing: border-box;"  /><span style="font-size: 16px; color: rgb(2, 30, 170);"><strong>控制终端:</strong></span>会话的领头进程打开一个终端之后, 该终端就成为该会话的控制终端 与控制终端建立连接的会话领头进程称为控制进程,一个会话只能有一个控制终端,产生在控制终端上的输入和信号将发送给会话的前台进程组中的所有进程 终端上的连接断开时 (比如网络断开或 Modem 断开), 挂起信号将发送到控制进程(session leader) 。<br style="box-sizing: border-box;"  /><span style="font-size: 16px; color: rgb(2, 30, 170);"><strong>编程守护进程：</strong></span><br style="box-sizing: border-box;"  />编程实现守护进程也就是要是想上面的三个特点：<br style="box-sizing: border-box;"  /><strong><span style="font-size: 16px; color: rgb(2, 30, 170);">1. 在后台运行</span></strong><br style="box-sizing: border-box;"  />为避免挂起控制终端将Daemon放入后台执行。方法是在进程中调用fork使父进程终止，让Daemon在子进程中后台执行。<br style="box-sizing: border-box;"  />if(pid=fork())<br style="box-sizing: border-box;"  />exit(0);//是父进程，结束父进程，子进程继续<br style="box-sizing: border-box;"  /><span style="font-size: 16px; color: rgb(2, 30, 170);"><strong>2. 脱离控制终端，登录会话和进程组</strong></span><br style="box-sizing: border-box;"  />先介绍一下Linux中的进程与控制终端，登录会话和进程组之间的关系：进程属于一个进程组，进程组号（GID）就是进程组长的进程号（PID）。登录会话可以包含多个进程组。这些进程组共享一个控制终端。这个控制终端通常是创建进程的登录终端。<br style="box-sizing: border-box;"  />控制终端，登录会话和进程组通常是从父进程继承下来的。我们的目的就是要摆脱它们，使之不受它们的影响。方法是在第1点的基础上，调用setsid()使进程成为会话组长：<br style="box-sizing: border-box;"  />setsid(); 以下是内核中的一段代码。<br style="box-sizing: border-box;"  />kernel/sys.c 中系统调用setsid所对应的函数。<br style="box-sizing: border-box;"  />asmlinkage long sys_setsid(void)<br style="box-sizing: border-box;"  />{<br style="box-sizing: border-box;"  />struct task_struct *group_leader = current-&gt;group_leader;<br style="box-sizing: border-box;"  />struct pid *sid = task_pid(group_leader);<br style="box-sizing: border-box;"  />pid_t session = pid_vnr(sid);<br style="box-sizing: border-box;"  />int err = -EPERM;</span></p><p style=""><span style="font-size: 16px;">write_lock_irq(&amp;tasklist_lock);<br style="box-sizing: border-box;"  />/* Fail if I am already a session leader */<br style="box-sizing: border-box;"  />if (group_leader-&gt;signal-&gt;leader)<br style="box-sizing: border-box;"  />goto out;<br style="box-sizing: border-box;"  />/* Fail if a process group id already exists that equals the<br style="box-sizing: border-box;"  />* proposed session id.<br style="box-sizing: border-box;"  />*/<br style="box-sizing: border-box;"  />if (pid_task(sid, PIDTYPE_PGID))<br style="box-sizing: border-box;"  />goto out;<br style="box-sizing: border-box;"  />group_leader-&gt;signal-&gt;leader = 1;<br style="box-sizing: border-box;"  />__set_special_pids(sid);<br style="box-sizing: border-box;"  />spin_lock(&amp;group_leader-&gt;sighand-&gt;siglock);<br style="box-sizing: border-box;"  />group_leader-&gt;signal-&gt;tty = NULL; //这里将是脱离终端<br style="box-sizing: border-box;"  />spin_unlock(&amp;group_leader-&gt;sighand-&gt;siglock);<br style="box-sizing: border-box;"  />err = session;<br style="box-sizing: border-box;"  />out:<br style="box-sizing: border-box;"  />write_unlock_irq(&amp;tasklist_lock);<br style="box-sizing: border-box;"  />return err;<br style="box-sizing: border-box;"  />}<br style="box-sizing: border-box;"  />setsid()调用成功后，进程成为新的会话组长和新的进程组长，并与原来的登录会话和进程组脱离。由于会话过程对控制终端的独占性，进程同时与控制终端脱离。<br style="box-sizing: border-box;"  /><span style="font-size: 16px; color: rgb(2, 30, 170);"><strong>3. 禁止进程重新打开控制终端</strong></span><br style="box-sizing: border-box;"  />现在，进程已经成为无终端的会话组长。但它可以重新申请打开一个控制终端。可以通过使进程不再成为会话组长来禁止进程重新打开控制终端：这里也就数只有会话组长才能打开控制主终端。<br style="box-sizing: border-box;"  />if(pid=fork())<br style="box-sizing: border-box;"  />exit(0);//结束第一子进程，第二子进程继续（第二子进程不再是会话组长）<br style="box-sizing: border-box;"  /><span style="font-size: 16px; color: rgb(2, 30, 170);"><strong>4. 关闭打开的文件描述符</strong></span><br style="box-sizing: border-box;"  />进程从创建它的父进程那里继承了打开的文件描述符。如不关闭，将会浪费系统资源，造成进程所在的文件系统无法卸下以及引起无法预料的错误。按如下方法关闭它们：</span></p><p style=""><span style="font-size: 16px;">for(i=0;i 关闭打开的文件描述符close(i);&gt;</span></p><p style=""><span style="color: rgb(2, 30, 170);"><strong><span style="font-size: 16px;">5. 改变当前工作目录</span></strong></span></p><p style=""><span style="font-size: 16px;">进程活动时，其工作目录所在的文件系统不能卸下。一般需要将工作目录改变到根目录。对于需要转储核心，写运行日志的进程将工作目录改变到特定目录如/tmpchdir(\”/\”)</span></p><p style=""><span style="color: rgb(2, 30, 170);"><strong><span style="font-size: 16px;">6. 重设文件创建掩模</span></strong></span></p><p style=""><span style="font-size: 16px;">进程从创建它的父进程那里继承了文件创建掩模。它可能修改守护进程所创建的文件的存取位。为防止这一点，将文件创建掩模清除：umask(0);<br style="box-sizing: border-box;"  />当 我们登录系统之后创建一个文件总是有一个默认权限的，那么这个权限是怎么来的呢？这就是umask干的事情。umask设置了用户创建文件的默认权限，它 与chmod的效果刚好相反，umask设置的是权限“补码”，而chmod设置的是文件权限码。也就是是说它可以决定当前进程打开或是创建文件的权限。 如：umask值为022，则默认目录权限为755.</span></p><p style=""><span style="color: rgb(2, 30, 170);"><strong><span style="font-size: 16px;">7. 处理SIGCHLD信号</span></strong></span></p><p style=""><span style="font-size: 16px;">处 理SIGCHLD信号并不是必须的。但对于某些进程，特别是服务器进程往往在请求到来时生成子进程处理请求。如果父进程不等待子进程结束，子进程将成为僵 尸进程（zombie）从而占用系统资源。如果父进程等待子进程结束，将增加父进程的负担，影响服务器进程的并发性能。在Linux下可以简单地将 SIGCHLD信号的操作设为SIG_IGN。</span></p><p style=""><span style="font-size: 16px;">signal(SIGCHLD,SIG_IGN);</span></p><p style=""><span style="font-size: 16px;">这样，内核在子进程结束时不会产生僵尸进程。这一点与BSD4不同，BSD4下必须显式等待子进程结束才能释放僵尸进程。</span></p><p style=""><span style="font-size: 16px;">这里我的理解是：主要应用在进程分离当中，最典型的当属ftp，http等网络服务程序的守护进程。这里使用 SIGCHLD信号后，子进程将会不属于父进程，而从属于init进程，父进程则不须等待子进程的结束或着负责子进程结束后的回收，子进程的回收完全有init进程来完成。</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">许振文</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

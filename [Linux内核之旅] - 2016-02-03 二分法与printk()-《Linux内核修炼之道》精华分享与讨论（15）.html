@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		二分法与printk()-《Linux内核修炼之道》精华分享与讨论（15）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=415946737&amp;idx=1&amp;sn=69c2df6653a10ffd90e8dac9b1a37d7b&amp;chksm=7655fa1441227302731c827bc4f8c499ff4f0f05f74a2e0f1ce038c83a653a59f0493d22434c&amp;scene=27#wechat_redirect&cpage=78' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">二分法与printk()-《Linux内核修炼之道》精华分享与讨论（15）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        fudan_abc
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-02-03</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="color: rgb(51, 51, 51);font-family: Arial;font-size: 14px;line-height: 26px;white-space: normal;background-color: rgb(255, 255, 255)"><span style="font-size: 18px;">人生就是一个茶几，上面摆满了杯具。内核也是一个大茶几，不过它上面的杯具是一个个的bug。确定bug什么时候被引入是一个很关键的步骤，在这个定位bug的过程中，不论有意或无意，都会很自然地用到二分查找的方法。</span></p><h3 style="color: rgb(51, 51, 51);font-family: Arial;line-height: 26px;white-space: normal;background-color: rgb(255, 255, 255)"><span style="font-size: 20px;"><strong>二分查找法的基本原理</strong></span></h3><p style="color: rgb(51, 51, 51);font-family: Arial;font-size: 14px;line-height: 26px;white-space: normal;background-color: rgb(255, 255, 255)"><span style="font-size: 18px;">对于二分查找法，我们不会也不应该会感到陌生。作为一种高效的查找算法，它曾出现在我们的数据结构课堂里，出现在一次又一次的面试里，更是会频繁地应用在我们的代码里。在我们所接触到的各种算法里，它可以说是最为大众化、最充满生活智慧的一个，很多人并不知道二分查找法的概念，却能够在生活中熟练的去应用。</span></p><p style="color: rgb(51, 51, 51);font-family: Arial;font-size: 14px;line-height: 26px;white-space: normal;background-color: rgb(255, 255, 255)"><span style="font-size: 18px;">比如，一个工人要维修一条10km长的电话线，首先他需要定位出故障所在，如果沿着线路一小段一小段地查找，显然非常得困难，每查一个点都要爬一次电线杆，10km长的距离会有大约200多根电线杆。假设电线两端分别为A、B，这时他会很自然地首先从中间的C开始查起，用话机向两端测试时，发现AC段正常，故而断定故障在BC段，再到BC段的中点D，如果发现BD段正常，则故障在CD段，然后再到CD的中间点E查找，这样每查一次，就可以把待查线路的长度缩减一半，因而经过7次查找，就可以将故障发生的范围缩小到50～100m左右，即在一两根电线杆附近。如此一来要节省很多的精力与时间。</span></p><p style="color: rgb(51, 51, 51);font-family: Arial;font-size: 14px;line-height: 26px;white-space: normal;background-color: rgb(255, 255, 255)"><span style="font-size: 18px;">这是二分查找法在生活中的一个典型应用，实际上，查找内核的bug与查找电话线的故障相比，本质上都是相同的，并没有高深到哪里去，都是首先要定位出故障的位置，然后去解决它。</span></p><p style="color: rgb(51, 51, 51);font-family: Arial;font-size: 14px;line-height: 26px;white-space: normal;background-color: rgb(255, 255, 255)"><span style="font-size: 18px;">比如你在使用某个版本的内核时，发现了一个内核bug，这时你需要知道它究竟是在应用哪个补丁时被引入的，如果一个一个的去还原那些补丁，每还原一个补丁就要测试一次内核，那么必然会浪费过多的时间，而应用二分查找法，首先确定一个肯定没有出现该bug的内核版本，然后去测试位于这两个版本中间的那个版本，这样重复筛选，就能够很容易的定位出是从哪个版本开始出现了这个bug。</span></p><h3 style="color: rgb(51, 51, 51);font-family: Arial;line-height: 26px;white-space: normal;background-color: rgb(255, 255, 255)"><span style="font-size: 20px;"><strong>printk()</strong></span></h3><p style="color: rgb(51, 51, 51);font-family: Arial;font-size: 14px;line-height: 26px;white-space: normal;background-color: rgb(255, 255, 255)"><span style="font-size: 18px;">printk()应该是每一个驱动开发者最为亲密的伙伴了，我们常常将它与二分查找法结合在一起寻找代码中发生问题的位置。</span></p><p style="color: rgb(51, 51, 51);font-family: Arial;font-size: 14px;line-height: 26px;white-space: normal;background-color: rgb(255, 255, 255)"><span style="font-size: 18px;">通常情况下，对于代码中的两个printk()语句，如果一个正常执行，而另一个没有被执行，就说明问题发生在这两个printk()之间，接下来就可以在这个范围内应用二分查找法定位有问题的代码。</span></p><p style="color: rgb(51, 51, 51);font-family: Arial;font-size: 14px;line-height: 26px;white-space: normal;background-color: rgb(255, 255, 255)"><span style="font-size: 18px;">1. printk()与printf()</span></p><p style="color: rgb(51, 51, 51);font-family: Arial;font-size: 14px;line-height: 26px;white-space: normal;background-color: rgb(255, 255, 255)"><span style="font-size: 18px;">用户空间有printf()，内核空间有printk()，它们就如代表善与恶的命运双生子，即使长相功能如何的接近，都不能在代码中共存。</span></p><p style="color: rgb(51, 51, 51);font-family: Arial;font-size: 14px;line-height: 26px;white-space: normal;background-color: rgb(255, 255, 255)"><span style="font-size: 18px;">对于我们来说，最容易犯的错误是，在需要printk()的地方误用了printf()，而在需要printf()的地方却又误用了printk()，通常这都不会是因为不知道它们的区别，而只是习惯使然。民间流传有这样的说法：当你在编写用户空间应用程序的时候，下意识写出的都是printk()，那么就说明你是个标准的内核开发者了。</span></p><p style="color: rgb(51, 51, 51);font-family: Arial;font-size: 14px;line-height: 26px;white-space: normal;background-color: rgb(255, 255, 255)"><span style="font-size: 18px;">2. printk()的消息级别</span></p><p style="color: rgb(51, 51, 51);font-family: Arial;font-size: 14px;line-height: 26px;white-space: normal;background-color: rgb(255, 255, 255)"><span style="font-size: 18px;">printk()与printf()的一个重要区别就是前者可以指定消息的打印级别，内核根据这个指定的级别来决定是否将消息打印到终端上。如下表所示，printk()共有8个级别。</span></p><table cellspacing="0" cellpadding="0"><tbody><tr><td width="171"><p><span style="font-size: 18px;">级别</span></p></td><td width="243"><p><span style="font-size: 18px;">描述</span></p></td></tr><tr><td width="171" valign="top"><p><span style="font-size: 18px;">KERN_EMERG</span></p></td><td width="243" valign="top"><p><span style="font-size: 18px;">紧急情况，系统可能会崩溃</span></p></td></tr><tr><td width="171" valign="top"><p><span style="font-size: 18px;">KERN_ALERT</span></p></td><td width="243" valign="top"><p><span style="font-size: 18px;">必须立即响应</span></p></td></tr><tr><td width="171" valign="top"><p><span style="font-size: 18px;">KERN_CRIT</span></p></td><td width="243" valign="top"><p><span style="font-size: 18px;">临界情况</span></p></td></tr><tr><td width="171" valign="top"><p><span style="font-size: 18px;">KERN_ERR</span></p></td><td width="243" valign="top"><p><span style="font-size: 18px;">错误信息</span></p></td></tr><tr><td width="171" valign="top"><p><span style="font-size: 18px;">KERN_WARNING</span></p></td><td width="243" valign="top"><p><span style="font-size: 18px;">警告信息</span></p></td></tr><tr><td width="171" valign="top"><p><span style="font-size: 18px;">KERN_NOTICE</span></p></td><td width="243" valign="top"><p><span style="font-size: 18px;">普通的但可能需要注意的信息</span></p></td></tr><tr><td width="171" valign="top"><p><span style="font-size: 18px;">KERN_INFO</span></p></td><td width="243" valign="top"><p><span style="font-size: 18px;">提示性信息</span></p></td></tr><tr><td width="171" valign="top" style="word-break: break-all;"><p><span style="font-size: 18px;">KERN_DEBUG</span></p></td><td width="243" valign="top" style="word-break: break-all;"><p><span style="font-size: 18px;">调试信息</span></p></td></tr></tbody></table><p style="color: rgb(51, 51, 51);font-family: Arial;font-size: 14px;line-height: 26px;white-space: normal;background-color: rgb(255, 255, 255)"><span style="font-size: 18px;">如果没有指定消息的级别，printk()会使用默认的DEFAULT_MESSAGE_LOGLEVEL（通常是KERN_WARNING）。</span></p><p style="color: rgb(51, 51, 51);font-family: Arial;font-size: 14px;line-height: 26px;white-space: normal;background-color: rgb(255, 255, 255)"><span style="font-size: 18px;">3.&nbsp;控制台的日志级别（console_loglevel）</span></p><p style="color: rgb(51, 51, 51);font-family: Arial;font-size: 14px;line-height: 26px;white-space: normal;background-color: rgb(255, 255, 255)"><span style="font-size: 18px;">当printk指定的消息级别小于指定的控制台日志级别时，消息的内容就会显示在该控制台上。控制台的日志级别定义在include/linux/kernel.h文件中，默认为DEFAULT_CONSOLE_LOGLEVEL（值等于7），也就是说默认情况下，比KERN_DEBUG级别高的printk()消息内容都可以在控制台上显示。</span></p><p style="color: rgb(51, 51, 51);font-family: Arial;font-size: 14px;line-height: 26px;white-space: normal;background-color: rgb(255, 255, 255)"><span style="font-size: 18px;">我们可以执行下面的命令使任何级别的printk()消息都被打印在终端上</span></p><p style="color: rgb(51, 51, 51);font-family: Arial;font-size: 14px;line-height: 26px;white-space: normal;background-color: rgb(255, 255, 255)"><span style="font-size: 18px;">$ echo 8 &gt; /proc/sys/kernel/printk</span></p><p style="color: rgb(51, 51, 51);font-family: Arial;font-size: 14px;line-height: 26px;white-space: normal;background-color: rgb(255, 255, 255)"><span style="font-size: 18px;">4. printk()的变体</span></p><p style="color: rgb(51, 51, 51);font-family: Arial;font-size: 14px;line-height: 26px;white-space: normal;background-color: rgb(255, 255, 255)"><span style="font-size: 18px;">内核在include/linux/kernel.h文件中提供了两个printk()的变体pr_debug和pr_info，它们的定义为：</span></p><p style="color: rgb(51, 51, 51);font-family: Arial;font-size: 14px;line-height: 26px;white-space: normal;background-color: rgb(255, 255, 255)"><span style="font-size: 18px;">235 #define pr_debug(fmt,arg...) /</span></p><p style="color: rgb(51, 51, 51);font-family: Arial;font-size: 14px;line-height: 26px;white-space: normal;background-color: rgb(255, 255, 255)"><span style="font-size: 18px;">236 printk(KERN_DEBUG fmt,##arg)</span></p><p style="color: rgb(51, 51, 51);font-family: Arial;font-size: 14px;line-height: 26px;white-space: normal;background-color: rgb(255, 255, 255)"><span style="font-size: 18px;">244 #define pr_info(fmt,arg...) /</span></p><p style="color: rgb(51, 51, 51);font-family: Arial;font-size: 14px;line-height: 26px;white-space: normal;background-color: rgb(255, 255, 255)"><span style="font-size: 18px;">245 printk(KERN_INFO fmt,##arg)</span></p><p style="color: rgb(51, 51, 51);font-family: Arial;font-size: 14px;line-height: 26px;white-space: normal;background-color: rgb(255, 255, 255)"><span style="font-size: 18px;">5. printk()不是万能的</span></p><p style="color: rgb(51, 51, 51);font-family: Arial;font-size: 14px;line-height: 26px;white-space: normal;background-color: rgb(255, 255, 255)"><span style="font-size: 18px;">printk()虽然很好用，但它并不是万能的，在系统启动时，终端还没有初始化之前，它并不能被使用，不过如果不是在调试系统的启动过程的话，这并不能算是个问题。</span></p><p style="color: rgb(51, 51, 51);font-family: Arial;font-size: 14px;line-height: 26px;white-space: normal;background-color: rgb(255, 255, 255)"><span style="font-size: 18px;">其实内核提供了一个printk()的变体early_printk()，专门用于在系统启动的初期在终端上打印消息，它与printk()的区别仅仅在于名字的不同以及它能够更早地工作。</span></p><p style="color: rgb(51, 51, 51);font-family: Arial;font-size: 14px;line-height: 26px;white-space: normal;background-color: rgb(255, 255, 255)">&nbsp;</p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">fudan_abc</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

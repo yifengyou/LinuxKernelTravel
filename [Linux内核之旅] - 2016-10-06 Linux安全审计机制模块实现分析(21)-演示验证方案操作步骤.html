@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Linux安全审计机制模块实现分析(21)-演示验证方案操作步骤
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664603201&amp;idx=1&amp;sn=c08be50cc67bc8ec05aa66f6becacf7c&amp;chksm=f04db3a4c73a3ab2dd8147c9a2c75df05c56a4606acdf15a23a1722de30ae74d7f59bcd579fd&amp;scene=27#wechat_redirect&cpage=59' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Linux安全审计机制模块实现分析(21)-演示验证方案操作步骤</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        吴宪萍
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-10-06</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                <div class="rich_media_thumb_wrp" id="media">
+                    
+                                        
+                                    </div>
+                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <h3 style="line-height:172%"><span style="font-size: 16px;"><strong><span style="color: rgb(2, 30, 170); font-family: 宋体;">3.1.4操作步骤</span></strong><strong><span style="color: rgb(2, 30, 170); font-family: 宋体;"></span></strong></span></h3><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">对于该验证方案，详细的操作步骤如下所示：</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">1. 从<span style=" font-size: 16px ; ;; ">kernel</span>网站上下载内核源码<span style=" font-size: 16px ; ;; ">linux-3.5.4</span>，并解压，进入解压后的源码目录，官网地址</span><a style="font-family: 宋体; font-size: 16px; text-decoration: underline;"><span style="font-family: 宋体; font-size: 16px;">http://www.kernel.org/pub/linux/kernel/v3.x/</span></a></p><p style="margin-left:28px"><span style="font-family: 宋体; font-size: 16px;">2. 修改系统调用号和系统调用表，即编辑<span style=" font-size: 16px ; ;; ">arch/x86/syscalls/syscall_32.tbl</span>文件，修改第<span style=" font-size: 16px ; ;; ">231</span>和<span style=" font-size: 16px ; ;; ">232</span>行为：</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">222 i386 &nbsp;&nbsp;&nbsp;myaudit &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;syscall_audit</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">223 i386 &nbsp;&nbsp;&nbsp;mysysaudit &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sys_myaudit</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">3. 修改系统调用入口</span></p><p style="margin-left:28px"><span style="font-family: 宋体; font-size: 16px;">在/arch/x86/kernel/entry_32.S文件中含有系统调用入口<span style=" font-size: 16px ; ;; ">system_call</span>，因此在该文件中添加如下代码：</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">syscall_call:</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">call *sys_call_table(,%eax,4)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 14px;">movl %eax, PT_EAX(%esp)#store the return value</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">#以下为新添加代码</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 14px;">cmpl $2<span style="font-size: 16px; font-family: 宋体;">，</span><span style=" font-size: 16px ; ;; ">0x28(%esp)</span>#this is fork()</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">je myauditsys</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 14px;">cmpl $5<span style="font-size: 16px; font-family: 宋体;">，</span><span style=" font-size: 16px ; ;; ">0x28(%esp)</span>#this is open()</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">je myauditsys</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 14px;">cmpl $6<span style="font-size: 16px; font-family: 宋体;">，</span><span style=" font-size: 16px ; ;; ">0x28(%esp)</span>#this is close()</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">je myauditsys</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 14px;">cmpl $11<span style="font-size: 16px; font-family: 宋体;">，</span><span style=" font-size: 16px ; ;; ">0x28(%esp)</span>#this is execv()</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">je myauditsys</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 14px;">cmpl $20<span style="font-size: 16px; font-family: 宋体;">，</span><span style=" font-size: 16px ; ;; ">0x28(%esp)</span>#this is getpid()</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">je myauditsys</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 14px;">cmpl $120<span style="font-size: 16px; font-family: 宋体;">，</span><span style=" font-size: 16px ; ;; ">0x28(%esp)</span>#this is clone()</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">je myauditsys</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">#添加代码段结束</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">以上代码保证在每次系统调用后都执行比较，如果系统调用号与要收集的系统调用号相同，则将调用myauditsys代码段，如下代码。</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">syscall_exit:</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">……</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">#以下为新添加代码</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 14px;">jmp restore_all#new add</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">myauditsys:</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 14px;">pushl %eax#pass in return status</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 14px;">CFI_ADJUST_CFA_OFFSET 4#help to debug</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 14px;">pushl 0x2C(%esp)#pass in syscall number</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">CFI_ADJUST_CFA_OFFSET 4</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">call syscall_audit</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 14px;">popl. %eax#remove orig_eax from stack</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 14px;">popl. %eaxremove eax from stack</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">jmp syscall_exit</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">#添加代码段结束</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">restore_all:</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">movl PT_EFLAGS(%esp), %eax &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# mix EFLAGS, SS and CS</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">&nbsp;其中调用了我们编写的日志记录例程syscall_audit()。</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">4. 添加自己的文件</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">在/arch/x86/kernel/目录下添加自己编写的<span style=" font-size: 16px ; ;; ">myaudit.c</span>文件，该文件包含的内容如下。</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">#include&lt;asm/uaccess.h&gt;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">#include&lt;linux/proc_fs.h&gt;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">#include&lt;linux/init.h&gt;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">#include&lt;linux/types.h&gt;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">#include&lt;asm/current.h&gt;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">#include&lt;linux/sched.h&gt;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">&nbsp;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">void ( * my_audit)( int, int ) = 0;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 14px;">&nbsp;/*<span style="font-size: 16px; font-family: 宋体;">系统调用日志记录例程</span><span style=" font-size: 16px ; ;; ">*/</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">asmlinkage void syscall_audit( int syscall, int return_status )</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">{</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">if(my_audit)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">return ( * my_audit )( syscall, return_status );</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">printk( “<span style=" font-size: 16px ; ;; ">IN KERNEL: %s( %d ), syscall: %d, return: %d\n</span>”<span style=" font-size: 16px ; ;; ">,</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">current –<span style=" font-size: 16px ; ;; ">&gt;comm, current-&gt;pid, syscall, return_status );</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">return;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">}</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">/*系统调用<span style=" font-size: 16px ; ;; ">*/</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">int (<a name="OLE_LINK18">&nbsp;* my_sysaudit ) ( u8, u8 *, u16, u8 )</a>&nbsp;= 0;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">asmlinkage int sys_myaudit( u8 type, u8 * us_buf, u16 us_buf_size, u8 reset )</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">{</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">if( my_sysaudit )</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">return &nbsp;( * my_sysaudit ) ( type, us_buf, us_buf_size, reset );</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">printk(“<span style=" font-size: 16px ; ;; ">IN KERNEL: my system call &nbsp;sys_myaudit() working\n</span>”<span style=" font-size: 16px ; ;; ">);</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">return 1;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">}</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">从代码可以看出，syscall_audit()和<span style=" font-size: 16px ; ;; ">sys_myaudit()</span>并没有实现，而是用两个钩子函数<span style=" font-size: 16px ; ;; ">my_audit()</span>和<span style=" font-size: 16px ; ;; ">my_sysaudit()</span>作为替身。而这两个钩子函数<span style=" font-size: 16px ; ;; ">my_audit()</span>和<span style=" font-size: 16px ; ;; ">my_sysaudit()</span>被放在模块中去实现，这样可以动态加载，方便调试。</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">5. 修改<span style=" font-size: 16px ; ;; ">Makefile</span>文件</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">修改/arch/x86/kernel/Makefile文件：加入<span style=" font-size: 16px ; ;; ">obj-y += audit.o</span>，即告诉内核将模块<span style=" font-size: 16px ; ;; ">audit.o</span>编译进内核。</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">6. 导出函数名，以提供内核接口函数</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">修改/arch/x86/kernel/i386_ksyms_32.c文件，在末尾加入以下内容。</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">EXPORT_SYMBOL(my_audit);</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">EXPORT_SYMBOL(my_sysaudit);</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 14px;"><span style="font-size: 16px; font-family: 宋体;">通过</span>EXPORT_SYMBOL<span style="font-size: 16px; font-family: 宋体;">导出刚加入的函数名，以便其他内核函数调用，这两个钩子函数的实现放在了模块中。</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 14px;">7. <span style="font-size: 16px; font-family: 宋体;">声明全局变量。</span><br  /><span style="font-size: 16px; font-family: 宋体;">修改：</span>include/linux/module.h <span style="font-size: 16px; font-family: 宋体;">添加：</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">extern void ( * my_audit)( int, int )；</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">extern int ( * my_sysaudit ) ( u8, u8 *, u16, u8 )</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">8. 重新编译内核。</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">即执行以下命令：</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">1）<span style=" font-size: 16px ; ;; ">make menuconfig</span>（配置内核，用于生成<span style=" font-size: 16px ; ;; ">.config</span>文件，可以根据具体情况进行配置，一般可不用配置）</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">2）<span style=" font-size: 16px ; ;; ">make(</span>编译内核及模块，耗时较长，和具体机器配置相关，一般为几十分钟到几个小时<span style=" font-size: 16px ; ;; ">)</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">3）<span style=" font-size: 16px ; ;; ">make modules_install</span>（向<span style=" font-size: 16px ; ;; ">/lib/modules/ </span>添加新<span style=" font-size: 16px ; ;; ">modules</span>）</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">4）<span style=" font-size: 16px ; ;; ">make install</span>（将生成的配置文件<span style=" font-size: 16px ; ;; ">.config</span>，符号表<span style=" font-size: 16px ; ;; ">System.map</span>和内核镜像<span style=" font-size: 16px ; ;; ">bzImage</span>复制到<span style=" font-size: 16px ; ;; ">/boot</span>目录下并重命名为<span style=" font-size: 16px ; ;; ">config-3.5.4</span>，<span style=" font-size: 16px ; ;; ">System.map-3.5.4</span>和<span style=" font-size: 16px ; ;; ">vmlinuz-3.5.4</span>）</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">5）<span style=" font-size: 16px ; ;; ">mkinitramfs -o /boot/initrd.img-3.5.4 3.5.4</span>（生成<span style=" font-size: 16px ; ;; ">/boot</span>目录下的<span style=" font-size: 16px ; ;; ">initrd.img-3.5.4</span>）</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">6）<span style=" font-size: 16px ; ;; ">update-grub</span>（生成新的启动项）</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">9. 重启系统，选择进入新编译的内核系统</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">10. 编译并加载内核模块</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">sudo insmod audit.ko</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">11. 编译并执行用户空间测试程序</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">1)gcc audit_test.c</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">2)./a.out</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">吴宪萍</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

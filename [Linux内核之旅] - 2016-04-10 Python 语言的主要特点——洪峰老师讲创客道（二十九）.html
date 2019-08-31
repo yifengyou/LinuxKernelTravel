@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Python 语言的主要特点——洪峰老师讲创客道（二十九）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=417034857&amp;idx=1&amp;sn=d8d9874053283144ebe700d0da1dbbff&amp;chksm=76445f8c4133d69a6d02649fd173c31d4b4dbdb4c11fcb2bdcc6faed0c13832a067820320ca4&amp;scene=27#wechat_redirect&cpage=74' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Python 语言的主要特点——洪峰老师讲创客道（二十九）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        洪峰
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-04-10</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p><mpvoice frameborder="0" class="res_iframe js_editor_audio audio_iframe" src="/cgi-bin/readtemplate?t=tmpl/audio_tmpl&amp;name=%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9329&amp;play_length=16:24" name="%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9329" play_length="984000" voice_encode_fileid="MzI3NzA5MzUxNF80MTcwMzQ4NTU="></mpvoice></p><p style="text-indent:28px"><span style="">在前面两讲中我给大家介绍了</span><span style="">Perl语言，主要是用于系统管理方面的工作，这个语言有个糟糕的名声，它的程序容易写但是难读，这个程序一旦写出来之后，过了一段时间之后，即使是程序的原作者也很难理解当时自己是怎么写出这个Perl脚本的，我们知道难读的程序，肯定是难以维护的，这也说明当时Ada语言设计时为什么如此强调程序可读性，这也是一个可以理解的原因。幸运的是绝大多数系统管理脚本程序用Perl写的话不会太长，所以这个问题对于系统管理员而言不是太大的问题。</span></p><p style="text-indent:28px"><span style="">在系统管理领域大多数的Perl脚本代码行一般是二十行、三十行、五十行，超过一百行的很少见，超过200行的脚本功能就已经非常多了，而且系统管理中用的是非常少的，一般情况就是写好之后能干活就行，也不需要它非常的健壮优美。Perl也支持oop，所以从语言的机制上讲，用Perl开发一些规模稍微大的应用程序也是有这种可能性的。为了解决Shell脚本以及其它的脚本语言难读的问题，在Unix社团内部很早就出现了一种声音，要让编写的脚本特别是大型的脚本程序，以一种优雅的方式，以一种oop的方式来写脚本，那这个就是Python语言诞生的背景。</span></p><p style="text-indent:28px"><span style="">Python语言是由欧洲的荷兰人Guido&nbsp;van&nbsp;Rossum发明的，荷兰这个国家很小，但是计算机工业水平特别高。我前面已经在两个地方提到荷兰人的伟大成就，第一就是讲当时的Blender，这个Blender作为三维动画的设计，三维游戏设计的框架，是用C++语言写的，这就是荷兰人的一个发明创造。第二次提到荷兰人就是讲Minix操作系统，我已经提到Anderw&nbsp;S.Tanenbaum教授，他已经开发了Minix操作系统，而我现在提到的Python语言呢，是荷兰人另外的一项伟大发明创造。顺便提一句，荷兰人在TeX排版方面非常的有创意，2002年我去印度的Trivandrum开TUG大会的时候，在那个会议上我就知道了荷兰人Hans&nbsp;Hagen所做的工作，Hans&nbsp;Hagen长得非常高大，他和他的伙伴对于TeX技术一直非常专注，我是2005年在武汉召开TUG排版大会的时候，请他来武汉东湖做过这个方面演讲，他们曾经用Perl语言在TeX基础上发明了一个宏，叫做ConTeX，这个ConTeX和LaTeX在性能上有一比，而且在很多方面胜于LaTeX。</span></p><p style="text-indent:28px"><span style="">在这一讲和下一讲中，我想向大家介绍Python语言的特点，以及它适合干什么，以及如何在我们的创客项目中应用Python语言，Python早期的版本已经在八十年代退出了。那么经过这么多年的发展，当我们说起Python语言的时候，有三个主要的特点可以把这个语言勾画出来：首先，它作为一个脚本语言（后面详细讲解）；第二，作为教学语言的时候，可以和C、C++、Java几乎无缝的集成；另外一个特点是，Python语言非常容易学习，所以在国外，许多大学把Python作为计算机专业第一个入门的语言，也有很多学校在做这样的尝试。</span></p><p style="text-indent:28px"><span style="">现在让我们来看看作为脚本语言的Python有哪些特点。在Python中有内置的数据类型、数据结构，比shell多多了。它有对数字的支持，字符串也是一个单独的对象，还有列表，这是我们前面讲的list，还有字典（dictionary）、元组(Tuple)，文件在Python中也是内置的对象。我刚才提到的这些内置数据类型还有一些数据结构，对于lisp程序员来讲是再明白不过了。如果你不是lisp程序员，作为初学者这些内置的数据类型都非常的容易学习，可以这样讲，可以在一个下午或者最多三天，就可以把Python的基本语法结构、数据结构都掌握好，而且能用于编程的实践活动中来。相比前面提到的Perl语言，Python语言没有那么多丰富的内置函数、内置变量，所以Python语言学习的难度在初期对于初学者来说，就平缓多了。</span></p><p style="text-indent:28px"><span style="">在学习Python的时候唯一让我感到不舒服的一点是：Python程序里面要求大量使用制表符（Tab键），这个跟写Makefile是极为相似的，这样的要求我认为也不过分，因为Tab键主要是用于代码行的缩进，使用Tab键之后，可以让代码从外观上显得整齐，这样对于提高程序的可读性是一个很好方法。有了编程风格的限制之后，让Python社团的程序员在编写Python脚本时至少在视觉上有了非常一致的效果，我认为这个约定也不算过分。作为一种优雅的脚本语言，Python支持类，有了类之后，我们知道模块化就可以比较好的进行，而Python还支持模块的概念，你可以把逻辑上相关的代码放在模块里面。而且Python语言本身也支持异常的捕获抛出，所以用Python写脚本程序的时候，它也可以做的比较健壮。</span></p><p style="text-indent:28px"><span style="">接下来我们来看看作为教学语言或者控制语言的Python，到底是什么？我前面讲过Python可以为C、C++、Java这三种语言进行脚本编程，作为教学语言来使用，在这个地方对于Python有两种混合编程办法，一个是对Python进行扩展，也就是说在Python里面调用C、C++、Java代码；另外一种就是把Python嵌入到这三种语言（C、C++、Java）里面去，从Python语言中调用C的模块，这个是Eric&nbsp;Steven&nbsp;Raymond推崇的一种编程模式，也就是混合编程模式，他在Fetchmail里面曾经用过这种方法。那么对于用Python作为C++的控制语言，最典型的案例就是前面提到的Blender，就是荷兰人用C++写的三维动画或者三维游戏的框架，也就是说用Python脚本去控制C++的代码，这一点在Blender里面发挥到了一个非常好的境界。在好莱坞推出的大片《2012世界末日》中有两样东西给观众留下非常深刻的印象，第一样就是飞机，乌克兰生产的安东诺夫飞机，这个巨型飞机把主人公从美国拉到喜马拉雅山，然后在山区迫降，那个飞机在这个影片中出尽了风头，那个飞机是世界上最大的运输机。另外一个就是大家可能没有注意到的，影片《2012世界末日》用Blender制作了大量的虚拟场景，因为有些场景，像大地震爆发的时候地面的开裂，还有山崩地裂的景象都是由Blender制作的。由此可以看出，Python语言已经在电影业获得了很多制作人的青睐。在二维设计领域，Python和QT形成了</span><a><span style="">PyQt</span></a><span style="">，那么也可以用Python对QT作为控制语言或教学语言来使用。</span></p><p style="text-indent:28px"><span style="">至于用Python语言作为Java程序的控制语言、教学语言，在Java虚拟机上已经有了Jython。这个在前面讲基于Java虚拟机的多语言编程的时候，也就是JVM&nbsp;Based&nbsp;Polyglot&nbsp;programming，在那个地方我已经提到。Java虚拟机上跑的语言非常多，其中有一个就是Jython，它是用Java用语言开发的，而且Jython的语法和C写的Python是一模一样的。也就是说学会了用C写的Python，自然而然的就学会了用Java写的Jython。这两者是完全一样的，没有任何区别。同时我要向大家指出，在当今时代，所有语言里面Python语言的库大概是最多的，Java语言的库也很多。这两个语言的库，如果能够通过这种方式，通过在Jython里面去调用Java的库，那么Java库多的资源优势和Python资源非常多的优势就会很好的结合起来，这会大大的有利我们创客从事创客项目。比如说你可以用JavaFX8直接去开发用户图形化界面应用程序，这是用Java去开发Java应用程序的一个方法。但是现在有了Jython之后，这个方法就有了新的思路。你可以用Jython去写脚本调用JavaFX8的一些库和图形用户界面的控件。这个方法比直接用JavaFX8编写用户图形化界面应用程序要快好多倍。两种开发出来的图形用户界面的程序，在性能和输入上没有任何差异。打一个不恰当的比方，这就相当于买一样东西，你从实体店买和网上商店去买，在实体店买价格除了比网上高之外，你还要自己把东西运到家里；在网上买除了价格便宜，有专门的人给你送货上门。如果东西是一样的，那么你会选择哪种方式？我想答案是不言而喻的。而类似的道理，用Jython开发Java应用程序，它在提高程序员生产利益上的巨大利益我想应该也是非常明显的。</span></p><p style="text-indent:28px"><span style="">在这一讲的最后，我想谈一谈计算机专业的学生把Python作为第一门学习语言的情况。我前面已经讲过MIT曾经用Scheme作为第一门计算机专业学习的语言，而且他们开发了纸皮书。MIT后来在一段时间用Python作为计算机专业入门的语言，但后来又改回去了，重新使用Scheme作为计算机专业入门教学语言。在MIT采用Python语言作为第一门语言的时候，他们做了大量的尝试来证明Python语言是十分适合作为第一门语言学习的。除了在PC或者笔记本电脑上运行Python之外，还有一个尝试非常值得提，就是Raspberry&nbsp;Pi计算机(中文名为“树莓派”,简写为RPi），这个计算机是基于ARM平台的。就是一块小板子，这个小板子可以放在一个类似于肥皂盒大小的塑料盒子里面。请大家不要小看这个小盒子，它的硬件计算资源并不差，它的内存有512MB，所以它可以运行许多教学类的软件。因为这个计算机作为整体，它的成本非常低，而且功耗低，所以它非常适合作为发展中国家学生学习电脑的工具。在树莓派的项目里面也推广Python作为教学语言来使用。而且这个实践已经在非常大的范围获得了非常大的成功，在这里我也向大家做一个推荐。树莓派有A、B两种型号，B的型号配置比A要稍微高点。所以在树莓派上，有基于Debian的开发系统。Debian社团开发的许许多多的资源，都可以无缝的运行在树莓派的电脑上。树莓派体积小，只有肥皂盒那么大，所以它可以用于许许多多的嵌入式系统开发。那么在嵌入式系统上，可以把GNU社团的资源也<a name="_GoBack"></a>引入到嵌入式系统上来。我已经见到许许多多的黑客在他们的DIY项目里面已经用上了树莓派。他们也已经成功的用上了Python语言。这些都是值得推广或尝试的一些优良的一些做法。</span></p><p><span style="">&nbsp;</span></p><p><span style="">&nbsp;</span></p><p style=";font-size: medium;white-space: normal;margin-right: 0;text-indent: 28px;line-height: 15px;page-break-after: auto;background: rgb(255, 255, 255)"><span style="font-size: 14px; font-family: _5fae_8f6f_96c5_9ed1; letter-spacing: 0px;">明当时Ada语言设计时为什么如此强调程序可读性，这也是一个可以理解的原因。幸运的是绝大多数系统管理脚本程序用Perl写的话不会太长，所以这个问题对于系统管理员而言不是太大的问题。</span><br  /></p><p style=";font-size: medium;white-space: normal;margin-right: 0;text-indent: 28px;line-height: 15px;page-break-after: auto;background: rgb(255, 255, 255)"><span style="font-size: 14px; font-family: _5fae_8f6f_96c5_9ed1; letter-spacing: 0px;">在系统管理领域大多数的Perl脚本代码行一般是二十行、三十行、五十行，超过一百行的很少见，超过200行的脚本功能就已经非常多了，而且系统管理中用的是非常少的，一般情况就是写好之后能干活就行，也不需要它非常的健壮优美。Perl也支持oop，所以从语言的机制上讲，用Perl开发一些规模稍微大的应用程序也是有这种可能性的。为了解决Shell脚本以及其它的脚本语言难读的问题，在Unix社团内部很早就出现了一种声音，要让编写的脚本特别是大型的脚本程序，以一种优雅的方式，以一种oop的方式来写脚本，那这个就是Python语言诞生的背景。</span></p><p style=";font-size: medium;white-space: normal;margin-right: 0;text-indent: 28px;line-height: 15px;page-break-after: auto;background: rgb(255, 255, 255)"><span style="font-size: 14px; font-family: _5fae_8f6f_96c5_9ed1; letter-spacing: 0px;">Python语言是由欧洲的荷兰人Guido van Rossum发明的，荷兰这个国家很小，但是计算机工业水平特别高。我前面已经在两个地方提到荷兰人的伟大成就，第一就是讲当时的Blender，这个Blender作为三维动画的设计，三维游戏设计的框架，是用C++语言写的，这就是荷兰人的一个发明创造。第二次提到荷兰人就是讲Minix操作系统，我已经提到Anderw S.Tanenbaum教授，他已经开发了Minix操作系统，而我现在提到的Python语言呢，是荷兰人另外的一项伟大发明创造。顺便提一句，荷兰人在TeX排版方面非常的有创意，2002年我去印度的Trivandrum开TUG大会的时候，在那个会议上我就知道了荷兰人Hans Hagen所做的工作，Hans Hagen长得非常高大，他和他的伙伴对于TeX技术一直非常专注，我是2005年在武汉召开TUG排版大会的时候，请他来武汉东湖做过这个方面演讲，他们曾经用Perl语言在TeX基础上发明了一个宏，叫做ConTeX，这个ConTeX和LaTeX在性能上有一比，而且在很多方面胜于LaTeX。</span></p><p style=";font-size: medium;white-space: normal;margin-right: 0;text-indent: 28px;line-height: 15px;page-break-after: auto;background: rgb(255, 255, 255)"><span style="font-size: 14px; font-family: _5fae_8f6f_96c5_9ed1; letter-spacing: 0px;">在这一讲和下一讲中，我想向大家介绍Python语言的特点，以及它适合干什么，以及如何在我们的创客项目中应用Python语言，Python早期的版本已经在八十年代退出了。那么经过这么多年的发展，当我们说起Python语言的时候，有三个主要的特点可以把这个语言勾画出来：首先，它作为一个脚本语言（后面详细讲解）；第二，作为教学语言的时候，可以和C、C++、Java几乎无缝的集成；另外一个特点是，Python语言非常容易学习，所以在国外，许多大学把Python作为计算机专业第一个入门的语言，也有很多学校在做这样的尝试。</span></p><p style=";font-size: medium;white-space: normal;margin-right: 0;text-indent: 28px;line-height: 15px;page-break-after: auto;background: rgb(255, 255, 255)"><span style="font-size: 14px; font-family: _5fae_8f6f_96c5_9ed1; letter-spacing: 0px;">现在让我们来看看作为脚本语言的Python有哪些特点。在Python中有内置的数据类型、数据结构，比shell多多了。它有对数字的支持，字符串也是一个单独的对象，还有列表，这是我们前面讲的list，还有字典（dictionary）、元组(Tuple)，文件在Python中也是内置的对象。我刚才提到的这些内置数据类型还有一些数据结构，对于lisp程序员来讲是再明白不过了。如果你不是lisp程序员，作为初学者这些内置的数据类型都非常的容易学习，可以这样讲，可以在一个下午或者最多三天，就可以把Python的基本语法结构、数据结构都掌握好，而且能用于编程的实践活动中来。相比前面提到的Perl语言，Python语言没有那么多丰富的内置函数、内置变量，所以Python语言学习的难度在初期对于初学者来说，就平缓多了。</span></p><p style=";font-size: medium;white-space: normal;margin-right: 0;text-indent: 28px;line-height: 15px;page-break-after: auto;background: rgb(255, 255, 255)"><span style="font-size: 14px; font-family: _5fae_8f6f_96c5_9ed1; letter-spacing: 0px;">在学习Python的时候唯一让我感到不舒服的一点是：Python程序里面要求大量使用制表符（Tab键），这个跟写Makefile是极为相似的，这样的要求我认为也不过分，因为Tab键主要是用于代码行的缩进，使用Tab键之后，可以让代码从外观上显得整齐，这样对于提高程序的可读性是一个很好方法。有了编程风格的限制之后，让Python社团的程序员在编写Python脚本时至少在视觉上有了非常一致的效果，我认为这个约定也不算过分。作为一种优雅的脚本语言，Python支持类，有了类之后，我们知道模块化就可以比较好的进行，而Python还支持模块的概念，你可以把逻辑上相关的代码放在模块里面。而且Python语言本身也支持异常的捕获抛出，所以用Python写脚本程序的时候，它也可以做的比较健壮。</span></p><p style=";font-size: medium;white-space: normal;margin-right: 0;text-indent: 28px;line-height: 15px;page-break-after: auto;background: rgb(255, 255, 255)"><span style="font-size: 14px; font-family: _5fae_8f6f_96c5_9ed1; letter-spacing: 0px;">接下来我们来看看作为教学语言或者控制语言的Python，到底是什么？我前面讲过Python可以为C、C++、Java这三种语言进行脚本编程，作为教学语言来使用，在这个地方对于Python有两种混合编程办法，一个是对Python进行扩展，也就是说在Python里面调用C、C++、Java代码；另外一种就是把Python嵌入到这三种语言（C、C++、Java）里面去，从Python语言中调用C的模块，这个是Eric Steven Raymond推崇的一种编程模式，也就是混合编程模式，他在Fetchmail里面曾经用过这种方法。那么对于用Python作为C++的控制语言，最典型的案例就是前面提到的Blender，就是荷兰人用C++写的三维动画或者三维游戏的框架，也就是说用Python脚本去控制C++的代码，这一点在Blender里面发挥到了一个非常好的境界。在好莱坞推出的大片《2012世界末日》中有两样东西给观众留下非常深刻的印象，第一样就是飞机，乌克兰生产的安东诺夫飞机，这个巨型飞机把主人公从美国拉到喜马拉雅山，然后在山区迫降，那个飞机在这个影片中出尽了风头，那个飞机是世界上最大的运输机。另外一个就是大家可能没有注意到的，影片《2012世界末日》用Blender制作了大量的虚拟场景，因为有些场景，像大地震爆发的时候地面的开裂，还有山崩地裂的景象都是由Blender制作的。由此可以看出，Python语言已经在电影业获得了很多制作人的青睐。在二维设计领域，Python和QT形成了</span><a style="font-family: _5fae_8f6f_96c5_9ed1; color: rgb(0, 0, 0); letter-spacing: 0px; font-size: 16px; text-decoration: underline;"><span style="font-family: _5fae_8f6f_96c5_9ed1; color: rgb(0, 0, 0); letter-spacing: 0px; font-size: 16px;">PyQt</span></a><span style="font-size: 14px; font-family: _5fae_8f6f_96c5_9ed1; letter-spacing: 0px;">，那么也可以用Python对QT作为控制语言或教学语言来使用。</span></p><p style=";font-size: medium;white-space: normal;margin-right: 0;text-indent: 28px;line-height: 15px;page-break-after: auto;background: rgb(255, 255, 255)"><span style="font-size: 14px; font-family: _5fae_8f6f_96c5_9ed1; letter-spacing: 0px;">至于用Python语言作为Java程序的控制语言、教学语言，在Java虚拟机上已经有了Jython。这个在前面讲基于Java虚拟机的多语言编程的时候，也就是JVM Based Polyglot programming，在那个地方我已经提到。Java虚拟机上跑的语言非常多，其中有一个就是Jython，它是用Java用语言开发的，而且Jython的语法和C写的Python是一模一样的。也就是说学会了用C写的Python，自然而然的就学会了用Java写的Jython。这两者是完全一样的，没有任何区别。同时我要向大家指出，在当今时代，所有语言里面Python语言的库大概是最多的，Java语言的库也很多。这两个语言的库，如果能够通过这种方式，通过在Jython里面去调用Java的库，那么Java库多的资源优势和Python资源非常多的优势就会很好的结合起来，这会大大的有利我们创客从事创客项目。比如说你可以用JavaFX8直接去开发用户图形化界面应用程序，这是用Java去开发Java应用程序的一个方法。但是现在有了Jython之后，这个方法就有了新的思路。你可以用Jython去写脚本调用JavaFX8的一些库和图形用户界面的控件。这个方法比直接用JavaFX8编写用户图形化界面应用程序要快好多倍。两种开发出来的图形用户界面的程序，在性能和输入上没有任何差异。打一个不恰当的比方，这就相当于买一样东西，你从实体店买和网上商店去买，在实体店买价格除了比网上高之外，你还要自己把东西运到家里；在网上买除了价格便宜，有专门的人给你送货上门。如果东西是一样的，那么你会选择哪种方式？我想答案是不言而喻的。而类似的道理，用Jython开发Java应用程序，它在提高程序员生产利益上的巨大利益我想应该也是非常明显的。</span></p><p style=";font-size: medium;white-space: normal;margin-right: 0;text-indent: 28px;line-height: 15px;page-break-after: auto;background: rgb(255, 255, 255)"><span style="font-size: 14px; font-family: _5fae_8f6f_96c5_9ed1; letter-spacing: 0px;">在这一讲的最后，我想谈一谈计算机专业的学生把Python作为第一门学习语言的情况。我前面已经讲过MIT曾经用Scheme作为第一门计算机专业学习的语言，而且他们开发了纸皮书。MIT后来在一段时间用Python作为计算机专业入门的语言，但后来又改回去了，重新使用Scheme作为计算机专业入门教学语言。在MIT采用Python语言作为第一门语言的时候，他们做了大量的尝试来证明Python语言是十分适合作为第一门语言学习的。除了在PC或者笔记本电脑上运行Python之外，还有一个尝试非常值得提，就是Raspberry Pi计算机(中文名为“树莓派”,简写为RPi），这个计算机是基于ARM平台的。就是一块小板子，这个小板子可以放在一个类似于肥皂盒大小的塑料盒子里面。请大家不要小看这个小盒子，它的硬件计算资源并不差，它的内存有512MB，所以它可以运行许多教学类的软件。因为这个计算机作为整体，它的成本非常低，而且功耗低，所以它非常适合作为发展中国家学生学习电脑的工具。在树莓派的项目里面也推广Python作为教学语言来使用。而且这个实践已经在非常大的范围获得了非常大的成功，在这里我也向大家做一个推荐。树莓派有A、B两种型号，B的型号配置比A要稍微高点。所以在树莓派上，有基于Debian的开发系统。Debian社团开发的许许多多的资源，都可以无缝的运行在树莓派的电脑上。树莓派体积小，只有肥皂盒那么大，所以它可以用于许许多多的嵌入式系统开发。那么在嵌入式系统上，可以把GNU社团的资源也引入到嵌入式系统上来。我已经见到许许多多的黑客在他们的DIY项目里面已经用上了树莓派。他们也已经成功的用上了Python语言。这些都是值得推广或尝试的一些优良的一些做法。</span></p><p style=";font-size: medium;white-space: normal;margin-right: 0;line-height: 15px;page-break-after: auto;background: rgb(255, 255, 255)"><span style="font-family: _5fae_8f6f_96c5_9ed1; letter-spacing: 0px; font-size: 16px;">&nbsp;</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">洪峰</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

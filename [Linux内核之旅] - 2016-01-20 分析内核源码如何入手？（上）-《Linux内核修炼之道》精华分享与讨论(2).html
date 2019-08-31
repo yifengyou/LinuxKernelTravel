@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		分析内核源码如何入手？（上）-《Linux内核修炼之道》精华分享与讨论(2)
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=415752883&amp;idx=1&amp;sn=cf08fc5b33ffac948caddeeb5f14af60&amp;chksm=7658cf56412f464080bd25ce9b2505bbd457fee681ca4fa66f735e25eea9ff479dbe18beac23&amp;scene=27#wechat_redirect&cpage=80' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">分析内核源码如何入手？（上）-《Linux内核修炼之道》精华分享与讨论(2)</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        fudan_abc
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-01-20</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">透过现象看本质，学习内核，就是学习内核的源代码，任何内核有关的书籍都是基于内核，而又不高于内核的。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">既然要学习内核源码，就要经常对内核代码进行分析，而内核代码千千万，还前仆后继的不断往里加，这就让大部分人都有种雾里看花花不见的无助感。不过不要怕，孔老夫子早就留给我们了应对之策：敏于事而慎于言，就有道而正焉，可谓好学也已。这就是说，做事要踏实才是好学生好同志，要遵循严谨的态度，去理解每一段代码的实现，多问多想多记。如果抱着走马观花，得过且过的态度，结果极有可能就是一边看一边丢，没有多大的收获。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">假设全国房价上涨1.5%，假设80后局长是农民子弟，⋯⋯，既然我们的人生充满了假设，那么我在这里假设你现在就迫不及待的希望研究内核中USB子系统的实现，应该没有意见吧？那好，下面就以USB子系统的实现分析为标本看看分析内核源码应该如何入手。<br  /></span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;"><strong><span style="font-size: medium;">分析README</span></strong></span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">内核中USB子系统的代码位于目录drivers/usb，这个结论并不需要假设。于是我们进入到该目录，执行命令ls，结果显示如下：</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="color: rgb(0, 0, 255); font-size: 16px;">atm&nbsp; class&nbsp; core&nbsp; gadget&nbsp; host&nbsp; image&nbsp; misc&nbsp; mon&nbsp; serial&nbsp; storage Kconfig&nbsp;&nbsp;<br  />Makefile&nbsp; README usb-skeleton.c<br  /></span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">目录drivers/usb共包含有10个子目录和4个文件，usb-skeleton.c是一个简单的USB driver的框架，感兴趣的可以去看看，目前来说，它还吸引不了我们的眼球。那么首先应该关注什么？如果迎面走来一个ppmm，你会首先看脸、脚还是其它？当然答案依据每个人的癖好会有所不同。不过这里的问题应该只有一个答案，那就是Kconfig、Makefile、README。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">README里有关于这个目录下内容的一般性描述，它不是关键，只是帮助你了解。再说了，面对“read我吧read我吧”这么热情奔放的呼唤，善良的我们是不可能无动于衷的，所以先来看看里面都有些什么内容。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="color: rgb(0, 0, 255); font-size: 16px;">23 Here is a list of what each subdirectory here is, and what is contained in<br  />24 them.<br  />25&nbsp;<br  />26 core/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - This is for the core USB host code, including the<br  />27&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; usbfs files and the hub class driver (&quot;khubd&quot;).<br  />28&nbsp;<br  />29 host/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - This is for USB host controller drivers.&nbsp; This<br  />30&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; includes UHCI, OHCI, EHCI, and others that might<br  />31&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; be used with more specialized &quot;embedded&quot; systems.<br  />32&nbsp;<br  />33 gadget/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - This is for USB peripheral controller drivers and<br  />34&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; the various gadget drivers which talk to them.<br  />35&nbsp;<br  />36&nbsp;<br  />37 Individual USB driver directories.&nbsp; A new driver should be added to the<br  />38 first subdirectory in the list below that it fits into.<br  />39&nbsp;<br  />40 image/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - This is for still image drivers, like scanners or<br  />41&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; digital cameras.<br  />42 input/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - This is for any driver that uses the input subsystem,<br  />43&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; like keyboard, mice, touchscreens, tablets, etc.<br  />44 media/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - This is for multimedia drivers, like video cameras,<br  />45&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; radios, and any other drivers that talk to the v4l<br  />46&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; subsystem.<br  />47 net/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - This is for network drivers.<br  />48 serial/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - This is for USB to serial drivers.<br  />49 storage/&nbsp;&nbsp;&nbsp; - This is for USB mass-storage drivers.<br  />50 class/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - This is for all USB device drivers that do not fit<br  />51&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; into any of the above categories, and work for a range<br  />52&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; of USB Class specified devices.&nbsp;<br  />53 misc/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - This is for all USB device drivers that do not fit<br  />54&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; into any of the above categories.<br  /></span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">这个README文件描述了前边使用ls命令列出的那10个文件夹的用途。那么什么是USB Core？Linux内核开发者们，专门写了一些代码，负责实现一些核心的功能，为别的设备驱动程序提供服务，比如申请内存，比如实现一些所有的设备都会需要的公共的函数，并美其名曰USB Core。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">时代总在发展，当年胖杨贵妃照样迷死唐明皇，而如今人们欣赏的则是林志玲这样的魔鬼身材。同样，早期的Linux内核，其结构并不是如今天这般有层次感，远不像今天这般错落有致，那时候drivers/usb/这个目录下边放了很多很多文件，USB Core与其他各种设备的驱动程序的代码都堆砌在这里，后来，怎奈世间万千的变幻，总爱把有情的人分两端。于是在drivers/usb/目录下面出来了一个core目录，就专门放一些核心的代码，比如初始化整个USB系统，初始化Root Hub，初始化主机控制器的代码，再后来甚至把主机控制器相关的代码也单独建了一个目录，叫host目录，这是因为USB主机控制器随着时代的发展，也开始有了好几种，不再像刚开始那样只有一种，所以呢，设计者们把一些主机控制器公共的代码仍然留在core目录下，而一些各主机控制器单独的代码则移到host目录下面让负责各种主机控制器的人去维护。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">那么USB gadget那？gadget白了说就是配件的意思，主要就是一些内部运行Linux的嵌入式设备，比如PDA，设备本身有USB设备控制器（USB Device Controller），可以将PC，也就是我们的主机作为master端，将这样的设备作为slave端和主机通过USB进行通信。从主机的观点来看，主机系统的USB驱动程序控制插入其中的USB设备，而USB gadget的驱动程序控制外围设备如何作为一个USB设备和主机通信。比如，我们的嵌入式板子上支持SD卡，如果我们希望在将板子通过USB连接到PC之后，这个SD卡被模拟成U盘，那么就要通过USB gadget架构的驱动。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">剩下的几个目录分门别类的放了各种USB设备的驱动，比如U盘的驱动在storage目录下，触摸屏和USB键盘鼠标的驱动在input目录下，等等。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">我们响应了README的热情呼唤，它便给予了我们想要的，通过它我们了解了USB目录里的那些文件夹都有着什么样的角色。到现在为止，就只剩下内核的地图——Kconfig与Makefile两个文件了。有地图在手，对于在内核中游荡的我们来说，是件很愉悦的事情，不过，因为我们的目的是研究内核对USB子系统的实现，而不是特定设备或host controller的驱动，所以这里的定位很明显，USB Core就是我们需要关注的对象，那么接下来就是要对core目录中的内容进行定位了。<br  /></span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;"><strong>分析Kconfig和Makefile</strong>&nbsp;<br  /></span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">进入到drivers/usb/core目录，执行命令ls，结果显示如下：</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="color: rgb(0, 0, 255); font-size: 16px;">Kconfig&nbsp; Makefile&nbsp; buffer.c&nbsp; config.c&nbsp; devices.c&nbsp; devio.c&nbsp; driver.c&nbsp;&nbsp;<br  />endpoint.c&nbsp; file.c&nbsp; generic.c&nbsp; hcd-pci.c&nbsp; hcd.c&nbsp; hcd.h&nbsp; hub.c&nbsp; hub.h&nbsp;&nbsp;<br  />inode.c&nbsp; message.c&nbsp; notify.c&nbsp; otg_whitelist.h&nbsp; quirks.c&nbsp; sysfs.c&nbsp; urb.c&nbsp;&nbsp;<br  />usb.c&nbsp; usb.h<br  /></span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">然后执行wc命令，如下所示。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="color: rgb(0, 0, 255); font-size: 16px;"># wc –l ./*<br  />&nbsp;&nbsp; 148 buffer.c<br  />&nbsp;&nbsp; 607 config.c<br  />&nbsp;&nbsp; 706 devices.c<br  />&nbsp; 1677 devio.c<br  />&nbsp; 1569 driver.c<br  />&nbsp;&nbsp; 357 endpoint.c<br  />&nbsp;&nbsp; 248 file.c<br  />&nbsp;&nbsp; 238 generic.c<br  />&nbsp; 1759 hcd.c<br  />&nbsp;&nbsp; 458 hcd.h<br  />&nbsp;&nbsp; 433 hcd-pci.c<br  />&nbsp; 3046 hub.c<br  />&nbsp;&nbsp; 195 hub.h<br  />&nbsp;&nbsp; 758 inode.c<br  />&nbsp;&nbsp; 144 Kconfig<br  />&nbsp;&nbsp;&nbsp; 21 Makefile<br  />&nbsp; 1732 message.c<br  />&nbsp;&nbsp;&nbsp; 68 notify.c<br  />&nbsp;&nbsp; 112 otg_whitelist.h<br  />&nbsp;&nbsp; 161 quirks.c<br  />&nbsp;&nbsp; 710 sysfs.c<br  />&nbsp;&nbsp; 589 urb.c<br  />&nbsp;&nbsp; 984 usb.c<br  />&nbsp;&nbsp; 160 usb.h<br  />&nbsp;16880 total<br  /></span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">drivers/usb/core目录共包括24个文件，16880行代码。core不愧是core，为大家默默的做这么多事。不过这么多文件里不一定都是我们所需要关注的，先拿咱们的地图来看看接下来该怎么走。先看看Kconfig文件，可以看到下面的选项。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="color: rgb(0, 0, 255); font-size: 16px;">15 config USB_DEVICEFS<br  />16&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool &quot;USB device filesystem&quot;<br  />17&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; depends on USB<br  />18&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ---help---<br  />19&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If you say Y here (and to &quot;/proc file system support&quot; in the &quot;File<br  />20&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; systems&quot; section, above), you will get a file /proc/bus/usb/devices<br  />21&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; which lists the devices currently connected to your USB bus or<br  />22&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; busses, and for every connected device a file named<br  />23&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;/proc/bus/usb/xxx/yyy&quot;, where xxx is the bus number and yyy the<br  />24&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; device number; the latter files can be used by user space programs<br  />25&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; to talk directly to the device. These files are &quot;virtual&quot;, meaning<br  />26&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; they are generated on the fly and not stored on the hard drive.<br  />27&nbsp;<br  />28&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; You may need to mount the usbfs file system to see the files, use<br  />29&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mount -t usbfs none /proc/bus/usb<br  />30&nbsp;<br  />31&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For the format of the various /proc/bus/usb/ files, please read<br  />32&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;file:Documentation/usb/proc_usb_info.txt&gt;.<br  />33&nbsp;<br  />34&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Usbfs files can&#39;t handle Access Control Lists (ACL), which are the<br  />35&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; default way to grant access to USB devices for untrusted users of a<br  />36&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; desktop system. The usbfs functionality is replaced by real<br  />37&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; device-nodes managed by udev. These nodes live in /dev/bus/usb and<br  />38&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; are used by libusb.<br  /></span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">选项USB_DEVICEFS与usbfs文件系统有关。usbfs文件系统挂载在/proc/bus/usb目录，显示了当前连接的所有USB设备及总线的各种信息，每个连接的USB设备在其中都会有一个对应的文件进行描述。比如文件/proc/bus/usb/xxx/yyy，xxx表示总线的序号，yyy表示设备所在总线的地址。不过不能够依赖它们来稳定地访问设备，因为同一设备两次连接对应的描述文件可能会不同，比如，第一次连接一个设备时，它可能是002/027，一段时间后再次连接，它可能就已经改变为002/048。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">就好比好不容易你暗恋的mm今天见你的时候对你抛了个媚眼，你心花怒放，赶快去买了100块彩票庆祝，到第二天再见到她的时候，她对你说你是谁啊，你悲痛欲绝的刮开那100块彩票，上面清一色的谢谢你。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">因为usbfs文件系统并不属于USB子系统实现的核心部分，与之相关的代码我们可以不必关注。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="color: rgb(0, 0, 255); font-size: 16px;">74 config USB_SUSPEND<br  />75&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool &quot;USB selective suspend/resume and wakeup (EXPERIMENTAL)&quot;<br  />76&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; depends on USB &amp;&amp; PM &amp;&amp; EXPERIMENTAL<br  />77&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; help<br  />78&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If you say Y here, you can use driver calls or the sysfs<br  />79&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;power/state&quot; file to suspend or resume individual USB<br  />80&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; peripherals.<br  />81<br  />82&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Also, USB &quot;remote wakeup&quot; signaling is supported, whereby some<br  />83&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; USB devices (like keyboards and network adapters) can wake up<br  />84&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; their parent hub.&nbsp; That wakeup cascades up the USB tree, and<br  />85&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; could wake the system from states like suspend-to-RAM.<br  />86<br  />87&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If you are unsure about this, say N here.<br  /></span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">这一项是有关USB设备的挂起和恢复。开发USB的人都是节电节能的好孩子，所以协议里就规定了，所有的设备都必须支持挂起状态，就是说为了达到节电的目的，当设备在指定的时间内，如果没有发生总线传输，就要进入挂起状态。当它收到一个non-idle的信号时，就会被唤醒。节约用电从USB做起。不过这个与主题也没太大关系，相关代码也可以不用关注了。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">剩下的还有几项，不过似乎与咱们关系也不大，还是去看看Makefile。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="color: rgb(0, 0, 255); font-size: 16px;">5 usbcore-objs&nbsp;&nbsp;&nbsp; := usb.o hub.o hcd.o urb.o message.o driver.o /<br  />6&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; config.o file.o buffer.o sysfs.o endpoint.o /<br  />7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; devio.o notify.o generic.o quirks.o<br  />8&nbsp;<br  />9 ifeq ($(CONFIG_PCI),y)<br  />10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; usbcore-objs&nbsp;&nbsp;&nbsp; += hcd-pci.o<br  />11 endif<br  />12&nbsp;<br  />13 ifeq ($(CONFIG_USB_DEVICEFS),y)<br  />14&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; usbcore-objs&nbsp;&nbsp;&nbsp; += inode.o devices.o<br  />15 endif<br  />16&nbsp;<br  />17 obj-$(CONFIG_USB)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; += usbcore.o<br  />18&nbsp;<br  />19 ifeq ($(CONFIG_USB_DEBUG),y)<br  />20 EXTRA_CFLAGS += -DDEBUG<br  />21 endif<br  /></span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">Makefile可比Kconfig简略多了，所以看起来也更亲切点，咱们总是拿的money越多越好，看的代码越少越好。这里之所以会出现CONFIG_PCI，是因为通常USB的Root Hub包含在一个PCI设备中。hcd-pci和hcd顾名而思义就知道是说主机控制器的，它们实现了主机控制器公共部分，按协议里的说法它们就是HCDI（HCD的公共接口），host目录下则实现了各种不同的主机控制器。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">&nbsp;</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">CONFIG_USB_DEVICEFS前面的Kconfig文件里也见到了，关于usbfs的，与咱们的主题无关，inode.c和devices.c两个文件也可以不用管了。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">那么我们可以得出结论，为了理解内核对USB子系统的实现，我们需要研究buffer.c、config.c、driver.c、endpoint.c、file.c、generic.c、hcd.c&nbsp; hcd.h、hub.c、message.c、notify.c、otg_whitelist.h、quirks.c、sysfs.c、urb.c 和usb.c文件。这么看来，好像大都需要关注的样子，没有减轻多少压力，不过这里本身就是USB Core部分，是要做很多的事为咱们分忧的，所以多点也是可以理解的。</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">fudan_abc</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==\x26amp;mid=415742138\x26amp;idx=1\x26amp;sn=bebb4a1c6a95c7707d990fa41ee0daa1#rd' target='_blank'>
+			阅读全文
+		</a>
+	</div>
+</body>

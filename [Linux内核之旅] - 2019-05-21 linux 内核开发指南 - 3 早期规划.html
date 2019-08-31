@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		linux 内核开发指南 - 3 早期规划
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664606459&amp;idx=1&amp;sn=78c79e0c8813968dd87db41456369a72&amp;chksm=f04d871ec73a0e08af0181d7593128a33635fdd691ad2d4f9bec8650aee1c3a4233cdfdc895d&amp;scene=27#wechat_redirect&cpage=5' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">linux 内核开发指南 - 3 早期规划</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                                            
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2019-05-21</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                <a class="original_area_primary" id="copyright_info" href="##" style="visibility:hidden">
+                    <span class="tips_global_primary">文章转载自公众号</span>
+                    <span class="radius_avatar">
+                                            <img class="avatar" src="http://wx.qlogo.cn/mmhead/Q3auHgzwzM6cga6DtKYhNxna0Eias71mxPD7sVuxpg2WTY7ZBPvzBqQ/0" alt="内核月谈">
+                                          </span>
+                    <span class="original_primary_nickname rich_media_meta_link js_nickname">内核月谈</span>
+                                        <span class="tips_global_primary" id="js_comma">，</span>
+                    <span class="original_primary_author_wrp tips_global_primary" id="js_author">
+                      作者                                            Jonathon Corbet
+                                          </span>
+                                    </a>
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <table class="docutils field-list" frame="void" rules="none"><tbody valign="top" style="box-sizing: border-box;"><tr class="field-odd field" style="box-sizing: border-box;"><th class="field-name" style="box-sizing: border-box;font-size: 14.4px;overflow: visible;padding-top: 8px;padding-bottom: 8px;padding-left: 16px;border-color: rgb(225, 228, 229);text-align: left;white-space: nowrap;border-left-width: 0px;">Original:</th><td class="field-body" style="box-sizing: border-box;vertical-align: middle;font-size: 14.4px;overflow: visible;padding: 8px 16px;background-color: transparent;border-width: initial;border-style: none;border-color: initial;">Documentation/process/3.Early-stage.rst</td></tr><tr class="field-even field" style="box-sizing: border-box;"><th class="field-name" style="box-sizing: border-box;font-size: 14.4px;overflow: visible;padding-top: 8px;padding-bottom: 8px;padding-left: 16px;border-color: rgb(225, 228, 229);text-align: left;white-space: nowrap;border-left-width: 0px;">Translator:</th><td class="field-body" style="box-sizing: border-box;vertical-align: middle;font-size: 14.4px;overflow: visible;padding: 8px 16px;background-color: transparent;border-bottom: 0px none;border-left: none;border-top: none;border-right: none;">Alex Shi &lt;alex<span style="box-sizing: border-box;">.</span>shi<span style="box-sizing: border-box;">@</span>linux<span style="box-sizing: border-box;">.</span>alibaba<span style="box-sizing: border-box;">.</span>com&gt;</td></tr></tbody></table><p><br  /></p><h1 style="box-sizing: border-box;font-weight: 700;font-family: sans-serif;font-size: 28px;">3. 早期规划</h1><p style="box-sizing: border-box;line-height: 24px;margin-bottom: 24px;">当考虑一个Linux内核开发项目时，很可能会直接跳进去开始编码。然而，与任何重要 的项目一样，成功的许多基础最好是在第一行代码编写之前就做好了。在早期计划和 沟通中花费一些时间可以节省更多的时间。</p><h2 style="box-sizing: border-box;font-weight: 700;font-family: sans-serif;font-size: 24px;">3.1. 详述问题</h2><p style="box-sizing: border-box;line-height: 24px;margin-bottom: 24px;">与任何工程项目一样，成功的内核增强从要解决的问题的清晰描述开始。在某些情况 下，这个步骤很容易：例如，当某个特定硬件需要驱动程序时。不过，在其他方面， 将实际问题与建议的解决方案混淆是很有诱惑力的，这可能会导致困难。</p><p style="box-sizing: border-box;line-height: 24px;margin-bottom: 24px;">举个例子：几年前，使用Linux音频的开发人员寻求一种方法来运行应用程序，而不因 系统延迟过大而导致退出或其他工件。他们得到的解决方案是一个内核模块，旨在连 接到Linux安全模块（LSM）框架中；这个模块可以配置为允许特定的应用程序访问 实时调度程序。这个模块被实现并发送到Linux内核邮件列表，在那里它立即遇到问题。</p><p style="box-sizing: border-box;line-height: 24px;margin-bottom: 24px;">对于音频开发人员来说，这个安全模块足以解决他们当前的问题。但是，对于更广泛的 内核社区来说，这被视为对LSM框架的滥用（LSM框架并不打算授予他们原本不具备的 进程特权），并对系统稳定性造成风险。他们首选的解决方案包括短期的通过rlimit 机制进行实时调度访问，以及长期的减少延迟的工作。</p><p style="box-sizing: border-box;line-height: 24px;margin-bottom: 24px;">然而，音频社区看不到他们实施的特定解决方案的过去；他们不愿意接受替代方案。由此产生的分歧使这些开发人员对整个内核开发过程感到失望；其中一个开发人员返回 到音频列表并发布了以下内容：</p><blockquote style="box-sizing: border-box;margin-top: 0px;margin-bottom: 24px;margin-left: 24px;line-height: 24px;"><p>有很多非常好的Linux内核开发人员，但他们往往会被一群傲慢的傻瓜所压倒。试图向这些人传达用户需求是浪费时间。他们太“聪明”了，根本听不到少数人 的话。</p></blockquote><p style="box-sizing: border-box;line-height: 24px;margin-bottom: 24px;">（http://lwn.net/articles/131776/）</p><p style="box-sizing: border-box;line-height: 24px;margin-bottom: 24px;">实际情况不同；与特定模块相比，内核开发人员更关心系统稳定性、长期维护以及找到 正确的问题解决方案。这个故事的寓意是把重点放在问题上——而不是具体的解决方案 上——并在投入创建代码之前与开发社区讨论这个问题。</p><p style="box-sizing: border-box;line-height: 24px;margin-bottom: 24px;">因此，在考虑一个内核开发项目时，我们应该得到一组简短问题的答案：</p><blockquote style="box-sizing: border-box;margin-top: 0px;margin-bottom: 24px;margin-left: 24px;line-height: 24px;"><ul class="simple list-paddingleft-2" style=""><li><p>究竟需要解决的问题是什么？</p></li><li><p>受此问题影响的用户是谁？解决方案应该解决哪些用例？</p></li><li><p>内核现在为何没能解决这个问题？</p></li></ul></blockquote><p style="box-sizing: border-box;line-height: 24px;margin-bottom: 24px;">只有这样，才能开始考虑可能的解决方案。</p><h2 style="box-sizing: border-box;font-weight: 700;font-family: sans-serif;font-size: 24px;">3.2. 早期讨论</h2><p style="box-sizing: border-box;line-height: 24px;margin-bottom: 24px;">在计划内核开发项目时，在开始实施之前与社区进行讨论是很有意义的。早期沟通可以 通过多种方式节省时间和麻烦：</p><blockquote style="box-sizing: border-box;margin-top: 0px;margin-bottom: 24px;margin-left: 24px;line-height: 24px;"><ul class="simple list-paddingleft-2" style=""><li><p>很可能问题是由内核以您不理解的方式解决的。Linux内核很大，具有许多不明显 的特性和功能。并不是所有的内核功能都像人们所希望的那样有文档记录，而且很 容易遗漏一些东西。你的作者发出了一个完整的驱动程序，复制了一个新作者不 知道的现有驱动程序。重新设计现有轮子的代码不仅浪费，而且不会被接受到主线 内核中。</p></li><li><p>建议的解决方案中可能有一些元素不适用于主线合并。在编写代码之前，最好先 了解这样的问题。</p></li><li><p>其他开发人员完全有可能考虑过这个问题；他们可能有更好的解决方案的想法，并且 可能愿意帮助创建这个解决方案。</p></li></ul></blockquote><p style="box-sizing: border-box;line-height: 24px;margin-bottom: 24px;">在内核开发社区的多年经验给了我们一个明确的教训：闭门设计和开发的内核代码总是 有一些问题，这些问题只有在代码发布到社区中时才会被发现。有时这些问题很严重， 需要数月或数年的努力才能使代码达到内核社区的标准。一些例子包括：</p><blockquote style="box-sizing: border-box;margin-top: 0px;margin-bottom: 24px;margin-left: 24px;line-height: 24px;"><ul class="simple list-paddingleft-2" style=""><li><p>设计并实现了单处理器系统的DeviceScape网络栈。只有使其适合于多处理器系统， 才能将其合并到主线中。在代码中改装锁等等是一项困难的任务；因此，这段代码 （现在称为mac80211）的合并被推迟了一年多。</p></li><li><p>Reiser4文件系统包含许多功能，核心内核开发人员认为这些功能应该在虚拟文件 系统层中实现。它还包括一些特性，这些特性在不将系统暴露于用户引起的死锁的 情况下是不容易实现的。这些问题的最新发现——以及对其中一些问题的拒绝——已经 导致Reiser4远离了主线内核。</p></li><li><p>Apparmor安全模块以被认为不安全和不可靠的方式使用内部虚拟文件系统数据结构。这种担心（包括其他）使Apparmor多年不在主线上。</p></li></ul></blockquote><p style="box-sizing: border-box;line-height: 24px;margin-bottom: 24px;">在每一种情况下，通过与内核开发人员的早期讨论，可以避免大量的痛苦和额外的工作。</p><h2 style="box-sizing: border-box;font-weight: 700;font-family: sans-serif;font-size: 24px;">3.3. 找谁交流</h2><p style="box-sizing: border-box;line-height: 24px;margin-bottom: 24px;">当开发人员决定公开他们的计划时，下一个问题是：我们从哪里开始？答案是找到正确 的邮件列表和正确的维护者。对于邮件列表，最好的方法是在维护者(MAINTAINERS)文件 中查找要发布的相关位置。如果有一个合适的子系统列表，那么发布它通常比在Linux 内核上发布更可取；您更有可能接触到在相关子系统中具有专业知识的开发人员，并且 环境可能具支持性。</p><p style="box-sizing: border-box;line-height: 24px;margin-bottom: 24px;">找到维护人员可能会有点困难。同样，维护者文件是开始的地方。但是，该文件往往不总 是最新的，并且并非所有子系统都在那里表示。实际上，维护者文件中列出的人员可能 不是当前实际担任该角色的人员。因此，当对联系谁有疑问时，一个有用的技巧是使用 git（尤其是“git-log”）查看感兴趣的子系统中当前活动的用户。看看谁在写补丁， 如果有人的话，谁会在这些补丁上加上用线签名的。这些人将是帮助新开发项目的最佳 人选。</p><p style="box-sizing: border-box;line-height: 24px;margin-bottom: 24px;">找到合适的维护者的任务有时是非常具有挑战性的，以至于内核开发人员添加了一个 脚本来简化过程：</p><pre style="box-sizing: border-box;font-family: SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, Courier, monospace;font-size: 12px;line-height: 1.4;padding: 12px;overflow: auto;">.../scripts/get_maintainer.pl<br  /></pre><p style="box-sizing: border-box;line-height: 24px;margin-bottom: 24px;">当给定“-f”选项时，此脚本将返回给定文件或目录的当前维护者。如果在命令行上传递 了一个补丁，它将列出可能接收补丁副本的维护人员。有许多选项可以调节 get_maintainer.pl搜索维护者的难易程度；请小心使用更具攻击性的选项，因为最终 可能会包括对您正在修改的代码没有真正兴趣的开发人员。</p><p style="box-sizing: border-box;line-height: 24px;margin-bottom: 24px;">如果所有其他方法都失败了，那么与Andrew Morton交谈可以成为一种有效的方法来跟踪 特定代码段的维护人员。</p><h2 style="box-sizing: border-box;font-weight: 700;font-family: sans-serif;font-size: 24px;">3.4. 何时邮寄？</h2><p style="box-sizing: border-box;line-height: 24px;margin-bottom: 24px;">如果可能的话，在早期阶段发布你的计划只会有帮助。描述正在解决的问题以及已经 制定的关于如何实施的任何计划。您可以提供的任何信息都可以帮助开发社区为项目 提供有用的输入。</p><p style="box-sizing: border-box;line-height: 24px;margin-bottom: 24px;">在这个阶段可能发生的一件令人沮丧的事情不是敌对的反应，而是很少或根本没有 反应。可悲的事实是：（1）内核开发人员往往很忙；（2）不缺少有宏伟计划和很少 代码（甚至代码前景）支持他们的人；（3）没有人有义务审查或评论别人发表的 想法。除此之外，高级设计常常隐藏一些问题，这些问题只有在有人真正尝试实现 这些设计时才会被发现；因此，内核开发人员宁愿看到代码。</p><p style="box-sizing: border-box;line-height: 24px;margin-bottom: 24px;">如果发表评论的请求在评论的方式上没有什么效果，不要假设这意味着对项目没有 兴趣。不幸的是，你也不能假设你的想法没有问题。在这种情况下，最好的做法是 继续进行，把你的进展随时通知社区。</p><h2 style="box-sizing: border-box;font-weight: 700;font-family: sans-serif;font-size: 24px;">3.5. 获得官方认可</h2><p style="box-sizing: border-box;line-height: 24px;margin-bottom: 24px;">如果您的工作是在公司环境中完成的，就像大多数Linux内核工作一样，显然，在您将 公司的计划或代码发布到公共邮件列表之前，必须获得适当授权的经理的许可。发布 不确定是否兼容GPL的代码可能是有特别问题的；公司的管理层和法律人员越早能够就 发布内核开发项目达成一致，对参与的每个人都越好。</p><p style="box-sizing: border-box;line-height: 24px;margin-bottom: 24px;">一些读者可能会认为他们的核心工作是为了支持还没有正式承认存在的产品。将雇主 的计划公布在公共邮件列表上可能不是一个可行的选择。在这种情况下，有必要考虑 保密是否真的是必要的；通常不需要把开发计划关在门内。</p><p style="box-sizing: border-box;line-height: 24px;margin-bottom: 24px;">也就是说，有些情况下，一家公司在开发过程的早期就不能合法地披露其计划。拥有 经验丰富的内核开发人员的公司可以选择以开环的方式进行，前提是他们以后能够避免 严重的集成问题。对于没有这种内部专业知识的公司，最好的选择往往是聘请外部 开发商根据保密协议审查计划。Linux基金会运行了一个NDA程序，旨在帮助解决这种 情况；</p><blockquote style="box-sizing: border-box;margin-top: 0px;margin-bottom: 24px;margin-left: 24px;line-height: 24px;"><p>http://www.linuxfoundation.org/en/NDA_program</p></blockquote><p style="box-sizing: border-box;line-height: 24px;margin-bottom: 24px;">这种审查通常足以避免以后出现严重问题，而无需公开披露项目。</p><p style="max-width: 100%;min-height: 1em;letter-spacing: 0.544px;white-space: normal;background-color: rgb(255, 255, 255);box-sizing: border-box !important;overflow-wrap: break-word !important;"><span style="max-width: 100%;font-size: 14px;box-sizing: border-box !important;overflow-wrap: break-word !important;">关于我们：</span></p><p style="max-width: 100%;min-height: 1em;letter-spacing: 0.544px;white-space: normal;background-color: rgb(255, 255, 255);box-sizing: border-box !important;overflow-wrap: break-word !important;"><span style="max-width: 100%;font-size: 14px;box-sizing: border-box !important;overflow-wrap: break-word !important;">阿里巴巴操作系统研发团队负责阿里经济体的服务器操作系统,虚拟化技术以及Linux内核的研发与产品化。团队针对阿里巴巴各业务的需求，新技术的发展，新硬件的引入，在内核与操作系统等基础领域</span><span style="max-width: 100%;font-size: 14px;font-family: -apple-system-font, BlinkMacSystemFont, &quot;Helvetica Neue&quot;, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei UI&quot;, &quot;Microsoft YaHei&quot;, Arial, sans-serif;box-sizing: border-box !important;overflow-wrap: break-word !important;">进行研究创新。目前已经形成 Ali OS, Ali Cloud Linux, Daishu云原生操作系统等多个产品。</span></p><p style="max-width: 100%;min-height: 1em;letter-spacing: 0.544px;white-space: normal;background-color: rgb(255, 255, 255);box-sizing: border-box !important;overflow-wrap: break-word !important;"><br style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"  /></p><p style="max-width: 100%;min-height: 1em;letter-spacing: 0.544px;white-space: normal;background-color: rgb(255, 255, 255);box-sizing: border-box !important;overflow-wrap: break-word !important;"><span style="max-width: 100%;font-size: 14px;box-sizing: border-box !important;overflow-wrap: break-word !important;">加入我们，你可以跟传说中的多隆大神一起工作，你可以不断挑战基础软件领域的新技术，你可以向社区提 Patch，你的工作可以应用到阿里巴巴的数</span><span style="max-width: 100%;font-size: 14px;font-family: -apple-system-font, BlinkMacSystemFont, &quot;Helvetica Neue&quot;, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei UI&quot;, &quot;Microsoft YaHei&quot;, Arial, sans-serif;box-sizing: border-box !important;overflow-wrap: break-word !important;">十万台服务器上。阿里巴巴操作系统研发团队，期待你的加入, 简历发送: tao.ma@linux.alibaba.com</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">Jonathon Corbet</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

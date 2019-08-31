@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		薪水哥（进程）与数据大劫案（下）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664605206&amp;idx=1&amp;sn=cd97c88ce429b99d15b4b3849e5586be&amp;chksm=f04d8bf3c73a02e5e5306ac58125fc60f2ae9baa75bca459dcdef4a589e3f962f259de56f57f&amp;scene=27#wechat_redirect&cpage=23' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">薪水哥（进程）与数据大劫案（下）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        王宝彤
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2018-03-21</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;你以为上次的《薪水哥与数据大劫案》会剧终。才不是呢，他们的续集《薪水哥与数据大劫案之I/O的烦恼》再次震撼来袭。</p><p><iframe class="video_iframe" data-vidtype="2" allowfullscreen="" frameborder="0" data-ratio="1.7647058823529411" data-w="480" src="https://v.qq.com/iframe/preview.html?vid=f0609g96f7y&amp;width=500&amp;height=375&amp;auto=0"></iframe><br  /></p><p>&nbsp;&nbsp;</p><p>《io的烦恼》<br  /></p><p>【建议cpu女生】</p><p>[cpu和word依偎在一起]</p><p><br  /></p><p>旁白：老大说，生活就像一盒巧克力，你永远不知道下一颗是什么味道。</p><p><br  /></p><p>word:听说有一个进程产生了3个子进程，好奇妙啊。</p><p><br  /></p><p>cpu:真的吗，有子进程一定很幸福吧。</p><p><br  /></p><p>旁白：而对于进程来说，你永远不知道下一刻发生什么。</p><p><br  /></p><p>boss吼道：你的时间片用完了，下一个！</p><p><br  /></p><p>[word突然翻脸，甩手而去，cpu挽留抹泪痛心状]</p><p><br  /></p><p>旁白：也不知道下一刻遇到什么人。</p><p><br  /></p><p>[cpu半趴伏在桌子上的挽留状，一个男同学上，气氛突然尴尬]（男同学低头在手机上画圈圈，抬头和cpu打个对眼，尴尬）</p><p><br  /></p><p>旁白：这里的进程每天都在忙碌，Boring，不过偶尔会出现一些有意思的事情。</p><p><br  /></p><p>word对io：把程序员丑照拿过来。</p><p><br  /></p><p>美图：把程序员丑照拿过来。</p><p><br  /></p><p>io:到底给谁？</p><p><br  /></p><p>word and 美图：给我（异口同声）。</p><p><br  /></p><p>boss：打一架吧，谁赢了给谁。</p><p><br  /></p><p>（此处安静三秒钟）</p><p><br  /></p><p>旁白：然后美图和word打了一架，word输了，cpu为此心疼了整整三个毫秒。最终word和美图同时在同一个文件上写写画画，把程序员画成了猴子。</p><p><br  /></p><p>[所有人垂头丧气]</p><p><br  /></p><p>boss：程序员说了，你们打架事小，毁了他珍贵的照片事大，上锁，以后 排队来吧，每个时间只能一个人修改照片。</p><p><br  /></p><p>旁白：在这之后，不管我去哪，见到谁，毫无例外都在排队。可就算最无聊的排队，也总会有人弄出一些乐子。word和美图同时抢夺显卡和硬盘。可是...</p><p><br  /></p><p>word（兴奋）：我抢到了显卡。</p><p><br  /></p><p>美图（ 无奈 ）：我抢到了硬盘。</p><p><br  /></p><p>boss:word还需要硬盘才能就绪，美图还需要显卡才能就绪，你们两个去堵塞队列等着吧，相关资源就绪了再让你们出来。</p><p><br  /></p><p>旁白：10个cpu年后...</p><p><br  /></p><p>word:硬盘怎么还不可用？</p><p><br  /></p><p>旁白：又10个cpu年后...</p><p><br  /></p><p>美图对word:嗨，这么久了你怎么还不就绪？</p><p><br  /></p><p>word：哎，别提了，不知道哪个混蛋一直拿着硬盘不释放，害的我一直等。</p><p><br  /></p><p>美图：哎，我也是，也不知道是谁拿着显卡...</p><p><br  /></p><p>【两人突然反应过来，相互顶着对方】</p><p><br  /></p><p>旁白：不久后，两个人鼻青脸肿低着头接受boss的训话。</p><p><br  /></p><p>[boss对着两个人]</p><p>你看你们两个，昨天刚打架今天又打起来了，成何体统？</p><p><br  /></p><p>旁白：之后boss和他们玩了个抽签游戏，最后美图回到硬盘休息去了。在这之后，申请资源都按照一定的顺序，基本解决了死锁的问题。可是这时，boss发怒了。</p><p><br  /></p><p>boss：昨天薪水哥在打印机丢了一个表格，是谁拿走了，如实招来！</p><p>旁白：boss搜遍了所有内存，也没有找到这个表格。于是，boss黑着脸顶着io，怀疑是我监守自盗。</p><p><br  /></p><p>boss：你去面壁，等你想请出来再出来。</p><p>旁白：似乎是上帝眷顾，在此危难关头io灵机一动。</p><p><br  /></p><p>io：哦，我知道了，因为中断！开始，我告诉word队列第三个位置可用，此处中断之后，我又告诉薪水哥第三个位置可用，并且把薪水哥的数据放到了第三个位置。再次轮到word之后，这个没有时间观念的家伙不知道队列已经变化了，仍然将数据写到了第三个位置，就把你的数据冲掉了。</p><p><br  /></p><p>旁白：薪水哥目瞪口呆，又倍感委屈。他按照规矩办事，却是这个事故的唯一受害者。从此，为避免类似事故的发生，系统党委决定，不仅仅给打印机上锁，而且要规定对锁的一系列操作都是原子操作。从此，word再也不怕在问话和放置数据这个过程中被中断了。</p><p><br  /></p><p>boss：啊，没有bug的世界真是完美啊。</p><p><br  /></p><p>word：啊，boss的决定真是英明啊。</p><p>薪水哥：太好了，这才是和谐社会。</p><p>旁白露面,摆出无奈的表情（延迟三秒，要慢）：Boring。</p><p><br  /></p><p>The end.</p><p>&nbsp;</p><p><br  /></p><p><br  /></p><p><a href="https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664605203&amp;idx=1&amp;sn=56a8b9ad594004e76a7fa9a3b3c76d2c&amp;chksm=f04d8bf6c73a02e0e2e0409794be89bc190e15d7aa0545f5c6cfea946a313afe43451f70ddb6&amp;scene=21#wechat_redirect" target="_blank" style="white-space: normal;">《薪水哥与数据大劫案（上）》</a></p><p><a href="https://mp.weixin.qq.com/s?__biz=MzAxOTc0NzExNg==&amp;mid=2665513371&amp;idx=1&amp;sn=c875f64af83306bffca8dd748f1462ff&amp;scene=21#wechat_redirect" target="_blank">那些烦人的同步和互斥问题</a><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">王宝彤</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

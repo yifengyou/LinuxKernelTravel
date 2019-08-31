@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Linux安全审计机制模块实现分析(6)
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664603158&amp;idx=1&amp;sn=9edd57b33fcc1eceada435da1ba04626&amp;chksm=f04db3f3c73a3ae5886941fe63a76c7a2dc0fdcb1779b09555303c8a2a59224f9ba732e31ba3&amp;scene=27#wechat_redirect&cpage=60' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Linux安全审计机制模块实现分析(6)</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        吴宪萍
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-09-20</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                <div class="rich_media_thumb_wrp" id="media">
+                    
+                                        
+                                    </div>
+                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <h4><span style="color: rgb(2, 30, 170); font-size: 16px;"><strong><span style="color: rgb(2, 30, 170); font-family: 宋体;">2.3.4.1系统调用的审计</span></strong></span></h4><p style=";line-height:24px"><span style="font-family: 宋体; font-size: 16px;">有关进程审计的信息，存放在进程审计上下文中。审计上下文的类型是audit_struct结构的，每当进程创建时，如果进程需要被跟踪，就给进程分配一个进程上下文结构。所以该结构被嵌入进程结构<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">task_struct</span>中：</span></p><p><span style="font-family: 宋体; font-size: 16px;">struct task_struct {</span></p><p><span style="font-family: 宋体; font-size: 16px;">&nbsp;&nbsp;......</span></p><p><span style="font-family: 宋体; font-size: 16px;">struct audit_context *audit_context;</span></p><p><span style="font-family: 宋体; font-size: 16px;">......</span></p><p><span style="font-family: 宋体; font-size: 16px;">};</span></p><p style=";line-height:24px"><span style="font-family: 宋体; font-size: 16px;">审计上下文结构列出如下：</span></p><p><span style="font-family: 宋体; font-size: 16px;">struct audit_context {</span></p><p style="margin-left:28px"><span style="font-family: 宋体; font-size: 16px;">int dummy; /*必须是第一个成员*/</span></p><p style="margin-left:28px"><span style="font-family: 宋体; font-size: 16px;">int in_syscall; /*是否在系统调用中,若是,设置为 1 */</span></p><p style="margin-left:28px"><span style="font-family: 宋体; font-size: 16px;">enum audit_state; &nbsp;/*审计状态*/</span></p><p style="margin-left:28px"><span style="font-family: 宋体; font-size: 16px;">unsigned int serial &nbsp;/*审计记录的序列号*/</span></p><p style="margin-left:28px"><span style="font-family: 宋体; font-size: 16px;">Int &nbsp;long &nbsp;&nbsp;ctime; &nbsp;/*系统调用入口的时间*/</span></p><p style="margin-left:28px"><span style="font-family: 宋体; font-size: 16px;">uid_tloginuid; &nbsp;&nbsp;&nbsp;/*注册的用户 uid */</span></p><p style="margin-left:28px"><span style="font-family: 宋体; font-size: 16px;">Int major; &nbsp;&nbsp;&nbsp;/*系统调用号 */</span></p><p style="margin-left:28px"><span style="font-family: 宋体; font-size: 16px;">unsigned long argv[4]; &nbsp;&nbsp;/*系统调用参数列表*/</span></p><p style="margin-left:28px"><span style="font-family: 宋体; font-size: 16px;">struct timespec &nbsp;&nbsp;ctime; &nbsp;/*系统调用进入的时间*/</span></p><p style="margin-left:28px"><span style="font-family: 宋体; font-size: 16px;">Int return_valid; &nbsp;/*返回代码有效*/</span></p><p style="margin-left:28px"><span style="font-family: 宋体; font-size: 16px;">Long &nbsp;return_code; &nbsp;/*系统调用返回代码*/</span></p><p style="margin-left:28px"><span style="font-family: 宋体; font-size: 16px;">int &nbsp;&nbsp;name_count;</span></p><p style="margin-left:56px;text-indent:0"><span style="font-family: 宋体; font-size: 16px;">struct audit_names names[AUDIT_NAMES];//存储 getname()得到的文件名和文件属性信息,以便记录</span></p><p style="margin-left:28px"><span style="font-family: 宋体; font-size: 16px;">char * &nbsp;&nbsp;filterkey; &nbsp;/*触发记录的规则的关键字*/</span></p><p style="margin-left:28px"><span style="font-family: 宋体; font-size: 16px;">struct dentry *pwd; &nbsp;&nbsp;&nbsp;/*当前目录*/</span></p><p style="margin-left:28px"><span style="font-family: 宋体; font-size: 16px;">struct vfsmount * pwdmnt; &nbsp;&nbsp;/*文件系统挂接的当前目录*/</span></p><p style="margin-left:28px"><span style="font-family: 宋体; font-size: 16px;">struct audit_context *previous; &nbsp;&nbsp;/* 以前的审计上下文,用于系统调用进入退</span></p><p><span style="font-family: 宋体; font-size: 16px;">出时配对*/</span></p><p style="margin-left:28px"><span style="font-family: 宋体; font-size: 16px;">struct audit_aux_data *aux;</span></p><p><span style="font-family: 宋体; font-size: 16px;">/* 以下用于存储需要打印 task_struct 结构的信息*/</span></p><p style="margin-left:28px"><span style="font-family: 宋体; font-size: 16px;">pid_t pid, ppid;</span></p><p style="margin-left:28px"><span style="font-family: 宋体; font-size: 16px;">uid_t uid, euid, suid, fsuid;</span></p><p style="margin-left:28px"><span style="font-family: 宋体; font-size: 16px;">gid_t gid, egid, sgid, fsgid;</span></p><p style="margin-left:28px"><span style="font-family: 宋体; font-size: 16px;">unsigned long &nbsp;arch;</span></p><p style="margin-left:28px"><span style="font-family: 宋体; font-size: 16px;">Int personality;</span></p><p style="text-indent:0"><span style="font-family: 宋体; font-size: 16px;">};</span></p><p style=";line-height:24px"><span style="font-family: 宋体; font-size: 16px;">每当进程从进入系统调用和退出系统调用时,使用审计上下文结构 <span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">audit_context </span>记录系统调用进入和退出的各种属性数据<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">,</span>如<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">:</span>时间戳、系统调用号、系统调用参数等。审计上下文还通过辅助数据结构<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">audit_aux_data</span>记录进程运行中的各种关键数据的审计信息（比如进程打开的文件的<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">inode</span>号和所在设备号）。</span></p><p style=";line-height:24px"><span style="font-family: 宋体; font-size: 16px;">对于系统调用来说,审计上下文只能记录系统调用进入和退出时的审计信息<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">,</span>审计上下文所描述的数据在系统调用退出时可以通过内核审计系统发送给审计后台<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">,</span>由审计后台写入到 <span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">log </span>文件中。审计上下文就可以清空<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">,</span>为下次系统调用做好准备。</span></p><p style=";line-height:24px"><span style="font-family: 宋体; font-size: 16px;">只有当进程创建时创建了审计上下文并且审计上下文设置了状态值时,系统调用入口才填充审计上下文。如果状态为 <span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">AUDIT_RECORD_CONTEXT,</span>系统调用在退出时<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">,</span>将记录写出给审计后台<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">,</span>否则只有内核其他部分有请求时<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">,</span>才会将系统调用审计信息写出。要求进行系统调用审计的一个规则设置命令样例列出如下<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">:auditctl -a entry,always -S all -F pid=1005</span>上述规则语句表示记录 <span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">pid </span>为 <span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">1005 </span>的进程每次进入系统调用时记录审计信息，每次系统调用结束时写出审计信息。</span></p><p style="text-align:center"><span style="font-family: Calibri; font-size: 16px;"><span style="font-size: 16px; font-family: 宋体;">表</span>2-3 &nbsp;<span style="font-size: 16px; font-family: 宋体;">审计系统中的审计状态</span></span></p><table width="568"><tbody><tr><td width="284" valign="top" style="padding: 0px 7px; border-width: 1px; border-color: windowtext;"><p style="text-align:center"><span style="font-family: Calibri; font-size: 16px;">审计状态</span></p></td><td width="284" valign="top" style="padding: 0px 7px; border-left-style: none; border-right-width: 1px; border-right-color: windowtext; border-top-width: 1px; border-top-color: windowtext; border-bottom-width: 1px; border-bottom-color: windowtext;"><p style="text-align:center"><span style="font-family: Calibri; font-size: 16px;">含义</span></p></td></tr><tr><td width="284" valign="top" style="padding: 0px 7px; border-left-width: 1px; border-left-color: windowtext; border-right-width: 1px; border-right-color: windowtext; border-top-style: none; border-bottom-width: 1px; border-bottom-color: windowtext;"><p style="text-align:center"><span style="font-family: Calibri; font-size: 16px;">AUDIT_DISABLED</span></p></td><td width="284" valign="top" style="padding: 0px 7px; border-left-style: none; border-right-width: 1px; border-right-color: windowtext; border-top-style: none; border-bottom-width: 1px; border-bottom-color: windowtext;"><p style="text-align:center"><span style="font-family: Calibri; font-size: 16px;">不产生审计记录</span></p></td></tr><tr><td width="284" valign="top" style="padding: 0px 7px; border-left-width: 1px; border-left-color: windowtext; border-right-width: 1px; border-right-color: windowtext; border-top-style: none; border-bottom-width: 1px; border-bottom-color: windowtext;"><p style="text-align:center"><span style="font-family: Calibri; font-size: 16px;">AUDIT_BUILD_CONTEXT</span></p></td><td width="284" valign="top" style="padding: 0px 7px; border-left-style: none; border-right-width: 1px; border-right-color: windowtext; border-top-style: none; border-bottom-width: 1px; border-bottom-color: windowtext;"><p style="text-align:center"><span style="font-family: Calibri; font-size: 16px;">总是在系统调用结束时写出审计记录</span></p></td></tr><tr><td width="284" valign="top" style="padding: 0px 7px; border-left-width: 1px; border-left-color: windowtext; border-right-width: 1px; border-right-color: windowtext; border-top-style: none; border-bottom-width: 1px; border-bottom-color: windowtext;"><p style="text-align:center"><span style="font-family: Calibri; font-size: 16px;">AUDIT_RECORD_CONTEXT</span></p></td><td width="284" valign="top" style="padding: 0px 7px; border-left-style: none; border-right-width: 1px; border-right-color: windowtext; border-top-style: none; border-bottom-width: 1px; border-bottom-color: windowtext;"><p style="text-align:center"><span style="font-family: Calibri; font-size: 16px;">内核其它部分有要求时才写出审计记录</span></p></td></tr></tbody></table><p style="text-indent:0"><span style="color: rgb(2, 30, 170); font-size: 16px;"><strong><span style="color: rgb(2, 30, 170); font-size: 16px; font-family: 宋体;">1</span></strong><strong>.</strong><strong><span style="color: rgb(2, 30, 170); font-size: 16px; font-family: 宋体;">系统调用记录审计信息的入口</span></strong></span></p><p style=";line-height:24px"><span style="font-family: 宋体; font-size: 16px;">当用户使用工具 autrace或<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">ptrace</span>跟踪一个进程时<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">,</span>系统调用会根据审计规则记录系统调用的审计信息。每个进程在进入系统调用或退出系统调用时<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">,</span>分别调用函数<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">audit_syscall_entry </span>和 <span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">audit_syscall_exit </span>将系统调用信息先暂存在进程的审计上下文中<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">,</span>然后<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">,</span>通过内核审计系统将审计信息发送至审计后台<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">,</span>由审计后台将信息写入 <span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">log </span>文件中。</span></p><p style=";line-height:24px"><span style="font-family: 宋体; font-size: 16px;">当使用 autrace或 <span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">strace </span>跟踪进程时<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">,</span>系统调用的入口和出口处调用的相关代码列出如下：</span></p><p><span style="font-family: 宋体; font-size: 16px;">syscall_trace_entry:</span></p><p><span style="font-family: 宋体; font-size: 16px;">&nbsp;……</span></p><p><span style="font-family: 宋体; font-size: 16px;">call syscall_trace_enter</span></p><p><span style="font-family: 宋体; font-size: 16px;">…….</span></p><p><span style="font-family: 宋体; font-size: 16px;">END(syscall_trace_entry)</span></p><p><span style="font-family: 宋体; font-size: 16px;">和</span></p><p><span style="font-family: 宋体; font-size: 16px;">syscall_exit_work:</span></p><p><span style="font-family: 宋体; font-size: 16px;">……. </span></p><p><span style="font-family: 宋体; font-size: 16px;">call syscall_trace_leave</span></p><p><span style="font-family: 宋体; font-size: 16px;">……..</span></p><p><span style="font-family: 宋体; font-size: 16px;">END(syscall_exit_work)</span></p><p><span style="font-family: 宋体; font-size: 16px;">&nbsp;</span></p><p><span style="font-family: 宋体; font-size: 16px;">syscall_trace_enter和审计相关的代码列出如下：</span></p><p><span style="font-family: 宋体; font-size: 16px;">long syscall_trace_enter(struct pt_regs *regs)</span></p><p><span style="font-family: 宋体; font-size: 16px;">{……..</span></p><p><span style="font-family: 宋体; font-size: 16px;">if (IS_IA32)</span></p><p><span style="font-family: 宋体; font-size: 16px;">audit_syscall_entry(AUDIT_ARCH_I386,regs-&gt;orig_ax, regs-&gt;bx, regs-&gt;cx, &nbsp;regs-&gt;dx, regs-&gt;si);</span></p><p><span style="font-family: 宋体; font-size: 16px;">……..</span></p><p><span style="font-family: 宋体; font-size: 16px;">}</span></p><p><span style="font-family: 宋体; font-size: 16px;">syscall_trace_leave和审计相关的代码列出如下：</span></p><p><span style="font-family: 宋体; font-size: 16px;">void syscall_trace_leave(struct pt_regs *regs)</span></p><p><span style="font-family: 宋体; font-size: 16px;">{</span></p><p><span style="font-family: 宋体; font-size: 16px;">……..</span></p><p><span style="font-family: 宋体; font-size: 16px;">audit_syscall_exit(regs);</span></p><p><span style="font-family: 宋体; font-size: 16px;">……..</span></p><p><span style="font-family: 宋体; font-size: 16px;">}</span></p><p><span style="font-family: 宋体; font-size: 16px;">接下来分析audit_syscall_entry函数和 syscall_trace_leave函数</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">吴宪萍</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

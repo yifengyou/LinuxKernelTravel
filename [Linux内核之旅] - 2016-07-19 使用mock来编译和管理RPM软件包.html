@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		使用mock来编译和管理RPM软件包
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664602621&amp;idx=1&amp;sn=f967311a38aece0b997da8869274c5d0&amp;chksm=f04db618c73a3f0e6f13aab34a49c1c35fbce3f6e48666ae03fcb94f10aa8ea674b439cee97a&amp;scene=27#wechat_redirect&cpage=66' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">使用mock来编译和管理RPM软件包</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        王森
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-07-19</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                <div class="rich_media_thumb_wrp" id="media">
+                    
+                                        
+                                    </div>
+                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style=""><span style="font-size: 16px; color: rgb(2, 30, 170);"><strong style="box-sizing: inherit; -webkit-tap-highlight-color: transparent;">&lt;h2&gt;buildroot&lt;/h2&gt;</strong></span></p><p style=""><span style="font-size: 16px;">在打包时用到的spec文件中包含一些tag，这些对大小写不敏感的tag用冒号来定义。BuildRoot就是其中的一个tag。例如，在libvirt的spec文件中BuildRoot的定义如下：</span></p><p><img data-s="300,640" data-type="png" src="data:image/PNG;base64,iVBORw0KGgoAAAANSUhEUgAAAaQAAAAWBAMAAAB9F/XMAAAAFVBMVEX///////7++e399uT99uP9+et3d3dnUUuXAAAB3klEQVRYw+1XC07DMAzdJDgI4iYQ+QJc4cn3PwK1/eJka2hhdCpMdTv14+fPSxw3O50O+Q9yfi2PIS9J6XnvVLaSt6T0tHcqW8n7bZQE61oMkf3zghf94v47aTRKorRFEXW86sBEpsPOpSggboTEghe5voPBM4l5OiuUwr7zCGkxWjAA9XFOjAkEpQ45y2KsuyYnIhd5r1OSe1LCX6A0FZ4fEUwU0+k1aHdaaxpaI9pLDZ0G0i6mJ6VAqqRONClRB7O3Go94xZFmQErhyd5oDFdNSTtnYZ55Xs6Sz0tQsideovJJSYC2IHwcCUFMsxZwnRApCEggzZeNA3W000KdI+FXtaGqngozo0G1C2c0r3kuUoo0K5Si0hVeR8kGEKUyk0RSZ0jVLO6m40vpwma8ZO4l4Y3LZ6P4RKUz/I6S1/eIkpSeEhJJXSBzgukF6PrJnBIapUhdHMgw5RZK0kN1mRIWKHWFN6CUdouURoW3QinmVMEVP/2s5GPZOR+2h1pWTlLFPl8lGomtc1veHE0iw4sasmsP9OIl5eYR0ttDrKZCHr6sotoU0R5ULnpNa2Oe5Aa7h0axaWWIvHq+++7hJ5SK9yP61dF3fT9pe7wH3ImfP/bOZSNp/5cOOWQH+QS4m8UI7qmFogAAAABJRU5ErkJggg== " src="SeWfibBcBT0Fkzm8Dom8YeFpQxYDaGkibnsT2Feo5Fj8Gjib3iaZGoAw7YBm0JfLyLXugTuwiaf0mibhO2Sj4X2YsvcQ"  data-ratio="0.05238095238095238" data-w="420"  /><br  /></p><p style=""><span style="font-size: 16px;">BuildRoot设置的目录会被当作临时的根目录，%install部分安装的文件都会被临时安装到这里。之所以引入BuildRoot是为了在打包过程中不影响现在的系统。 RPM宏设定的BuildRoot默认值是~/rpmbuild/BUILDROOT, 可以在spec文件中设置该tag，或者在rpmbuild命令执行时使用- -buildroot选项来指定。</span></p><p style=""><span style="color: rgb(2, 30, 170);"><strong><span style="font-size: 16px;">&lt;h2&gt;mock的功能&lt;/h2&gt;</span></strong></span></p><p style=""><span style="font-size: 16px;">mock不只是将文件安装到Buildroot指定的根目录，而是创建一个打包的沙盒(sandbox)，挂载一些必要的文件系统(proc，sys等)，将打包过程所用到的软件包(BuildRequires指定)都安装到沙盒中，然后将指定的SRPM包进行编译，生成最终的RPM包。mock不仅可以使打包过程变得整洁，更能够测试BuildRequires是否完整。除了打包之外，mock也可以用来制作沙盒来测试软件包。</span></p><p style=""><span style="font-size: 16px; color: rgb(2, 30, 170);"><strong style="box-sizing: inherit; -webkit-tap-highlight-color: transparent;">&lt;h2&gt;安装mock&lt;/h2&gt;</strong></span></p><p style=""><span style="font-size: 16px;">使用YUM安装fedora维护者工具fedora-packager后，mock和koji作为依赖也被安装到系统中了。执行以下命令即可：</span></p><p><img data-s="300,640" data-type="png" src="data:image/PNG;base64,iVBORw0KGgoAAAANSUhEUgAAAPIAAAAaBAMAAAB/URx4AAAAFVBMVEX///////7++e399uT99uP9+et3d3dnUUuXAAABQ0lEQVRIx+2VwW3DMAxFE6C9d4QCXaAjBAXxF+gKxN9/hIgUGVlWHBto4BxqHkxZovmob1o+nf6jnb9kX/v5CPL7zmCRzyC/7U7+fhn5MpCh9yMxn6AKGGvhucgZV0ayqKwYWmAMFQvVLdf9LPJi/i1kUFlEKc50dDVJhV1C0DIuswTpUjcyQ3gyw6r8GVlyApyFNLKaZkjnZdY7IKtmXUNd6/fcHrd3WhwLZJpTJ85CJntW6cmiOiPHM6gS9GTTRzKxhGw2Bj0QPmkBppB27xmbyJYremq2Z5mQITey07xSpB7Skwe1g9WTt6itUaPcU1sypJG9G4oexVepnFDeFvwLh7WW0BpQamQE+1p2mIJxx9p6OUlvO0akucuDM2z181q1IUPKKfKIzD+TMZ5cLWme26/7V51/dwbf/s+HHXbYc+0KxAgiAba02ZwAAAAASUVORK5CYII= " src="SeWfibBcBT0Fkzm8Dom8YeFpQxYDaGkibn4FdBZ3ZeDlpibaepiaC6w2KEXQlP9SH7Uk4HvhuzYggIyLLqCNryGuzg"  data-ratio="0.10743801652892562" data-w="242"  /><br  /></p><p style=""><span style="font-size: 16px; color: rgb(2, 30, 170);"><strong style="box-sizing: inherit; -webkit-tap-highlight-color: transparent;">&lt;h2&gt;简单的配置mock&lt;/h2&gt;</strong></span></p><p style=""><span style="font-size: 16px;">在使用mock之前需要将当前用户加入到mock用户组，并使用户登陆到该用户组：</span></p><p><img data-s="300,640" data-type="png" src="data:image/PNG;base64,iVBORw0KGgoAAAANSUhEUgAAAXEAAAAXBAMAAAAPc2JkAAAAFVBMVEX///////7++e399uT99uP9+et3d3dnUUuXAAABqklEQVRYw+2WUWrDMAyGW9jed4TBLrAjjGF0gV3hR/c/QmVJlu3EJQlpFwrRQ1Lb+uUvspTmcjnttC12/UovZb8fhfz9aJSt9lnI344m2WrfTyZn7PcY28+cnBZC8YrtIwZkaYHNVil+rcnHmHwpAI2mpppKTiPB3BXiueDYIzyGHHdn/oWc5FzlHOTmh9+MmMByIzkmjmoh7jdPjUspESOvUbIM2QXEbFVmjhwllr0kChOJD8SbbMsiyJOy3pAjgfTc4WlqRjkYtWuc6XRTCQgnb1xAbc5rFIM0F1gwf0TJkq0LsArIonDyjYpAg6HLebeLk+vzcx735IYQNWHpDxc9/DbnEcXmNKkZhNnJVWqiLGAOcszJta7aOqcBuZfpkJyaasaEnDvyGqV4w3OexuSwGcIdck6rq2VEjiCnCfm9agndrFrikWPbfGxIQ/JptWgDWOd4xmTkXcGlY6wNS4dGi7L3lrvIlUqHurzcNGGc+wTgtkMJ2rqq1ihQAVWdC7IePHwrPtL2/YeWZI/Wnk2+z4jrdWrx3fK634rXv6NRtln9Pj/ttHV2A3GQTOq8TOvCAAAAAElFTkSuQmCC " src="SeWfibBcBT0Fkzm8Dom8YeFpQxYDaGkibncDP1ya2pqUksd40MBZSnalK49yGDHGv5oX98S7ZhCeDibQz0ZKkPj7Q"  data-ratio="0.06233062330623306" data-w="369"  /><br  /></p><p style=""><span style="font-size: 16px; color: rgb(2, 30, 170);"><strong style="box-sizing: inherit; -webkit-tap-highlight-color: transparent;">&lt;h2&gt;使用mock来打包&lt;/h2&gt;</strong></span></p><p style=""><span style="font-size: 16px;">使用mock打包需要配置文件来指定安装软件包所用到的YUM仓库，/etc/mock目录下有许多这样的配置文件。配置文件可以通过-r选项来指定，如果没有指定，则使用默认的配置文件/etc/mock/default.cfg。</span></p><p><img data-s="300,640" data-type="png" src="data:image/PNG;base64,iVBORw0KGgoAAAANSUhEUgAAAP0AAAAdBAMAAACTX3dNAAAAFVBMVEX///////7++e399uT99uP9+et3d3dnUUuXAAABNElEQVRIx+2VTY7CMAyFOcJoJPYcYRYcYDSK3gk4guX7H2HiXxyUIpCgXVCDMH6N8yWu0x4Ou326fZ/b6vb3deVf1se3drryt8C3n435v1M+yDx3j4waDakWgatrJdFEHpMe4yeJJlwMayS76s5FpIgY/nJ+Xqv8KEqMeIrPvVZaMm7EMZ0LTPLp+2PwWOrwha9DdFjyZYpeHMv1WYRX+QBiyZQ7kPzYR49YBZZ5aLwdVYS2jf3ABG2jXI3N2XlTfr9KC3y6rf/UwUcNRAyp9/l8y9cVzfi5/Qk/yhBLeZQ/qf+UDxeoNgMowWSO80Z4tMBngOzIgu0gsfxl7Rp4ZD2gTaYoEc0NopZQRPmKTilmJLyF8/d+84JtxY/nZXn+X9YtgFl5/x3P6+Pr+3+33Xb7TPsH25QwOF44UrIAAAAASUVORK5CYII= " src="SeWfibBcBT0Fkzm8Dom8YeFpQxYDaGkibnzhFcAIP2tEnwPiaZo6tMEC6ZfjZVDmBXY9CooM9kTmHbROMibmgPLcOw"  data-ratio="0.11462450592885376" data-w="253"  /><br  /><span style="">将会在BUILDROOT目录下挂载一些必要的文件必要的文件系统，并安装打包过程需要用到的软件包，最终生成RPM包。</span></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">王森</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

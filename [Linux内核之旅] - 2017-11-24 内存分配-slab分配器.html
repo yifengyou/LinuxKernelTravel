@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		内存分配-slab分配器
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664604914&amp;idx=1&amp;sn=a7769e8aad0a085a41e07dfac6952653&amp;chksm=f04d8917c73a0001c50f83af9e4f443c81da55512cd1c0e90438a16428b2593a98da44493209&amp;scene=27#wechat_redirect&cpage=28' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">内存分配-slab分配器</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        黄东升
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2017-11-24</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <h2 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.4em;border-bottom: 1px solid rgb(238, 238, 238);">1 slab综述</h2><h3 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.3em;">1.1 slab分配器产生的背景</h3><p style="margin: 0px 0px 1.2em !important;">类似 task_struct mm_struct 等结构被内核中被频繁分配和释放，同时创建和销毁这些结构会产生一定的开销(overhead)。二者累计起来导致大量开销的产生。<br  />Buddy分配器只能分配2^n个页面，对于小于一个页面的内存请求则没有办法。</p><h3 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.3em;">1.2 对象缓存(object cache)</h3><p style="margin: 0px 0px 1.2em !important;">Slab的基本思想是使用对象缓存去处理需要频繁分配和释放的对象。对象缓存类似于内存池，通过将一系列的对象维持在已创建的状态(constructed state)减少开销。</p><p style="margin: 0px 0px 1.2em !important;">实例： 一个典型的结构</p><pre style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em;line-height: 1.2em;margin: 1.2em 0px;"><code class="hljs language-c" style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;margin: 0px 0.15em;white-space: pre;overflow: auto;border-radius: 3px;border-width: 1px;border-style: solid;border-color: rgb(204, 204, 204);padding: 0.5em;color: rgb(51, 51, 51);background: rgb(248, 248, 248);text-size-adjust: none;display: block !important;"><span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">struct</span> foo {
+ &nbsp; &nbsp; &nbsp; &nbsp;kmutex_t foo_lock;
+ &nbsp; &nbsp; &nbsp; &nbsp;kcondvar_t foo_cv; &nbsp; &nbsp; &nbsp; &nbsp;<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">struct</span> bar *foo_barlist; &nbsp; &nbsp; &nbsp; &nbsp;<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">int</span> foo_refcnt;
+}; 
+
+创建结构foo
+foo = kmem_alloc(<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">sizeof</span> (<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">struct</span> foo),KM_SLEEP);
+mutex_init(&amp;foo-&gt;foo_lock, ...);
+cv_init(&amp;foo-&gt;foo_cv, ...);
+foo-&gt;foo_refcnt = <span class="hljs-number" style="color: rgb(0, 128, 128);">0</span>;
+foo-&gt;foo_barlist = NULL;
+使用结构foo
+use foo;
+销毁结构foo
+ASSERT(foo-&gt;foo_barlist == NULL);
+ASSERT(foo-&gt;foo_refcnt == <span class="hljs-number" style="color: rgb(0, 128, 128);">0</span>);
+cv_destroy(&amp;foo-&gt;foo_cv);
+mutex_destroy(&amp;foo-&gt;foo_lock);
+kmem_free(foo);</code></pre><p style="margin: 0px 0px 1.2em !important;">通过对象缓存我们可以直接使用对象，免去了创建 销毁的开销。</p><h3 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.3em;">1.3 slab分配器的结构</h3><p style="margin: 0px 0px 1.2em !important;">slab分配器分为 cache slab object 三级。cache是一系列同类型的object的集合，有task_struct 的cache，mm_struct的cache。图的下一层是slab，为了方便管理，slab被分成了三种 a. 空闲的slab b. 部分空闲的slab c. 全满的slab。内核只会从部分空闲的slab中分配对象。 slab由一个或多个连续的物理页构成，图中的slabs由连续的slab组成。</p><p style="margin: 0px 0px 1.2em !important;"><br  /></p><h2 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.4em;border-bottom: 1px solid rgb(238, 238, 238);">2 高速caches</h2><h3 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.3em;">2.1 slabtop命令和/proc/slabinfo</h3><p style="margin: 0px 0px 1.2em !important;">使用slabtop命令或者打印 /proc/slabinfo可以显示系统的slab使用状况。<br  />slabtop的输出：<br  /><br  />cat /proc/slabinfo的输出：<br  /></p><h3 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.3em;">2.2 通用缓存和专用缓存</h3><p style="margin: 0px 0px 1.2em !important;">为了减少内碎片的产生，slab进一步把缓存分成了通用和专用两部分</p><h4 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.2em;">2.2.1 通用缓存(general cache)</h4><p style="margin: 0px 0px 1.2em !important;">1 &nbsp;kmem_cache:<br  /> &nbsp; &nbsp;kmem_cache是缓存cache_cache的name字段的值。cache_cache用于存储缓存描述符。在创建一个新的缓存时，内核从cache_cache中取出一个对象存储缓存描述符kmem_cache_s。<br  /> &nbsp; &nbsp;<br  /></p><p style="margin: 0px 0px 1.2em !important;">2 kmalloc使用的缓存<br  />kmalloc使用的缓存又分为Size-N cache 和 Size-N DMA cache。<br  />每个cache的大小是2的N次方（N从5到17），即从32字节到131072字节。</p><p style="margin: 0px 0px 1.2em !important;"><br  /></p><h4 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.2em;">2.2.2 专用缓存(specific cache)</h4><p style="margin: 0px 0px 1.2em !important;">专用缓存用于频繁创建销毁的结构。由kmem_cache_create创建一个缓存。kmem_cache_shrink 回收缓存的空间。kmem_cache_destroy 销毁一个缓存。</p><h3 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.3em;">2.3 缓存描述符(caches descriptor)</h3><pre style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em;line-height: 1.2em;margin: 1.2em 0px;"><code class="hljs language-c" style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;margin: 0px 0.15em;white-space: pre;overflow: auto;border-radius: 3px;border-width: 1px;border-style: solid;border-color: rgb(204, 204, 204);padding: 0.5em;color: rgb(51, 51, 51);background: rgb(248, 248, 248);text-size-adjust: none;display: block !important;"><span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">struct</span> kmem_cache_s { &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">//指向本地CPU高速缓存的指针</span>
+ &nbsp; &nbsp;<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">struct</span> array_cache &nbsp; &nbsp;*<span class="hljs-built_in" style="color: rgb(0, 134, 179);">array</span>[NR_CPUS]; &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">//本地缓存一次搬运的空闲对象的个数</span>
+ &nbsp; &nbsp;<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">unsigned</span> <span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">int</span> &nbsp; &nbsp; &nbsp; &nbsp;batchcount; &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">//本地缓存的空闲对象的最大个数</span>
+ &nbsp; &nbsp;<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">unsigned</span> <span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">int</span> &nbsp; &nbsp; &nbsp; &nbsp;limit; &nbsp; &nbsp;<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">struct</span> kmem_list3 &nbsp; &nbsp;lists; &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">//对象的大小</span>
+ &nbsp; &nbsp;<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">unsigned</span> <span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">int</span> &nbsp; &nbsp; &nbsp; &nbsp;objsize; &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">//缓存的静态Flags</span>
+ &nbsp; &nbsp;<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">unsigned</span> <span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">int</span> &nbsp; &nbsp; &nbsp; &nbsp; flags; &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">/* constant flags */</span>
+ &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">//每个slab中对象的个数</span>
+ &nbsp; &nbsp;<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">unsigned</span> <span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">int</span> &nbsp; &nbsp; &nbsp; &nbsp;num; &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">/* # of objs per slab */</span>
+ &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">//缓存中空闲对象的上限</span>
+ &nbsp; &nbsp;<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">unsigned</span> <span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">int</span> &nbsp; &nbsp; &nbsp; &nbsp;free_limit; <span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">/* upper limit of objects in the lists */</span>
+ &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">//保护描述符的自旋锁</span>
+ &nbsp; &nbsp;spinlock_t &nbsp; &nbsp; &nbsp; &nbsp;spinlock;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">/* 3) cache_grow/shrink */</span>
+ &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">//一个slab中包含2^gforder个连续的页</span>
+ &nbsp; &nbsp;<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">unsigned</span> <span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">int</span> &nbsp; &nbsp; &nbsp; &nbsp;gfporder; &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">//分配页框时使用的Flags</span>
+ &nbsp; &nbsp;<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">unsigned</span> <span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">int</span> &nbsp; &nbsp; &nbsp; &nbsp;gfpflags;
+
+ &nbsp; &nbsp;size_t &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;colour; &nbsp; &nbsp; &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">/* cache colouring range */</span>
+ &nbsp; &nbsp;<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">unsigned</span> <span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">int</span> &nbsp; &nbsp; &nbsp; &nbsp;colour_off; &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">/* colour offset */</span>
+ &nbsp; &nbsp;<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">unsigned</span> <span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">int</span> &nbsp; &nbsp; &nbsp; &nbsp;colour_next; &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">/* cache colouring */</span>
+ &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">//如果使用off-slab的方式存储slab描述符，则该字段指向存储slab描述符的缓存</span>
+ &nbsp; &nbsp;kmem_cache_t &nbsp; &nbsp; &nbsp; &nbsp;*slabp_cache; &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">//slab的大小</span>
+ &nbsp; &nbsp;<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">unsigned</span> <span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">int</span> &nbsp; &nbsp; &nbsp; &nbsp;slab_size; &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">//缓存的动态Flags</span>
+ &nbsp; &nbsp;<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">unsigned</span> <span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">int</span> &nbsp; &nbsp; &nbsp; &nbsp;dflags; &nbsp; &nbsp; &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">/* dynamic flags */</span>
+
+ &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">//缓存的构造函数</span>
+ &nbsp; &nbsp;<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">void</span> (*ctor)(<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">void</span> *, kmem_cache_t *, <span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">unsigned</span> <span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">long</span>); &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">//缓存的析构函数</span>
+ &nbsp; &nbsp;<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">void</span> (*dtor)(<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">void</span> *, kmem_cache_t *, <span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">unsigned</span> <span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">long</span>); &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">//缓存的名字</span>
+ &nbsp; &nbsp;<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">const</span> <span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">char</span> &nbsp; &nbsp; &nbsp; &nbsp;*name; &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">//指向下一个缓存的指针</span>
+ &nbsp; &nbsp;<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">struct</span> list_head &nbsp; &nbsp;next;
+};<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">struct</span> kmem_list3 { &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">//slabs_partial slab_full slab_free三个双链表</span>
+ &nbsp; &nbsp;<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">struct</span> list_head &nbsp; &nbsp;slabs_partial; &nbsp; &nbsp;
+ &nbsp; &nbsp;<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">struct</span> list_head &nbsp; &nbsp;slabs_full; &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">//只包含空闲对象的slab双链表</span>
+ &nbsp; &nbsp;<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">struct</span> list_head &nbsp; &nbsp;slabs_free; &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">//缓存中空闲对象的个数</span>
+ &nbsp; &nbsp;<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">unsigned</span> <span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">long</span> &nbsp; &nbsp;free_objects; &nbsp; &nbsp;<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">int</span> &nbsp; &nbsp; &nbsp; &nbsp;free_touched; &nbsp; &nbsp;<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">unsigned</span> <span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">long</span> &nbsp; &nbsp;next_reap; &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">//指向共享本地缓存的指针</span>
+ &nbsp; &nbsp;<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">struct</span> array_cache &nbsp; &nbsp;*shared;
+};</code></pre><h4 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.2em;">2.3.1 着色相关的字段</h4><p style="margin: 0px 0px 1.2em !important;">关于这几个字段的详细说明请看最后一部分<br  />size_t &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;colour; &nbsp; &nbsp; &nbsp; &nbsp;/<em> cache colouring range </em>/<br  />unsigned int &nbsp; &nbsp; &nbsp; &nbsp;colour_off; &nbsp; &nbsp;/<em> colour offset </em>/<br  />unsigned int &nbsp; &nbsp; &nbsp; &nbsp;colour_next; &nbsp; &nbsp;/<em> cache colouring </em>/</p><h3 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.3em;">2.4 缓存的接口</h3><p style="margin: 0px 0px 1.2em !important;">每个缓存有两组接口，分为前端和后端（front end &nbsp;&amp; back end）<br  />前端负责对象的分配和释放，后端负责扩大或回收缓存的内存。</p><p style="margin: 0px 0px 1.2em !important;"><br  /></p><h3 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.3em;">2.5 缓存的创建</h3><p style="margin: 0px 0px 1.2em !important;">kmem_cache_t <em><br  />kmem_cache_create (const char </em>name, size_t size, size_t align,<br  /> &nbsp; &nbsp;unsigned long flags, void (<em>ctor)(void</em>, kmem_cache_t <em>, unsigned long),<br  /> &nbsp; &nbsp;void (</em>dtor)(void<em>, kmem_cache_t </em>, unsigned long))<br  />参数：<br  />name: 显示在/proc/slabinfo的缓存名<br  />size: 对象的大小<br  />alian: &nbsp;为了与硬件缓存的cache line对齐的偏移量<br  />flags:<br  />SLAB_POISON：用一个魔数（a5a5a5a5)填充每一个slab，从而可以得到未初始化内存的应用<br  />SLAB_NO_REAP：不回收该缓存的空间<br  />SLAB_HWCACHE_ALIGN： 将对象与cache line对齐<br  />ctor: 缓存的构造<br  />dtor: 缓存的析构</p><p style="margin: 0px 0px 1.2em !important;">Step1: sanity check。检测缓存名是否空，是否处于中断上下文，对象尺寸是否过大或过小，是否只有析构而没有构造。<br  />Step2: 计算对象对齐所使用的偏移量（alignment）。<br  />Step3: 从通用缓存（general cache）cache_cache 中获取一个存放缓存描述符的对象。<br  />Step4: 调用memset函数用全0填充获得的对象。清楚对象的旧数据。<br  />Step5: 判断slab管理单元的存储位置 on-slab Or off-slab，判断条件是 size &gt;= (PAGE_SIZE&gt;&gt;3)<br  />Step6: 计算每个slab包含的对象个数，以及每个slab的大小。<br  />Step7: 处理off-slab的情况。<br  />如果flag是off-slab，但是单个slab的剩余空间大于slab描述符和对象描述的大小(slab_size)。则将flag置为on-slab且left_over &nbsp;- slab_size.<br  />将对齐偏移量colour_off 置为缓存行大小。计算cache描述符的其他字段。<br  />调用kmem_find_general_cachep获取存储slab描述符的缓存。<br  />Step8 处理本地高速缓存cpucache。<br  />总之，创建过程大致上做了两件事，首先获取一个描述缓存的对象，其次计算缓存描述符各个字段的值。</p><h3 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.3em;">2.6 缓存内存空间的回收</h3><p style="margin: 0px 0px 1.2em !important;">内核使用kmem_cache_shrink回收缓存使用的内存，其调用图如下：<br  /><br  />Step1 : __cache_shrink首先调用drain_cpu_caches回收所有本地缓存的内存空间。<br  />Step2 : 遍历双向链表slabs_free，销毁所有的free slab。这里可以看到内核只回收只包含空闲对象的slab的内存。</p><hr  /><h2 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.4em;border-bottom: 1px solid rgb(238, 238, 238);">3 本地高速缓存(Local Cache)</h2><p style="margin: 0px 0px 1.2em !important;">为了更有效地利用硬件缓存，应该尽量使用一个CPU上的数据。于是，内核采用per-cpu的本地缓存。通过使用本地缓存，每个CPU只访问本地的缓存，减少了条件竞争的发生，也就减少了自旋锁的使用。</p><h3 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.3em;">3.1 本地缓存描述符</h3><p style="margin: 0px 0px 1.2em !important;"><br  /></p><p style="margin: 0px 0px 1.2em !important;"><br  />内核使用array_cache结构描述一个本地缓存，其包含4个字段：<br  />avail: 本地缓存中可使用的对象个数<br  />limit: 本地缓存中对象的最大值<br  />batchcount: 本地缓存一次搬运的对象个数<br  />touched: 如果本地缓存被使用过，则将其置1</p><h3 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.3em;">3.2 向本地缓存添加和删除对象</h3><p style="margin: 0px 0px 1.2em !important;">类似于Slab中slab描述符和对象的关系，本地缓存之后就存储的是对象指针。所以通过对指向本地缓存的指针加一，我们就可以获取本地缓存中第一个对象的指针。该工作由内联函数 ac_entry 完成。另外，本地缓存是一个后进先出（LIFO）的结构，这样avail既可以作为本地缓存中可用对象的个数，也可以作为访问对象的下标。</p><p style="margin: 0px 0px 1.2em !important;"><br  /></p><p style="margin: 0px 0px 1.2em !important;">获取本地缓存中第一个可用的对象指针<br  /></p><p style="margin: 0px 0px 1.2em !important;">向本地缓存中增加一个对象<br  /></p><p style="margin: 0px 0px 1.2em !important;">向本地缓存中删除一个对象<br  /></p><h3 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.3em;">3.3 开启本地缓存</h3><p style="margin: 0px 0px 1.2em !important;">开启本地缓存的工作由 enable_cpucache() 完成。这个函数的主要工作是<br  />1 根据缓存(kmem_cache)中的对象的大小，判断本地缓存的limit的大小。<br  />2 调用 do_tune_cpucache 给本地缓存分配空间。值的注意的是，本地缓存的空间由kmalloc分配，也就是说本地缓存属于通用缓存的Size-N cache</p><h3 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.3em;">3.4 共享的本地缓存</h3><p style="margin: 0px 0px 1.2em !important;"><br  />list3结构中的shared 字段指向一个由所有CPU共享的本地缓存。</p><hr  /><h2 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.4em;border-bottom: 1px solid rgb(238, 238, 238);">4 slab</h2><h3 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.3em;">4.1 slab和cache的关系</h3><p style="margin: 0px 0px 1.2em !important;"><br  /></p><h3 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.3em;">4.2 slab描述符</h3><pre style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em;line-height: 1.2em;margin: 1.2em 0px;"><code class="hljs language-c" style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;margin: 0px 0.15em;white-space: pre;overflow: auto;border-radius: 3px;border-width: 1px;border-style: solid;border-color: rgb(204, 204, 204);padding: 0.5em;color: rgb(51, 51, 51);background: rgb(248, 248, 248);text-size-adjust: none;display: block !important;"><span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">struct</span> slab { &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">//slab双向链表，该链表有三种 部分空闲链表parial 全部空闲链表free 全满链表full </span>
+ &nbsp; &nbsp;<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">struct</span> list_head &nbsp; &nbsp;<span class="hljs-built_in" style="color: rgb(0, 134, 179);">list</span>; &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">//slab使用的colour</span>
+ &nbsp; &nbsp;<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">unsigned</span> <span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">long</span> colouroff; &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">//slab的第一个对象的地址</span>
+ &nbsp; &nbsp;<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">void</span> *s_mem; 
+ &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">//正在使用中的对象个数</span>
+ &nbsp; &nbsp;<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">unsigned</span> <span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">int</span> inuse; &nbsp; &nbsp; &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">/* num of objs active in slab */</span>
+ &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">//kmem_bufctl_t数组的首元素</span>
+ &nbsp; &nbsp; &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">//kmem_bufctl_t实际上是一个unsigned short类型</span>
+ &nbsp; &nbsp;kmem_bufctl_t <span class="hljs-built_in" style="color: rgb(0, 134, 179);">free</span>;
+};<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">typedef</span> <span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">unsigned</span> <span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">short</span> kmem_bufctl_t;</code></pre><h3 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.3em;">4.3 on-slab 和 off-slab</h3><p style="margin: 0px 0px 1.2em !important;">slab描述符有两个存储位置，第一种是on-slab, 对象和slab描述符共同存储在slab中，第二种是off-slab, 将slab描述符存储在通用缓存中(general cache).</p><h3 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.3em;">4.4 kmem_getpages和 cache_grow</h3><p style="margin: 0px 0px 1.2em !important;">当创建新的slab, 内核通过kmem<em>getpages给slab 分配一组<em>_连续</em></em>的页面。<br  />cache_grow 给缓存分配一个新的slab</p><h3 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.3em;">4.5 kmem_freepages 和 slab_destroy</h3><p style="margin: 0px 0px 1.2em !important;">kmem_freepages 释放slab所使用的连续页框。<br  />slab_destroy 销毁slab中所有的对象，并将其所占用的内存空间还给系统。<br  />在这之前，slab必须从cache中移除。</p><hr  /><h2 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.4em;border-bottom: 1px solid rgb(238, 238, 238);">5 对象</h2><h3 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.3em;">5.1 kmem_bufctl_t数组</h3><p style="margin: 0px 0px 1.2em !important;">为了以一种快速且简便的方法在部分空闲的链表中找到一个空闲的objetct, 使用kmem_bufctl_t数组存储空闲对象的index，bufctl_end标志该数组的结束。这种方法的关键是，对于对象N，下一个空闲对象的index 会存储在kmem_buf_ctl[N]中。<br  /></p><h3 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.3em;">5.2 分配一个对象</h3><p style="margin: 0px 0px 1.2em !important;">内核通过 kmem_cache_allloc 获得一个空闲对象。<br  />该函数首先试图从本地高速缓存中获得一个空闲对象。<br  />当本地缓存中没有空闲对象时，调用 cache_alloc_refill() 函数重新填充本地缓存并获得一个对象。</p><h3 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.3em;">5.3 释放一个对象</h3><p style="margin: 0px 0px 1.2em !important;">释放对象的工作由 kmem_cache_free 完成。<br  />该函数首先检查本地缓存是否有足够的空间存储一个被释放的对象 ( avail &lt; limit )。如果有足够的空间则将该对象放入本地缓存。<br  />当本地缓存中没有空闲对象时，调用 cache_alloc_refill 函数重新填充本地缓存并获得一个空闲对象</p><hr  /><h2 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.4em;border-bottom: 1px solid rgb(238, 238, 238);">6. 对象着色和对齐</h2><h3 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.3em;">6.1 &nbsp;直接映射缓存中的冲突不命中</h3><ol style="margin-left: 0px;margin-right: 0px;" class=" list-paddingleft-2"><li><p style="margin: 0px 0px 1.2em !important;margin: 0.5em 0px !important;">直接映射缓存的cache line<br  /></p></li><li><p style="margin: 0px 0px 1.2em !important;margin: 0.5em 0px !important;">实例分析<br  />先看一段引发冲突的代码实例：</p><pre style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em;line-height: 1.2em;margin: 1.2em 0px;"><code class="hljs language-c" style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;margin: 0px 0.15em;white-space: pre;overflow: auto;border-radius: 3px;border-width: 1px;border-style: solid;border-color: rgb(204, 204, 204);padding: 0.5em;color: rgb(51, 51, 51);background: rgb(248, 248, 248);text-size-adjust: none;display: block !important;"><span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">float</span> foo(<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">float</span> x[<span class="hljs-number" style="color: rgb(0, 128, 128);">8</span>], <span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">float</span> y[<span class="hljs-number" style="color: rgb(0, 128, 128);">8</span>])
+{ <span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">float</span> sum = <span class="hljs-number" style="color: rgb(0, 128, 128);">0.0</span>; <span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">int</span> i; <span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">for</span> (i = <span class="hljs-number" style="color: rgb(0, 128, 128);">0</span>; i &lt; <span class="hljs-number" style="color: rgb(0, 128, 128);">8</span>; i++)
+ &nbsp; &nbsp; sum += x[i]*y[i]; <span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">return</span> sum;
+}</code></pre><p style="margin: 0px 0px 1.2em !important;margin: 0.5em 0px !important;">代码 6-1<br  />假设一个大小为32字节 一个字块是16字节（可以容纳4个浮点数）。则cache共有两个cache line。数组x被存储在内存的前32个字节，数组紧跟在x之后，地址开始在32字节。<br  />组索引 = 主存块号 mod 缓存块数<br  />在运行时，循环开始使用x[0] , 缓存不命中。x[0] - x[3]被加载到字块0。<br  />然后开始使用y[0],缓存不命中。y[0] - y[3]也被加载到字块0，导致字块0的值被覆盖。这样，以后每次使用x[i]或者y[i]都会导致缓存不命中。高速缓存反复加载驱逐同一个缓存行。导致很低的cache命中率。</p></li></ol><p style="margin: 0px 0px 1.2em !important;"><br  />一种简单的修改这种问题的方法是在数组X后填充4个字节。将x重新定义为float[12]。这样，主存字块0：x[0] - x[3] &nbsp; 主存字块1：x[4] - x[7]<br  />主存字块3：y[0] - y[3] 主存字块4：y[4] - y[7]。这样，在使用x[0]时，不命中，x[0] - x[3]被加载到字块0。然后，使用y[0]，不命中，y[0] - y[3]被加载到字块1。随后，x[1] - x[3] 和 y[1] - y[3]都命中。这样，命中率被大大降低。这种现象被称为cache抖动。<br  /></p><h3 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.3em;">6.2 cache着色</h3><p style="margin: 0px 0px 1.2em !important;">如果将一个slab比作是上一部分的数组X和数组Y，我们应该就容易理解为什么要进行cache着色。放置相同类型object的slabs之间更容易发生这种现象。通过在一个slab的头部插入偏移，而减少cache抖动的现象。</p><p style="margin: 0px 0px 1.2em !important;">那么问题是我们应该怎么计算slab中的着色偏移呢？如何确定使用的着色值的个数呢？<br  />解决这些问题，我们要回顾第一部分讲到的cache描述符和slab描述符的几个字段。</p><pre style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em;line-height: 1.2em;margin: 1.2em 0px;"><code class="hljs language-c" style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;margin: 0px 0.15em;white-space: pre;overflow: auto;border-radius: 3px;border-width: 1px;border-style: solid;border-color: rgb(204, 204, 204);padding: 0.5em;color: rgb(51, 51, 51);background: rgb(248, 248, 248);text-size-adjust: none;display: block !important;">kmem_cache_s:
+size_t &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;colour; &nbsp; &nbsp; &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">/* cache colouring range */</span><span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">unsigned</span> <span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">int</span> &nbsp; &nbsp; &nbsp; &nbsp;colour_off; &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">/* colour offset */</span><span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">unsigned</span> <span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">int</span> &nbsp; &nbsp; &nbsp; &nbsp;colour_next; &nbsp; &nbsp;<span class="hljs-comment" style="color: rgb(153, 153, 136);font-style: italic;">/* cache colouring */</span>slab:<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">unsigned</span> <span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">long</span> &nbsp; &nbsp; &nbsp; &nbsp;colouroff;</code></pre><p style="margin: 0px 0px 1.2em !important;">代码 6-2</p><p style="margin: 0px 0px 1.2em !important;">在每个cache描述符中有一个colour_off字段，该值是cache中每个slab的基准偏移。即slab中的着色偏移都是由基准偏移得到。</p><p style="margin: 0px 0px 1.2em !important;">而colour字段相当于一个着色计数器（从0开始），cache内第一个slab的着色计数器为0，第二个计数器为1，…。以此类推，显然计数器不能无限大，计数器最大等于 cachep-&gt; colour。该值是和每个slab中的空闲空间left_over有关的。是通过公式 cachep-&gt;colour = left_over/cachep-&gt;colour_off 计算得出的。</p><p style="margin: 0px 0px 1.2em !important;">而每一个slab的着色偏移都是通过公式 colouroff = 当前slab的着色计数器 &nbsp;<em> 基准偏移。举例来说如果基准偏移为64字节（一般为硬件cacheline大小），那么第一个slab的着色偏移为0，第二个slab的着色偏移为1 </em> 64 = 64，第三个slab的着色偏移为2 * 64 = 128。</p><p style="margin: 0px 0px 1.2em !important;">每当cache要申请一个新的slab时，colour_next就派上了用场。colour_next存储的是将要创建的slab的着色计数器。在cache_grow中，该值会被用来计算新的slab的着色偏移。只要colour_next &nbsp;大于colour , 那么colour_next就会被置为0。见代码6-3。</p><pre style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em;line-height: 1.2em;margin: 1.2em 0px;"><code class="hljs language-c" style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;margin: 0px 0.15em;white-space: pre;overflow: auto;border-radius: 3px;border-width: 1px;border-style: solid;border-color: rgb(204, 204, 204);padding: 0.5em;color: rgb(51, 51, 51);background: rgb(248, 248, 248);text-size-adjust: none;display: block !important;">cachep-&gt;colour = left_over/cachep-&gt;colour_off; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+offset = cachep-&gt;colour_next;
+cachep-&gt;colour_next++;<span class="hljs-keyword" style="color: rgb(51, 51, 51);font-weight: bold;">if</span> (cachep-&gt;colour_next &gt;= cachep-&gt;colour)
+ &nbsp; &nbsp;cachep-&gt;colour_next = <span class="hljs-number" style="color: rgb(0, 128, 128);">0</span>;
+offset *= cachep-&gt;colour_off;</code></pre><p style="margin: 0px 0px 1.2em !important;">代码 6-3</p><p style="margin: 0px 0px 1.2em !important;"><br  /> 图 6-1 插入着色和对齐偏移之后的slab结构</p><h3 style="margin: 1.3em 0px 1em;padding: 0px;font-weight: bold;font-size: 1.3em;">6.3 cache对齐</h3><p style="margin: 0px 0px 1.2em !important;">假设对象A的一个字段大小为16字节，对象A为32字节。 cache块大小为32字节。如果将A存储在地址0处，则A位于主存的字块0，A映射到cache line 0。这样只需要和cache交互一次就可以取出该字段的值。如果将A存储在地址8处，则A映射到主存的字块0和字块1，A映射到cache line0 和 cache line 1。要取出字段值，需要与cache 交互两次。所以，对象需要32字节对齐。</p><blockquote style="margin: 1.2em 0px;border-left: 4px solid rgb(221, 221, 221);padding: 0px 1em;color: rgb(119, 119, 119);quotes: none;"><p style="margin: 0px 0px 1.2em !important;">参考文献</p><ol style="margin-left: 0px;margin-right: 0px;" class=" list-paddingleft-2"><li><p>深入理解Linux内核</p></li><li><p>深入理解计算机系统</p></li><li><p>The Slab Allocator: An Object-Caching Kernel Memory Allocator，Bonwick, Jeff，Proceedings of the USENIX Summer Technical Conference - Volume 1，1994</p></li></ol></blockquote>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">黄东升</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

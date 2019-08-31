@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		《Linux内核修炼之道》精华分享与讨论（1）——Kernel地图：Kconfig与Makefile
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=415742210&amp;idx=1&amp;sn=3a38a1d725c32a01c5680e4e7137cd60&amp;chksm=765894e7412f1df11d16240b9630606d4a618337844191a287a2af5eeaf3152d42244073d55c&amp;scene=27#wechat_redirect&cpage=80' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">《Linux内核修炼之道》精华分享与讨论（1）——Kernel地图：Kconfig与Makefile</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        fudan_abc
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-01-19</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><strong><br  /></strong></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;"><strong>Makefile</strong></span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">毫不夸张地说，Kconfig和Makefile是我们浏览内核代码时最为依仗的两个文件。基本上，Linux内核中每一个目录下边都会有一个Kconfig文件和一个Makefile文件。 对于一个希望能够在Linux内核的汪洋代码里看到一丝曙光的人来说，将它们放在怎么重要的地位都不过分。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">我们去香港，通过海关的时候，总会有免费的地图和各种指南拿，有了它们在手里我们才不至于无头苍蝇般迷惘的行走在陌生的街道上。即使在内地出去旅游的时候一般来说也总是会首先找份地图，当然了，这时就是要去买了，拿是拿不到的，不同的地方有不同的特色， 只不过有的特色是服务，有的特色是索取。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">Kconfig和Makefile就是Linux Kernel迷宫里的地图。地图引导我们去认识一个城市，而Kconfig和Makefile则可以让我们了解一个Kernel目录下面的结构。我们每次浏览kernel寻找属于自己的那一段代码时，都应该首先看看目录下的这两个文件。&nbsp;<br  /></span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;"><strong>利用Kconfig和Makefile寻找目标代码</strong></span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">就像利用地图寻找目的地一样，我们需要利用Kconfig和Makefile来寻找所要研究的目标代码。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">比如我们打算研究U盘驱动的实现，因为U盘是一种storage设备，所以我们应该先进入到drivers/usb/storage/目录。但是该目录下的文件很多，那么究竟哪些文件才是我们需要关注的？这时就有必要先去阅读Kconfig和Makefile文件。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">对于Kconfig文件，我们可以看到下面的选项。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="color: rgb(0, 0, 255); font-size: 16px;">34 config USB_STORAGE_DATAFAB&nbsp;<br  />35&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool &quot;Datafab Compact Flash Reader support (EXPERIMENTAL)&quot;&nbsp;<br  />36&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; depends on USB_STORAGE &amp;&amp; EXPERIMENTAL&nbsp;<br  />37&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; help&nbsp;<br  />38&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Support for certain Datafab CompactFlash readers.&nbsp;<br  />39&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Datafab has a web page at &lt;</span><span style="color: rgb(0, 0, 255); font-size: 16px;">http://www.datafabusa.com/</span><span style="color: rgb(0, 0, 255); font-size: 16px;">&gt;.</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">显然，这个选项和我们的目的没有关系。首先它专门针对Datafab公司的产品，其次虽然CompactFlash reader是一种flash设备，但显然不是U盘。因为drivers/usb/storage目录下的代码是针对usb mass storage这一类设备，而不是针对某一种特定的设备。U盘只是usb mass storage设备中的一种。再比如：</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="color: rgb(0, 0, 255); font-size: 16px;">101 config USB_STORAGE_SDDR55&nbsp;<br  />102&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool &quot;SanDisk SDDR-55 SmartMedia support (EXPERIMENTAL)&quot;&nbsp;<br  />103&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; depends on USB_STORAGE &amp;&amp; EXPERIMENTAL&nbsp;<br  />104&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; help&nbsp;<br  />105&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Say Y here to include additional code to support the Sandisk SDDR-55&nbsp;<br  />106&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SmartMedia reader in the USB Mass Storage driver.&nbsp;<br  /></span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">很显然这个选项是有关SanDisk产品的，并且针对的是SM卡，同样不是U盘，所以我们也不需要去关注。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">事实上，很容易确定，只有选项CONFIG_USB_STORAGE才是我们真正需要关注的。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="color: rgb(0, 0, 255); font-size: 16px;">9 config USB_STORAGE&nbsp;<br  />10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tristate &quot;USB Mass Storage support&quot;&nbsp;<br  />11&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; depends on USB &amp;&amp; SCSI&nbsp;<br  />12&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ---help---&nbsp;<br  />13&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Say Y here if you want to connect USB mass storage devices to your&nbsp;<br  />14&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; computer&#39;s USB port. This is the driver you need for USB&nbsp;<br  />15&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; floppy drives, USB hard disks, USB tape drives, USB CD-ROMs,&nbsp;<br  />16&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; USB flash devices, and memory sticks, along with&nbsp;<br  />17&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; similar devices. This driver may also be used for some cameras&nbsp;<br  />18&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; and card readers.&nbsp;<br  />19&nbsp;<br  />20&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; This option depends on &#39;SCSI&#39; support being enabled, but you&nbsp;<br  />21&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; probably also need &#39;SCSI device support: SCSI disk support&#39;&nbsp;<br  />22&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (BLK_DEV_SD) for most USB storage devices.&nbsp;<br  />23&nbsp;<br  />24&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; To compile this driver as a module, choose M here: the&nbsp;<br  />25&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; module will be called usb-storage.&nbsp;<br  /></span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">接下来阅读Makefile文件。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="color: rgb(0, 0, 255); font-size: 16px;">0 #&nbsp;<br  />1 # Makefile for the USB Mass Storage device drivers.&nbsp;<br  />2 #&nbsp;<br  />3 # 15 Aug 2000, Christoph Hellwig&nbsp;<br  />4 # Rewritten to use lists instead of if-statements.&nbsp;<br  />5 #&nbsp;<br  />6&nbsp;<br  />7 EXTRA_CFLAGS&nbsp;&nbsp;&nbsp; := -Idrivers/scsi&nbsp;<br  />8&nbsp;<br  />9 obj-$(CONFIG_USB_STORAGE)&nbsp;&nbsp;&nbsp; += usb-storage.o&nbsp;<br  />10&nbsp;<br  />11 usb-storage-obj-$(CONFIG_USB_STORAGE_DEBUG)&nbsp;&nbsp;&nbsp; += debug.o&nbsp;<br  />12 usb-storage-obj-$(CONFIG_USB_STORAGE_USBAT)&nbsp;&nbsp;&nbsp; += shuttle_usbat.o&nbsp;<br  />13 usb-storage-obj-$(CONFIG_USB_STORAGE_SDDR09)&nbsp;&nbsp;&nbsp; += sddr09.o&nbsp;<br  />14 usb-storage-obj-$(CONFIG_USB_STORAGE_SDDR55)&nbsp;&nbsp;&nbsp; += sddr55.o&nbsp;<br  />15 usb-storage-obj-$(CONFIG_USB_STORAGE_FREECOM)&nbsp;&nbsp;&nbsp; += freecom.o&nbsp;<br  />16 usb-storage-obj-$(CONFIG_USB_STORAGE_DPCM)&nbsp;&nbsp;&nbsp; += dpcm.o&nbsp;<br  />17 usb-storage-obj-$(CONFIG_USB_STORAGE_ISD200)&nbsp;&nbsp;&nbsp; += isd200.o&nbsp;<br  />18 usb-storage-obj-$(CONFIG_USB_STORAGE_DATAFAB)&nbsp;&nbsp;&nbsp; += datafab.o&nbsp;<br  />19 usb-storage-obj-$(CONFIG_USB_STORAGE_JUMPSHOT)&nbsp;&nbsp;&nbsp; += jumpshot.o&nbsp;<br  />20 usb-storage-obj-$(CONFIG_USB_STORAGE_ALAUDA)&nbsp;&nbsp;&nbsp; += alauda.o&nbsp;<br  />21 usb-storage-obj-$(CONFIG_USB_STORAGE_ONETOUCH)&nbsp;&nbsp;&nbsp; += onetouch.o&nbsp;<br  />22 usb-storage-obj-$(CONFIG_USB_STORAGE_KARMA)&nbsp;&nbsp;&nbsp; += karma.o&nbsp;<br  />23&nbsp;<br  />24 usb-storage-objs :=&nbsp;&nbsp;&nbsp; scsiglue.o protocol.o transport.o usb.o /&nbsp;<br  />25&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; initializers.o $(usb-storage-obj-y)&nbsp;<br  />26&nbsp;<br  />27 ifneq ($(CONFIG_USB_LIBUSUAL),)&nbsp;<br  />28&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; obj-$(CONFIG_USB)&nbsp;&nbsp;&nbsp; += libusual.o&nbsp;<br  />29 endif&nbsp;<br  /></span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">前面通过Kconfig文件的分析，我们确定了只需要去关注CONFIG_USB_STORAGE选项。在Makefile文件里查找CONFIG_USB_STORAGE，从第9行得知，该选项对应的模块为usb-storage。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">因为Kconfig文件里的其他选项我们都不需要关注，所以Makefile的11~22行可以忽略。第24行意味着我们只需要关注scsiglue.c、protocol.c、transport.c、usb.c、initializers.c以及它们同名的.h头文件。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">Kconfig和Makefile很好的帮助我们定位到了所要关注的目标，就像我们到一个陌生的地方要随身携带地图，当我们学习Linux内核时，也要谨记寻求Kconfig和Makefile的帮助。</span></p><p><br  /></p><p>备注：原文有所删减</p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">fudan_abc</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://blog.csdn.net/fudan_abc/article/details/5340408' target='_blank'>
+			阅读全文
+		</a>
+	</div>
+</body>

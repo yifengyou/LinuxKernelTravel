@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		从scheme语言到计算机科学中的一些基本问题——洪峰老师讲创客道6
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=416609144&amp;idx=1&amp;sn=ae76c92c79a9343a2d855e2606c59785&amp;chksm=764bde9d413c578b9df41ad375896ad811b07dab7f96c732ce442d7ceb306e17b280691d024e&amp;scene=27#wechat_redirect&cpage=77' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">从scheme语言到计算机科学中的一些基本问题——洪峰老师讲创客道6</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        洪峰
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-03-15</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p><mpvoice frameborder="0" class="res_iframe js_editor_audio audio_iframe" src="/cgi-bin/readtemplate?t=tmpl/audio_tmpl&amp;name=%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%936&amp;play_length=22:13" name="%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%936" play_length="1333000" voice_encode_fileid="MzI3NzA5MzUxNF80MTY2MDkxNDI="></mpvoice></p><p><br  /></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style=";font-size:16px">对于<span style="font-family:Times New Roman">Lisp</span><span style="font-family:宋体">程序员来讲，无论你使用</span><span style="font-family:Times New Roman">Emacs&nbsp;Lisp</span><span style="font-family:宋体">还是</span><span style="font-family:Times New Roman">Common&nbsp;Lisp</span><span style="font-family:宋体">，关于这个动态辖域与静态辖域的这个争论现在已经打上了句号了。为什么呢，因为这个</span><span style="font-family:Times New Roman">Common&nbsp;Lisp</span><span style="font-family:宋体">已经在制定工业标准的时候，他就已经制定这两种辖域，对于静态辖域和动态辖域都提供了支持，而对于</span><span style="font-family:Times New Roman">GNU&nbsp;Emacs</span><span style="font-family:宋体">的用户而言呢，从</span><span style="font-family:Times New Roman">GNU&nbsp;Emacs</span><span style="font-family:宋体">第二十四版开始，静态辖域也得到了支持。所以这个问题基本上已经打了句号了，没有什么再值得争论的地方了，两者的各自优缺点都已经很清楚了。</span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style=";font-size:16px"><span style="font-family:宋体"><br  /></span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style=";font-size:16px">对于<span style="font-family:Times New Roman">Lisp</span><span style="font-family:宋体">程序员来讲呢，</span></span><span style="font-weight: bold;font-size: 16px">symbol<span style="font-family:宋体">是中心结构</span></span><span style=";font-size:16px">，这个我刚才提到了。而且在这个五个字段里面，有一个字段叫<span style="font-family:Times New Roman">plist</span><span style="font-family:宋体">，他构成了一个小小的数据库</span><span style="font-family:Times New Roman">,&nbsp;</span><span style="font-family:宋体">这是</span><span style="font-family:Times New Roman">Lisp</span><span style="font-family:宋体">的一个典型的特点。</span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style=";font-size:16px"><span style="font-family:宋体"><br  /></span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style=";font-size:16px">但是在<span style="font-family:Times New Roman">1975</span><span style="font-family:宋体">年诞生在</span><span style="font-family:Times New Roman">MIT</span><span style="font-family:宋体">的</span><span style="font-family:Times New Roman">Scheme</span><span style="font-family:宋体">这个方言呢，它却与它之前或之后的</span><span style="font-family:Times New Roman">Lisp</span><span style="font-family:宋体">都存在若干重大的差异，那么其中呢，最最重要的一点，</span></span><span style="font-weight: bold;font-size: 16px">一个就是它采用了静态辖域，而且函数可以作为函数的返回值直接出现在程序里面。</span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style="font-weight: bold;font-size: 16px"><br  /></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style=";font-size:16px">我们知道这个老的<span style="font-family:Times New Roman">Lisp</span><span style="font-family:宋体">包括&nbsp;</span><span style="font-family:Times New Roman">Emacs&nbsp;Lisp</span><span style="font-family:宋体">和</span><span style="font-family:Times New Roman">Common&nbsp;Lisp</span><span style="font-family:宋体">，它定义一个变量和定义一个函数写法是不一样的，而在这个</span><span style="font-family:Times New Roman">Scheme</span><span style="font-family:宋体">里面呢，它把两者合二为一。这一点呢在《计算机程序结构与解释》这本书里面，</span><span style="font-family:Times New Roman">Alan&nbsp;Perlis</span><span style="font-family:宋体">在写序的时候提到过。从我们记叙的角度来看，就是说</span><span style="font-family:Times New Roman">Scheme</span><span style="font-family:宋体">把动态链的就是活动过程局路里面把对动态链的处理和静态链的处理的方法呢合并起来了，合二为一了。注意，这个</span><span style="font-family:Times New Roman">Scheme</span><span style="font-family:宋体">是非常的简介优美的。它第五版的语言规泛&nbsp;的篇幅只有</span><span style="font-family:Times New Roman">50</span><span style="font-family:宋体">页，设计的非常简洁优美，被称为是计算机编程语言王国的语皇</span><span style="font-family:Times New Roman">——Queue&nbsp;of&nbsp;Programming&nbsp;Language&nbsp;Kingdom</span><span style="font-family:宋体">，有这种说法，请大家记住这个说法。</span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style=";font-size:16px"><span style="font-family:宋体"><br  /></span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style=";font-size:16px">请我请大家回顾一下我前面郑重向大家推荐的关于<span style="font-family:Times New Roman">Stallman</span><span style="font-family:宋体">院士选择语言的忠告</span></span><span style=";font-weight:bold;font-size:16px">，那就是说你先要精通一门语言，然后把在这门语言里面得到的感悟一以贯之的推广到其他语言的学习中去。</span><span style=";font-size:16px">那么对于我来讲，我觉得你把<span style="font-family:Times New Roman">Scheme</span><span style="font-family:宋体">语言最为你第一门要精通的语言是非常自然的。</span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style=";font-size:16px"><span style="font-family:宋体"><br  /></span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style=";font-size:16px">这也是我在黑客道教学里面，在黑客道初段里面利用<span style="font-family:Times New Roman">Scheme</span><span style="font-family:宋体">来讲解计算的本质以及利用计算的本质来讲解</span><span style="font-family:Times New Roman">Scheme</span><span style="font-family:宋体">语言这种做法的一个初衷，源头就是来自我</span><span style="font-family:Times New Roman">2005</span><span style="font-family:宋体">年向</span><span style="font-family:Times New Roman">Stallman</span><span style="font-family:宋体">院士的请教和他讨论的结果。</span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style=";font-size:16px"><span style="font-family:宋体"><br  /></span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style=";font-size:16px">在<span style="font-family:Times New Roman">Scheme</span><span style="font-family:宋体">语言里面呢，请大家注意，符号不像老的</span><span style="font-family:Times New Roman">Emacs&nbsp;Lisp</span><span style="font-family:宋体">或</span><span style="font-family:Times New Roman">Common&nbsp;Lisp</span><span style="font-family:宋体">那样有结构，但是符号仍然是一个内置的数据类型。在</span><span style="font-family:Times New Roman">Scheme</span><span style="font-family:宋体">里面符号这个类型是有的，只是这个符号指向一堆东西的符号的一个类型</span></span><span style=";font-size:16px">，</span><span style=";font-size:16px">它没有我刚才提到的在<span style="font-family:Times New Roman">Lisp</span><span style="font-family:宋体">里面那些丰富的字段。那这时候有人会问，那你</span><span style="font-family:Times New Roman">Lisp</span><span style="font-family:宋体">里面有的一些字段在</span><span style="font-family:Times New Roman">Scheme</span><span style="font-family:宋体">里面怎么去实现呢，比方说</span><span style="font-family:Times New Roman">plist</span><span style="font-family:宋体">你怎么去实现啊。这个问题问的非常好，也困扰过我，这里我把我的一些感悟也告诉大家：对于这个</span><span style="font-family:Times New Roman">plist</span><span style="font-family:宋体">呢</span><span style="font-family:Times New Roman">Scheme</span><span style="font-family:宋体">里面提供了</span><span style="font-family:Times New Roman">alist</span><span style="font-family:宋体">，这个</span><span style="font-family:Times New Roman">alist</span><span style="font-family:宋体">就是在一个列表中放上许多的子表，每一个子表又分为</span></span><span style=";font-size:16px">car<span style="font-family:宋体">和</span><span style="font-family:Times New Roman">cdr</span></span><span style=";font-size:16px">这两个部分，也就是偶对，也就是在一个表里面你可以放上许多偶对，或者是只含有两个元素的列表。那么通过这种方式，也一样可以实现在这个老的<span style="font-family:Times New Roman">Emacs&nbsp;Lisp</span><span style="font-family:宋体">和</span><span style="font-family:Times New Roman">Common&nbsp;Lisp</span><span style="font-family:宋体">里面符号数据所含有的</span><span style="font-family:Times New Roman">plist</span><span style="font-family:宋体">。</span></span><span style=";font-size:16px">在<span style="font-family:Times New Roman">Scheme</span><span style="font-family:宋体">中呢，语言标准</span><span style="font-family:Times New Roman">R5RS</span><span style="font-family:宋体">以及后面的一些版本，定义了几个函数来操作这个</span><span style="font-family:Times New Roman">alist</span><span style="font-family:宋体">，包括</span></span><span style=";font-size:16px">asock<span style="font-family:宋体">，</span><span style="font-family:Times New Roman">asq</span><span style="font-family:宋体">和</span><span style="font-family:Times New Roman">asv</span></span><span style=";font-size:16px">这三个函数。这里有听众会问，洪老师这里你为什么纠缠着<span style="font-family:Times New Roman">plist</span><span style="font-family:宋体">和</span><span style="font-family:Times New Roman">alist</span><span style="font-family:宋体">不放呢？这个地方我要告诉大家，</span></span><span style=";font-weight:bold;font-size:16px">这个地方涉及到一个计算机理论中的核心问题</span><span style=";font-size:16px">，就是什么呢，就是我给你一堆这个<span style="font-family:Times New Roman">alist</span><span style="font-family:宋体">，你要从这个</span><span style="font-family:Times New Roman">alist</span><span style="font-family:宋体">中找出满足我的要求的，也就是匹配我值的那一个偶对中的</span><span style="font-family:Times New Roman">value</span><span style="font-family:宋体">的值来。这个说法呢比较拗口，这里我向大家更详细的展开一下，这个</span><span style="font-family:Times New Roman">alist</span><span style="font-family:宋体">啊，我们可以把它看成一个电话号码簿，在一个电话号码簿中，有电话号码对不对，还有呢这个电话号码所对应的单位或者是个人等这样的信息，那么，不同的电话号码应该对应到不同的人上面去，所以呢整个的电话号码簿中就是一个数据库。我们可以这样来看待。对于电信运营商来讲，电话号码簿是他们非常重要的一笔资产，因为没有这个电话号码簿啊，用户找不到对方的号码，通信就无法操作了。</span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style=";font-size:16px">&nbsp;</span></p><p style="margin-top: 0;margin-bottom: 0"><span style=";font-size:16px">&nbsp;&nbsp;&nbsp;&nbsp;在计算机科学里面，</span><span style=";font-weight:bold;font-size:16px">如何设计哈希表以及哈希函数，是非常重大的理论并且是具有很强的实践背景的这样一个问题</span><span style=";font-size:16px">。比如像之前的对电信运营商来讲，一个电话号码簿里面不可能有号码是重复的，理想的状态是一个号码对应一个用户，对不对。所以说在这个电话号码簿里面，你的电话号码作为<span style="font-family:Times New Roman">key</span><span style="font-family:宋体">这个值，出现的次数应该是唯一的，这是我们设计哈希函数的一个出发点。如果不是唯一的，那么你的哈希函数就发生了冲突，这应该是我们尽力避免的事。</span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style=";font-size:16px">如何设计出一个哈希表的哈希函数呢，在历史上有很多计算机科学家做了大量的探索，其中最为有名的工作就是计算机大师，<span style="font-family:Times New Roman">Donald&nbsp;Knuth</span><span style="font-family:宋体">教授，中文名字叫高德纳教授做的。他曾经写过一本书叫做《计算机编程的艺术》，在这本书的第三卷就是讲排序与查找，在这本书里，他花了大量的篇幅去介绍哈希函数的设计。这本书非常厚，像砖头一样，但是如果你仔细阅读这个著作而且你明白了</span><span style="font-family:Times New Roman">Knuth</span><span style="font-family:宋体">教授写作的内容的话那你是获益匪浅的，投入的时间是有巨大的回报的。</span><span style="font-family:Times New Roman">Knuth</span><span style="font-family:宋体">教授当年为了写这本书啊，他写出来以后发现排版质量不理想，他又花了很多时间去研究排版的算法，而且花了九年时间开发了</span></span><span style=";font-weight:bold;font-size:16px">TEX<span style="font-family:宋体">排版系统</span></span><span style=";font-size:16px">，然后用这个排版系统重排自己写的书。这个<span style="font-family:Times New Roman">TEX</span><span style="font-family:宋体">系统成为数学界还有其他学术界和工程界写论文的标准，这个我们以后还会提到。</span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><br  /></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style=";font-size:16px">简单地讲呢，设计哈希表的时候，有两种方法来设计哈希函数，分别叫做</span><span style=";font-weight:bold;font-size:16px">线性探测开放寻址法</span><span style=";font-size:16px">和</span><span style=";font-weight:bold;font-size:16px">独立表链地址法</span><span style=";font-size:16px">。</span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style=";font-size:16px"><br  /></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style=";font-weight:bold;font-size:16px">线性探测开放寻址法</span><span style=";font-size:16px">是假设哈希表是数组或者向量的索引表，并且有一个与他它们发生关联的哈希函数，开始的时候我们把表中的每一项都标识为空，当我们要向这个表格中增加数据的时候，开始调用哈希函数来处理这个<span style="font-family:Times New Roman">key</span><span style="font-family:宋体">（键），用这个</span><span style="font-family:Times New Roman">key</span><span style="font-family:宋体">除以表格的长度后取余数，结果这个索引值就确定了表中的一个位置。如果该位置现在是空的，那就写数据；否则就探测这个表寻找第一个开放的位置。这就是这个算法这个名称的由来。探测从下一个哈希索引开始，对后面的索引值进行顺序的查找，查找过程如果找到了表的最后一项，就返回这个表头。算法将在找到的第一个空闲位置插入新数据。查询过程可以循环遍历到所有的索引值，如果没有找到空闲位置就返回到原来的位置上，这个时候表格就已经填满了，算法产生一个异常。那么说线性探测开放寻址法不是一种能够自动增长来适应新数据的动态结构。如果哈希表不允许包括重复键，算法就必须检查新加入的数据项是否已经存在在这个表中了。寻找匹配数据的过程呢，从哈希索引值开始，向后遍历表的每一个位置，如果算法确实找到了一个空闲的位置那就可以确定这个数据项目不是重复的键。这个是对线性探测开放寻址法的一个大致说明。</span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style=";font-size:16px"><span style="font-family:宋体"><br  /></span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style=";font-size:16px">而另外一种方法呢，叫做</span><span style=";font-weight:bold;font-size:16px">独立链表地址法</span><span style=";font-size:16px">，这个方法是把哈希表定义为一个容器，比如说向量或者是链表，把它定义为一个容器的索引序列，一个容器可以用来保存映射到同一位置上的数据集合。这个容器我们可以称之为一个桶，水桶的桶。第二种解决冲突的方法呢，叫做独立表链地址法。有了这两种方法呢就可以设计以及解决哈希函数<span style="font-family:Times New Roman">key</span><span style="font-family:宋体">的冲突问题，有了刚才提到的关于这个</span><span style="font-family:Times New Roman">hash&nbsp;function</span><span style="font-family:宋体">的这个算法之后呢，我们就可以实现</span><span style="font-family:Times New Roman">Scheme</span><span style="font-family:宋体">中的</span><span style="font-family:Times New Roman">esock</span><span style="font-family:宋体">、</span><span style="font-family:Times New Roman">asq</span><span style="font-family:宋体">和</span><span style="font-family:Times New Roman">asv</span><span style="font-family:宋体">这些函数。为什么我这里要反复强调这些，这个函数的重要性呢，因为在</span><span style="font-family:Times New Roman">Scheme</span><span style="font-family:宋体">中一个表达式，无论是一个数据还是一个函数&nbsp;，对于一个表达是而言，对于他的求值是一定和一个环境发生关联的，这个环境就是我前面讲到的静态链和动态链。</span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style=";font-size:16px"><span style="font-family:宋体"><br  /></span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style=";font-size:16px">在<span style="font-family:Times New Roman">Scheme</span><span style="font-family:宋体">里面把它们合二为一，我们称之为</span></span><span style=";font-weight:bold;font-size:16px">环境</span><span style=";font-size:16px">。这个环境模型是一个非常重要的基本概念，我当年</span><span style=";font-size:16px">在</span><span style=";font-size:16px">向吴学谋研究员学习泛系方法论的时候，从他那里知道了关于环境模型与泛系似然这个关系。泛系似然就是说以系统科学的观点来看待系统。一个系统中有主体和客体，之间有某种相互的作用。而主体对于客体施加作用是在一定环境下、通过某种媒介来完成的，在这个模型中，主就是主体，境就是环境，媒就是媒介，宾就是客体，这四人呢是可以进行五互操作的，五互就是</span><span style=";font-weight:bold;font-size:16px">互联、互转、互导、互生、互克</span><span style=";font-size:16px">。当年吴学谋研究员提出的这种方法我们可以在<span style="font-family:Times New Roman">Scheme</span><span style="font-family:宋体">语言里面，用计算机程序来进行理化，这是一个非常重大的进展。对于一个事物的求值他的价值，我们叫度生克，实际上他的求值规则和你的求值环境密切发生关联的。</span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style=";font-size:16px"><span style="font-family:宋体"><br  /></span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style=";font-size:16px">这个思想呢，我这里举一个例子大家就明白了，不是那么难以理解。好比说我们在下中国象棋的时候，对于棋子指令计算是有一套规则的。无论你是指红棋还是指黑棋，都有主指挥的兵，主指挥的士兵。这个士兵的作用是随着主指挥的士兵在棋局中的位置来决定的，在主指过河以前，他只能向前冲，而且只能向前冲一步对不对；一旦它过了河以后，它不能后退，但是他可以向前、向左或者是向右前进一步对不对；一旦到了棋盘的底线之后，这个时候，它就不能向前走了，只能向左或者向右；到了棋角之后呢，它只能向左或者只能向右走。在一个棋盘中，主指挥兵力的大小是随着这一个棋子在棋局中的位置来决定的。</span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style=";font-size:16px"><br  /></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style=";font-size:16px">从这个例子大家可以理解，对一个事物的价值判断，必须要依赖他的环境。在我们日常生活中，有很多的商品它的价格是波动的，为什么是波动呢？因为此一时彼一时，三十年河东四十年河西，有些商品处于产能过剩的时候，这时候价格就会很便宜。比如说现在，我在录这个课的时候，<span style="font-family:Times New Roman">2016</span><span style="font-family:宋体">年年初的时候，全球的石油市场是过剩的，现在每桶原油的价格低于</span><span style="font-family:Times New Roman">30</span><span style="font-family:宋体">美元</span><span style="font-family:Times New Roman">/</span><span style="font-family:宋体">桶，而在它高峰的时候也就是需求旺盛的时候，是</span><span style="font-family:Times New Roman">100</span><span style="font-family:宋体">多甚至</span><span style="font-family:Times New Roman">200</span><span style="font-family:宋体">多美元一桶。同样是石油，他的化学元素没有发生变化，它每桶的油的数量也没有发生变化，为什么它的价格产生了如此巨大的差异呢，是因为市场的供求关系这个环境决定了它的价格。这是一个很重要的思想。</span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style=";font-size:16px"><span style="font-family:宋体"><br  /></span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style=";font-size:16px">当我们对一个表达式求值的时候，我们一定要首先搞清楚我们是在一个什么样的环境中对这个表达式进行求值，那么在<span style="font-family:Times New Roman">Scheme</span><span style="font-family:宋体">中有一个高阶函数叫</span><span style="font-family:Times New Roman">eval</span><span style="font-family:宋体">函数，这个函数有两个参数，第一个参数是</span></span><span style=";font-size:16px;font-family:宋体">expression</span><span style="line-height: 1.6;">，第二个参数就是</span><span style="">environment</span><span style="line-height: 1.6; font-family: 宋体;">。对一个表达式求值，首先要对环境进行操作。&nbsp;刚才提到的</span><span style="">eval</span><span style="line-height: 1.6; font-family: 宋体;">函数的设计，是</span><span style="">Lisp</span><span style="line-height: 1.6; font-family: 宋体;">实现设计的一个核心，这个问题不解决的话整个</span><span style="">Lisp</span><span style="line-height: 1.6; font-family: 宋体;">还没有完成。</span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style=";font-size:16px">这个<span style="font-family:Times New Roman">eval</span><span style="font-family:宋体">函数的设计一定要贯穿一套求值的思想，那么这个思想就是我们在泛系变分运说原理里面所提出的关于计算本质的一个表述，也就是对六大关系的运筹，也就是</span></span><span style=";font-weight:bold;font-size:16px">局整关系、形影关系、异同关系、泛序关系、泛导关系和泛极关系</span><span style=";font-size:16px">。也就是计算的本质，在我的教学视频里面提过的十八个字——</span><span style=";font-weight:bold;font-size:16px">识局整、判形影、辨异同、排泛序、显运转、度生克</span><span style=";font-size:16px">。</span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style=";font-size:16px"><br  /></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style=";font-size:16px">这个</span><span style=";font-weight:bold;font-size:16px">度生克</span><span style=";font-size:16px">最后就落实到我们的<span style="font-family:Times New Roman">eval</span><span style="font-family:宋体">函数里面去，那么具体到</span><span style="font-family:Times New Roman">Scheme</span><span style="font-family:宋体">编程的时候，</span><span style="font-family:Times New Roman">eval</span><span style="font-family:宋体">函数首先会对他的第二个参数</span><span style="font-family:Times New Roman">——environment</span><span style="font-family:宋体">参数进行操作。进行什么操作呢？他实际上会转化成为对数据库的操作，具体来讲也就是五中基本操作，前面刚才讲到的查找、排序这个</span><span style="font-family:Times New Roman">Knuth</span><span style="font-family:宋体">教授花了一部砖头那样的著作去讲解的内容，然后呢，对数据库进行插入数据、删除数据、对已有的数据进行变更，那么这五种操作就是对我们的</span><span style="font-family:Times New Roman">environment</span><span style="font-family:宋体">参数进行的具体操作，这个具体操作的一个基础就是要有哈希函数。</span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style=";font-size:16px"><span style="font-family:宋体"><br  /></span></span></p><p style="text-indent: 28px;margin-top: 0;margin-bottom: 0"><span style=";font-size:16px">首先你要有辩异同，就是类型你要有判断。那么在哈希函数对哈希表中的数据进行查找的时候，实际上就有异同关系的运筹。而找到的数据呢，可以变成一个列表列出来那就是泛&nbsp;述关系对不对。对于这个增删改查排序这些基本操作实际上是对数据库的操作，所以我们在对<span style="font-family:Times New Roman">Lisp</span><span style="font-family:宋体">中的表达式进行求值的时候，无时无刻不在运用我们讲的计算的本质来进行操作。所以从这里也可以看出这个环境模型的重要性，以及为什么在</span><span style="font-family:Times New Roman">Lisp</span><span style="font-family:宋体">语言里面在</span><span style="font-family:Times New Roman">Scheme</span><span style="font-family:宋体">语言里面他的运行系统是自含的，你可以总是去对一个表达式进行求值。这是我们要将的一个核心的思想。 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span></span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">洪峰</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

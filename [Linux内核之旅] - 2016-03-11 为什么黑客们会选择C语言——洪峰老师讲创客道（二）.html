@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		为什么黑客们会选择C语言——洪峰老师讲创客道（二）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=416540855&amp;idx=1&amp;sn=f28abfe04e8f02d79a3305e3a35fa913&amp;chksm=764cc552413b4c449dd2e55c6831b3d992d148bf52a0811facc063ae1dfd6a98cf776fd9090a&amp;scene=27#wechat_redirect&cpage=77' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">为什么黑客们会选择C语言——洪峰老师讲创客道（二）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        洪峰
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-03-11</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="text-indent:28px;margin-top:7px;margin-bottom:7px;text-align:justify;line-height:21px"><span style=""></span></p><p><mpvoice frameborder="0" class="res_iframe js_editor_audio audio_iframe" src="/cgi-bin/readtemplate?t=tmpl/audio_tmpl&amp;name=%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%932&amp;play_length=16:21" name="%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%932" play_length="981000" voice_encode_fileid="MzI3NzA5MzUxNF80MTY1NDA4NTM="></mpvoice></p><p style="text-indent:28px;margin-top:7px;margin-bottom:7px;text-align:justify;line-height:21px"><span style=""></span><br  /></p><p style="text-indent:28px;margin-top:7px;margin-bottom:7px;text-align:justify;line-height:21px"><span style="">在与前面提到的几位编程大师</span><span style="">Eric&nbsp;Raymond</span><span style="">，</span><span style="">Larry&nbsp;Wall</span><span style="">，</span><span style="">Paul&nbsp;Graham</span><span style="">通过邮件交流。&nbsp;和</span><span style="">Richard&nbsp;Stallman</span><span style="">院士有长期的交流</span><span style="">和当面</span><span style="">请教的机会，第一次向他请教关于计算机的问题是在</span><span style="">2000</span><span style="">年</span><span style="">5</span><span style="">月份在九寨沟，一边欣赏风景，一边讨论计算机语言的过去，现状，未来的发展。正是在那次的谈话中，</span><span style="">Stallman&nbsp;</span><span style="">院士对</span><span style="">L</span><span style="">isp</span><span style="">的语言推崇备至，使得让我留下深刻的印象，并下定决心学好</span><span style="">Lisp</span><span style="">语言。</span><span style="">同年的</span><span style="">8</span><span style="">月份，</span><span style="">Stallman</span><span style="">院士的好友</span><span style="">Robert&nbsp;</span><span style="">&nbsp;</span><span style="">J.</span><span style="">&nbsp;&nbsp;</span><span style="">Chassell</span><span style="">一起启动&nbsp;</span><span style="">GNU&nbsp;project</span><span style="">和</span><span style="">自由软件基金会，</span><span style="">Robert</span><span style="">&nbsp;</span><span style="">J.</span><span style="">&nbsp;</span><span style="">Chassell</span><span style="">曾经写过一本书《</span><span style="">An&nbsp;Introduction&nbsp;to&nbsp;programming&nbsp;In&nbsp;Emacs&nbsp;Lisp</span><span style="">》&nbsp;，是</span><span style="">Emacs&nbsp;Lisp</span><span style="">编程的入门书，</span><span style="">8</span><span style="">月份和</span><span style="">Bob</span><span style="">待在一起，去过很多的地方，在此期间</span><span style="">Bob</span><span style="">传授了许多关于</span><span style="">Emacs&nbsp;Lisp</span><span style="">编程的知识。</span></p><p style="text-indent:28px;margin-top:7px;margin-bottom:7px;text-align:justify;line-height:21px"><span style="">第二次向</span><span style="">Stallman</span><span style="">院士请教关于编程语言的问题是在</span><span style="">2005</span><span style="">年，我们一起去了湖北的武当山，在游览完风景以后，在武当山脚下，闲暇之余，我向他请教了关于编程语言的一些问题，对当时流行的计算机语言予以点评，并向我提出了一个重要的观点，作为初学者，应当先从一门语言入手，力求精通并去感悟计算机的本质，在学习其他语言的同时借助第一门所学语言得到的感悟，以已贯知的将其推广到其他语言的学习中去。我认为这是一条多快好省的捷径，在这里推荐给大家。通过请教</span><span style="">Richard&nbsp;Stallman</span><span style="">院士和自身多年的编程经验可知：可以将创客们究竟选用何种编程语言这个问题划分为两个阶段予以解说。</span></p><p style="text-indent:28px;margin-top:7px;margin-bottom:7px;text-align:justify;line-height:21px"><span style="">第一个阶段是创客们修行学习的阶段，第二个阶段是创客们利用计算机编程语言来从事某一项目的开发阶段，当然，两个阶段并不是截然分明的，它们之间存在一定的交集。在第一个阶段的主要目的就是创客们通过计算机语言的学习，编程实践来掌握计算的本质，我在黑客道有两门重要的课程，一门讲的计算机的本质，另一门讲的是编译原理。对这个问题已经做了系统的深入的探索和讨论，在黑客道中探索的观点直接引用在这里。</span></p><p style="margin-top:7px;margin-bottom:7px;text-align:justify;line-height:21px"><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="">在第二个阶段的创作阶段我们可以运用许多其他的语言来进行开发稍后再做说明，在前面提到的四位伟大的计算机黑客中，计算机编程大师中，他们的观点不尽相同，有一个现象请大家注意，都已经提到了两种语言是极为关键的。一类是</span><span style="">C</span><span style="">语言，另一类是</span><span style="">Lisp</span><span style="">语言。在</span><span style="">Larry&nbsp;Wall</span><span style="">先生提到的五种编程语言当中，虽然并未直接提到</span><span style="">Lisp</span><span style="">，但是他认为</span><span style="">Haskell</span><span style="">作为</span><span style="">Lisp</span><span style="">的现代版本来看待，所以我认为</span><span style="">Larry&nbsp;Wall</span><span style="">先生实际上也把</span><span style="">C</span><span style="">和</span><span style="">Lisp</span><span style="">已经提炼出来了。</span></p><p style="text-indent:28px;margin-top:7px;margin-bottom:7px;text-align:justify;line-height:21px"><span style="">在我解说创客们修行学习的阶段中，我会重点解说</span><span style="">C</span><span style="">和</span><span style="">Lisp</span><span style="">这两种语言，我在黑客道的教学中，在初级阶段讲解计算的本质，这个课程是围绕计算的本质来讲解</span><span style="">Lisp</span><span style="">语言，在黑客道的第二个阶段讲解系统程序设计语言中，重点讲解了</span><span style="">C</span><span style="">语言，在这里先颠倒讲解的顺序，先来谈谈</span><span style="">C</span><span style="">语言，再来谈谈</span><span style="">Lisp</span><span style="">语言。</span><span style="">关于</span><span style="">C</span><span style="">语言，在前面提到的黑客</span><span style="">Paul&nbsp;Graham</span><span style="">他曾经这样写过，</span><span style="">C</span><span style="">语言是一个</span><span style="">beautiful&nbsp;simple&nbsp;language&nbsp;developed&nbsp;by&nbsp;Dennis&nbsp;Riche&nbsp;in&nbsp;the&nbsp;early&nbsp;ninety&nbsp;seventities&nbsp;widely&nbsp;used&nbsp;in&nbsp;infrastructure&nbsp;like&nbsp;operating&nbsp;system&nbsp;and&nbsp;routers</span><span style="">，就是说</span><span style="">C</span><span style="">语言是一门简单的，简洁的，优美的计算机语言，由</span><span style="">Dennis&nbsp;Riche</span><span style="">在</span><span style="">20</span><span style="">世纪</span><span style="">70</span><span style="">年代初设计，广泛用于基础设施，指的是操作系统，路由器方面的编程，即系统级的编程。这是</span><span style="">Paul&nbsp;Graham</span><span style="">在《</span><span style="">Hackers&nbsp;and&nbsp;Painters</span><span style="">》书中给出的一种看法。刚才我已经提到了</span><span style="">C</span><span style="">语言是一种系统编程语言，在实践中基本上所有的硬件平台上都能得到</span><span style="">C</span><span style="">语言的运行时系统，所以从这个意义上讲</span><span style="">C</span><span style="">语言是最具有移植性的。</span><span style="">C</span><span style="">语言最大的用途就是抽象硬件的各种功能，将程序员从繁琐的硬件细节中解放出来，让编程变得模块化。</span></p><p style="text-indent:28px;margin-top:7px;margin-bottom:7px;text-align:justify;line-height:21px"><span style="">这个模块化是工程中一个非常重要的方法论，在黑客道</span><span style="">2</span><span style="">中所讲的系统程序设计中就讲解</span><span style="">C</span><span style="">语言，一共是五个阶段，第三个阶段就是讲如何在不同的硬件平台上去设计</span><span style="">C</span><span style="">的运行时系统，当然，还有前面几个阶段，具体可以参考我的那本《黑客道诠释》中的讲解，当然在完成硬件的抽象功能之外，</span><span style="">C</span><span style="">语言可以完成的还有好多，而且，</span><span style="">C</span><span style="">语言经过三次标准化以后规模不算太大，某些语法成分，语意非常的诡异，陷进重重。只有当你准确的理解这些难点以后，将其克服以后，方可灵活的运用了。</span><span style="">Paul&nbsp;Graham</span><span style="">曾经说过有些语言是给你安全带，在保护你的同时也限制你。而</span><span style="">C</span><span style="">语言给你拐棍，给你充分的自由，不会限制你。所以如果程序员熟练的掌握</span><span style="">C</span><span style="">语言里面指针的用法就可以开发出许多性能优异的程序来。</span></p><p style="text-indent:28px;margin-top:7px;margin-bottom:7px;text-align:justify;line-height:21px"><span style="">一般来讲，同一道程序使用</span><span style="">C</span><span style="">开发的效率比其他高级语言开发的效率高，指的是运行时效率。所以说用</span><span style="">C</span><span style="">语言开发的速度应该是最快的。这也是为什么操作系统内核要用</span><span style="">C</span><span style="">语言开发的主要原因，因为内核必须要求速度快。在系统编程领域，这个</span><span style="">C</span><span style="">语言特别适合干这么几件事情，第一处理中断的历程，第二是多任务的操作系统上在任务切换时完成对硬件资源管理，第三是内存资源的管理，因为在</span><span style="">C</span><span style="">语言中指针是可以用来分配内存和回收内存的，从</span><span style="">C</span><span style="">的特性来看，它不适合开发大规模的应用程序，而实际情况也是如此。</span></p><p style="text-indent:28px;margin-top:7px;margin-bottom:7px;text-align:justify;line-height:21px"><span style="">目前已经有很多的选择利用其他语言针对不同的任务特点来开发应用是非常方便的。当然</span><span style="">C</span><span style="">语言的开发不仅仅局限于操作系统内核的开发。对于其他计算性能要求比较高的散核，</span><span style="">C</span><span style="">的使用并不少见，比方说在编写图形界面时有一个库叫做</span><span style="">gtk&nbsp;plus</span><span style="">即</span><span style="">gtk+</span><span style="">，</span><span style="">gtk+</span><span style="">这个库就是用</span><span style="">C</span><span style="">来写的。</span><span style="">gtk&nbsp;plus</span><span style="">使用回调函数，叫做</span><span style="">call&nbsp;back&nbsp;functions</span><span style="">。这样在设计图形界面的时侯可以很方便的利用这个回调函数操作控件。当然了你要利用好</span><span style="">gtk&nbsp;plus</span><span style="">库来设计图形界面必须知道如何使用</span><span style="">C</span><span style="">的函数指针。</span></p><p style="text-indent:28px;margin-top:7px;margin-bottom:7px;text-align:justify;line-height:21px"><span style="">还有一个例子是我的朋友俄罗斯的黑客</span><span style="">G</span><span style="">or&nbsp;Sysoev&nbsp;</span><span style="">是白俄罗斯人，他出生在哈萨克，他父母是白俄罗斯人，他是在莫斯科上的大学，留在了莫斯科，在工作期间，他在</span><span style="">Unix</span><span style="">平台主要就是</span><span style="">FreeBSD</span><span style="">和</span><span style="">GUN/Linux</span><span style="">平台上开发了世界上速度最快的</span><span style="">Web</span><span style="">服务器</span><span style="">Nginx</span><span style="">，这个是用</span><span style="">C</span><span style="">语言来写的，体现了精明的俄罗斯人的编程风格：直于主题，敢于突破常规，不落俗套，集中精力，精简而高效的完成一个确定的问题。体现了他丰富的想象力。大家知道，在传统的</span><span style="">Unix</span><span style="">服务器设计中，通常是每当服务器得到客户机请求的时候，服务器就在操作系统的内核的帮助下启动一个进程，把来自客户机的数据传递给新启动的进程去处理。在</span><span style="">Nginx</span><span style="">问世之前，最流行的</span><span style="">Web</span><span style="">服务器叫做</span><span style="">Apache,Aache</span><span style="">服务器就是这样做的。那么对于低负载的网站，这个模式是没有问题的。但是对于高负载的网站来说，这套机制是不可行的。因为操作系统每次启动进程的时候，内核需要做许多的准备工作，特别是要为新启动的服务器的进程分配内存空间，拷贝数据给它。这样在高负载的场合下它就严重制约了服务器的性能。所以在</span><span style="">gor&nbsp;Sysoev&nbsp;</span><span style="">设计</span><span style="">Nginx</span><span style="">的时候，他采用的思路与传统的设计思路不同。</span></p><p style="text-indent:28px;margin-top:7px;margin-bottom:7px;text-align:justify;line-height:21px"><span style="">Nginx</span><span style="">是一个单进程的程序，也就是说，服务器一旦启动起来，它就是一个进程在运行，这方面的内容在第七章会涉及到，即如何启动精灵进程（</span><span style="">daemon&nbsp;process</span><span style="">）。</span><span style="">gor&nbsp;Sysoev</span><span style="">聪明的利用内核的机制来帮助多任务的处理，避免了操作系统启动多个进程，多个线程，在</span><span style="">Nginx</span><span style="">内部也没有使用的多线程的，就避免了复杂的线程调度算法。是如何实现的呢？它是频繁的使用指针，二级，三级，多级指针来开发新模块，利用多级指针可以避免大块数据的拷贝和移动，这是一个很聪明的做法。指针长度是很小的，在</span><span style="">32</span><span style="">位的寄存器上占用</span><span style="">4byte</span><span style="">或者更大，从空间效率和时间效率角度分析，基于指针的效率比直接操作大块数据得效率更高一些。对于服务器的请求和响应，</span><span style="">Nginx</span><span style="">的设计的确达到了很高的效率，体现了</span><span style="">gor&nbsp;Sysoev</span><span style="">深厚的编程功力，这也是关于</span><span style="">C</span><span style="">编程技巧一个极好的案例。除了在服务器和桌面计算平台上以外，还有一个更广大的应用领域，即嵌入式系统。而且</span><span style="">C</span><span style="">语言是这个领域的首选语言，这个局面在</span><span style="">32</span><span style="">位微处理器得到了进一步的巩固，在目前市场上</span><span style="">stml&nbsp;32</span><span style="">的这种芯片价格低于</span><span style="">10</span><span style="">元，这种芯片强大的计算能力，低功耗的特点使其迅速的淘汰了，自由软件基金会</span><span style="">GUN&nbsp;</span><span style="">的工具链支持</span><span style="">stml32</span><span style="">的平台，在这一平台上开发</span><span style="">C</span><span style="">程序具有很大的优势，除了</span><span style="">stml&nbsp;32</span><span style="">微处理器以外，当然还有其他的微处理器也已经到</span><span style="">32</span><span style="">位微处理器这个产品上，所以</span><span style="">GUN&nbsp;</span><span style="">的工具链支持的范围有所扩大。对于</span><span style="">C</span><span style="">语言的特点就介绍到这里。</span></p><p><span style="">&nbsp;</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">洪峰</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

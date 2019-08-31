@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Linux安全审计机制模块实现分析(13)-核心文件之一audit.c核心代码注释
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664603183&amp;idx=1&amp;sn=24fab9ea965e2191190149b0d6d0a8b8&amp;chksm=f04db3cac73a3adcb3634e37f72ced8ff7606e4b24fb7ee5933d335aa8e9c4580f76f1b0faca&amp;scene=27#wechat_redirect&cpage=60' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Linux安全审计机制模块实现分析(13)-核心文件之一audit.c核心代码注释</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        吴宪萍
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-09-27</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                <div class="rich_media_thumb_wrp" id="media">
+                    
+                                        
+                                    </div>
+                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <h4><strong><span style="font-family: 宋体; font-size: 16px; color: rgb(2, 30, 170);">2.4.1.6核心代码注释</span></strong></h4><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">//<span style="font-size: 16px; font-family: 宋体;">创建一个审计缓冲区，存放类型为</span>type<span style="font-size: 16px; font-family: 宋体;">的审计消息</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">&nbsp;struct audit_buffer *audit_log_start(struct audit_context *ctx, gfp_t gfp_mask,int type)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">{</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 14px;">struct audit_buffer*ab= NULL;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 14px;">struct timespect;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 14px;">unsigned intuninitialized_var(serial);</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">int reserve;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">unsigned long timeout_start = jiffies;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">&nbsp;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">if (audit_initialized != AUDIT_INITIALIZED) &nbsp;&nbsp;//<span style="font-size: 16px; font-family: 宋体;">审计系统未初始化</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">return NULL; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p><p><span style="font-family: Calibri; font-size: 16px;">&nbsp;</span></p><p style="text-indent:32px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">if (unlikely(audit_filter_type(type))) &nbsp;&nbsp;&nbsp;//<span style="font-size: 16px; font-family: 宋体;">要存放的审计消息是否</span>type<span style="font-size: 16px; font-family: 宋体;">类型上某条规则不允许的？</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">return NULL;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">if (gfp_mask &amp; __GFP_WAIT)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">reserve = 0;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">else</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">reserve = 5; /* <span style="font-size: 16px; font-family: 宋体;">允许调用存放超出消息数上限的</span>5<span style="font-size: 16px; font-family: 宋体;">个消息 </span>*/</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">//<span style="font-size: 16px; font-family: 宋体;">套接字缓冲区队列中存放的消息数已达上限，并且预留的缓冲区也用完了</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">while (audit_backlog_limit &nbsp;&amp;&amp; skb_queue_len(&amp;audit_skb_queue) &gt; audit_backlog_limit + reserve) {</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">if (gfp_mask &amp; __GFP_WAIT &amp;&amp; audit_backlog_wait_time</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;&amp;&amp; time_before(jiffies, timeout_start + audit_backlog_wait_time)) {</span></p><p style="text-indent:28px;line-height:24px"><span style="font-size: 16px;"><span style="font-family: Calibri; font-size: 14px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//<span style="font-size: 16px; font-family: 宋体;">把当前进程放入等待队列</span><span style="font-size: 16px; font-family: Calibri;">audit_backlog_wait</span><span style="font-size: 16px; font-family: 宋体;">，等待</span><span style="font-size: 16px; font-family: Calibri;">auidtd</span><span style="font-size: 16px; font-family: 宋体;">进程去</span></span><span style="font-size: 16px; font-family: 宋体;">提取</span><span style="font-size: 16px; font-family: 宋体;">消息</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">DECLARE_WAITQUEUE(wait, current); &nbsp;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">set_current_state(TASK_INTERRUPTIBLE);</span></p><p style="text-indent:32px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">add_wait_queue(&amp;audit_backlog_wait, &amp;wait);</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">//<span style="font-size: 16px; font-family: 宋体;">达到上限，当还有预留的缓冲区没用完</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">if (audit_backlog_limit &amp;&amp;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 14px;">&nbsp;&nbsp;&nbsp;&nbsp;skb_queue_len(&amp;audit_skb_queue) &gt; audit_backlog_limit) &nbsp;schedule_timeout(timeout_start + audit_backlog_wait_time - jiffies); &nbsp;&nbsp;//<span style="font-size: 16px; font-family: 宋体;">经过一定的</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">时间后重新调度</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//<span style="font-size: 16px; font-family: 宋体;">以下是下次调度到这里时，继续执行的代码</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">__set_current_state(TASK_RUNNING);</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">remove_wait_queue(&amp;audit_backlog_wait, &amp;wait);</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">continue;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">}</span></p><p style="text-indent:32px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">if (audit_rate_check() &amp;&amp; printk_ratelimit()) &nbsp;&nbsp;//<span style="font-size: 16px; font-family: 宋体;">发送速率检查，如果超速，使用</span>prink<span style="font-size: 16px; font-family: 宋体;">打印警告信息</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">printk(KERN_WARNING "audit: audit_backlog=%d &gt; "</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"audit_backlog_limit=%d\n",</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;skb_queue_len(&amp;audit_skb_queue),</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;audit_backlog_limit);</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">audit_log_lost("backlog limit exceeded");</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">audit_backlog_wait_time = audit_backlog_wait_overflow;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">wake_up(&amp;audit_backlog_wait);</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">return NULL;</span></p><p><span style="font-family: Calibri; font-size: 16px;">}</span></p><p style="text-indent:32px;line-height:24px"><span style="font-size: 16px;">&nbsp;&nbsp;&nbsp;/<span style="font-family: Calibri; font-size: 14px;">/<span style="font-size: 16px; font-family: 宋体;">执行到这里，说明套接字缓冲区队列中有可用的缓冲区，现在分配审计缓冲区</span></span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">ab = audit_buffer_alloc(ctx, gfp_mask, type);</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">if (!ab) {</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">audit_log_lost("out of memory in audit_log_start");</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">return NULL;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">}</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">&nbsp;&nbsp;&nbsp;//<span style="font-size: 16px; font-family: 宋体;">从审计上下文中获得时间戳、序列号信息</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">audit_get_stamp(ab-&gt;ctx, &amp;t, &amp;serial);</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">&nbsp;&nbsp;&nbsp;//<span style="font-size: 16px; font-family: 宋体;">把时间戳、序列号信息写入审计缓冲区</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">audit_log_format(ab, "audit(%lu.%03lu:%u): ",</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">&nbsp;t.tv_sec, t.tv_nsec/1000000, serial);</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">return ab;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">}</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">//<span style="font-size: 16px; font-family: 宋体;">将审计消息格式化后，写入审计缓冲区</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">static void audit_log_vformat(struct audit_buffer *ab, const char *fmt, va_list args)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">{</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">int len, avail;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">struct sk_buff *skb;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">va_list args2;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">if (!ab)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">return;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">skb = ab-&gt;skb;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;//<span style="font-size: 16px; font-family: 宋体;">获得套接字缓冲区中的可用空间字节数</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">avail = skb_tailroom(skb);</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">if (avail == 0) { &nbsp;&nbsp;//<span style="font-size: 16px; font-family: 宋体;">空间为</span>0<span style="font-size: 16px; font-family: 宋体;">，则扩展</span>1024<span style="font-size: 16px; font-family: 宋体;">个字节的空间</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">avail = audit_expand(ab, AUDIT_BUFSIZ);</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">if (!avail)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">goto out;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">}</span></p><p style="text-indent:32px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">va_copy(args2, args);</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;//<span style="font-size: 16px; font-family: 宋体;">将审计消息格式化地写入审计缓冲区的套接字缓冲区</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">len = vsnprintf(skb_tail_pointer(skb), avail, fmt, args);</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">……</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">if (len &gt; 0)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">skb_put(skb, len);</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">out_va_end:</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">va_end(args2);</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">out:</span></p><p style="text-indent:32px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">return;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">}</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">//<span style="font-size: 16px; font-family: 宋体;">审计消息发送函数</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">void audit_log_end(struct audit_buffer *ab)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">{</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">if (!ab)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">return;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">if (!audit_rate_check()) { &nbsp;//<span style="font-size: 16px; font-family: 宋体;">速率检查，若太快，则用</span>printk<span style="font-size: 16px; font-family: 宋体;">打印警告信息</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">audit_log_lost("rate limit exceeded");</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">} else { &nbsp;&nbsp;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">struct nlmsghdr *nlh = nlmsg_hdr(ab-&gt;skb);</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">nlh-&gt;nlmsg_len = ab-&gt;skb-&gt;len - NLMSG_SPACE(0);</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">if (audit_pid) { &nbsp;&nbsp;//<span style="font-size: 16px; font-family: 宋体;">审计后台进程存在，将审计缓冲区挂到</span>audit_skb_queue<span style="font-size: 16px; font-family: 宋体;">的末尾</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">skb_queue_tail(&amp;audit_skb_queue, ab-&gt;skb);</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//<span style="font-size: 16px; font-family: 宋体;">唤醒</span>kauditd<span style="font-size: 16px; font-family: 宋体;">进程发送审计消息到用户空间</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">wake_up_interruptible(&amp;kauditd_wait);</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">} else { &nbsp;//auditd<span style="font-size: 16px; font-family: 宋体;">不存在，另走日志的途径</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">audit_printk_skb(ab-&gt;skb);</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">}</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">ab-&gt;skb = NULL;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">}</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">audit_buffer_free(ab);</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">}</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">//<span style="font-size: 16px; font-family: 宋体;">若审计系统配置比如发送速率，允许存放的最大消息数的等发生了变化，则调用该函数生成相关审计消息</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">static int audit_do_config_change(char *function_name, int *to_change,</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">&nbsp;&nbsp;int new, uid_t loginuid, u32 sessionid,</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">&nbsp;&nbsp;u32 sid)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">{</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">int allow_changes, rc = 0, old = *to_change;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">//<span style="font-size: 16px; font-family: 宋体;">审计系统在</span>AUDIT_LOCKED<span style="font-size: 16px; font-family: 宋体;">模式下，不允许修改配置</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">if (audit_enabled == AUDIT_LOCKED)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">allow_changes = 0;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">else</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">allow_changes = 1;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">&nbsp;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">if (audit_enabled != AUDIT_OFF) { &nbsp;//<span style="font-size: 16px; font-family: 宋体;">说明是开启的</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//<span style="font-size: 16px; font-family: 宋体;">生成有关配置改变的审计消息并发送给用户空间</span></span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">rc = audit_log_config_change(function_name, new, old, loginuid,</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sessionid, sid, allow_changes);</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">if (rc)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">allow_changes = 0;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">}</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">/* <span style="font-size: 16px; font-family: 宋体;">如果允许修改配置，将配置设置为新值 </span>*/</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">if (allow_changes == 1)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">*to_change = new;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">else if (rc == 0)</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">rc = -EPERM;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">return rc;</span></p><p style="text-indent:28px;line-height:24px"><span style="font-family: Calibri; font-size: 16px;">}</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">吴宪萍</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

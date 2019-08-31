@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		科学发展的四范式，函数式编程语言的兴起——洪峰老师讲创客道（三十一）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=417070625&amp;idx=1&amp;sn=e97f60c3387aeab9b1ced3e573dbd122&amp;chksm=7644d3c441335ad2ba03edf19c00ebe5231a314ab031c05eb8fee23f7279b862f547992b8d60&amp;scene=27#wechat_redirect&cpage=74' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">科学发展的四范式，函数式编程语言的兴起——洪峰老师讲创客道（三十一）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        洪峰
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-04-12</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="text-indent:28px"><span style=";font-size:16px;font-family:宋体"><br  /></span></p><p style="text-indent:28px"><span style=";font-size:16px;font-family:宋体"></span></p><p><mpvoice frameborder="0" class="res_iframe js_editor_audio audio_iframe" src="/cgi-bin/readtemplate?t=tmpl/audio_tmpl&amp;name=%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9331&amp;play_length=21:36" name="%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9331" play_length="1296000" voice_encode_fileid="MzI3NzA5MzUxNF80MTcwNzA2MjM="></mpvoice></p><p style="text-indent:28px"><span style=";font-size:16px;font-family:宋体">在前面一讲中，我向大家介绍了美国科学家如何利用</span><span style=";font-size:16px">Python</span><span style=";font-size:16px;font-family:宋体">语言，在数值计算与科学计算、科学编程方面的能力帮助他们发现了这个引力波的存在。这个引力波是爱因斯坦在一百多年前预言的一个理论。通过这个</span><span style=";font-size:16px">Python</span><span style=";font-size:16px;font-family:宋体">的科学计算能力、通过数据的可视化，完成了对引力波观察数据的分析，从而以一种直观的方式，发现了这个引力波的存在。那么谈到这里呢，我就把话题稍微岔一下，让我谈一谈科学发展的一些范式，以及科学发展范式与我们编程语言之间的微妙关系。关于科学发展的范式，以及科学发展范式在科学进步、科学革命中的作用，曾经有一位很有名的作者，托马斯库恩（</span><span style=";font-size:16px">Thomas&nbsp;S.Kuhn</span><span style=";font-size:16px;font-family:宋体">），他在</span><span style=";font-size:16px">1962</span><span style=";font-size:16px;font-family:宋体">年写过一本书，书名叫做《</span><span style=";font-size:16px">The&nbsp;Struction&nbsp;Of&nbsp;Scienticfic&nbsp;Revolutions</span><span style=";font-size:16px;font-family:宋体">》</span><span style=";font-size:16px">,</span><span style=";font-size:16px;font-family:宋体">中文名字叫做《科学革命结构》，国内也有中译版出版。这本书在方法论与软科学的领域名气很大，也是在这个领域的一个分量很重的一部巨作。</span><br  /></p><p style="text-indent:28px"><span style=";font-size:16px;font-family:宋体">关于这个科学的范式，迄今我们人类已经出现了四种大的这个范式。首先是观察，第二就是实验，第三个就是推理，最后一个就是计算。当我们人类，出现在这个地球这个星球上时，我们那时候的科学技术是非常不发达的，原始的社会这个蒙昧的时代。原始先民他们对自然的了解首先是从观察开始的，通过观察，通过自己的体会，他们得到了大量的感性认识，然后从感性认识中提炼出了他们的知识体系。原始先民们怀着对天与地的敬畏，他们首先对天文的观察，是非常的深入的，而且是长期积累下来许多知识。比方说生活在尼罗河下游的埃及人，他们对尼罗河河水的泛滥、它们的规律通过天文的观察，发现尼罗河水的泛滥的规律，这是他们的一个观察。在中国也有大量的关于对星空的观察，我们现在有个成语叫做斗转星移，它实际说的就是一个对天文观察，从天文观察中得到的一个知识。中国在非常遥远的远古的时代，就创建了自己的日历系统，这些都是说明中国的古代天文学非常的发达。这些发展，是对于天文、天上星空的长期观察得到的，在我们国家春秋战国的时候，有一位伟大的诗人屈原，他就曾经写过一篇非常有名的文章叫做《天问》，“遂古之初，谁传道之？”在那篇文章里面，他一口气提出了大量的问题，对天发问，体现了丰富的想象力。而没有对天文的深入考察他是提不出这些问题来的。在实际上其他各大文明古国还有文明的考察中，包括印度文明、巴比伦文明、美洲的玛雅文明这些古代的文明中都有大量的对天文观察的这些事实，这个这是考古学上毋庸置疑的一些事实。</span></p><p style="text-indent:28px"><span style=";font-size:16px;font-family:宋体">德国的哲学家康德曾经写过《三大批判》，在他的名著《实践理性批判》的结尾，他曾经写过这样的话：“有两种东西，我们越是经常，越是执着地思考他们，心中越是永远充满新鲜、有增无减的赞叹和敬畏，（那就是）我们头上灿烂的星空，我们心中的道德法则！”这篇文章结尾的这个名言，甚至被刻到了他的墓铭志上面。康德的这段话，现在搞哲学的人不一定每一个人都知道，但是据我所知每一个搞天文观测的天文爱好者一定知道这句话。原始先民除了天文的深入细致的观察，还有对地上的这样的一些万事万物进行也深入细致的观察，从而得到了大量的知识。在这些得到的知识中，其中有一项意义非常重大，那就是对火的认识。最初呢，我想原始先民应该是从雷电击中地面的树木起火这种现象得到的认识，而且发现这个火能够驱散野兽，改善自己的生存环境。后来又通过观察发现摩擦可以生热，然后钻木取火的技术就被发明出来。那么有了火之后，人类的生产力就大大的向前推进了一步。后期我们的原始社会有了青铜器，还有一些冶炼技术，可以想象没有火的出现，火的利用，那么冶炼技术是不可想象的。</span></p><p><span style=";font-size:16px;font-family:宋体">直到今天，观察周围科学发展的一个重要的范式仍然被广泛采用。我前面提到的这个美国科学家，利用科学仪器，利用</span><span style=";font-size:16px">Python</span><span style=";font-size:16px;font-family:宋体">语言，观察到了宇宙中引力波的存在，实际上这个范式还是在用，观察这一种范式来进行的。科学发展的第二种范式，是做实验。这个实验就相当于把大自然的环境，我把它进行限定，在一个局部可控的环境下来进行观察，进行交互。在我们国家有大量的发明创造，都是通过炼丹术发现的。比方说我们的黑火药，黑火药就是炼丹术的一个发明，从我们现在的角度来看，实际上就是把大自然搬到实验室，在实验室这个可观察的环境下来进行观察与控制。在人类化学的发展历史上，欧洲那么多的化学元素一个一个得被发现出来，实验这个范式起的作用是不可估量的。当人类的观察与实验的数据、知识积累到一定程度以后，这个时候人们就可以从已知的事实（就是从观察和实验中得到的这些事实），开始根据一些规律进行推理，通过推理也做出了许多科学的发现。比方说在太阳系的行星里面，天王星、海王星的发现都是人们先通过万有引力定律的计算，通过推理推导出行星的存在，然后再用天文望远镜对着指定的空域进行观察，从而发现它们的存在。</span></p><p style="text-indent:28px"><span style=";font-size:16px;font-family:宋体">纵观人类的科技发展史，利用推理做出发现，乃至今人的发现这种案例，那是比比皆是的。除了我刚才讲的天文学家利用万有引力定律推理出海王星与天王星的存在以外，还有麦克斯韦根据他的电磁理论学说推导出光就是一种电磁波的一个今人的预言，后来被证实。以及数学家康托尔，也就是集合的创始人，他在还没有找到一个超越数的情况下（也就是在实数系里面），就根据他的集合理论推导出，连续筒上的超越数的数目远远大于代数数的数目。这都是今人的通过推理做出的发现。伟大的数学家乔治波利亚曾经写过一本书，是关于数学中的合情推理，那么根据他的观点，好的数学是猜出来的。实际上猜就是做一种推理的形式，用我们逻辑思维规律，有这个演绎，还有这个归纳，还有这个类比。乔治波利亚除了高度重视演绎的作用以外，他还非常重视归纳与类比在科学发现中的作用。所有的这些力量都是关于推理的范式的力量。我们可以这样讲，实验是把自然界搬到了一个可控的环境下，推理呢是把实验室搬进了人的脑袋里面去。</span></p><p style="text-indent:28px"><span style=";font-size:16px;font-family:宋体">最后一个范式就是计算，这个计算呢就是当观察、实验、推理数据越来越多的时候，知识体系越来越完备的时候，那么我们可以通过一种计算的模型来进行计算。这个相当于把脑袋里面的东西又搬到脑袋外面来，特别是我们现在有了计算机以后，搬到计算工具上，利用外脑（我们把计算机作为人的外脑）的一种实现来进行操作。请大家注意，关于计算这个范式，实际上在人类很早的年代就已经出现了，比方说中国的《易经》它这个体系，就是这一种范式的一个体现。孔子在这个《周易·系辞》是这样写过的：“古者包牺氏之王天下也，仰则观相于天，俯则观法于地。观鸟兽之文与地之宜，进取诸身，远取诸物，于是始作八卦，以通神明之德，以类万物之情。”由此可见八卦的模型（阴阳八卦的计算模型），它实际是我们的原始先民长期对自然界的规律进行观察，进行实验摸索，然后通过自己的推理，然后提炼出的一套计算模型。有了这个计算模型之后，它不是讲了吗，“以通神明之德，以类万物之情”，那就是可以按照这个模型与外界万事万物进行模拟，这个模型里面实际上是一个哲理、数理与技理在那个物质生产或科技发展水平下的一个三兼顾的一个模型。我以前在多个不同的场合多次提到过，当今我们（中国人）搞科技创新，一定不能丢掉自己的传统，这个传统在我看来就是哲理、数理与技理三兼顾的这个传统，哲理具有非常好的普适性，哲学道理它是追求普适性的。而数理呢，数学定理的证明它追求形式的确切性。我以前讲过毕达哥拉斯定理的证明，在</span><span style=";font-size:16px">2000</span><span style=";font-size:16px;font-family:宋体">多年前古希腊就有了，今天的这个证明它还是那样，没有任何变化。而技理讲究可操作性，我们这个计算机你要是说不可操作的话，那也无法得到这么广泛的应用。所以我可以大胆的讲，未来的科技发展它一定是在原作哲理数理技理三兼顾这个大方向上前进的，而科技创新，它也不会离开这个大潮流而存在。关于哲理数理与技理三兼顾的提法呢，我已经在本书的第三章《现代巫师》里面花了整章的篇幅谈到了我的系统观点，请大家回去复习一下。在这个三兼顾的过程中，一个非常重要的议题就是，如何把数学理论与这个科技，特别是这个编程直接的结合起来。那么我前面提到的诸多语言</span><span style=";font-size:16px">,</span><span style=";font-size:16px;font-family:宋体">从</span><span style=";font-size:16px">C</span><span style=";font-size:16px;font-family:宋体">、还有</span><span style=";font-size:16px">LISP</span><span style=";font-size:16px;font-family:宋体">、</span><span style=";font-size:16px">Racket</span><span style=";font-size:16px;font-family:宋体">、还有后面讲到的</span><span style=";font-size:16px">C++</span><span style=";font-size:16px;font-family:宋体">、</span><span style=";font-size:16px">JAVA</span><span style=";font-size:16px;font-family:宋体">、</span><span style=";font-size:16px">G</span><span style=";font-size:16px;font-family:宋体">o&nbsp;<span style="font-family:宋体">、</span></span><span style=";font-size:16px">A</span><span style=";font-size:16px;font-family:宋体">da<span style="font-family:宋体">、还有这个</span></span><span style=";font-size:16px">S</span><span style=";font-size:16px;font-family:宋体">hell<span style="font-family:宋体">、</span></span><span style=";font-size:16px">Perl</span><span style=";font-size:16px;font-family:宋体">、还有这个</span><span style=";font-size:16px">Python</span><span style=";font-size:16px;font-family:宋体">等等语言，从这些语言我们可以看出它们离数学家的工作思维仍然有相当的距离，为什么这么说呢，因为这些语言很大程度上还是研究怎么干，关于计算的过程本身是怎样进行的、怎么干。而数学家们主要思考问题的方向是干什么，是出于描述性的，而不是关注计算的一些具体的细节，特别是计算机状态的一些变化。当然呢，在这个</span><span style=";font-size:16px">LISP</span><span style=";font-size:16px;font-family:宋体">语言里面，我们已经可以支持函数式的编程，可以让程序员专注于问题的描述。我已经在前面讲</span><span style=";font-size:16px">Racket</span><span style=";font-size:16px;font-family:宋体">语言时，我讲过对</span><span style=";font-size:16px">Lisp</span><span style=";font-size:16px;font-family:宋体">基本求值模型的三种变形，那个模型一个比一个复杂，一个比一个精致，最终导向了从对计算机状态的关注转向了对问题描述方式、计算模型的支持。</span></p><p style="text-indent:28px"><span style=";font-size:16px;font-family:宋体">我在这一章已经多次提到，在计算机编程王国里面有两个高峰，一个是</span><span style=";font-size:16px">C</span><span style=";font-size:16px;font-family:宋体">，一个是</span><span style=";font-size:16px">LISP</span><span style=";font-size:16px;font-family:宋体">，我们现在讲了很多关于</span><span style=";font-size:16px">C</span><span style=";font-size:16px;font-family:宋体">系列的，还有中间状态的脚本语言。从这一讲开始，我向大家开始介绍专注于问题描述的函数式程序设计语言。计算机图灵奖的得主约翰巴克斯（</span><span style=";font-size:16px">John&nbsp;Backus</span><span style=";font-size:16px;font-family:宋体">），他曾经在图灵奖的获奖演说里面对函数式程序设计语言给予了很高很高的评价。约翰巴克斯获奖年份是在</span><span style=";font-size:16px">1977</span><span style=";font-size:16px;font-family:宋体">年，他在他一生众多的成就中有两个发明是非常关键的，一个就是他发明了</span><span style=";font-size:16px">FORTRAN</span><span style=";font-size:16px;font-family:宋体">语言，另外一个他是巴克斯诺尔范式（</span><span style=";font-size:16px">BNF:&nbsp;Backus-Naur&nbsp;Form</span><span style=";font-size:16px;font-family:宋体">）的提出者。这个巴克斯诺尔范式有了之后后面就导致</span><span style=";font-size:16px">ALGOL</span><span style=";font-size:16px;font-family:宋体">原因的出现。约翰巴克斯在</span><span style=";font-size:16px">1977</span><span style=";font-size:16px;font-family:宋体">年图灵奖获奖演说中，他认为（他说）函数语言的诞生是解放软件生产力的一个里程碑，这个意义评价现在看起来是非常中肯的，函数式编程语言它是面向问题的，它用形式化的方法描述问题求解的行为。主要就是说你需要干什么，程序执行的重要特征是具有引用的透明性，英文叫做</span><span style=";font-size:16px">Referential&nbsp;Transparency</span><span style=";font-size:16px;font-family:宋体">，也就是说变量只与值有关，与物理存储地址无关。变量与值环境一一对应，这一性质就消除了程序与机器结构的相关性，使得程序员在进行编程的时候无需考虑计算的操作行为、计算机的状态变化。只要按照有关语言的语法，用数学或逻辑的方法给出问题的描述和目标即可求解。那么这个就是函数式编程语言的一个本质特征。从函数式编程语言的概念提出以来，已经发明出来的函数式编程语言也有很多。</span></p><p style="text-indent:28px"><span style=";font-size:16px;font-family:宋体">那么从现在开始我重点会给大家介绍纯函数编程语言</span><span style=";font-size:16px">Haskell</span><span style=";font-size:16px;font-family:宋体">。这门语言是以伟大的逻辑学家</span><span style=";font-size:16px">Haskell&nbsp;Curry</span><span style=";font-size:16px;font-family:宋体">他的名字来命名的，我个人有个观点，如果人类一百年以后的编程语言会是什么样子呢？我的答案是如果人类一百年以后还需要我们程序员手工地去编写程序的话，那么这个语言应该是</span><span style=";font-size:16px">Haskell,</span><span style=";font-size:16px;font-family:宋体">或者与</span><span style=";font-size:16px">Haskell</span><span style=";font-size:16px;font-family:宋体">类似的这样的语言。在前面讲解</span><span style=";font-size:16px">LISP</span><span style=";font-size:16px;font-family:宋体">、<span style="font-family:Times New Roman">&nbsp;</span></span><span style=";font-size:16px">Racket</span><span style=";font-size:16px;font-family:宋体">时我已经提到过，这个</span><span style=";font-size:16px">LISP&nbsp;</span><span style=";font-size:16px;font-family:宋体">和</span><span style=";font-size:16px">Racket</span><span style=";font-size:16px;font-family:宋体">它具有很好的数学基础，也就是λ演算。那么在<span style="font-family:Times New Roman">LISP</span><span style="font-family:宋体">诞生以后，</span><span style="font-family:Times New Roman">Scheme</span><span style="font-family:宋体">还有一个叫做</span><span style="font-family:Times New Roman">ML</span><span style="font-family:宋体">的语言，都可以算成是函数式编程语言，但是它们不是纯函数式编程语言。所以在</span><span style="font-family:Times New Roman">1987</span><span style="font-family:宋体">年的之前，计算机科学界对于函数式编程理论的研究已经相当的深入，已经出现了多种函数式编程语言。那么到了</span><span style="font-family:Times New Roman">1987</span><span style="font-family:宋体">年的时候，在美国的俄勒冈州举办了一个函数式编程与计算机结构的会议。在这个会议上，来开会的学者专家们认为当时的函数式编程语言种类过多、语法相似、而且多数效率也不行，这是当时的一个现状。他们最终达成了一个共识，这样下去的结果就是越来越多的人会研究函数式编程语言，但是因为语言不统一，这种情况不利于函数式编程的研究、应用与发展。所以在这个会议上，全体成员决定设计一个开源的（</span><span style="font-family:Times New Roman">Open&nbsp;Source</span><span style="font-family:宋体">）的、自由的、语法简单的、运行稳定的、效率非常好的、适用于函数式编程教学研究、而且可以用于开发应用软件这样的一个纯函数式编程语言来缓解当时的混乱局面。这个语言，就被命名为</span><span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">。</span><span style="font-family:Times New Roman">1987</span><span style="font-family:宋体">年会议结束以后，函数式编程的社团就开始着手定义计算机语言的规范。</span><span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">语言规范</span><span style="font-family:Times New Roman">1.0</span><span style="font-family:宋体">的版本是在</span><span style="font-family:Times New Roman">1990</span><span style="font-family:宋体">年发布的，这个语法的主要设计者就是</span><span style="font-family:Times New Roman">Simon&nbsp;Peyton&nbsp;Jones</span><span style="font-family:宋体">这位教授。到今天为止发展最好的函数式编程语言就是这个</span><span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">，而且这个语言规范也升级到了</span><span style="font-family:Times New Roman">Haskell&nbsp;2010</span><span style="font-family:宋体">的</span><span style="font-family:Times New Roman">REPORT,</span><span style="font-family:宋体">语言规范已经是非常的成熟。</span></span></p><p><span style=";font-size:16px;font-family:宋体">我第一次听说<span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">语言是在</span><span style="font-family:Times New Roman">2002</span><span style="font-family:宋体">年去印度的那个特里凡得琅的</span><span style="font-family:Times New Roman">TUG</span><span style="font-family:宋体">（</span></span><a><span style=";font-size:16px;font-family:宋体">TEX&nbsp;Users&nbsp;Group</span></a><span style=";font-size:16px;font-family:宋体">）大会上听说这个语言的。当时我从成都出发，先飞到新加坡，然后从新加坡转机去印度的特里凡得琅。那么新加坡转机的时候，还有一位从澳大利亚来的</span><span style=";font-size:16px">普莱斯</span><span style=";font-size:16px;font-family:宋体">教授，他也要去印度特里凡得琅开这个会，我们就在新加坡的那个樟宜机场见的面。因为要等飞机，转机的时候我们在樟宜机场谈了很多很多这个话题，五花八门的话题。其中有一点就是他告诉我，在他的班上（他在澳大利亚一个大学里教书），他这个班上的学生已经在尝试使用<span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">语言的教学，我当时觉着非常好奇，我就仔细的询问了他关于这个语言以及他教学的情况，从印度回来以后，我也开始关注</span><span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">语言的一些情况。</span></span></p><p style="text-indent:28px"><span style=";font-size:16px;font-family:宋体">那么在后面的几讲中，我就把我自己使用学习<span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">语言的一些心得体会，向大家做一个介绍。同时我会跟诸位在座的创客道学员说明</span><span style="font-family:Times New Roman">Haskell</span><span style="font-family:宋体">语言的特点它是什么，它适合干什么样的一些项目，详细情况请听我在下面的解说。</span></span></p><p><span style=";font-size:16px">&nbsp;</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">洪峰</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

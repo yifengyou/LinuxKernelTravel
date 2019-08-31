@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Container技术之cgroup提高
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=408411946&amp;idx=1&amp;sn=2fc6a15b75384b87fd2c78077f680da4&amp;chksm=76c8f2cf41bf7bd9ae3ba9db5b94dd2e3722ae060f9c61b509cf4645084ff440a5887bdc0c44&amp;scene=27#wechat_redirect&cpage=85' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Container技术之cgroup提高</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        张义飞
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2015-11-29</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <h2 style="box-sizing: border-box; font-weight: bold; line-height: 1.1; color: green; margin-top: -25px; margin-bottom: 0.83em; font-size: 30px; text-rendering: optimizeLegibility; padding-top: 40px;"><span style="font-size: 24px;">About</span></h2><p style="box-sizing: border-box; margin-bottom: 10px;">在我的前面两篇文章中，分别介绍了cgroup的一些基本概念，和如何去管理层次结构和control<br style="box-sizing: border-box;"  />group还有如何附加子系统。但是到目前为止仍旧没有触及cgroup中最核心的东西也就是资源限制。<br style="box-sizing: border-box;"  />前面的文章中仅仅说的是如何把子系统附加到某个层次上。至于如何设置子系统来限制资源，<br style="box-sizing: border-box;"  />如何针对某些进程来限制都还没有涉及。那么本篇博文谈的就是这两点。</p><h2 style="box-sizing: border-box; font-weight: bold; line-height: 1.1; color: green; margin-top: -25px; margin-bottom: 0.83em; font-size: 30px; text-rendering: optimizeLegibility; padding-top: 40px;"><span style="font-size: 24px;">Setting Parameters</span></h2><p style="box-sizing: border-box; margin-bottom: 10px;">当我们将一个子系统附加到一个层次中，我们必须去调节对应子系统的参数才能够达到资源限制的<br style="box-sizing: border-box;"  />目的。给某个子系统设置参数需要用到cgset命令，但是需要注意一个问题就是，使用cgset的权限。<br style="box-sizing: border-box;"  />不是哪个用户都可以使用cgset对某一个control group下的子系统设置参数。在使用cgcreate命<br style="box-sizing: border-box;"  />令创建control group的时候有一个-t和-a选项，这两个可以指定用户可以修改control group中的<br style="box-sizing: border-box;"  />子系统参数。具体细节可以参考我的上篇博文。</p><p style="box-sizing: border-box; margin-bottom: 10px;">先来看下cgset的语法</p><p><br  /></p><p>cgset -r parameter=value path_to_cgroup</p><p>path_to_cgroup 是一个相对于root cgroup的一个路径</p><p>例如: /cgroup/cpu_and_mem 这个cgroup，并且已经挂载，要想调节这个cgroup的参数，那么path_to_cgroup就是/ 也可以省略，表示就是cpu_and_mem这个root cgroup自身。</p><p>如果是要设置参数的control group是 /cgroup/cpu_and_mem/subgroup</p><p>那么path_to_group就是/subgroup</p><p style="box-sizing: border-box; margin-bottom: 10px;"></p><p style="box-sizing: border-box; margin-bottom: 10px;">下面是使用cgset设置参数的一个例子:</p><p><br  /></p><pre style="color: rgb(204, 204, 204); font-size: 14px; line-height: 20px;"><span class="line" style="box-sizing: border-box; height: 20px;">此时系统上已经挂载了一个/cgroup/cpu_and_mem的root <span class="keyword" style="box-sizing: border-box; color: rgb(204, 153, 204);">group</span>了</span><br style="box-sizing: border-box;"  /><span class="line" style="box-sizing: border-box; height: 20px;">下面这是用来调节subgroup这个<span class="keyword" style="box-sizing: border-box; color: rgb(204, 153, 204);">control</span> <span class="keyword" style="box-sizing: border-box; color: rgb(204, 153, 204);">group</span>的最大内存使用量</span><br style="box-sizing: border-box;"  /><span class="line" style="box-sizing: border-box; height: 20px;">cgset -r <span class="keyword" style="box-sizing: border-box; color: rgb(204, 153, 204);">memory</span>.limit_in_bytes=<span class="number" style="box-sizing: border-box; color: rgb(249, 145, 87);">10240000</span> /subgroup<br  /></span></pre><p style="box-sizing: border-box; margin-bottom: 10px;"><br  /></p><p style="box-sizing: border-box; margin-bottom: 10px;">我们也可以拷贝一个control group的参数到另外一个control group中，操作方式如下:</p><pre style="color: rgb(204, 204, 204); font-size: 14px; line-height: 20px;"><span class="line" style="box-sizing: border-box; height: 20px;">将subgroup中的子系统参数，拷贝到subgroup2中。</span><br style="box-sizing: border-box;"  /><span class="line" style="box-sizing: border-box; height: 20px;">cgset --<span class="keyword" style="box-sizing: border-box; color: rgb(204, 153, 204);">copy</span>-<span class="keyword" style="box-sizing: border-box; color: rgb(204, 153, 204);">from</span> <span class="regexp" style="box-sizing: border-box; color: rgb(242, 119, 122);">/subgroup /</span>subgroup2</span></pre><p><br  /></p><p style="box-sizing: border-box; margin-bottom: 10px;">关于每个子系统中的参数的含义我将会在下篇博文中根据实际例子来解释其作用。</p><p><br  /></p><h2 style="box-sizing: border-box; font-weight: bold; line-height: 1.1; color: green; margin-top: -25px; margin-bottom: 0.83em; font-size: 30px; text-rendering: optimizeLegibility; padding-top: 40px;"><span style="font-size: 24px;">Displaying Parameters of Control Groups</span></h2><p style="box-sizing: border-box; margin-bottom: 10px;">cgget命令可以用来查看某个control group中的子系统的参数，也可以使用cat通过<br style="box-sizing: border-box;"  />文件的方式来查看。cgget显示参数的用法如下:</p><pre style="color: rgb(204, 204, 204); font-size: 14px; line-height: 20px;"><span class="line" style="box-sizing: border-box; height: 20px;">syntax:</span><br style="box-sizing: border-box;"  /><span class="line" style="box-sizing: border-box; height: 20px;">cgget -r parameter list_of_cgroups</span><br style="box-sizing: border-box;"  /><span class="line" style="box-sizing: border-box; height: 20px;"></span><br style="box-sizing: border-box;"  /><span class="line" style="box-sizing: border-box; height: 20px;">example:</span><br style="box-sizing: border-box;"  /><span class="line" style="box-sizing: border-box; height: 20px;">cgget -r cpuset<span class="class" style="box-sizing: border-box; color: rgb(153, 204, 153);">.cpus</span> -r memory<span class="class" style="box-sizing: border-box; color: rgb(153, 204, 153);">.limit_in_bytes</span> /subgroup /subgroup2</span><br style="box-sizing: border-box;"  /><span class="line" style="box-sizing: border-box; height: 20px;">结果如下</span><br style="box-sizing: border-box;"  /><span class="line" style="box-sizing: border-box; height: 20px;">/subgroup:</span><br style="box-sizing: border-box;"  /><span class="line" style="box-sizing: border-box; height: 20px;">cpuset<span class="class" style="box-sizing: border-box; color: rgb(153, 204, 153);">.cpus</span>: </span><br style="box-sizing: border-box;"  /><span class="line" style="box-sizing: border-box; height: 20px;">memory<span class="class" style="box-sizing: border-box; color: rgb(153, 204, 153);">.limit_in_bytes</span>: <span class="number" style="box-sizing: border-box; color: rgb(249, 145, 87);">1024000</span></span><br style="box-sizing: border-box;"  /><span class="line" style="box-sizing: border-box; height: 20px;"></span><br style="box-sizing: border-box;"  /><span class="line" style="box-sizing: border-box; height: 20px;">/subgroup2:</span><br style="box-sizing: border-box;"  /><span class="line" style="box-sizing: border-box; height: 20px;">cpuset<span class="class" style="box-sizing: border-box; color: rgb(153, 204, 153);">.cpus</span>: </span><br style="box-sizing: border-box;"  /><span class="line" style="box-sizing: border-box; height: 20px;">memory<span class="class" style="box-sizing: border-box; color: rgb(153, 204, 153);">.limit_in_bytes</span>: <span class="number" style="box-sizing: border-box; color: rgb(249, 145, 87);">9223372036854775807</span></span></pre><p></p><p><span style="font-size: 24px; color: green; font-weight: bold; line-height: 1.1;">Moving a Process to a Control Group</span><br  /></p><p style="box-sizing: border-box; margin-bottom: 10px;">调节完子系统的参数后基本上就可以达到资源限制的作用了，但是对谁做限制呢?<br style="box-sizing: border-box;"  />如果我们调节的是root group中的子系统参数，那么将会对整个系统的所有进程做资源限制。<br style="box-sizing: border-box;"  />这或许不是我们想要的效果，你可以看下每个control group目录下都有一个tasks文件，这个文件<br style="box-sizing: border-box;"  />中放的是要限制的进程pid,如果是root group那么这个文件中放的是系统上所有进程的pid,如果<br style="box-sizing: border-box;"  />是一个刚创建的control group则这个文件是空的。原理搞清楚了，实现起来就简单了，只要将要<br style="box-sizing: border-box;"  />限制的进程pid，添加到这个文件中就可以实现对这个进程的资源限制了，cgroup同时也提供了一个<br style="box-sizing: border-box;"  />命令来帮助我们完成这个操作，这个命令叫做cgclassify。语法如下</p><pre style="color: rgb(204, 204, 204); font-size: 14px; line-height: 20px;"><span class="line" style="box-sizing: border-box; height: 20px;">cgclassify -g <span class="string" style="box-sizing: border-box; color: rgb(153, 204, 153);">subsystems:</span>path_to_cgroup pidlist</span><br style="box-sizing: border-box;"  /><span class="line" style="box-sizing: border-box; height: 20px;"></span><br style="box-sizing: border-box;"  /><span class="line" style="box-sizing: border-box; height: 20px;">下面是一个使用cgclassify来添加进程到指定contrl group中</span><br style="box-sizing: border-box;"  /><span class="line" style="box-sizing: border-box; height: 20px;">下面是把<span class="number" style="box-sizing: border-box; color: rgb(249, 145, 87);">1251</span>进程添加到subgroup这个control group中</span><br style="box-sizing: border-box;"  /><span class="line" style="box-sizing: border-box; height: 20px;">cgclassify -g <span class="string" style="box-sizing: border-box; color: rgb(153, 204, 153);">cpuset:</span>/subgroup <span class="number" style="box-sizing: border-box; color: rgb(249, 145, 87);">1251</span></span><br style="box-sizing: border-box;"  /><span class="line" style="box-sizing: border-box; height: 20px;">也可以</span><br style="box-sizing: border-box;"  /><span class="line" style="box-sizing: border-box; height: 20px;">echo <span class="number" style="box-sizing: border-box; color: rgb(249, 145, 87);">1251</span> &gt; <span class="regexp" style="box-sizing: border-box; color: rgb(242, 119, 122);">/cgroup/</span>cpu_and_mem/subgroup</span></pre><p><br  /></p><h2 style="box-sizing: border-box; font-weight: bold; line-height: 1.1; color: green; margin-top: -25px; margin-bottom: 0.83em; font-size: 30px; text-rendering: optimizeLegibility; padding-top: 40px;"><span style="font-size: 20px;">The cgred Service</span></h2><p style="box-sizing: border-box; margin-bottom: 10px;">考虑一个场景，如果我要对一个vsftpd进程做限制，那么如果使用上面提到的方法来对vsftpd进程<br style="box-sizing: border-box;"  />做限制，那么存在一个问题就是，每次系统重启都需要重新设置，因为进程的PID发生了变化。好在<br style="box-sizing: border-box;"  />红帽给我们提供了一个cgred的服务，是随着libcgroup的安装而安装的。通过cgred可以自动帮我们<br style="box-sizing: border-box;"  />去设置。我们只需要在配置文件中书写规则即可。</p><p style="box-sizing: border-box; margin-bottom: 10px;">配置文件为/etc/cgrules.conf，其文件格式有以下两种:<br style="box-sizing: border-box;"  />两种syntax<br style="box-sizing: border-box;"  />user subsystems control_group<br style="box-sizing: border-box;"  />user:command subsystems control_group<br style="box-sizing: border-box;"  />下面是一些设置案例:</p><pre style="color: rgb(204, 204, 204); font-size: 14px; line-height: 20px;"><span class="line" style="box-sizing: border-box; height: 20px;">maria devices /usergroup</span><br style="box-sizing: border-box;"  /><span class="line" style="box-sizing: border-box; height: 20px;">表示任何属于maria这个用户的进程，访问设备子系统的时候都会受/usergroup</span><br style="box-sizing: border-box;"  /><span class="line" style="box-sizing: border-box; height: 20px;">这个cgroup关于devices子系统的影响。</span><br style="box-sizing: border-box;"  /><span class="line" style="box-sizing: border-box; height: 20px;"></span><br style="box-sizing: border-box;"  /><span class="line" style="box-sizing: border-box; height: 20px;">maria:<span class="keyword" style="box-sizing: border-box; color: rgb(204, 153, 204);">ftp</span> devices /usergroup/staff/<span class="keyword" style="box-sizing: border-box; color: rgb(204, 153, 204);">ftp</span></span><br style="box-sizing: border-box;"  /><span class="line" style="box-sizing: border-box; height: 20px;">表示当maria用户使用<span class="keyword" style="box-sizing: border-box; color: rgb(204, 153, 204);">ftp</span>命令产生的进程会自动移动到包含device子系统的/usergroup/staff/<span class="keyword" style="box-sizing: border-box; color: rgb(204, 153, 204);">ftp</span></span><br style="box-sizing: border-box;"  /><span class="line" style="box-sizing: border-box; height: 20px;">control group中。</span></pre><p><br  /></p><p><br  /></p><p style="box-sizing: border-box; margin-bottom: 10px;">关于cgred的配置文件语法还有更多的话题可以谈，再次就介绍到这里为止了。</p><h2 style="box-sizing: border-box; font-weight: bold; line-height: 1.1; color: green; margin-top: -25px; margin-bottom: 0.83em; font-size: 30px; text-rendering: optimizeLegibility; padding-top: 40px;"><span style="font-size: 24px;">Starting a Process in a Control Group</span></h2><p style="box-sizing: border-box; margin-bottom: 10px;">上面的谈到的是如何把一个进程移动到某个control group的子系统下，那么如何在进程启动的时候<br style="box-sizing: border-box;"  />就将其添加到control group中的呢，cgroup提供了一个cgexec命令用来达到这个目的，先来看下<br style="box-sizing: border-box;"  />这个命令的语法规则:</p><pre style="color: rgb(204, 204, 204); font-size: 14px; line-height: 20px;"><span class="line" style="box-sizing: border-box; height: 20px;">cgexec -g subsystems:path_to_cgroup command arguments</span><br style="box-sizing: border-box;"  /><span class="line" style="box-sizing: border-box; height: 20px;">下面是一个例子,在subgroup这个<span class="keyword" style="box-sizing: border-box; color: rgb(204, 153, 204);">control</span> <span class="keyword" style="box-sizing: border-box; color: rgb(204, 153, 204);">group</span>中，执行wget命令:</span><br style="box-sizing: border-box;"  /><span class="line" style="box-sizing: border-box; height: 20px;">cgexec -g <span class="keyword" style="box-sizing: border-box; color: rgb(204, 153, 204);">memory</span>:/subgroup wget http:<span class="comment" style="box-sizing: border-box; color: rgb(153, 153, 153);">//www.redhat.com</span></span></pre><p><br  /></p><p style="box-sizing: border-box; margin-bottom: 10px;">当然除了使用cgexec外，还可以有另外一个方法来在某个control group中执行指定进程。</p><p><br  /></p><pre style="color: rgb(204, 204, 204); font-size: 14px; line-height: 20px;"><span class="line" style="box-sizing: border-box; height: 20px;">把当前进程添加到<span class="keyword" style="box-sizing: border-box; color: rgb(204, 153, 204);">control</span> <span class="keyword" style="box-sizing: border-box; color: rgb(204, 153, 204);">group</span>中，那么很自然其子进程也是属于这个<span class="keyword" style="box-sizing: border-box; color: rgb(204, 153, 204);">control</span> <span class="keyword" style="box-sizing: border-box; color: rgb(204, 153, 204);">group</span>中的</span><br style="box-sizing: border-box;"  /><span class="line" style="box-sizing: border-box; height: 20px;">[root<span class="variable" style="box-sizing: border-box; color: rgb(242, 119, 122);">@localhost</span> cpu_and_mem]# echo <span class="variable" style="box-sizing: border-box; color: rgb(242, 119, 122);">$$</span> &gt; /cgroup/cpu_and_mem/subgroup/tasks</span><br style="box-sizing: border-box;"  /><span class="line" style="box-sizing: border-box; height: 20px;">[root<span class="variable" style="box-sizing: border-box; color: rgb(242, 119, 122);">@localhost</span> cpu_and_mem]# wget http:<span class="comment" style="box-sizing: border-box; color: rgb(153, 153, 153);">//www.redhat.com</span></span><br style="box-sizing: border-box;"  /><span class="line" style="box-sizing: border-box; height: 20px;">但是这种方法存在一个问题就是当wget退出后，当前进程仍然还是属于cgroup中.</span><br style="box-sizing: border-box;"  /><span class="line" style="box-sizing: border-box; height: 20px;">下面是一种更好的办法:</span><br style="box-sizing: border-box;"  /><span class="line" style="box-sizing: border-box; height: 20px;">sh -c <span class="string" style="box-sizing: border-box; color: rgb(153, 204, 153);">&quot;echo \$$ &gt; /cgroup/cpu_and_mem/subgroup/tasks &amp;&amp; wget http://www.redhat.com&quot;</span></span></pre><p></p><h2 style="box-sizing: border-box; font-weight: bold; line-height: 1.1; color: green; margin-top: -25px; margin-bottom: 0.83em; font-size: 30px; text-rendering: optimizeLegibility; padding-top: 40px;"><span style="font-size: 24px;">Obtaining Information About Control Groups</span></h2><h3 style="box-sizing: border-box; font-weight: bold; line-height: 1.1; color: rgb(156, 76, 23); margin-top: 20px; margin-bottom: 10px; font-size: 24px; text-rendering: optimizeLegibility;"><span style="font-size: 20px;">Finding a Process</span></h3><p style="box-sizing: border-box; margin-bottom: 10px;">寻找一个进程是属于哪个cgroup的，可以运行下面的命令<br style="box-sizing: border-box;"  />ps -O cgroup<br style="box-sizing: border-box;"  />或者是你想指定指定PID进程是属于哪个cgroup的可以运行下面的命令<br style="box-sizing: border-box;"  />cat /proc/PID/cgroup</p><h3 style="box-sizing: border-box; font-weight: bold; line-height: 1.1; color: rgb(156, 76, 23); margin-top: 20px; margin-bottom: 10px; font-size: 24px; text-rendering: optimizeLegibility;"><span style="font-size: 20px;">Finding a Subsystem</span></h3><p style="box-sizing: border-box; margin-bottom: 10px;">寻找某个子系统的挂载点(也就是所在层次)可以运行下面的命令:<br style="box-sizing: border-box;"  />lssubsys -m subsystems</p><h3 style="box-sizing: border-box; font-weight: bold; line-height: 1.1; color: rgb(156, 76, 23); margin-top: 20px; margin-bottom: 10px; font-size: 24px; text-rendering: optimizeLegibility;"><span style="font-size: 20px;">Finding Hierarchies</span></h3><p style="box-sizing: border-box; margin-bottom: 10px;">寻找当前系统上存在的层次可以运行下面的命令:<br style="box-sizing: border-box;"  />tree /cgroup</p><h3 style="box-sizing: border-box; font-weight: bold; line-height: 1.1; color: rgb(156, 76, 23); margin-top: 20px; margin-bottom: 10px; font-size: 24px; text-rendering: optimizeLegibility;"><span style="font-size: 20px;">Finding Control Groups</span></h3><p style="box-sizing: border-box; margin-bottom: 10px;">寻找当前系统上存在的control groups(包括root group)，可以运行下面的命令:</p><pre style="color: rgb(204, 204, 204); font-size: 14px; line-height: 20px;"><span class="line" style="box-sizing: border-box; height: 20px;">[root<span class="property" style="box-sizing: border-box;">@localhost</span> ~]<span class="comment" style="box-sizing: border-box; color: rgb(153, 153, 153);"># lscgroup </span></span><br style="box-sizing: border-box;"  /><span class="line" style="box-sizing: border-box; height: 20px;">cpuset,<span class="attribute" style="box-sizing: border-box; color: rgb(242, 119, 122);">memory</span>:/</span></pre><p><br  /></p><center style="box-sizing: border-box;"><p><br  /></p></center>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">张义飞</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		趣谈设备模型（ 下）-《Linux内核修炼之道》精华分享与讨论（8）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=415828056&amp;idx=1&amp;sn=7f66d26ec5a508862cc581ea5aa84bf0&amp;chksm=765625bd4121acab598e929f99b24feb1f32941112b747770645db936af27d57a778b511a860&amp;scene=27#wechat_redirect&cpage=79' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">趣谈设备模型（ 下）-《Linux内核修炼之道》精华分享与讨论（8）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-01-26</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;"></span></p><p style="color: rgb(51, 51, 51); font-family: Arial; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">设备模型拍得再玄幻，它也只是个模型，必须得落实在具体的子系统，否则就只能抱着个最佳技术奖空遗恨。既然前面已经以USB子系统的实现分析示例了分析内核源码应该如何入手，那么这里就仍然以USB子系统为例，看看设备模型是如何软着陆的。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;"><strong>内核中USB子系统的结构</strong></span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">我们已经知道了USB子系统的代码都位于drivers/usb目录下面，也认识了一个很重要的目录——core子目录。现在，我们再来看一个很重要的模块——usbcore。你可以使用“lsmod”命令看一下，在显示的结果里能够找到有一个模块叫做usbcore。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="color: rgb(0, 0, 255); font-size: 18px;">localhost:/usr/src/linux-2.6.23/drivers/usb/core # lsmod<br  />Module&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Size&nbsp; Used by<br  />af_packet&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 55820&nbsp; 2<br  />raw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 89504&nbsp; 0<br  />nfs&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 230840&nbsp; 2<br  />lockd&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 87536&nbsp; 2 nfs<br  />nfs_acl&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 20352&nbsp; 1 nfs<br  />sunrpc&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 172360&nbsp; 4 nfs,lockd,nfs_acl<br  />ipv6&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 329728&nbsp; 36<br  />button&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 24224&nbsp; 0<br  />battery&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 27272&nbsp; 0<br  />ac&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 22152&nbsp; 0<br  />apparmor&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 73760&nbsp; 0<br  />aamatch_pcre&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 30720&nbsp; 1 apparmor<br  />loop&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 32784&nbsp; 0<br  />usbhid&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 60832&nbsp; 0<br  />dm_mod&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 77232&nbsp; 0<br  />ide_cd&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 57120&nbsp; 0<br  />hw_random&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 22440&nbsp; 0<br  />ehci_hcd&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 47624&nbsp; 0<br  />cdrom&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 52392&nbsp; 1 ide_cd<br  />uhci_hcd&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 48544&nbsp; 0<br  />shpchp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 61984&nbsp; 0<br  />bnx2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 157296&nbsp; 0<br  />usbcore&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 149288&nbsp; 4 usbhid,ehci_hcd,uhci_hcd<br  />e1000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 130872&nbsp; 0<br  />pci_hotplug&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 44800&nbsp; 1 shpchp<br  />reiserfs&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 239616&nbsp; 2<br  />edd&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 26760&nbsp; 0<br  />fan&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 21896&nbsp; 0<br  />⋯⋯</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">找到了usbcore那一行吗？core就是核心，基本上你要在你的电脑里用USB设备，那么两个模块是必须的：一个是usbcore，这就是核心模块；另一个是主机控制器的驱动程序，比如这里usbcore那一行我们看到的ehci_hcd和uhci_hcd，你的USB设备要工作，合适的USB主机控制器模块也是必不可少的。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">usbcore负责实现一些核心的功能，为别的设备驱动程序提供服务，提供一个用于访问和控制USB硬件的接口，而不用去考虑系统当前存在哪种主机控制器。至于core、主机控制器和USB驱动三者之间的关系，如下图所示。<br  /></span><span style="font-size: 18px;"><img data-s="300,640" data-type="png" src="data:image/PNG;base64,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 " src="SeWfibBcBT0FcFGRVPSavFjhy9voeGlZD580mFOqHr9CB6yrN6MZic0HlQOVLF53H7hHUxDqBmuFjTLhzdrKAXbA"  data-ratio="0.9818181818181818" data-w="220"  /><br  />USB驱动和主机控制器就像core的两个保镖，协议里也说了，主机控制器的驱动（HCD）必须位于USB软件的最下一层。HCD提供主机控制器硬件的抽象，隐藏硬件的细节，在主机控制器之下是物理的USB及所有与之连接的USB设备。而HCD只有一个客户，对一个人负责，就是usbcore。usbcore将用户的请求映射到相关的HCD，用户不能直接访问HCD。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">core为咱们完成了大部分的工作，因此咱们写USB驱动的时候，只能调用core的接口，core会将咱们的请求发送给相应的HCD。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;"><strong>USB子系统与设备模型<br  /></strong></span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">关于设备模型，最主要的问题就是，bus、device、driver是如何建立联系的？换言之，这三个数据结构中的指针是如何被赋值的？绝对不可能发生的事情是，一旦为一条总线申请了一个struct bus_type的数据结构之后，它就知道它的devices链表和drivers链表会包含哪些东西，这些东西一定不会是先天就有的，只能是后天填进来的。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">具体到USB子系统，完成这个工作的就是USB core。USB core的代码会进行整个USB系统的初始化，比如申请struct bus_type usb_bus_type，然后会扫描USB总线，看线上连接了哪些USB设备，或者说Root Hub上连了哪些USB设备，比如说连了一个USB键盘，那么就为它准备一个struct device，根据它的实际情况，为这个struct device赋值，并插入devices链表中来。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">又比如Root Hub上连了一个普通的Hub，那么除了要为这个Hub本身准备一个struct device以外，还得继续扫描看这个Hub上是否又连了别的设备，有的话继续重复之前的事情，这样一直进行下去，直到完成整个扫描，最终就把usb_bus_type中的devices链表给建立了起来。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">那么drivers链表呢？这个就不用bus方面主动了，而该由每一个driver本身去bus上面登记，或者说挂牌。具体到USB子系统，每一个USB设备的驱动程序都会对应一个struct usb_driver结构，其中有一个struct device_driver driver成员，USB core为每一个设备驱动准备了一个函数，让它把自己的这个struct device_driver driver插入到usb_bus_type中的drivers链表中去。而这个函数正是我们此前看到的usb_register。而与之对应的usb_deregister所从事的正是与之相反的工作，把这个结构体从drivers链表中删除。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">而struct bus_type结构的match函数在USB子系统里就是usb_device_match函数，它充当了一个红娘的角色，在USB总线的USB设备和USB驱动之间牵线搭桥，类似于交大BBS上的鹊桥版，虽然它们上面的条件都琳琅满目的，但明显这里match的条件不是那么的苛刻，要更为实际些。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">可以说，USB core的确是用心良苦，为每一个USB设备驱动做足了功课，正因为如此，作为一个实际的USB设备驱动，它在初始化阶段所要做的事情就很少，很简单了，直接调用usb_register即可。事实上，没有人是理所当然应该为你做什么的，但USB core这么做了。所以每一个写USB设备驱动的人应该铭记，USB设备驱动绝不是一个人在工作，在他身后，是USB core所提供的默默无闻又不可或缺的支持。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;"></span><br  /></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name"></div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

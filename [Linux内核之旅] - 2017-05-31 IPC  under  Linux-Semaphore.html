@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		IPC  under  Linux-Semaphore
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664604079&amp;idx=2&amp;sn=b8505bca81f8b6890d6540b64ec67268&amp;chksm=f04d8c4ac73a055c15e825d224af0f7a3e6cdeaa5fb584d204dce3a4b5fff003d278fd95fff1&amp;scene=27#wechat_redirect&cpage=38' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">IPC  under  Linux-Semaphore</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        武特
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2017-05-31</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p><br  /></p><p><span style="line-height: 1.6;">本文将为你说明IPC的另一种方式：信号量。在操作系统原理课程中，我们对信号量机制有所了解，即实现进程对共享资源的互斥访问以及进程间的同步。与其他几种通信方式相比，信号量更突出的是对共享资源的访问控制。接下来，我们一边回忆以前学过的信号量机制，一边学习如何用系统调用函数来实现相关操作。</span></p><p><br  /></p><p>1.创建信号量集</p><p><br  /></p><p>注意这里使用的是信号量集，而不是创建一个信号量。通常我们用伪代码实现进程间的互斥或同步时，都定义一个整形变量作为信号量，初值一般都为0或1。实际应用时，我们每次都需要创建一个信号量集，即使此集合只包含一个信号量。一般我们通过下面函数去创建或者打开一个信号量集。</p><p><br  /></p><p>int semget(key_t key,int nsems,int semflg);</p><p><br  /></p><p>我们这里需要注意的是，此函数何时创建一个信号量集，何时打开一个信号量集。当semflg=IPC_CREATE时，如果当前系统中不存在此信号量集合（key值不存在），那么semget函数完成一个信号量的创建；否则，semget函数打开这个已存在的信号量集。当semflg=IPC_CREATE|IPC_EXCL时，只会完成创建，如果key值对应的信号量集合以存在，那么直接返回错误，错误代码为EEXIST。这并不难理解，和open文件的情况类似。此函数成功执行返回信号量集的标示符，否则为-1。</p><p><br  /></p><p>另外关于我们所创建的这个信号量集，有结构体struct semid_ds与之对应，这个结构体中存储信号量集中的相关属性。</p><p><br  /></p><p>2.PV操作的实现</p><p><br  /></p><p>对于信号量机制，我们最熟悉的应该便是PV操作了。以前我们在写进程互斥或同步的伪代码时，都是直接来使用P(semaphore)和V(semaphore)。那么我们如何具体实现？</p><p><br  /></p><p>int semop(int semid,struct sembuf *sops,size_t nsops);</p><p><br  /></p><p>现在我要告诉你，P和V操作均通过上述函数来完成。你肯定马上会想，P和V两个截然不同的操作如何使用上述函数来完成？这其实取决于sops参数。请先看这个参数的类型：</p><p><br  /></p><p>struct sembuf</p><p>{</p><p>&nbsp; &nbsp; &nbsp;ushort sem_num;</p><p>&nbsp; &nbsp; &nbsp;/*信号在信号量集中的索引*/</p><p>&nbsp; &nbsp;&nbsp;</p><p>&nbsp; &nbsp; &nbsp;short&nbsp; sem_op;&nbsp;</p><p>&nbsp; &nbsp; &nbsp;/*操作类型，是P还是V*/</p><p><br  /></p><p>&nbsp; &nbsp; &nbsp;short&nbsp; sem_flg;</p><p>&nbsp; &nbsp; &nbsp;/*操作标志*/</p><p>}</p><p><br  /></p><p>我们可以发现，通过semid和sem_num两个字段就可以确定信号量集中的指定信号量。sem_op取不同的值就会产生不同的操作。特别的，如果其值为0，则此时semop操作的作用是测试信号量的值是否为0。下面的代码是经典PV操作的实现方法。</p><p><br  /></p><p>int p(int semid,int index)</p><p>{</p><p>&nbsp; &nbsp; struct sembuf buf={0,-1,IPC_NOWAIT};</p><p><br  /></p><p>&nbsp; &nbsp; if(index&lt;0)</p><p>&nbsp; &nbsp; {</p><p>&nbsp; &nbsp; &nbsp; &nbsp; printf("error:index of the semaphore is invalid\n");</p><p>&nbsp; &nbsp; &nbsp; &nbsp; exit(1);</p><p>&nbsp; &nbsp; }</p><p><br  /></p><p>&nbsp; &nbsp; buf.sem_num=index;</p><p><br  /></p><p>&nbsp; &nbsp; if(semop(semid,&amp;buf,1)==-1)</p><p>&nbsp; &nbsp; {</p><p>&nbsp; &nbsp; &nbsp; &nbsp; printf("P operation failed\n");</p><p>&nbsp; &nbsp; &nbsp; &nbsp; exit(1);</p><p>&nbsp; &nbsp; }</p><p><br  /></p><p>&nbsp; &nbsp; return 0;</p><p>}</p><p><br  /></p><p>int v(int semid,int index)</p><p>{</p><p>&nbsp; &nbsp; struct sembuf buf={0,+1,IPC_NOWAIT};</p><p>&nbsp;</p><p>&nbsp; &nbsp; if(index&lt;0)</p><p>&nbsp; &nbsp; {</p><p>&nbsp; &nbsp; &nbsp; &nbsp; printf("error:index of the semaphore is invalid\n");</p><p>&nbsp; &nbsp; &nbsp; &nbsp; exit(1);</p><p>&nbsp; &nbsp; }</p><p><br  /></p><p>&nbsp; &nbsp; buf.sem_num=index;</p><p><br  /></p><p>&nbsp; &nbsp; if(semop(semid,&amp;buf,1)==-1)</p><p>&nbsp; &nbsp; {</p><p>&nbsp; &nbsp; &nbsp; &nbsp; printf("V operation failed\n");</p><p>&nbsp; &nbsp; &nbsp; &nbsp; exit(1);</p><p>&nbsp; &nbsp; }</p><p><br  /></p><p>&nbsp; &nbsp; return 0;</p><p>}</p><p><br  /></p><p>我们这里特别要说明的是struct sembuf结构中的sem_flg字段，如果其值为IPC_NOWAIT，根据sem_op的不同意义也不同。当sem_op为0时，如果设置IPC_NOWAIT，那么调用进程直接返回；否则调用进程进入睡眠状态直至信号量为0。当sem_op&lt;0时，表示申请资源，如果没有设置IPC_NOWAIT,那么调用进程阻塞至此资源被释放；否则进程直接返回。</p><p><br  /></p><p>3.信号量的控制</p><p><br  /></p><p>上述两部分内容——如何创建信号量集，如何PV操作——似乎已经可以诠释信号量了，但是这毕竟不是我们写伪代码，我们必须对信号量进行相关控制，比如如何对信号量设置初值，如何得到信号量当前的值等等。因此掌握好控制函数semctl尤为重要。</p><p><br  /></p><p>int semctl(int semid,int semnum,int cmd,union semun);</p><p><br  /></p><p>注意第四个参数类型是不确定的，由cmd的类型来确定。第四个参数所有可能会用到的变量都被定义在一个共用体中。</p><p><br  /></p><p>union semun</p><p>{</p><p>&nbsp; &nbsp; int val;</p><p>&nbsp; &nbsp; struct semid_ds *buf;</p><p>&nbsp; &nbsp; ushort *array;</p><p>&nbsp; &nbsp; void *pad;</p><p>}</p><p><br  /></p><p>下面我们对几种常用的cmd进行说明。</p><p><br  /></p><p>如果我们想打印某个已存在信号量集的各个属性信息时，那么可以参考下面代码。</p><p><br  /></p><p>union semun semop;</p><p>struct semid_ds seminfo;</p><p>semop.buf=&amp;seminfo;</p><p>if(semctl(semid,0,IPC_STAT,semop)==-1)</p><p>{</p><p>&nbsp; &nbsp; printf("error:get the info of semaphroe failed\n");</p><p>&nbsp; &nbsp; exit(1);</p><p>}</p><p><br  /></p><p>因为此时候cmd为IPC_STAT，那么semctl会自动从semop中取走buf字段。此操作成功完成后，信号量集的信息便存储在seminfo中。注意，在使用此操作前，一定要将buf指向一个struct semid_ds类型的变量，否则buf将是一个”野指针”。</p><p><br  /></p><p>如果想为某个指定的信号量设置初值，那么下面代码就是实现将标示符为semid的信号量集中索引为index的信号量赋值为5。</p><p><br  /></p><p>union semnu semop;</p><p>semop.val=5;</p><p>semctl(semid,index,SETVAL,semop);</p><p><br  /></p><p>想得到某个信号量当前的值时，就可以参考下面代码，注意第四个参数为0，因为cmd为GETVAL，所以semctl函数会忽略第四个参数的取值。</p><p><br  /></p><p>int semval;</p><p>semval=semctl(semid,index,GETVAL,0);</p><p><br  /></p><p>关于信号量的基本知识就是这些，下篇文章将用上述内容来实现一个进程互斥的例子。</p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">武特</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                <div class="reward_qrcode_area reward_area tc" id="js_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                                        <p class="reward_tips"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" id="js_reward_qrcode_img"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

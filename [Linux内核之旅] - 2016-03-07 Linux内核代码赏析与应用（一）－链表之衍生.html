@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Linux内核代码赏析与应用（一）－链表之衍生
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=416448747&amp;idx=1&amp;sn=f26133fda5b0d53a1b8f0139fa654d87&amp;chksm=764dad0e413a24184001915e093e9e970d803ebeef74ffe76bdeab4c06b166109589898b4993&amp;scene=27#wechat_redirect&cpage=77' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Linux内核代码赏析与应用（一）－链表之衍生</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        陈莉君
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-03-07</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style=""><span style="font-size: 16px;">在Linux内核代码中，常常会看到一些经典的实现机制和策略，犹如在万花丛中看到一枝枝特立的花红，惊艳而又令人玩味。</span></p><p><span style="font-size: 16px;">作为实现Linux内核代码的主体语言C，它是朴素的、直接的，直接到你可以对硬件寄存器的某一位进行操作，C语言又是原始的，基本的，基本的就像构建大厦的一块块砖，运用它，你可以随意地建造自己梦想中的大厦。</span></p><p style=""><span style="font-size: 16px;">但是，与其他语言不同，C语言标准库中并没有对数据结构的支持函数，比如，没有对链表、队、栈、树等数据结构操作的函数集合，但在Linux内核代码中，随处都可以觅见这些数据结构的踪影。<br style="box-sizing: border-box;"  />现实世界中数据的组织形式逃脱不出数据结构课程所涵盖的那些结构，相对于其他数据结构而言，链表这种组织方式更常用和灵活，或者说，其他数据结构，都可以从链表衍生而来。<br style="box-sizing: border-box;"  />在Linux内核源代码树中，</span><tt style="box-sizing: border-box;"><span style="font-size: 16px;">include/linux/list.h</span></tt><span style="font-size: 16px;">&nbsp;文件中用C语言实现了封装好的、易用的双向链表函数集合，这种实现是高效和可移植的–否则，这些代码也进不了内核，同时，这种实现又是巧妙和可见的，赏析这些代码，让我们领悟代码设计之美妙。</span></p><p style=""><span style="font-size: 16px;">一、链表及衍生<br style="box-sizing: border-box;"  />为什么链表是数据组织的根本形式？<br style="box-sizing: border-box;"  />最简单的数组组织形式是数组，它在内存顺序存放，其存取效率无疑是高效的，但除非你存放的数据是静态的，否则，增加和删除一个元素的代价是不可小估的。而 链表，在建立之初，无需知晓其节点是多少，在构建过程中，增加和删除一个节点与链表的长度无关，主要开销为访问的顺序性和链表节点所占的空间。<br style="box-sizing: border-box;"  />尽管链表可以分类为单链表、双链表和循环链表，但在此，以分析双链表为基点，从而退化或者衍生出其他数据结构。</span></p><p style=""><span style="font-size: 16px;">在C 语言中，一个基本的双向链表定义如下：</span></p><pre style=""><span style="font-size: 16px;"><span style="font-size: 16px; box-sizing: border-box; background-color: rgb(243, 243, 243);">struct my_list{ </span><br style="box-sizing: border-box; background-color: rgb(243, 243, 243);"  /><span style="font-size: 16px; box-sizing: border-box; background-color: rgb(243, 243, 243);">	void *mydata; </span><br style="box-sizing: border-box; background-color: rgb(243, 243, 243);"  /><span style="font-size: 16px; box-sizing: border-box; background-color: rgb(243, 243, 243);">	struct my_list *next;</span><br style="box-sizing: border-box; background-color: rgb(243, 243, 243);"  /><span style="font-size: 16px; box-sizing: border-box; background-color: rgb(243, 243, 243);">	struct my_list *prev;</span><br style="box-sizing: border-box; background-color: rgb(243, 243, 243);"  /><span style="font-size: 16px; box-sizing: border-box; background-color: rgb(243, 243, 243);">	}; </span></span></pre><p style=""><span style="font-size: 16px; box-sizing: border-box; background-color: rgb(243, 243, 243);"><br style="box-sizing: border-box;"  /></span><img src="data:image/JPG;base64,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fXNfcHtnhXxLSPrmvuD2zwr4lpH1zX3B7Z4V8S0j65r7g9s8K+JaR9c19we2eFfEtI+ua+4PbPCviWkfXNfcNaPU6fWcYwn6XOjT2o9PlIeciupdS0pbkc0ko0mdjMkLsR9eU+4x0YAAwYyAAAAMdwyAAAAIsrtxS/LZnqRRaAAAAAAAAAAAAAAAAAAAAAAAAEXBnYeg+Wx/TSLQAAAAAAAAAAAAAAx3DIAAAAiyu3FL8tmepFFoAAAAAAAAAAAAAAAAAAAAAAAARcGdh6D5bH9NItAAAAAAAAAAAAAADAyAAAAJFUpdQk1WHUadOjRXYzDzBpkRVPJWlxTar+64ixkbRd/WPxquKt80jhTvMBquKt80jhTvMBquKt80jhTvMBquKt80jhTvMBquKt80jhTvMBquKt80jhTvMBquKt80jhTvMBquKt80jhTvMBquKt80jhTvMBquKt80jhTvMBquKt80jhTvMBquKt80jhTvMBquKt80jhTvMBquKt80jhTvMBquKt80jhTvMBquKt80jhTvMBquKt80jhTvMBquKt80jhTvMBquKt80jhTvMBquKt80jhTvMBquKt80jhTvMBquKt80jhTvMBquKt80jhTvMBquKt80jhTvMBquKt80jhTvMBquKt80jhTvMBquKt80jhTvMBquKt80jhTvMBquKt80jhTvMBquKt80jhTvMBquKt80jhTvMBquKt80jhTvMBquKt80jhTvMBquKt80jhTvMBquKt80jhTvMBquKt80jhTvMBquKt80jhTvMDdo1O6IocCmaXTanGbY0mXLnyJJN7XO17dVxugAAAAAAAAAAAAP/9k= " src="SeWfibBcBT0HFoMb3FgL7ymP9ibhqYWVrlavCLUrpcWYAAUEbenua6ybcdLF9OYlBYM7eSpWyIgFKZicKWia9Dg3rA"  border="0" width="552" height="181" style="box-sizing: border-box; border: 0px; vertical-align: middle;" class="" data-type="gif" data-ratio="0.3278985507246377" data-w="552"  /></p><p style=""><span style="font-size: 16px;">图1&nbsp; 双链表<br style="box-sizing: border-box;"  />通过前趋（prev）和后继（next）两个指针字段，就可以从两个方向遍历双链表，这使得遍历链表的代价减少。如果打乱前驱、后继的依赖关系，就可以构 成”二叉树”；如果再让首节点的前趋指向链表尾节点、尾节点的后继指向首节点（如图1中虚线部分），就构成了循环链表；如果设计更多的指针字段，就可以构 成各种复杂的树状数据结构。<br style="box-sizing: border-box;"  />如果减少一个指针域，就退化成单链表，如果只能对链表的首尾进行插入或删除操作，就演变为队结构，如果只能对链表的头进行插入或删除操作，就退化为栈结构。</span></p><p style=""><span style="font-size: 16px;">如此看来，双链表，是演化各种数据结构的基石。</span></p><p style=""><br  /></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">陈莉君</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://www.kerneltravel.net/?p=369' target='_blank'>
+			阅读全文
+		</a>
+	</div>
+</body>

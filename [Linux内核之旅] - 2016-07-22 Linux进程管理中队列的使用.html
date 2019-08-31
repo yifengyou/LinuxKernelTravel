@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Linux进程管理中队列的使用
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664602647&amp;idx=1&amp;sn=ae0488df81c38a234b4f894c2892d03f&amp;scene=27#wechat_redirect&cpage=66' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Linux进程管理中队列的使用</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        王聪
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-07-22</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                <div class="rich_media_thumb_wrp" id="media">
+                    
+                                        
+                                    </div>
+                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style=""><span style="font-size: 16px;">Linux内核中大量使用了队列，这里仅列举它在进程管理中的几处应用。</span></p><p style=""><span style="font-size: 16px;">状态为TASK_RUNNING的进程都会被放入运行队列（runqueue）中，这是通过task_struct（定义在include/linux/sched.h）中的run_list成员来链接的。不过，为了让内核每次都能选取优先级最合适的进程，Linux为每个优先级构建了一个queue！这是通过struct prio_array来实现的，struct prio_array的定义（在kernel/sched.c）大致如下：</span></p><p style="text-align: justify;"><img data-s="300,640" data-type="png" src="data:image/PNG;base64,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 " src="SeWfibBcBT0HkKDA9UcL8znDJ9uEibDzLXbZsL8ZQrUPDfW3wMYjARHpaHOicoP5pianrNiaGxlFyO6qt4EOH8VcPJQ"  data-ratio="0.3424036281179138" data-w="441"  /><br  /><span style="">queue成员就是队列数组。每个CPU有各自的runqueue，每一个runqueue又有包含两个prio_array，一个是活动队列，一个是时间片耗尽的队列。当运行队列空时，内核便会交换两个队列的指针！原来的耗尽队列就成了新的活动队列！这和prio_array中的bitmap是决定调度算法为O(1)的关键！</span></p><p style=""><span style="font-size: 16px; line-height: 1.5;">状态为TASK_STOPPED，EXIT_ZOMBIE或EXIT_DEAD的进程不会被放入专门的队列中，它们直接通过pid或者通过父进程的孩子队列来访问。<br  /></span></p><p style=""><span style="font-size: 16px;">TASK_INTERRUPTIBLE和TASK_UNINTERRUPTIBLE状态的进程会被放入等待队列。不同的是，每个等待事件都会有一个等待队列，该队列中的进程等待同一事件的完成（不要惊慌！“事件”一个动态的过程，不好通过具体的结构来定义一个“事件”。这里等待一个事件就是查看某个条件是否为真，比如某个标志变量是否为真。）。wait_queue_head_t的定义（include/linux/wait.h）如下：</span></p><p style=""><img data-s="300,640" data-type="png" src="data:image/PNG;base64,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 " src="SeWfibBcBT0HkKDA9UcL8znDJ9uEibDzLXltKnFiciaicdhtXkOkA0KNYKicFE3SD9bicXaFK4nDDxexEBhfK1w9eElOA"  data-ratio="0.26597938144329897" data-w="485"  /><br  /><span style="">wait_queue_t的定义如下：</span></p><p style=""><span style=""><img data-s="300,640" data-type="png" src="data:image/PNG;base64,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 " src="SeWfibBcBT0HkKDA9UcL8znDJ9uEibDzLXhZCs8E30d152BXA8BRqe8W5M2GLMHmxnmzjpEJoP0EqwuNicTK0s72A"  data-ratio="0.3958333333333333" data-w="432"  /><br  />进入等待状态的接口有两类：<br style=""  />prepare_to_wait()/finish_wait()<br style=""  />wait_event<em style="">()<br style="-webkit-margin-before: 0px; -webkit-margin-after: 0px;"  />其实wait_event</em>()内部也是调用prepare_to_wait<em style="">()，把它放入一个循环中。而且wait_event</em>()在事件完成时会自动调用finish_wait()。决定使用哪个要看情况而定。sleep_on*()是遗弃的接口，现在已经不再使用，虽然还支持。等待队列中的进程有两种，一种是exclusive的进程，另一种是nonexclusive的进程。所谓exclusive是指唤醒的进程等待的资源是互斥的，每次只唤醒一个（唤醒多个也可以，不过最后还是只有一个会被唤醒，其余的又被重新添加到等待队列中，这样效率会大打折扣）。一般，等待函数会把进程设为nonexclusive和uninterruptible，带“interruptible”的会专门指定状态为interruptible；而带“timeout”的会在超时后退出，因为它会调用schedule_timeout()；带“exclusive”的则会把进程设为exclusive。</span></p><p style=""><span style="font-size: 16px; line-height: 1.5;">唤醒的接口虽然只有wake_up*()，但它内部也分成好几种。带“interruptible”的唤醒函数只会唤醒状态是TASK_INTERRUPTIBLE的进程，而不带的则会唤醒TASK_INTERRUPTIBLE和TASK_UNINTERRUPTIBLE的进程；所有唤醒函数都会把等待同一事件的nonexclusive进程全部唤醒，或者把其中一个exclusive的进程唤醒；而带“nr”的则会唤醒指定个数的exclusive的进程，带“all”的会把全部exclusive进程唤醒。带“sync”会忽略优先级的检查，高优先级的进程可能会被延迟。最后，持有自旋锁时只能调用wait_up_locked()。<br  /></span></p><p style=""><span style=""><br  /></span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">王聪</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

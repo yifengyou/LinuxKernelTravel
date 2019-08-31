@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Go语言和云计算——洪峰老师讲创客道（二十四）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=416949179&amp;idx=1&amp;sn=ee3f61f058106e179d7c70ce00348df5&amp;chksm=76450e5e413287486388dfece59e5f0f0646ffd16b92cacca81e17246fbf8d527790b048d684&amp;scene=27#wechat_redirect&cpage=75' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Go语言和云计算——洪峰老师讲创客道（二十四）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        洪峰
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-04-05</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="text-indent:28px"><span style=""><br  /></span></p><p style="text-indent:28px"><span style=""></span></p><p><mpvoice frameborder="0" class="res_iframe js_editor_audio audio_iframe" src="/cgi-bin/readtemplate?t=tmpl/audio_tmpl&amp;name=%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9324&amp;play_length=19:12" name="%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9324" play_length="1152000" voice_encode_fileid="MzI3NzA5MzUxNF80MTY5NDkxNzc="></mpvoice></p><p style="text-indent:28px"><span style="">Go</span><span style="">语言由Google</span><span style="">公司于</span><span style="">2009</span><span style="">年发布，早在</span><span style="">2007</span><span style="">年的时候就由</span><span style="">罗伯特·格瑞史莫</span><span style="">（</span><span style="">Robert&nbsp;</span><span style="">Griesemer）</span><span style="">、</span><span style="">罗伯特·</span><span style="">派克（</span><span style="">Robert&nbsp;Pike</span><span style="">）和肯</span><span style="">·</span><span style="">汤普</span><span style="">逊（Ken&nbsp;Thompsom）三位开启了这个项目，后来有更多的人参与到这个项目中。这些开发人员曾经是早期UNIX</span><span style="">的开发人员，后面又参加了</span><span style="">Plan9</span><span style="">操作系统的研发。</span><span style="">这个团队开发Go语言的设计目标很明确，就是要把C</span><span style="">语言好的部分留下来，然后把其中设计得不太好的那部分改正，进行完善。</span><span style="">Go语言面世之后确实达到了他们预期的设计目标，下面我就花一点时间向大家介绍一下Go语言的技术特点，以及它究竟好在什么地方，还有它适合干一些什么项目。</span><br  /></p><p style="text-indent:28px"><span style="">关于Go语言第一个技术特点我认为是内存垃圾自动回收机制，它在C</span><span style="">语言的基础上加入了</span><span style="">GC</span><span style="">机制，即</span><span style="">Garbage&nbsp;Collect</span><span style="">o</span><span style="">r</span><span style="">机制。这个机制我们前面在讲</span><span style="">Java语言的时候讲过，Java语言在C</span><span style="">的基础上引入了内存垃圾的自动回收机制，可以让程序员专注于算法的打造而不是计算机内部的一些状态。已经有大量的工程实践表明，内存垃圾自动回收算法非常好，跟</span><span style="">人手工管理内存算法相比有诸多的优越性和好处，所以在Go语言设计的时候，设计团队把内存垃圾自动回收机制增加到了Go语言的设计中来，有了这个机制之后，在我们写系统级的程序的时候，可以让一个算法帮我们去自动地管理内存的分配和回收。这个算法效率非常高，这使得Go语言相比原来C</span><span style="">语言在开发系统程序的效率上有大大的提升，可以说是质的飞跃。</span></p><p style="text-indent:28px"><span style="">第二个技术特点应该是Go的内置数据类型比C</span><span style="">语言丰富。比如在</span><span style="">C</span><span style="">语言内部没有真正的字符串，而在</span><span style="">Go语言中，字符串是一个内置的数据类型。C</span><span style="">语言中，数组不是原始的数据类型，而在</span><span style="">Go语言中数组已经是一个原始的数据类型，这些改进都是非常好的。有一个数据类型也被增加进来，那就是字典类型，在Go语言中称为map</span><span style="">，</span><span style="">map</span><span style="">相当于</span><span style="">Lisp</span><span style="">中的</span><span style="">plist</span><span style="">，</span><span style="">或者是Scheme&nbsp;</span><span style="">或者</span><span style="">Racket</span><span style="">中的</span><span style="">alist</span><span style="">，在</span><span style="">Perl</span><span style="">语言里有哈希，这个类型从编程角度来看它们都是一个意思。除了</span><span style="">map</span><span style="">之外，还有一个新的数据类型增加进来，那就是</span><span style="">slice</span><span style="">，一般我们把它称作数组切片，</span><span style="">slice</span><span style="">可以完成很多任务，它与</span><span style="">C++</span><span style="">里的</span><span style="">vector</span><span style="">有点像，当然了，在具体操作方面</span><span style="">Go语言有它自己的一些特点。</span></p><p style="text-indent:28px"><span style="">第三个特点是在Go语言中，函数可以有多个返回值，如果学过Scheme</span><span style="">或者</span><span style="">Racket</span><span style="">的学员，对这一点应该是不会感到奇怪的。在</span><span style="">Scheme</span><span style="">或者</span><span style="">Racket</span><span style="">中我们有</span><span style="">values</span><span style="">可以返回多个表达式的求值，有多个返回值，但是</span><span style="">C</span><span style="">语言以前是做不到这一点的，在</span><span style="">C</span><span style="">里面不能返回多个值，可以返回一个指向数据结构的指针，在这个指针里可以对这个结构的字段进行操作，但是直接返回多个值对</span><span style="">C</span><span style="">语言来说是做不到的，而在</span><span style="">Go语言里，这一点已经做到了。有了多回值的函数之后，用Go语言去设计新的程序的时候，会非常的方便，特别是配合我刚才提到的关于Go语言新增的那些数据类型，会非常的方便。</span></p><p style="text-indent:28px"><span style="">Go语言的第四个特点是相比C</span><span style="">而言，对例外和错误的处理机制大大的提高了。在</span><span style="">C</span><span style="">里面，对错误的处理机制是比较简单的</span><span style="">，可以写一些对例外进行处理的C</span><span style="">函数，</span><span style="">这种C</span><span style="">函数没有在语言规范里面出现</span><span style="">，而是根据它返回的一个整数值来进行判断是什么出错的类型，这个编程风格在UNIX</span><span style="">系统调用里有大量的约定，那么</span><span style="">就要熟悉这些约定，但是这些约定是UNIX</span><span style="">系统里面设计的，而不是</span><span style="">C</span><span style="">语言里面设计的</span><span style="">。C语言的标准库里有一个</span><span style="">称为</span><span style="">setjump</span><span style="">和</span><span style="">longjump</span><span style="">的</span><span style="">错误回复机制，但是这个机制在使用的效率上一般不是太好，而且它只是一种局部的机制。在Go语言里引入了defer</span><span style="">，</span><span style="">defer</span><span style="">这个关键词用于标准的错误例外的处理，而且还提供了一些类似的函数，比方说</span><span style="">panic、recover，完成异常的抛出和捕获，而这一点我认为在Go语言中设计得非常好，在Go语言发明之前，C++</span><span style="">和</span><span style="">Java这两个语言，它们的例外的抛出和捕获机制都已经非常的成熟，所以在设计Go语言的时候，Go语言的设计师从以往C++</span><span style="">和</span><span style="">Java的编程实践中获得了大量的灵感，所以说Go语言例外或者错误处理机制比C++</span><span style="">或</span><span style="">Java都来得漂亮，这一点对开发健壮的网络应用和系统应用是非常有帮助的。</span></p><p style="text-indent:28px"><span style="">Go语言的第五个特点就是在Go语言中直接支持匿名函数Anonymous&nbsp;Function</span><span style="">，</span><span style="">也就是lambda</span><span style="">函数，学过</span><span style="">Lisp</span><span style="">的人都知道，</span><span style="">lambda</span><span style="">函数</span><span style="">的功能是非常强大的，以及基于lambda</span><span style="">函数的闭包，在</span><span style="">Go语言中也都直接支持了。我们前面在讲C</span><span style="">的时候，我们发现</span><span style="">C</span><span style="">语言之所以用于系统级的编程而不太适合应用级的编程，因为它的函数在</span><span style="">C</span><span style="">语言里面不是第一等对象</span><span style="">，这个限制了很多的开发任务。为了克服C</span><span style="">语言的这个缺陷，在</span><span style="">Go语言里面，匿名函数和闭包都被增加到语言特点里面，有了匿名函数和闭包，对于我们熟悉Lisp编程的创客道开发人员而言，就可以把Lisp</span><span style="">中</span><span style="">许许多多关于函数抽象的一些思想和机制在Go语言编程里面加以应用，我认为这个对于开发效率的提高也是一个很大的改进。&nbsp;&nbsp;</span></p><p><span style="">下面关于Go语言的第六个特点，是Go语言设计师一个很好的原创。Go语言设计师分析了C++</span><span style="">和</span><span style="">Java的类型系统，发现了它们的优点和不足。C</span><span style="">语言里面有</span><span style="">struct</span><span style="">，</span><span style="">C++</span><span style="">在</span><span style="">struct</span><span style="">的基础上，通过引入一些成员函数发展起来类的概念</span><span style="">。到了Java里面又出现了对类可以implement</span><span style="">一个</span><span style="">interface</span><span style="">（实现一个接口）</span><span style="">，在Java里面，interface</span><span style="">是一种类型</span><span style="">。在Go语言里面，Go语言的设计师从这两个语言C++和Java</span><span style="">中</span><span style="">得到了启发，它可以直接在struct</span><span style="">的基础上增加一种称为非侵入式接口的概念，从而以一种非常漂亮的方式支持面向对象的编程，这个模型它比这个</span><span style="">C++</span><span style="">和</span><span style="">Java看起来都来得简单，而且在编程实践中，对于绝大多数的面向对象的设计都已经足够了。</span></p><p style="text-indent:28px"><span style="">Go语言的第七个技术特点就是它非常好的支持并发，这个对于我们将来开发高性能、高负载的服务器应用来说，Go语言是一个非常好的选择。在Go语言里面，有这个Goroutine的概念，这个和Java</span><span style="">语言</span><span style="">的Thread</span><span style="">有点像，但是它非常简单，而且它实现的成本也比</span><span style="">Java的Thread</span><span style="">要少一些</span><span style="">。在C</span><span style="">语言里面对于线程的支持是不存在的，必须要自己去开发自己的一套机制来增加对于多线程的支持，或者是使用一些第三方的库来实现对于多线程的支持，在</span><span style="">C</span><span style="">的历史上，</span><span style="">Posix</span><span style="">多线程模型被增加进来，但是增加进来的东西不是</span><span style="">C</span><span style="">语言功能的一部分，但是在</span><span style="">Go语言里面情况发生了翻天覆地的变化，因为这个语言它内置的支持Goroutine的概念,那么对并发的支持已经变成这个语言本身的设计机制的一个部分。Go语言对并发的支持是采用CSP模型(通信顺序进程，Communicating&nbsp;Sequential&nbsp;Process)进行，在Go语言里面有Channel即通道的概念来支持和实现CSP</span><span style="">模型</span><span style="">，Channel</span><span style="">这个概念有点像</span><span style="">UNIX</span><span style="">的管道，就是</span><span style="">Pipe</span><span style="">的概念</span><span style="">。当两个Goroutine有共享数据、共享内存变量的时候，在Go语言也提供了读写锁的功能，还有sync包</span><span style="">也</span><span style="">完成这个任务。所以有了这些机制以后，用Go语言去设计并发的程序，那就非常的方便了，在本书的第七章我们讲精灵进程的时候，我还会花一点时间回到这个方面上来。</span></p><p style="text-indent:28px"><span style="">Go语言的第八个特点是支持反射，英文叫Reflection，这个特点它的源头应该是诞生于Java的社团内部。有了反射的概念之后，程序可以在运行时获得关于对象类型的很多信息，但是Go语言的反射比Java语言简单一些。反射最常见的使用场合就是当一个对象序列化以后，前面讲Java的时候我们说过一个Java的对象是可以序列化的，在一个对象序列化以后，Go语言它有标准库，这些标准库依赖于这个反射功能来实现，在你需要使用反射的时候，在Go语言编程中，这个特点是非常有用的。</span></p><p><span style="">关于Go语言的最后一个特点，即第九个特点，是Go语言可以非常好的和C</span><span style="">语言无缝集成，你可以在</span><span style="">Go语言里面直接嵌入C</span><span style="">语言编写的代码，有了这个特性以后，</span><span style="">C</span><span style="">语言那些非常优美的特性</span><span style="">都可以在Go语言编程的时候直接利用。相比较在C++</span><span style="">中调用</span><span style="">C</span><span style="">，</span><span style="">Go语言因为C</span><span style="">的代码是直接</span><span style="">内嵌到Go语言中去的，所以它比C++</span><span style="">来得更加直接，相比较</span><span style="">Java的JNI(Java&nbsp;Native&nbsp;Interface)这个规范来讲，在Go语言里面去调用C</span><span style="">，比从</span><span style="">Java语言去调用C</span><span style="">简单很多很多，这一点是毋庸置疑的。</span></p><p style="text-indent:28px"><span style="">我刚介绍了Go语言的九个技术特点之后，我们来看看Go语言适合干什么事情。答案令人印象深刻，那就是Go语言非常好的支持云计算。在这里有必要介绍一下什么叫云计算，简单地讲，云计算就是把Web</span><span style="">作为计算平台，这是云计算最简单的一个定义。在当年微软公司和</span><span style="">Intel公司结成Wintel</span><span style="">联盟的时候，也就是</span><span style="">PC</span><span style="">机</span><span style="">占市场主导地位的时候，那个时候的计算资源都是基于PC，基于单机的计算机而提供的。但是有了互联网之后，特别是Web</span><span style="">成为互联网标准的窗口之后，一切的计算都似乎在向云端转移，也就是说，无论你的计算机是桌面的、</span><span style="">手机的</span><span style="">或</span><span style="">其他的一些设备，你所需要的计算，都是来自于云端即服务器端向你提供计算的功能，比方说Google</span><span style="">公司它并不向你提供任何产品，它向你提供的是一种基于网页的搜索引擎服务，</span><span style="">如果需要查找万维网上的某个资源的话，可以在一个Web</span><span style="">的表单里录入关键字，提交查询的请求，</span><span style="">Google</span><span style="">的搜索引擎会把</span><span style="">所需要的搜索结果显示在你的浏览器里面，至于Google</span><span style="">公司是如何得到这个搜索的结果的，那是他</span><span style="">的事情，跟用户没有直接的关系，用户不用去关心这个细节，这些细节都是由Google</span><span style="">公司的服务器去完成的。云计算的最终目标是把计算作为一种公共设施，就是作为一种服务提供给</span><span style="">广大用户，这就跟我们使用电网的概念一样，用电的时候我们只把插头插到墙上的插座就可以了，至于电能是如何生产出来的，生产出来之后国家电网是怎么传递到我们家中来的，这些细节我们一概不管，</span><span style="">现在</span><span style="">电厂</span><span style="">的</span><span style="">发电方式很多，除了传统的火电之外，还有新兴的水电、核电、风电、太阳能、地热能、生物质能</span><span style="">等</span><span style="">，各种各样的发电方式都可以提供电能，而智能电网会向用户提供调度的服务，这些细节都被封装到智能电网中，类似的道理在使用计算机网络的时候，计算机网络所提供的功能是通过网络这个基础设施来提供的。云计算是以用户为中心来设计的一种新型计算机技术，从用户角度来看有着可以帮用户节省成本、高可用性、容易扩展等诸多的优点，所以它是现在计算机发展一个非常大的潮流。要实现这个云服务，有两个基础设施必须先搞好：一个是宽带，特别是光纤宽带；第二个就是大容量的数据库。没有宽带和大的数据库要搞云计算那是空谈，所以我们国家现在宽带在升级，除了主干网络已经用光纤光缆完成建设以外，现在最重要的就是</span><span style="">“</span><span style="">最后一公里</span><span style="">”</span><span style="">，把最后一公里的链接即用户与网络的链接，由原来的铜缆改成光纤，即铜退光进这么一个思路，我估计这个思路在我们国家会很快的完成。另一个重要的服务基础设施就是大容量的数据库，因为我们现在处在一个大数据的时代，所以需要对存储技术有革命性的提升，而这方面，基础性的工程技术都已经成熟了。所以说现在开展云计算的时期已完全成熟，而Go语言的发明和云计算的结合可以说是天生一对，因为Go语言有刚才我讲的许多技术特点，特别是关于Goroutine这样支持并发</span><span style="">的机制</span><span style="">，而且Go语言还有访问后台数据库的一些机制，有了这两个机制以后就可以把云计算的特点充分发挥出来，所以在未来的创业项目里面，如果在座的诸位会使用Go语言去设计云计算的服务的话，那将是非常广阔的天地，在那里将会是大有作为的！</span></p><p><span style="">&nbsp;</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">洪峰</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

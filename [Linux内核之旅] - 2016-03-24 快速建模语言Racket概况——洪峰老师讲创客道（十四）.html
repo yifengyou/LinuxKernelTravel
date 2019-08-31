@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		快速建模语言Racket概况——洪峰老师讲创客道（十四）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=416770912&amp;idx=1&amp;sn=02178ae9c7c8e4cd5d0feebfc048be61&amp;chksm=76484685413fcf9317aafe3ae8a478d84fa8ce64837d707ba54730cb0bf067da59ddd03defb8&amp;scene=27#wechat_redirect&cpage=76' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">快速建模语言Racket概况——洪峰老师讲创客道（十四）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        洪峰
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-03-24</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="text-indent:28px"><span style=""></span></p><p><mpvoice frameborder="0" class="res_iframe js_editor_audio audio_iframe" src="/cgi-bin/readtemplate?t=tmpl/audio_tmpl&amp;name=%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9314&amp;play_length=16:29" name="%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9314" play_length="989000" voice_encode_fileid="MzI3NzA5MzUxNF80MTY3NzA5MTA="></mpvoice></p><p style="text-indent:28px"><span style=""></span><br  /></p><p style="text-indent:28px"><span style="">现在让我们回到这一章的主题上来，这一章的题目叫做</span><span style="">《字符与球拍》，现在就让我专门的来谈一谈“球拍”，即Racket语言。Racket语言是由</span><span style="">Racket</span><span style="">开发小组开发的，其领导成员及核心开发成员之一是&nbsp;马修&nbsp;·&nbsp;弗拉特教授（</span><span style="">Professor&nbsp;Matt</span><span style="">h</span><span style="">ew&nbsp;Flatt</span><span style="">）。关于这个语言，我曾在</span><span style="">2015</span><span style="">年11月份采访过</span><span style="">弗拉特</span><span style="">教授，对这个语言的方方面面提出了约六十多个问题，他对这些问题都做了相应的回答。这个语言的设计初衷和现在的主流用户群体主要针对教育市场，在大学的教育中，</span><span style="">Racket</span><span style="">开发小组想提供一种优美的、实用的</span><span style="">Schem</span><span style="">e的实现。听到这里，有些创客可能会觉得失望，一种用于教育的语言可以运用在实际的研发项目上吗？答案是肯定的，Racket语言有非常多的特性去非常好的满足各位的创业项目，在这里，让我来花点时间为大家讲解</span><span style="">Racket</span><span style="">语言。</span></p><p style="text-indent:28px"><span style="">Racket</span><span style="">语言是从Scheme语言社团内部发展起来的，</span><span style="">Schem</span><span style="">e语言的语言规范是</span><span style="">R5RS</span><span style="">，它对这个语言的内核部分进行了非常好的描述，这个语言定义的非常好，但在实用的角度来说此规范还有些不足，因为库函数（标准库的部分）没有被单独列出来，或者说它显得比较单薄。为了解决这个问题，</span><span style="">Schem</span><span style="">e社团进行了大量的讨论，提出了</span><span style="">R6RS</span><span style="">这个R5RS的后一个版本，但这个语言规范推出之后，有很多人反对，因为R6RS的篇幅非常长，远远的超过了</span><span style="">R5RS</span><span style="">，&nbsp;R5RS用</span><span style="">A4</span><span style="">纸打印出来只有</span><span style="">50</span><span style="">多页，因此可以说</span><span style="">R6RS</span><span style="">是一次失败的尝试，因而又推出了</span><span style="">R7RS</span><span style="">。R7RS可以视为对</span><span style="">R5RS</span><span style="">的某种回归，当然在美国欧洲等信息技术较发达的地区来说，Scheme可以形象地说她是编程语言王国的女皇，因此重视程度是非常高的，所以大家对这个语言规范怎么写有很大的分歧，站在不同的角度形成不同的观点，这是很正常的学术争论。但</span><span style="">Racket</span><span style="">开发小组认为不能仅仅停留在争论的层次中，要拿出实际的、可用的Racket实现，而且其应该拥有非常多的功能和特性来用于教学及各种目的的研发活动，这就是</span><span style="">Racket</span><span style="">语言诞生的基本背景。</span></p><p style="text-indent:28px"><span style="">Racket项目的最初起源，即酝酿时期是在</span><span style="">1994</span><span style="">年，代码的编程工作开始于1995年，刚开始是想为学生学习Scheme提供一个友好的图形用户界面，在图形用户界面下内嵌一个Scheme求值器进行学习。一直发展到了2015年</span><span style="">11</span><span style="">月，当我采访&nbsp;马修&nbsp;·&nbsp;</span><span style="">弗拉特</span><span style="">教授的时候，它的版本已经发展到了</span><span style="">6.2,</span><span style="">去年</span><span style="">10</span><span style="">月份以后又推出了</span><span style="">6.3</span><span style="">版本，到目前我录课的时候版本应该是</span><span style="">6.3</span><span style="">，以后它的版本肯定会不断升级，而且从以往的角度来看，</span><span style="">Racket</span><span style="">小组一年要对版本进行四次比较大的升级。</span></p><p style="text-indent:28px"><span style="">对于</span><span style="">Racket</span><span style="">的用户而言，</span><span style="">Racket</span><span style="">语言到底具有哪些主要的特征呢？去年</span><span style="">11</span><span style="">月份我采访</span><span style="">弗拉特</span><span style="">教授的时候，他归纳了三点：第一点是它有一个非常独特的宏的系统（Macro&nbsp;System），后面我再详细的展开一下</span><span style="">;</span><span style="">第二点是它具有合同系统，这是由&nbsp;罗比·菲德勒（</span><span style="">Robby</span><span style="">&nbsp;</span><span style="">Findler</span><span style="">）提出来的，有了合同系统后，</span><span style="">Racket</span><span style="">对模块化的支持达到了新的高度，这样大型的软件项目可以分解成许多模块，模块与模块之间的关系我们可以通过合同来约定，就类似市场上的买卖双方签订一个合同，对于买卖、供需双方的传递与义务进行清晰的约定，这是一个很大的特征；第三个是在底层的抽象层次上，它提出了一个概念叫做Custodian，是由Custom演变而来的，它可以认为是对进程的一种抽象，进程中管理着一些资源，还有一种叫做Chaperones，这一种可以被视为</span><span style="">Bootstrap</span><span style="">，即把这个合同系统启动起来的一个代理层次，这个特性在底层被设计的非常好，从用户编程的角度来看，每一个</span><span style="">Racket</span><span style="">函数都有例外抛出机制，和</span><span style="">Java</span><span style="">语言非常类似，对例外抛出的处理在</span><span style="">Racket</span><span style="">的引擎中支持的非常好。这是</span><span style="">Racket</span><span style="">语言非常独特、非常新颖的主要的三点。</span></p><p style="text-indent:28px"><span style="">关于</span><span style="">Racket</span><span style="">的软件包提供了两种形式。一种是交互式，有点像传统的历史补丁解释器，我们叫做REPL循环，即Read&nbsp;Evaluate&nbsp;Print&nbsp;Loop，系统可以向用户提供一个提示符，在系统提示符下用户可以输入求值的表达式，</span><span style="">Racket</span><span style="">引擎会对表达式进行求值，并将求值的结果打印出来</span><span style="">,</span><span style="">最后等待用户下一次的输入。这个循环对开发人员来说非常的方便，因为编写的程序是否正确马上就可以从系统中得到答案，这是一种方式；还有一种方式，</span><span style="">Racket</span><span style="">可以把一个源文件中的源程序直接编译成可执行代码，它提供了这样的功能，或者说产生一种字节码，这种格式可以在安装有Racket的不同机器上跑，这个概念有点像</span><span style="">Java</span><span style="">虚拟机上的字节码。所以从性能的角度来看，今天的</span><span style="">Racket</span><span style="">的性能非常好，因为可以直接产生机器码，而且在产生机器码的过程中</span><span style="">Racket</span><span style="">设计小组使用了</span><span style="">JIT</span><span style="">（</span><span style="">just-in-time</span><span style="">）这种编译技术，也就是说，</span><span style="">Racket</span><span style="">的字节码会被动态的编译成为原生的机器码，即针对不同的硬件体系结构产生的字节码，在这种条件下，</span><span style="">Racket</span><span style="">的性能可以非常的优美。我建议大家安装</span><span style="">E</span><span style="">macs中专门为</span><span style="">Racket</span><span style="">语言提供的Major&nbsp;Mode,&nbsp;安装Major&nbsp;Mode后在</span><span style="">E</span><span style="">macs中编程时会非常的漂亮，当然诸位也可以像</span><span style="">Racket</span><span style="">的工程师们期待的那样使用</span><span style="">Racket</span><span style="">的图形用户界面</span><span style="">DrRacket</span><span style="">来运行</span><span style="">Racket</span><span style="">，注意在运行DrRacket的时候要选择使用什么样的语言，</span><span style="">Racket</span><span style="">被定义为Programmable&nbsp;Programming&nbsp;Language，即可编程的编程语言，请大家注意这个说法，这是其一个典型的特征，这个特征来自于我刚才说过的典型特征中的宏系统，这个宏系统在</span><span style="">6.3</span><span style="">以前和以后的版本中相比，在内部实现上有很多重大的差异，从</span><span style="">6.3</span><span style="">这个版本开始Racket小组把宏的机制采用基于集合的运算来做。在这个地方我要解释一下什么叫做宏，宏在Lisp或者Racket、Scheme中叫做</span><span style="">Macro</span><span style="">，</span><span style="">Macro</span><span style="">是用于产生新的特殊表（</span><span style="">Special&nbsp;Form</span><span style="">），这是它的根本目的，在有了特殊表之后，用户即Racket程序员可以自己去定义新的语言、语法结构，我刚才说Racket被称做Programmable&nbsp;Programming&nbsp;Language，其原因也是因为它提供了宏。&nbsp;宏的处理过程其实是这样，首先会把</span><span style="">Racket</span><span style="">源程序编译成为一种中间格式，这种中间格式非常妙，其既可以进一步编译成为中间的字节码，同时又可以导回到源代码形式上去，导回到源代码形式上去的时候它会指出这个宏来自于哪个文件的哪个部分，&nbsp;包括</span><span style="">Racket</span><span style="">的Reader是从源文件的哪个地方开始读取的，我们前面讲过，</span><span style="">Racket</span><span style="">是支持词法辖域的，关于词法辖域的一些信息就保留在宏里面，这个是非常方便于程序员开发程序的，所以有了&nbsp;这个中间格式的代码既可以进一步编译成字节码又可以导回至源代码形式的&nbsp;机构后，宏的内部实现机理就非常的灵活。在</span><span style="">Racket</span><span style="">中有Template、Pattern这样的一些概念和术语，具体的、详细的细节请大家仔细阅读</span><span style="">6.3</span><span style="">版的</span><span style="">Racket</span><span style="">文档，Racket的文档写的非常好，它是和</span><span style="">Racket</span><span style="">的源代码一并发行，并且可以在浏览器中以</span><span style="">HTML</span><span style="">的形式显示出来，而且它内置了一个搜索引擎，因此对于简单的问题大家可以看看指南，对于复杂的问题，例如某一个函数或句法的详细细节，可以参考Reference，还有在其它一些包中也有相应的文档，可以打开Plt-help这个程序，它会自动启动一个浏览器的网页，用于显示</span><span style="">Racket</span><span style="">的所有文档。</span></p><p style="text-indent:28px"><span style="">前面我提到了合同的机制，是</span><span style="">Racket</span><span style="">的三个特征之一，其实合同是根据模块结构做出来的，有了模块结构后，我们可以使用Racket设计大型程序，而模块化的方法是我们应对大型程序复杂性的一种有效的手段，一个模块在Racket中可以进行单独的编译以及单独的测试、调试，整个系统的模块也可以被组织起来，进行一并的编译，</span><span style="">Racket</span><span style="">还提供了一个非常有用的命令行工具，叫做Raco，这个Raco可以动态的从网上，即Racket的Repository中下载很多第三方的包以及工具等等，这就弥补了</span><span style="">R5RS</span><span style="">中的许多关于库的不足，有了这些机制之后，</span><span style="">Racket</span><span style="">的编程可以做到非常高效，这是由内在的模块机制和相应的合同机制来保证的，而有了Custodian这样的特性之后，在</span><span style="">Racket</span><span style="">中内置支持多线程，这一点和</span><span style="">Java</span><span style="">语言较为类似，但与</span><span style="">Java</span><span style="">语言不同的是，</span><span style="">Racket</span><span style="">的开发并不需要编译的过程，即不像</span><span style="">Java</span><span style="">中两步分开，</span><span style="">Racket</span><span style="">中编译出的代码马上就可以投入到系统中使用，</span><span style="">Java</span><span style="">目前还做不到这一点。有了多线程的支持之后，我们就可以在服务器上开发支持多线程的</span><span style="">Daemon&nbsp;&nbsp;Process</span><span style="">，这是本书第</span><span style="">7</span><span style="">章的主题。事实上，我们有了这套机制后，我们可以使用</span><span style="">Racket</span><span style="">进行快速建模，从建模方面而言，Racket是一个非常理想的工具，验证一个概念是否可行，我们可以通过快速的建模来进行验证，如果概念不可行，可以马上停止，在创业方法中我们称其为快速失败，通过快速失败可以节省创业成本。</span></p><p style="text-indent: 28px;"><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">洪峰</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

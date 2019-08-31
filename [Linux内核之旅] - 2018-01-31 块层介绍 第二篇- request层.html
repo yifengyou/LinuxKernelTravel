@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		块层介绍 第二篇- request层
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664605114&amp;idx=2&amp;sn=861b99ca2ff25561fc28d5a523d8e4b4&amp;chksm=f04d885fc73a014993a7edf74d40704651de7a39900073346b66c5649e116961d4fdba25e3af&amp;scene=27#wechat_redirect&cpage=25' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">块层介绍 第二篇: request层</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        任振
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2018-01-31</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p><strong><span style=";">原文链接：</span></strong><strong style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;"><span style="color: rgb(255, 41, 65);">https://lwn.net/Articles/738449</span></strong></p><p><br  /></p><p>摘要: 本文翻译自Neil Brown发表在LWN上的两篇介绍块层的文章。Neil是前MD RAID的maintainer，他通过这两篇文章，提纲契领地描绘了块层的主脉络。</p><p><br  /></p><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;color: rgb(61, 70, 77);">Linux 块层向上为文件系统和块设备提交接口，使得上层能够以统一的方式访问各种类型的后端存储设备。同时，它也向下为设备驱动提供接口，让驱动层能够以一致的方式来接受请求。一些驱动如上一篇文章中提到的DRBD和RBD设备，只使用bio层提供的一些接口，对bio请求进行处理。其它的驱动则可以从IO请求plugging机制,各种请求排序和请求合并中受益。为了给驱动层提供服务，块层做了不少事情，我且称之为"request层"。</p><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;color: rgb(61, 70, 77);">现在，"request层"并存着两种模型：单队列(single-queue) 和 多队列(multi-queue)。多队列的出现也就是近几年的事情，也许总有一天会完全取代单队列的，但是目前来看两者在内核的使用都相当活跃。有了这两种不同的排队方法(queuing approach)做参考，我们就可以两相对比来学习学习，所以我们将花点时间都看看，分析他们如何把请求呈现给驱动层的。首先，我们来看看两者的共同之处，分析这两个关键的结构体是个不错的入手点： struct request_queue 和 struct request。</p><h1 style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;font-size: 24px;color: rgb(61, 70, 77);">请求队列和请求</h1><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;color: rgb(61, 70, 77);">struct request_queue之于struct request的关系，非常像struct gendisk之于struct bio的关系：一个代表具体的设备，一个代表IO请求。需要注意的是，每个gendisk都有一个关联的request_queue结构体，但是只有那些使用了"request层"的设备才会分配request结构体。按理说，适用于所有块设备的域，比如struct queue_limits，都应该放到gendisk结构体里面，而对于一些仅适用于"request层"队列管理的域，其实只应当分配给那些使用了"request层"的设备。现在来看，这些结构体里有些域的安排可能就是历史巧合，也不值得去纠正了。各种队列相关的域，都可以在/sys/block/*/queue/目录下查看。</p><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;color: rgb(61, 70, 77);">request结构体代表单个IO请求，最终要传递到底层设备。一个request包含一个或多个代表连续IO请求的bio，一些跟踪总体状态的信息（比如时间戳，哪个CPU发来的请求），和一些用来链入更大数据结构的“锚点”，比如用struct list_head queuelist链入一个简单的队列结构，用struct hlist_node hash链入一个哈希表(用来查找与新bio相邻的请求)，用struct rb_node rb_node来把请求放在一棵红黑树上。在分配一个request结构体的时候，有时候要分配一些额外的空间来给底层驱动保存一些额外的信息。有时候这些空间用来保存命令头部，以便发送给底层设备，比如 SCSI command descriptor block，驱动可以自由地决定如何使用这块空间。</p><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;color: rgb(61, 70, 77);">相应的make_request_fn()函数 (单队列是blk_queue_bio，多队列是blk_mq_make_request())为IO请求创建一个request结构体，然后把交给IO调度器, 也叫电梯算法"elevator", 这个名字来自电梯算法（ elevator algorithm），电梯算法曾是磁盘IO调度一个里程碑式的成就。我们将快速看一下单队列的实现，然后再对比地去看多队列。</p><h1 style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;font-size: 24px;color: rgb(61, 70, 77);">单队列上的请求调度</h1><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;color: rgb(61, 70, 77);">过去，大多存储设备都是机械硬盘，要通过磁头寻道，盘片旋转来定位数据。机械盘一次只能处理一个请求，从盘片上一个位置挪动到下一个位置代价很大。单队列的实现就是为这种类型的设备而生的，然后渐渐地也能支持其它快速设备，然而单队列整体结构依然反映了旋转类型存储设备的需求。</p><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;color: rgb(61, 70, 77);">单队列调度器主要有三个任务：</p><ul style="margin-left: 30px;" class=" list-paddingleft-2"><li><p>积聚代表连续IO操作的多个bio，合并成更大的IO请求，充分发挥硬件性能，但是请求不能太大超高硬件设备的限制；</p></li><li><p>把请求进行排序来减少寻道时间，但是又要保证重要的请求得到及时处理。不断寻求较优方案，来解决这个问题，是这一部分代码复杂度的根源。一般很难知道这两点：一个请求有多重要，和一个请求需要多少寻道时间，我们只能依赖启发式方法来判断怎样排序比较好，然而启发式方法绝不是完美的；</p></li><li><p>把经过整理的请求列表交给底层驱动，让驱动从队列取下请求去处理，同时提供一个通知机制来告诉上层请求处理的结果。</p></li></ul><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;color: rgb(61, 70, 77);">最后一个任务很直接了当。驱动会通过blk_init_queue_node()来注册一个request_fn()策略例程，只要队列上有新请求已经准备好，策略例程被调用去处理这个请求。驱动负责用blk_peek_request()来从队列上取下请求，然后进行处理。当请求处理完毕 [有些设备可以并行处理多个请求]，驱动会从队列上摘下另一个请求来处理，而不用再去调用request_fn() [因为request_fn()一次拿到了整个列表上的所有request]。请求一旦处理完毕，就可调用blk_finish_request()来通知上层。</p><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;color: rgb(61, 70, 77);">第一个任务有部分是用elv_attempt_insert_merge()完成的，它会快速地检查队列，看是否可以找到一个已经存在的request，把新的bio合并进入。如果成功，调度器就会允许合并，如果失败，调度器还有一次机会尝试在调度器内部进行一次合并。如果没有机会合并，就分配一个新的请求，然后交给调度器。稍后一会，如果某个请求因合并而长大，使得它与该请求变成了连续的，调度器就可以再次尝试合并操作。</p><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;color: rgb(61, 70, 77);">第二个任务可能是最复杂的。如何把请求按照"适当"顺序排队非常依赖我们如何来解释"适当"的含义。这三种不同的单队列调度器: noop, deadline和cfq，对“适当”的解释就非常不一样。</p><ul style="margin-left: 30px;" class=" list-paddingleft-2"><li><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;">"noop"会对请求做一些简单的排序，不允许把读请求挪到写请求之前，反之亦然；依据电梯算法，一个同类型的请求可以插入到另一个之前。除了elv_dispatch_sort()所做简单排序，"noop"就是一个FIFO队列。</p></li><li><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;">“deadline”会把提交时间相近的请求放在一批。在同一批中，请求会被排序。当一批请求达到了大小上限或着定时器超时，这批请求就会提交到设备队列上去。这个算法尝试给每一个请求都设置一个延迟时间上限，同时尽量聚集比较大的一批请求。</p></li><li><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;">"cfq"即"Complete Fairness Queuing"，相比其它几个调度器要复杂很多，目的是在不同进程或进程组间保证IO资源使用的公平性。cfq调度器内部维护了多个队列，每一个进程都有一个队列来保存来自该进程的同步请求(通常是读)，而对于异步请求(通常是写)，每一个优先级都有一个队列，所有请求不论来自哪个进程都按照优先级放到相应的队列上。在提交请求时，按照优先级每个队列都有机会得到调度。每个队列都有一定的时间片，在时间片内才能提交一定数量的请求。当一个同步队列中的请求不足一定数量时，这个设备可以空闲一会，即使其它队列里可能有请求等待处理。通常，同步请求之间在磁盘上的物理位置是连续的，所以让磁盘稍等一会来接收更多连续的请求，这样做可以提高吞吐量。以上对CFQ的描述仅仅是点皮毛。内核文档（Documentation/block/cfq-iosched.txt）讲的更详细点，还列出了所有参数，通过调整这些参数能够适应各种不同的场景。</p></li></ul><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;color: rgb(61, 70, 77);">之前提到过，一些高端点的设备可以一次处理多个请求，即在一个请求还没有处理完成之前，就能够处理新的请求。通常，这个要用到"tagging"功能，给每一个请求加一个标签，这样请求完成通知就能和原来的请求正确的对应起来。单队列的"request层"可以对任意深度的设备提供"tagging"功能。</p><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;color: rgb(61, 70, 77);">一个设备内部可以通过真正地并行处理请求，来支持被标记的命令，比如通过访问一个内存缓存，通过设计多模块而每个模块都能处理一个请求，或者通过其内部队列，这样的队列比"request层"更加了解设备。</p><h1 style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;font-size: 24px;color: rgb(61, 70, 77);">多队列和多CPU</h1><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;color: rgb(61, 70, 77);">多队列的另一个动机就是减少锁的开销，因为我们的系统处理器越来越多，而请求从多个处理器放到一个队列中时需要加锁，锁的开销变得越来越大。"plugging"机制能帮得上一些忙，但是不够理想。如果我们能够分配更多队列：每个NUMA节点一个队列，或者一个CPU一个队列，那么把请求放到队列的锁开销就会减少很多。如果硬件支持并行处理多个请求，那么这样做的优势就更大了。如果硬件只支持一次提交一个请求，那么多个per-CPU队列仍然需要合并。如果他们比"plugging"机制批处理的效果更好，那么这样做也是有益处的。假如不能提高批处理的效果，写程序的时候小心点应该也能够保证，至少不会有什么损失。</p><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;color: rgb(61, 70, 77);">之前说过，cfq调度器内部已经有多个队列，但是它们跟multi-queue的目的完全不一样，它们把请求与进程和优先级关联起来，而multi-queue的队列是跟硬件密切相关的。multi-queue "request层"维护着两组硬件相关的队列：软件的"staging"队列和硬件的"dispatch"队列。</p><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;color: rgb(61, 70, 77);">软件staging队列(struct blk_mq_ctx)是依CPU硬件情况而分配的，每个CPU分配一个，或每个NUMA节点分配一个。当块层的"plugging"机制拔开"塞子"时(blk_mq_flush_plug_list())，request请求在一个spinlock的保护下被添加到队列上，锁竞争应该很少。multi-queue的队列可以选择由某一个multi-queue调度器来管理, 现在有三种multi-queue调度器：bfq, kyber和mq-deadline.</p><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;color: rgb(61, 70, 77);">硬件dispatch队列是基于目标硬件块设备进行分配的，所以有可能只有一个，也有可能多达2048个队列 (或与硬件支持的中断源个数一样)。"request层"为每一个硬件队列(或"硬件上下文")分配一个数据结构struct blk_mq_hw_ctx，维护着一个CPU和队列之间的映射表，而队列本身就是为底层驱动而服务的。“request 层”时不时地把硬件队列中的请求传递给底层驱动。接下来，请求就全由驱动处理了，通常情况下，又会很快按照接收的顺序交给硬件。</p><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;color: rgb(61, 70, 77);">与single-queue相比有另一个重要区别，multi-queue使用的request结构体都是预分配的。每个request结构体都关联着一个不同tag number，这个tag number会随着请求传递到硬件，再随着请求完成通知传递回来。早点为一个请求分配tag number，在时机到来的时候，request 层可随时向底层发送请求。</p><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;color: rgb(61, 70, 77);">single-queue只需要一个request_fn()就可以了，但是multi-queue需要底层驱动提供一个struct blk_mq_ops结构体，包含了多达11个函数。其中，最核心的一个函数是queue_rq()，其它的函数实现了超时，请求完成轮询，请求初始化，等类似操作。</p><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;color: rgb(61, 70, 77);">一旦请求就绪，并且调度器不想再把请求保持在队列上来排序或扩展，调度器就会调用queue_rq()函数。single-queue把收集请求的责任交给了驱动层，与之不同，multi-queue却把这个责任交给了"request层"。queue_rq()有个参数代表的是硬件上下文，通常会把请求放在内部FIFO队列上，也有可能会直接处理。queue_rq()可以拒绝一个请求，然后返回BLK_STS_RESOURCE，让请求继续在staging队列上等待。除了BLK_STS_RESOURCE和BLK_STS_OK，其它返回值都被视为IO错误。</p><h1 style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;font-size: 24px;color: rgb(61, 70, 77);">多队列调度</h1><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;color: rgb(61, 70, 77);">multi-queue不是必须要配置一个调度器，如果不指定的话，那么就会用类似单队列中的“noop”调度器。连续的bio会被合并到一个请求，而不连续的bio各成为一个独立的请求。这些请求以FIFO的顺序被放到staging队列中，尽管有多个submission队列，默认的调度器会尝试直接提交新请求，仅仅在收到BLK_STS_RESOURCE返回值时才会使用staging队列。当块设备上的plugging机制拔开“塞子”时，调度器会调用blk_mq_run_hw_queue()或blk_mq_delay_run_hw_queue()把软件队列传递给驱动层处理。</p><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;color: rgb(61, 70, 77);">可插拔的multi-queue调度器有22个入口点，其中有两个函数，一个是insert_requests()把一组请求添加到软件staging队列中，另一个是dispatch_request()会选择一个请求然后传递给硬件设备。如果没有实现insert_request()函数，请求就会被简单的插入到列表末尾。如果没有提供dispatch_request()函数，就会从staging队列里取下请求，然后以任意顺序传递到相应的硬件队列。This "collect everything" step is the main point of cross-CPU locking and can hurt performance, so it is best if a device with a single hardware queue accepts all the requests it is given.[最后一句我理解不到那个点，大致理解是说staging队列有多个，硬件队列只有一个的情况，那么多个软件队列上的请求最终要收集到这个硬件队列上来，那么必然要加锁，会比较影响性能]</p><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;color: rgb(61, 70, 77);">mq-deadline调度器跟单队列的deadline调度器发挥的功能很相似。它有个insert_request()函数，不会使用多个staging队列，而是把请求放到两个全局的基于时间的队列中 - 一个放读请求，一个放写请求，先尝试把该新请求与已经存在的请求合并，如果合并不了，则把这个新请求放到队列尾部。dispatch_request()函数会从这些队列中返回第一个请求：基于时间的队列，基于请求批大小，以及避免写饥饿的队列。</p><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;color: rgb(61, 70, 77);">bfq调度器，即Budget Fair Queueing, 一定程度上是借鉴cfq实现的。内核里有介绍bfq的文档(Documentation/block/bfq-iosched.txt)，几年前lwn上有篇讲bfq的文章（https://lwn.net/Articles/601799/），后来又出了一篇文章(https://lwn.net/Articles/709202/)，&nbsp;跟进了bfq被吸纳进multi-queue的情况。bfq有一点比较像mq-deadline,没有使用多个per-CPU staging队列。bfq有多个队列，每一个队列由一把自旋锁保护。</p><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;color: rgb(61, 70, 77);">与mq-deadline和bfq不一样，kyber IO调度器，在这篇文章中(https://lwn.net/Articles/720675/)有简单介绍，它使用了per-CPU的staging队列，也没有实现自己的insert_request()函数，而用的是默认行为。dispatch_request()函数为每一个硬件上下文都维护着各种内部队列，如果这些队列是空的，它就会从给定的硬件上下文所对应的所有staging队列来收集请求，然后在内部将请求做个分布，如果硬件队列不是空的，它就直接从对应的内部队列里下发请求。关于kyber调度器的这几个方面内核没有相应的注释和文档：策略解释，请求分布，以及处理顺序。</p><h1 style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;font-size: 24px;color: rgb(61, 70, 77);">单队列要寿终正寝了？</h1><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;color: rgb(61, 70, 77);">在块层中，并存两套不同的队列系统，两套调度器和两套不同的驱动接口很明显是不理想的。我们可以期待single-queue的代码很快被移除掉吗？multi-queue到底又有多好呢？</p><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;color: rgb(61, 70, 77);">不幸的是，这些问题的回答需要在不同的硬件上做很多测试，而笔者只是个做软件的。从软件的角度来说，很清楚，在支持多队列并行提交请求的硬件上，multi-queue应该能带来很多好处。当用在单队列硬件上时，multi-queue至少应该和单队列旗鼓相当，但是不要期望一夜之间就能达到旗鼓相当的水平，因为任何新事物都不是完美的。</p><p style="box-sizing: inherit;-webkit-tap-highlight-color: transparent;margin-bottom: 16px;color: rgb(61, 70, 77);">说到不完美，举个例子，最近一个补丁集进了Linux 4.15。这些补丁对mq-deadline调度器做了一些修改来解决redhat在内部存储系统测试中发现的性能问题。假如切换到multi-queue, 存储领域的各家厂商很有可能在测试中发现类似的性能回退。在未来几个月里，这些被发现的问题很有希望得到修复。2017可能不会成为multi-queue-ony Linux的一年，但是这样的一天不会太远。</p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">任振</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                <div class="reward_qrcode_area reward_area tc" id="js_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                                        <p class="reward_tips"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" id="js_reward_qrcode_img"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

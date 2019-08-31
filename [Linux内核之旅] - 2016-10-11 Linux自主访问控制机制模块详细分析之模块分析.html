@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Linux自主访问控制机制模块详细分析之模块分析
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664603220&amp;idx=1&amp;sn=714b5b4a790c92b8b20f19dacec62ae4&amp;chksm=f04db3b1c73a3aa72390e9ab6caa15aa2d32c360b88e5f91c5f5192cfe7ee58dd671e1372f20&amp;scene=27#wechat_redirect&cpage=58' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Linux自主访问控制机制模块详细分析之模块分析</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        苗磊
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-10-11</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                <div class="rich_media_thumb_wrp" id="media">
+                    
+                                        
+                                    </div>
+                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <h1><span style="color: rgb(2, 30, 170); font-size: 16px;"><span style="color: rgb(2, 30, 170); font-family: 黑体; font-weight: bold;">2&nbsp;</span><strong><span style="color: rgb(2, 30, 170); font-family: 黑体;">详细分析</span></strong></span></h1><h2 style="margin-top:17px;margin-bottom:17px;margin-left:38px;line-height:172%"><span style="font-size: 16px; color: rgb(2, 30, 170);"><span style="color: rgb(2, 30, 170); font-family: 宋体; font-weight: bold; font-size: 20px;">2.1&nbsp;</span><strong><span style="color: rgb(2, 30, 170); font-size: 16px; font-family: 宋体;">模块功能描述</span></strong></span></h2><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:28px;text-autospace:ideograph-numeric;text-align:justify;text-justify:inter-ideograph;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">访问控制列表ACL主要用于提供传统的<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">owner</span>、<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">group</span>、<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">others</span>的<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">read</span>、<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">write</span>、<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">execute</span>之外的具体权限设置，它可以针对单一用户、单一文件或目录进行权限的设置，从而细化权限的管理。</span></p><h2 style="margin-top:17px;margin-bottom:17px;margin-left:38px;line-height:172%"><span style="font-size: 16px; color: rgb(2, 30, 170);"><span style="font-size: 16px; font-family: 宋体; font-weight: bold;">2.2&nbsp;</span><strong><span style="font-size: 16px; font-family: 宋体;">模块内部函数调用关系</span></strong><strong><span style="font-size: 16px; font-family: 宋体;"></span></strong></span></h2><p style="text-align: center;"><span style="font-size: 16px;"><strong><span style="font-size: 16px; font-family: 宋体;"><img data-s="300,640" data-type="png" src="data:image/JPG;base64,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 " src="SeWfibBcBT0EWibhqRVsia1CqlAIe4qwOPbkbPNhic7UuJ2KM3VGXib1JgSVmebJ8Tjzas8mjbnGKH85uRB16PoHMPg"  data-ratio="0.6811594202898551" data-w="414"  /><br  /></span></strong><span style="font-family: 宋体; font-size: 16px;">图2-1 模块内函数之间的调用关系</span></span></p><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:28px;text-autospace:ideograph-numeric;text-align:justify;text-justify:inter-ideograph;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">如图2-1所示，当用户程序需要访问文件时，便会调用相应的系统调用如<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">open()</span>，该系统调用在执行时会通过系统调用服务例程陷入内核，然后调用<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">VFS</span>中相关操作对该请求进行处理，最后当要访问文件对应的内核数据时，内核会先检查该用户是否具有访问权限，如果权限检查通过，此时才能真正访问相应的数据，否则拒绝用户的请求。在进行权限检查时，依次会进行普通的权限检查、<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">DAC</span>检查和<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">MAC</span>检查，如果所有的检查均通过则允许用户访问该文件。在进行<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">DAC</span>检查时，<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">VFS</span>会根据用户请求的文件的类型来调用相应文件系统中实现的函数来从文件的扩展属性中查找文件的<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">ACL</span>权限，如果文件中指定了相应的权限，则检查通过，否则函数直接返回，即拒绝用户的访问请求。</span></p><h2 style="margin-top:17px;margin-bottom:17px;margin-left:38px;line-height:172%"><span style="font-size: 16px; color: rgb(2, 30, 170);"><span style="font-size: 16px; font-family: 宋体; font-weight: bold;">2.3&nbsp;</span><strong><span style="font-size: 16px; font-family: 宋体;">函数实现机制</span></strong><strong><span style="font-size: 16px; font-family: 宋体;"></span></strong></span></h2><p style="margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;text-indent:28px;text-autospace:ideograph-numeric;text-align:justify;text-justify:inter-ideograph;line-height:24px"><span style="font-family: 宋体; font-size: 16px;">在Linux中，通过<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">VFS</span>来对所有的具体文件系统进行统一的管理，<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">VFS</span>通过向用户程序提供一套统一、标准的抽象接口来为用户程序提供标准的功能，进而向用户屏蔽具体文件系统的实现细节，然而这只能实现一些标准的操作，对于某些具体文件系统的某些特性，其并不能很好的支持，因为<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">VFS</span>不可能为它所能想到的所有特性都进行具体的实现。为了解决这个问题，<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">Linux</span>采用扩展属性来实现，每个文件都可以根据其需求来实现相应的扩展属性，从而将其与文件相关联。扩展属性在<span style="font-size: 16px; font-family: &#39;Times New Roman&#39;;">Linux</span>中有两种用途：</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">苗磊</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Java 语言GUI设计的演绎和FX 8 特性——洪峰老师讲创客道（二十）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=416854024&amp;idx=1&amp;sn=6d4f46bd235aa1819d2a4c6ec495ed77&amp;chksm=76479ded413014fb2449bdf6a66107bd325b303ef1979e57094999ae0fe2af24d0328346092c&amp;scene=27#wechat_redirect&cpage=75' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Java 语言GUI设计的演绎和FX 8 特性——洪峰老师讲创客道（二十）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        洪峰
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-03-30</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p><span style="">&nbsp;&nbsp;</span></p><p><span style=""></span></p><p><mpvoice frameborder="0" class="res_iframe js_editor_audio audio_iframe" src="/cgi-bin/readtemplate?t=tmpl/audio_tmpl&amp;name=%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9320&amp;play_length=25:37" name="%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9320" play_length="1537000" voice_encode_fileid="MzI3NzA5MzUxNF80MTY4NTQwMjI="></mpvoice></p><p><span style="">在前面的一讲中呢，我已经给大家介绍了一下Java语言的主要的好的一些特性，那么我们现在来看一看这个Java语言究竟在应用程序的设计中怎么来用。</span><br  /></p><p><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;首先第一个我想要跟大家介绍的是用Java语言设计图形用户界面，英文叫做Graphical&nbsp;User&nbsp;Interface，简称GUI。在Java语言设计师创造Java语言的那个年代也就是90年代的早期，关于用户界面技术上的讨论，答案已经非常清晰了。那就是说对于普通的计算机用户必须向他们提供一个容易使用</span><span style="">、</span><span style="">容易操作的图形化用户界面。在图形化用户界面得到广大用户接受之前，计算机的使用，一般是使用命令行的界面，命令行的界面或者</span><span style="">文本终端</span><span style="">的这个界面要求用户使用计算机程序之前，记忆大量的命令，还有它们的用法，命令的一些选项，命令的一些参数。这对用户来说是一个很大的负担。对普通的非</span><span style="">程序员</span><span style="">用户对于这些选项是非常痛苦的。</span></p><p><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;有了图形用户界面以后，这个情况就彻底的被改变了，因为图形用户界面上面的控件</span><span style="">、</span><span style="">按钮</span><span style="">、</span><span style="">滚动条这些东西都非常的直观，这实际上是心理学的一个机制。因为你要让一个人去辨认一个东西要比他从脑袋中回想起某一个东西的难度要小很多。实际上图形界面之所以能够在计算机市场获得广大计算机用户的认可，主要还是因为我们人的身体结构</span><span style="">的某种限制</span><span style="">，一旦这个机制搞清楚以后的话，那剩下的</span><span style="">争论</span><span style="">就不用再去进行了。</span></p><p><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;那么Java语言设计师在Java1.0的API里面就提供了一个叫做AWT（Abstract&nbsp;Window&nbsp;Toolkit），就是抽象窗口这个工具箱。在那个年代，设计图形用户界面就已经是可以的了。当然了这个Java1.0</span><span style="">&nbsp;</span><span style="">API里面AWT推出的比较仓促，比较草率，从工程实践角度来看，让它设计大型图形用户界面的这个程序还是不行的，因为Java1.0</span><span style="">&nbsp;</span><span style="">API毕竟是一个非常小的API，它作为一个原形我们认为这个是可以容忍的。当然了，Java语言这个设计公司当时也意识到了这一点，在后期的这个版本就推出了一个叫</span><span style="">Swing。Swing</span><span style="">提供了大量的控件使得开发图形用户界面具有了一个非常好的起点，从本质上来讲这个</span><span style="">Swing</span><span style="">它是基于一种叫MVC的架构，MVC分别代表Model&nbsp;View&nbsp;Controller这三者。现在稍微花一点时间对这一个架构进行一个简要的介绍。</span></p><p><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;要理解MVC这个架构，首先要搞清楚这个View（视图），我们翻译成视图，这个视图有两个功能，一个是从Model（模型）这个部分接受要显示的数据，另一个方面他要把数据还有一些可以接受的事件以控件的方式暴露出来</span><span style="">。</span><span style="">因为在图形用户界面，用户需要用鼠标，键盘，外部设备对屏幕控件进行操作，比方点击一个Button，点击一个按钮，在一个文本框里面输入数据等等，所以这个View的功能就是要做这两个事情，一个是把已有的数据显示出来，另外一个就是还要让用户能够在我的界面上进行某种操作，一但这个用户</span><span style="">在界面上</span><span style="">进行了某种操作，我们从编程角度来看产生了一些事件，那么这些事件将会触发Controller，我们叫控制器&nbsp;</span><span style="">。</span><span style="">这个控制器会要求后面的Model进行更新，根据用户输入的事件进行更新，这么说可能比较抽象，举个例子就清楚了，比方用户在界面输入一个数据传给数据库，就是后台的数据库，那么用户在这个界面上填入了姓名信息，年龄信息以后，那么一旦点击存盘，那么存盘这个事件就会被Controller翻译成一个对数据库的操作，那么操作数据库的时候把用户刚才录入的数据存放到我的数据库里面去，而这个转换过程是由Controller完成的。&nbsp;最后我们再来看看Model，它干什么呢，就是说，刚才我说了，Controller这个控制器会把来自用户的事件转换成要对数据库的操作，就是在我刚才举的这个例子里面。在我举得例子里面，数据库会产生一个新的数据就是比如数据库的保存操作已经成功了，会向用户提示保存成功的消息，所以呢就是Model会产生一个数据交给View，这个时候视图收到Model的数据以后再进行向用户显示操作成功，所以在整个MVC的架构里，M,V,C这三者构成一个循环的结构，然后在这个循环的结构里用户不断的输入事件驱动MVC，这是设计图形用户界面里的一个基本思想，但是这个基本思想是十分容易理解的，在MVC这个循环里，我们可以归结为从Model到View，再从View到Controller,再从Controller到</span><span style="">View</span><span style="">顺时针循环的结构。</span></p><p><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在Java的</span><span style="">Swing</span><span style="">推出以后，它把这个MVC循环结构做了一些改进，它把View和</span><span style="">C</span><span style="">ontroler合二为一，创造了一个术语把他称作</span><span style="">UIDelegate</span><span style="">。这个</span><span style="">UIDelegate</span><span style="">和Model这三者的交互不再是单向的而是双向的，这是Java&nbsp;Swing设计的一个重大的改进</span><span style="">。</span><span style="">然后整个把他归结到组件模式上去，我们叫做Component上面去，那么Swing推出来之后相比于原来的AWT是一个巨大的改进，我们知道Java设计的中心思想就是跨平台，在关于图形用户界面设计的问题上，跨平台也是Java追求的一个目标，但是最初的AWT只是最初的一个原型，并没有完全达到这个目标</span><span style="">。</span><span style="">Swing的中心思想就是不用操作系统本身提供的控件而是自己画这个视图，这样在所有的视图在各个平台上都是自己画的，用Java的Swing库来画，这样在所有的平台上都显示</span><span style="">出</span><span style="">一致的外观，当然用户如果要求我们可以指定本地的外观例如Windows，Unix下的Motif外观，或者是苹果上的外观等等</span><span style="">。</span><span style="">这样</span><span style="">的话，</span><span style="">Swing的控件的架构就与本地的绘制就有一个映射关系，那么这时绘图就有点慢，Swing推出不久，用户主要的反映就是太慢了，它确确实实在显示的速度上不如本地的原生的控件，而且本地原生控件还有一个优势，它有很多特效</span><span style="">，</span><span style="">比如动画在Swing都没有提供</span><span style="">。</span></p><p style="text-indent:28px"><span style="">当计算机硬件的升级，计算机越来越快了，用户又抱怨Swing太难看了，而且很多用户拿Swing跟Flash创建的图形界面相比，那完全是Flash的效果会远远的好于Swing</span><span style="">。</span><span style="">所以有了这么些问题以后呢，Java的开发公司开始思考这个问题，所幸</span><span style="">的是</span><span style="">，</span><span style="">Sun</span><span style="">推出了一个JavaFX，那么JavaFX，是对原来的MVC架构的一个重大的改进，当这个Oracle公司获得了Java技术以后呢，继续对JavaFX技术进行改进，然后呢到了Java8的时候呢，在Java8中的这个FX是非常成熟的一项技术。</span></p><p><span style="">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="">那么在这个地方呢，我会稍微详细的介绍这个技术的一些情况，前面我已近说了在Java社团里面，Java的开发人员对于对Swing的抱怨的这个声音一直没有停止过，从表面上看呢，前期抱怨Java慢，后期抱怨Java难看，Java语言开发师认真的分析了用户来自社团中的反馈意见，然后他们在这个软件工程继续进步的影响下呢，开始以新的观点新的角度看待这个问题，他们首先分析了MVC架构的一些问题，并且得到了他们自己的一些答案，在分析了大量图形用户界面的Java项目之后，开发人员发现控制器，也就是MVC中的Controller这个部分，会变得非常的臃肿庞大，这是他们发现的第一点</span><span style="">。</span><span style="">为什么这个Controller会变得如此的臃肿庞大呢，因为所有的操作都在这个行为里面，而这个行为被隐藏在</span><span style="">、</span><span style="">隐含在控制器里面，所以一但这个控制器的规模上升以后，那实际上这个趋势与OOP的这个设计思想是不相容的，OOP就是让一个功能许多相互独立的对象去完成，而现在所有的这些行动，这些函数，都被封装在控制器中。然后呢，产生了一些巨大的耦合，这个耦合代码规模越大，它的这个调试啊维护啊的成本都越来越大，随着业务逻辑的复杂化，它是变得越来越不可接受的一方面，第二个发现就是，这个控制器规模变得越来越大的时候，它实际上对这个模型的依赖越来越强，因为你要操作的这个，在我前面举的那个例子里面，对数据库的操作，当你要完成这个操作越来越多的时候，那么你是不是对数据库本身的这一个特性依赖性也越来越强</span><span style="">呢？</span><span style="">所以这个强的这个依赖性也不符合OOP的基本的设计思想，这是他们的第二个发现。第三个发现呢没有那么直截了当，但是也被注意到了。在这个控制器的内部，也有一些对象也有一些紧密的耦合，也不符合将控制器它的功能单纯化的一些思想，因为我们在设计OOP的时候，应该是让一个对象尽可能完成比较单一的工作，与其他对象呢，应该没有紧耦合，我们知道，在OOP里面，最理想的情况就是两个对象，相对是独立的，这种情况，对于软件的开发和维护最为有利的。最后呢，这些开发人员发现，控制器做了太多的工作，而其他的MVC里面，M和V它们做的工作相对来讲是比较少的</span><span style="">。</span><span style="">有了这么四个发现以后，他们结合软件工程的新的概念和思想对这个图形界面设计的这个模式，提出了全新的解决方案</span><span style="">。</span></p><p style="text-indent:28px"><span style="">对于这个JavaFX8，它的这个思想的起源呢，可以从Rebecca&nbsp;Wirfs</span><span style="">&nbsp;</span><span style="">Brock&nbsp;and&nbsp;&nbsp;Alan&nbsp;McKean（罗博肯·威尔福斯</span><span style="">&nbsp;</span><span style="">布绕克和爱兰·麦克肯）这个这两位作者写了一本书中可以找到这个起源，这个叫做Object&nbsp;Design:&nbsp;Roles,&nbsp;Responsibilities,&nbsp;and&nbsp;Collaborations，就是对象设计角色，职责和这个协作。这个书出版以后。&nbsp;他这个书是2002出版的，在社团里面引起了很重大的反响，对于图形用户界面的设计产生了直接的影响。这个影响可以体现在一种新的关于图形界面的设计模式体系架构被提出，那就是我们叫做DCI的设计思想</span><span style="">。</span><span style="">DCI是Data&nbsp;，Context，Interactions，即数据场景</span><span style="">和</span><span style="">交互。在DCI的架构下，我们出现了场景，英文叫做&nbsp;Context，那么Context和原来的MVC架构相比，是把控制器和Model其中的一部分，把它提炼出来，然后把它定义为一个场景，也就是说一个对象的行为它的责任它的角色是与它的这个场景有关系的。请大家回忆之前讲过的这个对</span><span style="">Lisp</span><span style="">中的表达式进行求值的时候，是不是一个表达式的求值规则和它的求值环境密切相关的，对不对？所以我们可以把，那种思想在</span><span style="">Lisp</span><span style="">中关于这个Environment</span><span style="">和Expression</span><span style="">之间的求值思想的关系应用到对图形用户界面设计的思想中来</span><span style="">。</span><span style="">很多写书的没有说出这个问题，但是我一讲的话，我们马上对</span><span style="">Lisp</span><span style="">设计语言就会明白这个思想</span><span style="">。</span><span style="">和剧场里一个剧目的演出一样，在一个舞台上我们可以盛放布置舞台的一个场景，然后在这个舞台场景下有一些演员可以根据自己的脚本进行演戏，演员与演员之间作为对象他们之间也可以对话交互，这种模式带入到图形用户界面设计就可以大大的简化这个GUI的设计，JavaFX8正是根据这样的一种设计观念推出来的一个图形用户界面的工具箱。</span></p><p><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;有了这个JavaFX8和关于DCI的这些设计理念呢，现在一个新的图形用户界面设计的术语就产生了，叫做DDD，Domain，Drvien，Design，即领域驱动设计的新的术语。在我们理解了这样的一个思想方法之后，我们再来看JavaFX8就非常有趣了</span><span style="">。</span><span style="">JavaFX8里面可以在一个场景上放置任何你想展现的东西，这个场景英文叫做Scene，就是那个布景Scene，然后你可以设计许多演员，所谓的演员就是控件还有</span><span style="">控件</span><span style="">的一些形状，样式，行为等，我们称之为演员。在我们设计里面呢，这个场景必须位于一个舞台上面，这个英文叫做Stage，在JavaFX8图形界面编程里面，一个舞台上面的场景是可以切换的，这也是很重要的一个特点。</span></p><p style="text-indent:28px"><span style="">我们知道，图形用户界面的设计都是事件驱动的，用户点击按钮，拖动滚动条等等都是一些事件</span><span style="">。</span><span style="">有了这些事件之后，图形用户界面会做出反应并且刷新视图，在JavaFX8里面因为采用了</span><span style="">Lambda</span><span style="">表达式，函数可以被直接进行传递</span><span style="">。</span><span style="">例如当按钮被点击的时候会调用</span><span style="">Lambda</span><span style="">表达式，这个是非常直接的。以前在C要写回调函数，然后在这个</span><span style="">Swing</span><span style="">的设计里面要按照相应API进行设计，所以在JavaFX里，所有这些统统都被简化，变成一种叫监听属性的方式</span><span style="">。</span><span style="">属性这个概念是从JavaBean我们叫做Java的豆容器里面产生的，一个Java豆容器实际上就是一个小小的数据库，我们以前在讲这个对一个表达式，一个</span><span style="">Lisp</span><span style="">的一个表达式在一个环境里面进行求值的时候不是有一个相应的数据库吗。那么嘞，这个数据库中就有很多的这个Property，那么这个Property它</span><span style="">又有类秉性</span><span style="">，这个类秉性里面又有很多属性，那么这个属性就决定了你这个外观</span><span style="">。</span><span style="">那么这个设计思想跟我们设计网页的时候产生的这个样式表的那个思想就非常的接近了</span><span style="">。</span><span style="">实际上呢，这个JavaFX8里面，确确实实有一个FXML，实际上就是用于布局的这个语言，那么这样的话呢在JavaFX8编程里面，对于布局的这个方法，在我看来就有三种</span><span style="">：</span><span style="">一个呢就是利用IDE，你直接在IDE上进行拖放，拖拽这种方式来布局</span><span style="">，</span><span style="">这是非常直观的一种方式。第二个就是通过编程的方式来进行修改属性值，还有这个属性的定义，选择，可达到相同的目的，通过FXML描述语言的设计，那么对于这个布局的设计就非常的优美了。</span></p><p><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;虽然JavaFX8里面关于布局使用样式表的属性跟网页设计的CSS不完全一样，但是</span><span style="">如果</span><span style="">你以前设计这个CSS样式表，就网页的话，你在用JavaFX8开发图形</span><span style="">用户</span><span style="">界面的时候大量的概念和术语应该是一样的，具体的情况呢，细节上的差异呢，大家可以参看JavaFX8的这个文档</span><span style="">。</span><span style="">这里我花了这么多的时间谈JavaFX8中这个属性呢，目的是干什么</span><span style="">呢？</span><span style="">目的就是为了产生对象与对象之间的绑定</span><span style="">。</span><span style="">有了绑定后一个属性改变后会自动更新另一个属性，这样的话，在JavaFX8图形界面的</span><span style="">用户</span><span style="">设计的时候，一个演员的属性的变化会影响另一个演员的属性的变化</span><span style="">。</span><span style="">实际上这就是一个对象与对象之间消息的关联机制</span><span style="">。</span><span style="">回想一下我们前面在讲</span><span style="">Lisp</span><span style="">编程的时候，我么讲过这个plist，以及在</span><span style="">Scheme</span><span style="">里面这个alist以及在讲编译原理的时候，我们讲过，类秉性和下秉性，以及在这个编译原理中研究这个语义计算的时候，我们研究的是综合秉性的计算，以及继承秉性的计算。</span></p><p><span style="">&nbsp;&nbsp;&nbsp;&nbsp;那么这些原理呢，实际上你看看，对比我们这个JavaFX8编程，是不是找到了关联性</span><span style="">。</span><span style="">如果你知道了</span><span style="">Lisp</span><span style="">编程和编译原理的那些技巧的话，那么在JavaFX8这个设计图形界面的时候，类似的思想都可以一以贯之应用到这个JavaFX8中编程里面，这也是我一再强调一以贯之这个的重要性</span><span style="">。</span><span style="">有了这个JavaFX8以后，曾经让Java开发人员羡慕的这个Flash里面的那些特效，也已经有办法支持了，比方说可以逐渐的变大啊，然后一个文本对象逐渐的消失啊，逐渐的隐藏起来啊，或者是某种反转的这个动作啊，还有大量的一些特效</span><span style="">，</span><span style="">这个在JavaFX8里面都已经有了</span><span style="">。</span><span style="">还提供了一些不同寻常的控件，比方说你要显示一些统计数据的时候，需要用饼图对不对，这个对于搞这些金融分析的人来说它是非常有用的，还有一个最最有趣的一个特点，它已经在这个Web&nbsp;View这个控件里面，它内嵌本地的一个本地的这个Web&nbsp;kit窗口，有了这个窗口之后，你实际上可以在JavaFX8里面显示网页</span><span style="">。</span><span style="">这样呢Java这个语言，又回到当初它这个非常火的原因，因为在95年的时候Java推出后一炮而红，是因为当时Java可以有这个Applet，对不对，可以在浏览器里面显示这个动画，这也是Java当时迅速走红，被市场接受的一个原因</span><span style="">。</span><span style="">而到了Java8的这个时候历史又上升了一个螺旋圈之后，又回到了原点，它现在在又可以非常好的支持Applet。但是这次支持的方式和前一次Java1.0的API，那是完全不一样的，那么今天你在Java的应用程序里面显示网页，显示视频，显示音频，显示动画啊种种的可能性都已经成为现实。</span></p><p><span style="">&nbsp;</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">洪峰</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

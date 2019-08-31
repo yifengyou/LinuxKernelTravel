@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		函数的概念、lambda 演算与 Haskell 语言——洪峰老师讲创客道（三十三）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=417102542&amp;idx=1&amp;sn=5db15d93a06dd8dd45c35c95e0181714&amp;chksm=7643572b4134de3d1c0c559603f1dee82c3bd782c5ba33b6029c09ca2dc5d62c67e4ab59b4c6&amp;scene=27#wechat_redirect&cpage=74' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">函数的概念、lambda 演算与 Haskell 语言——洪峰老师讲创客道（三十三）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        洪峰
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-04-14</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style=";font-size: medium;white-space: normal;margin-right: 0;text-align: justify;margin-left: 0;text-indent: 28px;line-height: 21px;page-break-after: auto;background: rgb(255, 255, 255)"><span style="font-family: _5fae_8f6f_96c5_9ed1; letter-spacing: 0px; font-size: 16px;"></span></p><p><mpvoice frameborder="0" class="res_iframe js_editor_audio audio_iframe" src="/cgi-bin/readtemplate?t=tmpl/audio_tmpl&amp;name=%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9333&amp;play_length=23:13" name="%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9333" play_length="1393000" voice_encode_fileid="MzI3NzA5MzUxNF80MTcxMDI1NDA="></mpvoice></p><p style=";font-size: medium;white-space: normal;margin-right: 0;text-align: justify;margin-left: 0;text-indent: 28px;line-height: 21px;page-break-after: auto;background: rgb(255, 255, 255)"><span style="font-family: _5fae_8f6f_96c5_9ed1; letter-spacing: 0px; font-size: 16px;"></span><br  /></p><p style=";font-size: medium;white-space: normal;margin-right: 0;text-align: justify;margin-left: 0;text-indent: 28px;line-height: 21px;page-break-after: auto;background: rgb(255, 255, 255)"><span style="font-family: _5fae_8f6f_96c5_9ed1; letter-spacing: 0px; font-size: 16px;">在上面一讲，我已经给大家介绍了Haskell语言的类型系统，而且类型系统里面，有类型、类型变量和类型类的概念。要详细了解这些概念，必须要知道Haskell关于函数设计的思想。在数学的发展史上，函数概念的提出，第一个提出的是狄利希莱，他是德国数学家高斯的学生。高斯是数学王子，而狄利希莱第一次把函数概念确立下来。在第三章，我已提出我的PM123框架，在3里面有集合论。从集合论观点来看，函数是一种映射，而映射又是一种关系。在研究关系的时候，二元关系非常关键。因为它是非常特殊的，而且也是一种非常基本的关系。那么，究竟什么叫做关系？对于二元关系来讲，关系就是定义在直集空间上的一个子集，这是它的数学定义。从关系的数学定义来看，它实际上用到了我们计算机本质里面的六大关系中的形影关系和局整关系。为什么这么说？因为直集是形影关系。有两个集合做直集空间，那么是由两个集合构成的形影关系，而形影关系构造的直集空间的子集是局整关系。所以，在关系的定义中用了形影关系和局整关系。在吴学谋创立的泛系方法论里，对形影关系和局整关系这两种关系的重要性提的非常高。吴学谋曾经写过一本书，《泛系理论与数学方法》。在书开始的一部分，有一首经文：“局整形影两根本，生成系统泛对称，兼级关系千万类，千万方法三显生，两大关系三显生，十五泛系倍相乘，自转多变看世界，万事万物互传神。”</span></p><p style=";font-size: medium;white-space: normal;margin-right: 0;text-align: justify;margin-left: 0;text-indent: 32px;line-height: 21px;page-break-after: auto;background: rgb(255, 255, 255)"><span style="font-size: 16px;"><span style="font-family: _5fae_8f6f_96c5_9ed1; letter-spacing: 0px;">在数学研究里面，我们把函数定义为一种映射，映射是一种关系，在不同语境下，映射有很多说法。比如对应、变换、函数、算子等等。在这里，我给出映射的数学定义，对于两个集合A和B,对于两集合的关系f，A为定义域，定义为D（f）。在定义域中，选取一个元素a。如果在集合B中存在两个元素b和c。从集合A中的a出发，按照f可建立a-f-b，a-f-c。如果b和c相等，我们就称f为从集合A到集合B的映射，记作f：A</span><span style="font-family: Arial; letter-spacing: 0px;">→</span><span style="font-family: _5fae_8f6f_96c5_9ed1; letter-spacing: 0px;">B，这就是映射的一个数学定义。说到这里，我们可以这么说函数是一种映射，映射是一种关系，关系又是直集空间的一个子集。它是一个集合，所以函数从集合论的观点来看就是一个集合。在计算机编程里，集合可以作为一些数据存放在计算机内存。所以，从这个意义上讲，函数无非是存放在计算机内存的一些数据。</span></span></p><p style=";font-size: medium;white-space: normal;margin-right: 0;text-align: justify;margin-left: 0;text-indent: 32px;line-height: 21px;page-break-after: auto;background: rgb(255, 255, 255)"><span style="font-family: _5fae_8f6f_96c5_9ed1; letter-spacing: 0px; font-size: 16px;">回想一下前面我讲C语言的时候提到过指向函数的指针，就是表示函数的那些数据。它的起始地址是可以用指向这个函数的指针来命名的。在前面讲到的racket语言中，函数还是低等对象。它是可传递、可返回、可命名，可以和其他数据组成数据结构，当成新的数据进行操作。函数的定义从狄利希莱提出以后，在数学界得到了广泛的应用。到勒贝格创立勒贝格积分的时候，对函数的定义又有适当的推广，提出可测函数的概念。在后来发展起来的测度论中有勒贝格可测函数的概念。在勒贝格提出他的积分理论之前，集合论已经在十九世纪末取得了数学界广泛地接受，但是随即在集合论里面发现了悖论，这样就导致在二十世纪初期，关于数学的哲学基础产生了很大的争论。</span></p><p style=";font-size: medium;white-space: normal;margin-right: 0;text-align: justify;margin-left: 0;text-indent: 32px;line-height: 21px;page-break-after: auto;background: rgb(255, 255, 255)"><span style="font-family: _5fae_8f6f_96c5_9ed1; letter-spacing: 0px; font-size: 16px;">其中有三个流派提出了自己的观点，以罗素为代表的逻辑举例学派提出把数学还原成逻辑规则，而以荷兰数学家波罗韦尔他们提出直觉举例。他们认为一切不可构造的数学对象都是不可接受的。只有一个对象能够被构造出来的时候，它才可以被称之为可研究的数学对象，而稍后出现的希尔伯特，他提出了形式主义的观点。只有构造出形式化的系统，在形式化的语言中，把数学问题说清楚，那么这个问题就解决了。所以，这三学派数学家当时争执不下，在罗素的逻辑举例学家看来，数学的本质是一些逻辑规则。但是，逻辑规则把数学还原成逻辑规则的努力失败了，因为数学中有无穷大，而在逻辑规则系统中根本放不进无穷大，所以，这个流派的努力失败了。而波罗韦尔的直觉举例认为，数学在数学家的脑袋里，只有在脑袋里能够构造出来的东西写出来，这时候，才是真正的数学对象。那么，依照波罗韦尔的观点，所有的数学里面有相当大一部分内容都要被砍掉。这样，数学的内容就变得骨瘦如柴，所以，后面的希尔伯特分析了前两派的观点提出了形式主义。就是说，从形式上构造出一个形式系统来。在形式系统里，没有矛盾和悖论。所以，在希尔伯特这个形式主义学派看来，数学是存在在纸面上的。但希尔伯特提出他这个形式公理系统之后，公理化运动开始了。很不幸，后来奥地利数学家郭德尔发现希尔伯特的思路是行不通的。郭德尔刚开始也是循着希尔伯特的思路前进，但是，他发现在形式系统里面，仍然会有一些矛盾存在。这样就从逻辑的角度判处了形式化运动的死刑。这三派的争论，虽然已成为历史，但他们从不同角度看待数学的逻辑，数学的哲学基础这些观点，至今仍有巨大的研究价值。在二十世纪上半叶，诞生的布尔巴基学派，开始从结构举例的观点，回避了前三派关于数学哲学基础的争论，从结构方向出发来探索数学的统一。他们提出三大最基本的数学结构，分别是拓扑结构、序结构和代数结构，以及由这三种基本结构符合出来的其他结构。总体来看，布尔巴基学派的结构举例的数学观点的成就是巨大的。所以，现在我们在写数学史的时候，不妨把整个二十世纪数学的发展史视为一种结构数学的发展史。因为有数学结构的提出，所以我们可以形式化的采用形式系统来定义数学的结构。那么，数学界的活动实际上对计算的研究，关于计算本质的研究也是有重大影响的。所以，在计算机科学发展的早期，形式化或形式化系统一直对计算机科学理论的发展有巨大的影响。</span></p><p style=";font-size: medium;white-space: normal;margin-right: 0;text-align: justify;margin-left: 0;text-indent: 32px;line-height: 21px;page-break-after: auto;background: rgb(255, 255, 255)"><span style="font-family: _5fae_8f6f_96c5_9ed1; letter-spacing: 0px; font-size: 16px;">正是对计算这一概念的形式化研究导致第一个模型，图灵机的诞生。有了图灵机以后，那么后面提出的冯诺依曼体系结构也就出现了。而一阶谓词演算系统，就是前面介绍Perl语言的时候，又为知识的形式，它的表示、推理铺平了道路。而lambda演算系统，这是第一个人工智能语言，也就是lisp语言以及后续的函数式语言，包括这里讲的haskell语言的数学基础之一。2005年，我去瑞士以后，在苏力士联办工学院图书馆找到两本关于lambda演算的书。一本是Alonzo Church在1941年写的lambda演算的著作，书名《The Calculi of Lambda-Conversion》，这是普林斯顿大学出版的。另一本是由Barendregt写的《&nbsp;</span><a style="text-decoration: underline; font-family: _5fae_8f6f_96c5_9ed1; color: rgb(0, 0, 0); letter-spacing: 0px; font-size: 16px;"><span style="font-family: _5fae_8f6f_96c5_9ed1; color: rgb(0, 0, 0); letter-spacing: 0px; font-size: 16px;">The Lambda Calculus: Its Syntax and Semantics</span></a><span style="font-family: _5fae_8f6f_96c5_9ed1; letter-spacing: 0px; font-size: 16px;">》。我认为这本书是关于lambda演算最权威的著作。Alonzo Church的著作比较薄，而这本书比较厚。在书刚开始的地方，它也介绍了一些在lambda演算发展历史上起了关键作用的一批数学家，他们的工作就体现在lambda演算里面。这里，我想发点牢骚。在国内搞数学研究，可利用的资源很稀少，因为搞数学研究要查阅一些数学档案。当我在武汉的时候，难以寻找到相关资源，各大图书馆只对校内学生开放，公共图书馆没有这类书。那么，这种情况想搞学术研究、数学研究包括数学交流的时候都是极为困难的。我们现在中国搞这个科技创新，我觉得这个软环境作为生态建设中的一环，对于文献的搜集、整理以及存储、检索，急需现代化，急需政府利用公款财政支援加强建设力度。这个环节的工作不做好，要想在中国搞科技创新是搞不成的。牢骚就发到这里为止，现在回过头看lambda演算，前面我提到的一阶逻辑系统，主要有两个地方差强人意。一个是它在许多方面描述能力还不够强。比如，难以直接描述计算的模型，就是图灵模型如何用一阶逻辑系统去描述比较难；另一个是它过于复杂，主要依赖搜索、匹配来实现自动推理。这种方法很难从根本上提高效率，它是采用蛮干的方法来完成计算，因此，在计算机科学理论的发展历史上，对于一阶逻辑系统及高级逻辑系统形式化的进行规约，这样对计算机发展的重要性就不言而喻。</span></p><p style=";font-size: medium;white-space: normal;margin-right: 0;text-align: justify;margin-left: 0;text-indent: 32px;line-height: 21px;page-break-after: auto;background: rgb(255, 255, 255)"><span style="font-size: 16px;"><span style="font-family: _5fae_8f6f_96c5_9ed1; letter-spacing: 0px;">刚才提到的规约，英文叫reduction，通俗点讲就是化简。在lambda演算里面，最基本的操作对象就是lambda表达式，那么lambda表达式可以利用巴克斯诺尔范式或者形式化进行有效定义。它可以是一个常量，或者是一个变量，或者是lambda表达式1后面接着一个lambda表达式2，或者lambda一个变量然后打个点后面再接一个lambda表达式，有四种情形。一旦在一个lambda表达式定义以后，前面两种常量和变量这两种情形比较简单，没什么可说的。第三种情况，lambda表达式1和lambda表达式2表示什么，实际上是要把lambda表达式1施加作用于lambda表达式2，所以这点也比较容易理解。最关键就是第四种，lambda一个变量然后点lambda表达式，它表示什么意思?用lambda演算的俗语来讲，它叫lambda抽象。实际上lambda抽象由四部分组成，第一个打头的是lambda关键词，后面有一个形式参数，然后第三部分就是那个点，第四部分叫做函数体。前面讲Lisp语言和racket语言的时候提到过关于lambda表达式。在r5rs这个语言里面对lambda表达式的定义作出了某种简化。因为第三部分那个点已消失，把整个lambda表达式放在一对括号里面。在研究lambda演算的开始，数学家们非常细心。他们观察到一个事实，这个事实是这样的，学过代数的知道，两个数和的平方写作（a+b）²，它可以展开成为a²+2ab+b²。这个等式在数学家看来是等价的，但是从lambda演算的角度来看，这两个表达式从计算过程来讲是不一样的。前面（a+b）²传给它的参数是（a+b）；而等式右边a²+2ab+b²，这时候传给它两个参数，然后对这两个参数进行计算。现在就出现了问题，前面是一个表达式传进去，后面是两个参数传进去，在形式上讲它们两者是不等价的。这个被逻辑学家研究lambda演算的时候注意到，为了消去这个歧义，逻辑学家提出了自由变量和绑定变量的概念。自由变量叫Free variable，绑定变量叫Bond variables。自由变量和绑定变量只有对具体表达式的位置确定下来后，谈论这个变量是自由还是绑定才有意义，有了自由变量和绑定变量概念以后，讨论对lambda表达式的替换规则的时机就成熟了。在lambda演算里面，一共提出8条替换规则，具体细节参阅之前提到的那两本书。两本书中对替换规则作了详细的说明。有了替换规则之后，可以讨论lambda演算的规约，也就是研究lambda演算的目的。基于替换规则在lambda演算中共出现3种规约转换过程。在lambda演算里，这三条规则分别称之为α规则、β规则和γ规则。对于一个lambda表达式，如果它不能够进行规约，我们称之为正规式，而可以进行规约的表达式叫做reducible expression，也就是说正规式是不含reducible expression的表达式。如何来判定一个lambda表达式是一个reducible expression，这就出现了丘奇若索第一定理，它告诉我们一个lambda表达式能否进行规约，那么问题来了？在规约的时候，如果一个lambda表达式能够规约，那么是从最左边进行规约还是从最右边进行规约，这里有两种顺序，也就是前面我们在讨论Racket语言的时候我们称之为应用序和正则序。具体来讲，就是一个lambda表达式x，它能够规约到另外一个正规式，不能再被简化的表达式叫做y，那么从x到y存在这样一种规约顺序，他每次规约最左边的Redis，这个规约顺序称之为正则序的规约，另一种可能的规约顺序叫做应用序的规约，他是选择最右边的redis来进行规约。这里就出现了丘奇若索第二定理，就是说刚才提到的两种规约顺序，这两种途径都与具体程序设计语言的语义是相关的。到此为止，关于lambda演算的主要思想内容已经介绍完了。在接下来lambda演算的主要内容是把递归论的一些内容和lambda演算结合起来来讨论和考察函数的构造。这个工作前面已经提到了，递归函数的构造是由前继函数、后续函数、侧令函数和不同点算子来构造成。这个概念在讲Racket语言的时候，在我的黑客道初段关于讲计算本质的时候会有详细的讲授，具体细节可以参加黑客道培训。在haskell语言中，lambda表达式是直接被得到支持的。而且与racket语言的写法还有些简化，在racket语言中对lambda表达式要用lambda来写。而在haskell语言中，你可以用“\”来表示lambda，这样在haskell语言中我们要定义一个函数，这个函数给出一个数值的平方值，我们就可以这样写，lambda&nbsp;</span><span style="font-family: _5fae_8f6f_96c5_9ed1; letter-spacing: 0px;">x</span><span style="font-family: Arial; letter-spacing: 0px;">→x×x。在haskell语言中对于一个函数，如果它输入的参数有多个的话那如何呢？我们可以把参数一个一个的列出来，然后由一个个的箭头连接起来，所以在写函数签名的时候，我们可以写成函数名称。然后一个一个的参数用箭头串接起来，最后一个值就是整个函数的返回值。以此来声明一个函数的签名。这个在haskell语言中称为函数的科理化。关于haskell函数式编程语言关于函数的介绍我就先谈这么多。</span></span></p><p><span style="font-family: Arial; letter-spacing: 0px; font-size: 16px;"><br  /></span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">洪峰</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

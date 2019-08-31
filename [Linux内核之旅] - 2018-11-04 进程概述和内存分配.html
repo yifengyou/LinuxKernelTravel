@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		进程概述和内存分配
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664605867&amp;idx=1&amp;sn=27e01e40791dc5f94638f686a60038ed&amp;chksm=f04d854ec73a0c583087cc6ee2edab3b25d99b2e3bade718f160745cab10e4824a2e0f707c25&amp;scene=27#wechat_redirect&cpage=13' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">进程概述和内存分配</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        zhangyifei216
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2018-11-04</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <h3 style="margin-bottom: 10px;border-width: 0px;border-style: initial;border-color: initial;font-weight: bold;-webkit-font-smoothing: antialiased;font-size: 18px;">进程概述和内存分配</h3><blockquote style="margin-top: 15px;margin-bottom: 15px;padding-right: 15px;padding-left: 15px;border-width: 0px 0px 0px 4px;border-top-style: initial;border-right-style: initial;border-bottom-style: initial;border-top-color: initial;border-right-color: initial;border-bottom-color: initial;border-left-color: rgb(221, 221, 221);color: rgb(119, 119, 119);"><p style="border-width: 0px;border-style: initial;border-color: initial;">本文是作者阅读TLPI(The Linux Programer Interface的总结),为了突出重点，避免一刀砍，我不会过多的去介绍基本的概念和用法，我重点会去介绍原理和细节。因此对于本文的读者，至少要求读过APUE，或者是实际有写过相关代码的程序员，因为知识有点零散，所以我会尽可能以FAQ的形式呈现给读者。</p></blockquote><h3 style="margin-top: 20px;margin-bottom: 10px;border-width: 0px;border-style: initial;border-color: initial;font-weight: bold;-webkit-font-smoothing: antialiased;font-size: 18px;">进程</h3><h3 style="margin-top: 20px;margin-bottom: 10px;border-width: 0px;border-style: initial;border-color: initial;font-weight: bold;-webkit-font-smoothing: antialiased;font-size: 18px;">一个进程的内存布局是什么样的?</h3><p style="margin-top: 10px;margin-bottom: 15px;border-width: 0px;border-style: initial;border-color: initial;">每个进程所所分配的内存由很多部分组成，通常我们称之为段，一般会有如下段:</p><ul style="" class=" list-paddingleft-2"><li><p style="margin-bottom: 15px;border-width: 0px;border-style: initial;border-color: initial;">文本段 包含了进程执行的程序机器语言指令，文本段具有只读属性，以防止进程通过错误指针意外修改自身的指令。</p></li><li><p style="margin-bottom: 15px;border-width: 0px;border-style: initial;border-color: initial;">初始化数据段包含了显示初始化的全局变量和静态变量，当程序加载到内存时，从可执行文件中读取这些变量的值</p></li><li><p style="margin-bottom: 15px;border-width: 0px;border-style: initial;border-color: initial;">未初始化数据段包含了未进行显式初始化的全局变量和静态变量，程序启动之前，系统将本段内所有的内存初始化为0。</p></li><li><p style="margin-bottom: 15px;border-width: 0px;border-style: initial;border-color: initial;">栈段是一个动态增长和收缩的段，由栈帧组成，系统会为每个当前调用的函数分配一个栈帧，栈帧中存储了函数的具备变量，实参，和返回值。</p></li><li><p style="margin-bottom: 15px;border-width: 0px;border-style: initial;border-color: initial;">堆段是可在运行时动态进程内存分配的一块区域，堆顶端称作program break</p></li></ul><p style="text-align: center;"><img class="" data-copyright="0" data-ratio="0.6120996441281139" data-s="300,640" src="data:image/JPG;base64,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 " src="SeWfibBcBT0HECqGOsukibaoGVzElyODYxIqvks9L6FnVzBwOsDlqjElhWSSCB0ibFYLLuPWUnE1ccQ7BsI6TPUFw"  data-type="png" data-w="562" style=""  /></p><blockquote style="margin-top: 15px;margin-bottom: 15px;padding-right: 15px;padding-left: 15px;border-width: 0px 0px 0px 4px;border-top-style: initial;border-right-style: initial;border-bottom-style: initial;border-top-color: initial;border-right-color: initial;border-bottom-color: initial;border-left-color: rgb(221, 221, 221);color: rgb(119, 119, 119);"><p style="border-width: 0px;border-style: initial;border-color: initial;">注: 为什么要区分初始化数据段，和未初始化数据段呢？,未初始化数据段简称为BSS段，有何含义BSS全称为Block Started by Symbol，其主要原因在于程序在磁盘上存储时，没有必要为未经初始化的变量分配存储空间，相反，可执行文件只需要记录未初始化数据段的位置和所需大小即可。直到运行时才分配内存空间。通过size命令可以显示可执行文件的文本段，初始化数据段，未初始化数据段的段大小信息。</p></blockquote><h3 style="margin-top: 20px;margin-bottom: 10px;border-width: 0px;border-style: initial;border-color: initial;font-weight: bold;-webkit-font-smoothing: antialiased;font-size: 18px;">如何知道进程的文本段，初始化数据段和非初始化数据段的结束位置?</h3><p style="margin-top: 10px;margin-bottom: 15px;border-width: 0px;border-style: initial;border-color: initial;">   大多数UNIX实现中C语言编程环境提供了三个全局符号:etext，edata，end，可在程序内使用这些符号获取文本段，初始化数据段，未初始化数据段结尾处下一字节的地址。代码如下:</p><pre style="margin-top: 15px;margin-bottom: 15px;padding: 6px 10px;border-width: 1px;font-size: 13px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: solid;border-color: rgb(204, 204, 204);line-height: 19px;overflow: auto;border-radius: 3px;"><code style="font-size: 12px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: none;background-color: transparent;border-radius: 3px;background-image: initial;background-attachment: initial;background-origin: initial;background-clip: initial;border-width: initial;border-color: initial;">#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;stdlib.h&gt;
+extern char etext,edata,end;
+int main()
+{
+printf("%p\n",&amp;etext);
+printf("%p\n",&amp;edata);
+printf("%p\n",&amp;end);
+}</code></pre><h3 style="margin-top: 20px;margin-bottom: 10px;border-width: 0px;border-style: initial;border-color: initial;font-weight: bold;-webkit-font-smoothing: antialiased;font-size: 18px;">如何获取虚拟内存的页面大小?</h3><pre style="margin-top: 15px;margin-bottom: 15px;padding: 6px 10px;border-width: 1px;font-size: 13px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: solid;border-color: rgb(204, 204, 204);line-height: 19px;overflow: auto;border-radius: 3px;"><code style="font-size: 12px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: none;background-color: transparent;border-radius: 3px;background-image: initial;background-attachment: initial;background-origin: initial;background-clip: initial;border-width: initial;border-color: initial;">#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+
+int main()
+{
+printf("page-size:%d\n",sysconf(_SC_PAGESIZE));
+}</code></pre><h3 style="margin-top: 20px;margin-bottom: 10px;border-width: 0px;border-style: initial;border-color: initial;font-weight: bold;-webkit-font-smoothing: antialiased;font-size: 18px;">如何读取任一进程的命令行参数和程序名?</h3><p style="margin-top: 10px;margin-bottom: 15px;border-width: 0px;border-style: initial;border-color: initial;">   通过读取<code style="border-width: 1px;font-size: 12px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;white-space: nowrap;border-style: solid;border-color: rgb(234, 234, 234);background-color: rgb(248, 248, 248);border-radius: 3px;">proc/PID/cmdline</code>可以得到任一进程的命令行参数信息，如果想获取程序本身的命令行参数，可以使用<code style="border-width: 1px;font-size: 12px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;white-space: nowrap;border-style: solid;border-color: rgb(234, 234, 234);background-color: rgb(248, 248, 248);border-radius: 3px;">proc/self/cmdline</code>来读取，对于如何获取进程的程序名有如下两种方法:</p><ul style="" class=" list-paddingleft-2"><li><p>读取/proc/self/exe的符号链接内容，这个文件会通过符号链接到真正的可执行文件路径，是绝对路径，通过readlink可以读取其中链接的绝对路径名称</p></li></ul><pre style="padding: 6px 10px;border-width: 1px;font-size: 13px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: solid;border-color: rgb(204, 204, 204);line-height: 19px;overflow: auto;border-radius: 3px;margin-top: 0px !important;margin-bottom: 0px !important;"><code style="font-size: 12px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: none;background-color: transparent;border-radius: 3px;background-image: initial;background-attachment: initial;background-origin: initial;background-clip: initial;border-width: initial;border-color: initial;">#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;string.h&gt;
+char * get_program_path(char *buf,int count);
+char * get_program_name(char *buf,int count);
+
+int main()
+{
+//程序测试
+char buf[1024];
+bzero(buf,sizeof(buf));
+//打印路径名称
+printf("%s\n",get_program_path(buf,sizeof(buf)));
+bzero(buf,sizeof(buf));
+//打印程序名称
+printf("%s\n",get_program_name(buf,sizeof(buf)));
+
+}
+
+/*
+ * 获取程序的路径名称
+ */
+char * get_program_path(char *buf,int count)
+{
+int i=0;
+int retval = readlink("/proc/self/exe",buf,count-1);
+if((retval &lt; 0 || retval &gt;= count - 1))
+{
+ &nbsp; &nbsp;return NULL;
+}
+//添加末尾结束符号
+buf[retval] = '\0';
+char *end = strrchr(buf,'/');
+if(NULL == end)
+ &nbsp; &nbsp;buf[0] = '\0';
+else
+ &nbsp; &nbsp;*end = '\0';
+return buf;
+}
+
+/*
+ * 获取这个程序的文件名,其实这有点多余,argv[0] 
+ * 就代表这个执行的程序文件名
+ */
+char * get_program_name(char *buf,int count)
+{
+int retval = readlink("/proc/self/exe",buf,count-1);
+if((retval &lt; 0 || retval &gt;= count - 1))
+{
+ &nbsp; &nbsp;return NULL;
+}
+buf[retval] = '\0';
+//获取指向最后一次出现'/'字符的指针
+return strrchr(buf,'/');
+}</code></pre><ul class=" list-paddingleft-2" style=""><li><p style="margin-bottom: 15px;border-width: 0px;border-style: initial;border-color: initial;">通过GNU C语言提供的两个全局变量来实现</p></li></ul><pre style="padding: 6px 10px;border-width: 1px;font-size: 13px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: solid;border-color: rgb(204, 204, 204);line-height: 19px;overflow: auto;border-radius: 3px;margin-top: 0px !important;margin-bottom: 0px !important;"><code style="font-size: 12px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: none;background-color: transparent;border-radius: 3px;background-image: initial;background-attachment: initial;background-origin: initial;background-clip: initial;border-width: initial;border-color: initial;">#define _GNU_SOURCE
+#include &lt;stdio.h&gt;
+#include &lt;errno.h&gt;
+
+extern char * program_invocation_name;
+extern char * program_invocation_short_name;
+int main()
+{
+ &nbsp; &nbsp;printf("%s\n",program_invocation_name);
+ &nbsp; &nbsp;printf("%s\n",program_invocation_short_name);
+}</code></pre><h3 style="margin-top: 20px;margin-bottom: 10px;border-width: 0px;border-style: initial;border-color: initial;font-weight: bold;-webkit-font-smoothing: antialiased;font-size: 18px;">volatile关键字的作用?</h3><p style="margin-top: 10px;margin-bottom: 15px;border-width: 0px;border-style: initial;border-color: initial;">   将变量声明为volatile是告诉优化器不要对其进行优化，从而避免了代码重组。例如下面这段程序:</p><pre style="margin-top: 15px;margin-bottom: 15px;padding: 6px 10px;border-width: 1px;font-size: 13px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: solid;border-color: rgb(204, 204, 204);line-height: 19px;overflow: auto;border-radius: 3px;"><code style="font-size: 12px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: none;background-color: transparent;border-radius: 3px;background-image: initial;background-attachment: initial;background-origin: initial;background-clip: initial;border-width: initial;border-color: initial;">int a = 10;
+
+int main()
+{
+a = a + 1;
+while(a == 2); &nbsp;
+}</code></pre><p style="margin-top: 15px;margin-bottom: 15px;border-width: 0px;border-style: initial;border-color: initial;">对上面的代码使用gcc -O -S进行优化编译，查看其汇编代码。关键代码如下:</p><pre style="margin-top: 15px;margin-bottom: 15px;padding: 6px 10px;border-width: 1px;font-size: 13px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: solid;border-color: rgb(204, 204, 204);line-height: 19px;overflow: auto;border-radius: 3px;"><code style="font-size: 12px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: none;background-color: transparent;border-radius: 3px;background-image: initial;background-attachment: initial;background-origin: initial;background-clip: initial;border-width: initial;border-color: initial;">movl &nbsp; &nbsp;a(%rip), %eax
+addl &nbsp; &nbsp;$1, %eax &nbsp; &nbsp; &nbsp; &nbsp;//a = a + 1
+movl &nbsp; &nbsp;%eax, a(%rip) &nbsp; //写回内存
+cmpl &nbsp; &nbsp;$2, %eax &nbsp; &nbsp; &nbsp; &nbsp;//while(a == 2)</code></pre><p style="margin-top: 15px;margin-bottom: 15px;border-width: 0px;border-style: initial;border-color: initial;">   编译器对齐进行优化，发现a = a + 1和while(a == 2)中间没有对a进行修改，因此根据代码的上下文分析后进行优化，直接拿%eax进行比较。但是编译器的优化仅仅只能根据当前的代码上下文来优化，如果在多线程场景下另外一个函数中对a进行了修改，但是这里却使用的是a的旧值，这就会导致代码逻辑上出现了问题，很难debug。我们来看看加了volatile关键字后情况变成什么样了。下面是加了volatile后的汇编代码:</p><pre style="margin-top: 15px;margin-bottom: 15px;padding: 6px 10px;border-width: 1px;font-size: 13px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: solid;border-color: rgb(204, 204, 204);line-height: 19px;overflow: auto;border-radius: 3px;"><code style="font-size: 12px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: none;background-color: transparent;border-radius: 3px;background-image: initial;background-attachment: initial;background-origin: initial;background-clip: initial;border-width: initial;border-color: initial;">movl &nbsp; &nbsp;a(%rip), %eax
+addl &nbsp; &nbsp;$1, %eax
+movl &nbsp; &nbsp;%eax, a(%rip)
+movl &nbsp; &nbsp;a(%rip), %eax &nbsp; //在比较之前重新读取了a的值
+cmpl &nbsp; &nbsp;$2, %eax</code></pre><p style="margin-top: 15px;margin-bottom: 15px;border-width: 0px;border-style: initial;border-color: initial;">   volatile关键字远远在比我这里描述的更加复杂，这里有篇文章建议大家阅读一下，深刻了解下这个关键字的作用。C/C++ Volatile关键词深度剖析。</p><h3 style="margin-top: 20px;margin-bottom: 10px;border-width: 0px;border-style: initial;border-color: initial;font-weight: bold;-webkit-font-smoothing: antialiased;font-size: 18px;">内存分配</h3><h3 style="margin-top: 20px;margin-bottom: 10px;border-width: 0px;border-style: initial;border-color: initial;font-weight: bold;-webkit-font-smoothing: antialiased;font-size: 18px;">brk 和 sbrk的作用是很什么?</h3><p style="margin-top: 10px;margin-bottom: 15px;border-width: 0px;border-style: initial;border-color: initial;">   brk和sbrk是linux提供给我们的两个用于分配内存的系统调用，内存的分配其实就是将堆区的内存空间进行隐射和物理内存页进行关联。我们的程序会大量的调用这两个系统调用，这导致一个问题就是大量的系统调用开销的产生，为此malloc和free封装了这两个函数，通过brk和sbrk预先分配一段比较大的内存空间，然后一点点的分配出去，通过维护内部的一个数据结构记录分配出去的内存块信息，方便后面的回收和合并这样就避免了大量系统调用的调用开销。下面是这两个函数的函数原型:</p><pre style="margin-top: 15px;margin-bottom: 15px;padding: 6px 10px;border-width: 1px;font-size: 13px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: solid;border-color: rgb(204, 204, 204);line-height: 19px;overflow: auto;border-radius: 3px;"><code style="font-size: 12px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: none;background-color: transparent;border-radius: 3px;background-image: initial;background-attachment: initial;background-origin: initial;background-clip: initial;border-width: initial;border-color: initial;"> &nbsp; #include &lt;unistd.h&gt;
+ &nbsp; int brk(void *addr);
+ &nbsp; void *sbrk(intptr_t increment);</code></pre><p style="margin-top: 15px;margin-bottom: 15px;border-width: 0px;border-style: initial;border-color: initial;">   brk可以调整program break的位置，program break是堆的顶端，也就是堆最大可以增长到的地址，而sbrk则是设置program break为原有地址加上increment后的位置。sbrk(0)返回当前的program break位置。</p><h3 style="margin-bottom: 10px;border-width: 0px;border-style: initial;border-color: initial;font-weight: bold;-webkit-font-smoothing: antialiased;font-size: 18px;">有哪些malloc的调试工具和库?</h3><p style="margin-top: 10px;margin-bottom: 15px;border-width: 0px;border-style: initial;border-color: initial;">glibc提供了一些malloc调试库分别如下:</p><p style="margin-top: 15px;margin-bottom: 15px;border-width: 0px;border-style: initial;border-color: initial;">mtrace和muntrace函数分别在程序中打开和关闭对内存分配调用进行跟踪的功能</p><pre style="margin-top: 15px;margin-bottom: 15px;padding: 6px 10px;border-width: 1px;font-size: 13px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: solid;border-color: rgb(204, 204, 204);line-height: 19px;overflow: auto;border-radius: 3px;"><code style="font-size: 12px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: none;background-color: transparent;border-radius: 3px;background-image: initial;background-attachment: initial;background-origin: initial;background-clip: initial;border-width: initial;border-color: initial;">[root@localhost test]# cat mtrace.c 
+#include &lt;mcheck.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(int argc, char *argv[])
+{
+int j;
+
+mtrace();
+
+for (j = 0; j &lt; 2; j++)
+ &nbsp; &nbsp;malloc(100); &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;/* Never freed--a memory leak */
+
+calloc(16, 16); &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /* Never freed--a memory leak */
+exit(EXIT_SUCCESS);
+}
+
+进行编译，生成mtrace调试信息，因为调试信息叫复杂，glibc提供了mtrace命令用户分析调试信息
+[root@localhost test]# gcc -g mtrace.c 
+[root@localhost test]# export MALLOC_TRACE="/tmp/t" //设置这个环境变量，mtrace会读取这个环境变量，把调试信息输出到这个环境变量所指向的文件
+[root@localhost test]# ./a.out 
+[root@localhost test]# cat /tmp/t 
+= Start
+@ ./a.out:[0x400637] + 0x132a460 0x64
+@ ./a.out:[0x400637] + 0x132a4d0 0x64
+@ ./a.out:[0x400650] + 0x132a540 0x100
+[root@localhost test]# mtrace ./a.out $MALLOC_TRACE
+
+Memory not freed:
+-----------------
+ &nbsp; &nbsp; &nbsp; Address &nbsp; &nbsp; Size &nbsp; &nbsp; Caller &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;//在12行进行了二次内存分配，大小是0x64，在16行进行了一次内存分配，分配的大小是0x100
+0x000000000132a460 &nbsp; &nbsp; 0x64 &nbsp;at /root/test/mtrace.c:12 (discriminator 2)
+0x000000000132a4d0 &nbsp; &nbsp; 0x64 &nbsp;at /root/test/mtrace.c:12 (discriminator 2)
+0x000000000132a540 &nbsp; &nbsp;0x100 &nbsp;at /root/test/mtrace.c:16</code></pre><p style="margin-top: 15px;margin-bottom: 15px;border-width: 0px;border-style: initial;border-color: initial;">可以看出mtrace起到了内存分配的跟踪功能，会把所有的内存分配和释放操作就记录下来。</p><blockquote style="margin-top: 15px;margin-bottom: 15px;padding-right: 15px;padding-left: 15px;border-width: 0px 0px 0px 4px;border-top-style: initial;border-right-style: initial;border-bottom-style: initial;border-top-color: initial;border-right-color: initial;border-bottom-color: initial;border-left-color: rgb(221, 221, 221);color: rgb(119, 119, 119);"><p style="border-width: 0px;border-style: initial;border-color: initial;">mtrace命令是用来分析mtrace()的输出，默认是没有安装的，它是glibc提供的，所以需要额外安装glibc-utils。</p></blockquote><p style="margin-top: 15px;margin-bottom: 15px;border-width: 0px;border-style: initial;border-color: initial;">mcheck和mproe函数允许对已分配的内存块进行一致性检查。例如对已分配内存之外进行了写操作。</p><pre style="margin-top: 15px;margin-bottom: 15px;padding: 6px 10px;border-width: 1px;font-size: 13px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: solid;border-color: rgb(204, 204, 204);line-height: 19px;overflow: auto;border-radius: 3px;"><code style="font-size: 12px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: none;background-color: transparent;border-radius: 3px;background-image: initial;background-attachment: initial;background-origin: initial;background-clip: initial;border-width: initial;border-color: initial;">[root@localhost test]# cat mcheck.c 
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;mcheck.h&gt;
+
+int main(int argc, char *argv[])
+{
+char *p;
+if (mcheck(NULL) != 0) { &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;//需要在第一次调用malloc前调用。
+ &nbsp; &nbsp;fprintf(stderr, "mcheck() failed\n");
+ &nbsp; &nbsp;exit(EXIT_FAILURE);
+}
+
+p = malloc(1000);
+free(p);
+free(p); &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;//doubel free
+exit(EXIT_SUCCESS);
+}
+[root@localhost test]# ./a.out 
+block freed twice
+Aborted</code></pre><p style="margin-top: 15px;margin-bottom: 15px;border-width: 0px;border-style: initial;border-color: initial;">上面只是简单的演示了其基本用法，更详细的用法参见man 文档。</p><p style="margin-top: 15px;margin-bottom: 15px;border-width: 0px;border-style: initial;border-color: initial;">MALLOC_CHECK_环境变量 提供了类似于mcheck的功能和mprobe的功能，但是MALLOC_CHECK_这种方式无需进行修改和重新编译，通过设置不同的值来控制对内存分配错误的响应方式下面是一个使用MALLOC_CHECK_环境变量的实现方式mcheck的功能的例子:</p><pre style="margin-top: 15px;margin-bottom: 15px;padding: 6px 10px;border-width: 1px;font-size: 13px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: solid;border-color: rgb(204, 204, 204);line-height: 19px;overflow: auto;border-radius: 3px;"><code style="font-size: 12px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: none;background-color: transparent;border-radius: 3px;background-image: initial;background-attachment: initial;background-origin: initial;background-clip: initial;border-width: initial;border-color: initial;">#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;mcheck.h&gt;
+
+int main(int argc, char *argv[])
+{
+char *p;
+p = malloc(1000);
+++p;
+free(p); &nbsp; &nbsp;//非法释放
+free(p); &nbsp; &nbsp;//double free
+exit(EXIT_SUCCESS);
+}
+
+编译上面得到代码之前先导出下MALLOC_CHECK_环境变量
+[root@localhost test]# export MALLOC_CHECK_=1 //其值应该是一个单数字，具体的含义可以参考man &nbsp;3 mallopt
+[root@localhost test]# gcc mcheck.c -lmcheck &nbsp;//编译的时候链接mcheck即可
+[root@localhost test]# ./a.out 
+memory clobbered before allocated block
+Aborted</code></pre><p style="margin-top: 15px;border-width: 0px;border-style: initial;border-color: initial;">   上面的三种方式都是通过函数库的形式给程序添加了内存分配的检测，和追踪功能，我们也可以使用一些第三方的工具来完成这些功能，比较流行的有Valgrind，Insure++等。</p><h3 style="margin-top: 20px;margin-bottom: 10px;border-width: 0px;border-style: initial;border-color: initial;font-weight: bold;-webkit-font-smoothing: antialiased;font-size: 18px;">如何控制和监测malloc函数包?</h3><p style="margin-top: 10px;margin-bottom: 15px;border-width: 0px;border-style: initial;border-color: initial;">   linux提供了mallopt用来修改各选参数，以控制malloc所采用的算法，例如:何时进行sbrk进行堆收缩。规定从堆中分配内存块的上限，超出上限的内存块则使用mmap系统调用，此外还提供了mallinfo函数，这个函数会返回一个结构包含了malloc分配内存的各种统计数据。下面是mallinfo的接口声明和基本使用。</p><pre style="margin-top: 15px;margin-bottom: 15px;padding: 6px 10px;border-width: 1px;font-size: 13px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: solid;border-color: rgb(204, 204, 204);line-height: 19px;overflow: auto;border-radius: 3px;"><code style="font-size: 12px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: none;background-color: transparent;border-radius: 3px;background-image: initial;background-attachment: initial;background-origin: initial;background-clip: initial;border-width: initial;border-color: initial;">#include &lt;malloc.h&gt;
+struct mallinfo mallinfo(void);
+struct mallinfo {
+int arena; &nbsp; &nbsp; /* Non-mmapped space allocated (bytes) */
+int ordblks; &nbsp; /* Number of free chunks */
+int smblks; &nbsp; &nbsp;/* Number of free fastbin blocks */
+int hblks; &nbsp; &nbsp; /* Number of mmapped regions */
+int hblkhd; &nbsp; &nbsp;/* Space allocated in mmapped regions (bytes) */
+int usmblks; &nbsp; /* Maximum total allocated space (bytes) */
+int fsmblks; &nbsp; /* Space in freed fastbin blocks (bytes) */
+int uordblks; &nbsp;/* Total allocated space (bytes) */
+int fordblks; &nbsp;/* Total free space (bytes) */
+int keepcost; &nbsp;/* Top-most, releasable space (bytes) */
+};</code></pre><p style="margin-top: 15px;margin-bottom: 15px;border-width: 0px;border-style: initial;border-color: initial;">下面是一段代码显示了当前进程的malloc分配内存信息</p><pre style="margin-top: 15px;margin-bottom: 15px;padding: 6px 10px;border-width: 1px;font-size: 13px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: solid;border-color: rgb(204, 204, 204);line-height: 19px;overflow: auto;border-radius: 3px;"><code style="font-size: 12px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: none;background-color: transparent;border-radius: 3px;background-image: initial;background-attachment: initial;background-origin: initial;background-clip: initial;border-width: initial;border-color: initial;">#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;mcheck.h&gt;
+#include &lt;malloc.h&gt;
+
+static void display_mallinfo(void)
+{
+ struct mallinfo mi;
+ mi = mallinfo();
+ printf("Total non-mmapped bytes (arena): &nbsp; &nbsp; &nbsp; %d\n", mi.arena);
+ printf("# of free chunks (ordblks): &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;%d\n", mi.ordblks);
+ printf("# of free fastbin blocks (smblks): &nbsp; &nbsp; %d\n", mi.smblks);
+ printf("# of mapped regions (hblks): &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; %d\n", mi.hblks);
+ printf("Bytes in mapped regions (hblkhd): &nbsp; &nbsp; &nbsp;%d\n", mi.hblkhd);
+ printf("Max. total allocated space (usmblks): &nbsp;%d\n", mi.usmblks);
+ printf("Free bytes held in fastbins (fsmblks): %d\n", mi.fsmblks);
+ printf("Total allocated space (uordblks): &nbsp; &nbsp; &nbsp;%d\n", mi.uordblks);
+ printf("Total free space (fordblks): &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; %d\n", mi.fordblks);
+ printf("Topmost releasable block (keepcost): &nbsp; %d\n", mi.keepcost);
+}
+
+
+int main(int argc, char *argv[])
+{
+char *p;
+p = malloc(1000);
+display_mallinfo(); 
+free(p);
+printf("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+display_mallinfo();
+exit(EXIT_SUCCESS);
+}</code></pre><p style="margin-top: 15px;margin-bottom: 15px;border-width: 0px;border-style: initial;border-color: initial;">下面是运行后的结果:</p><pre style="margin-top: 15px;margin-bottom: 15px;padding: 6px 10px;border-width: 1px;font-size: 13px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: solid;border-color: rgb(204, 204, 204);line-height: 19px;overflow: auto;border-radius: 3px;"><code style="font-size: 12px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: none;background-color: transparent;border-radius: 3px;background-image: initial;background-attachment: initial;background-origin: initial;background-clip: initial;border-width: initial;border-color: initial;">[root@localhost test]# ./a.out 
+Total non-mmapped bytes (arena): &nbsp; &nbsp; &nbsp; 135168
+# of free chunks (ordblks): &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;1
+# of free fastbin blocks (smblks): &nbsp; &nbsp; 0
+# of mapped regions (hblks): &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 0
+Bytes in mapped regions (hblkhd): &nbsp; &nbsp; &nbsp;0
+Max. total allocated space (usmblks): &nbsp;0
+Free bytes held in fastbins (fsmblks): 0
+Total allocated space (uordblks): &nbsp; &nbsp; &nbsp;1024 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //这是分配的内存，我的代码中分配的是1000，因为malloc会字节对齐，因此变成了1024
+Total free space (fordblks): &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 134144
+Topmost releasable block (keepcost): &nbsp; 134144
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Total non-mmapped bytes (arena): &nbsp; &nbsp; &nbsp; 135168
+# of free chunks (ordblks): &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;1
+# of free fastbin blocks (smblks): &nbsp; &nbsp; 0
+# of mapped regions (hblks): &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 0
+Bytes in mapped regions (hblkhd): &nbsp; &nbsp; &nbsp;0
+Max. total allocated space (usmblks): &nbsp;0
+Free bytes held in fastbins (fsmblks): 0
+Total allocated space (uordblks): &nbsp; &nbsp; &nbsp;0
+Total free space (fordblks): &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 135168
+Topmost releasable block (keepcost): &nbsp; 135168</code></pre><p style="margin-top: 15px;margin-bottom: 15px;border-width: 0px;border-style: initial;border-color: initial;">   关于mallopt的使用这里就略过了，因为这东西较复杂，笔者自己也没认真看过。如果你希望了解，我给你推荐的第一手资料绝对是man 3 mallopt。</p><h3 style="margin-top: 20px;margin-bottom: 10px;border-width: 0px;border-style: initial;border-color: initial;font-weight: bold;-webkit-font-smoothing: antialiased;font-size: 18px;">为什么要内存对齐，如何内存对齐?</h3><p style="margin-top: 10px;margin-bottom: 15px;border-width: 0px;border-style: initial;border-color: initial;">   关于为什么要内存对齐，我推荐给大家一篇文章Data alignment: Straighten up and fly right，通常我们在讨论内存的时候常常会使用byte来作为内存的最小分配单位，于是乎大家就认为内存是一个字节一个字节的进行读取的……，但其实这是一个误区，byte做内存的基本单位这是从程序员的角度来看待内存的，如果是CPU的话，它不会也这样看待，毕竟一次只读一个字节似乎有点太慢，的确，对于CPU来说，内存是一个个内存块来读取，内存块的大小通常是2的整数次幂。不同的硬件架构不同，一般是4或8个字节，如果字节不对齐会有什么后果呢？最直接的后果就是会导致你的程序变慢。具体分析如下:</p><p style="margin-top: 15px;margin-bottom: 15px;border-width: 0px;border-style: initial;border-color: initial;">   对于单字节对齐的系统来说(这也正是程序员看到的内存状态)从地址0开始读取4个字节和从地址1开始读取4个字节没有任何区别，所以也不存在字节对齐的概念，对不对齐其实都一样。对于4字节对齐的系统来说,CPU一次要读取4个字节的内容，从地址0开始读取4个字节0~3，只需要读取一次就ok了。如果从1开始读取的话，需要读二次，第一次读0~3，第二次读4~7，然后截取这两个内存块的1~4这个区域，就是读取到的四个字节的内容了。因为CPU只会一个个内存块的边界开始读取一个内存块，地址1并不是内存块的边界，因此CPU会从0开始读取。就是这样的一个简单操作导致了CPU多进行了一次读操作，可想而知内存对齐该有多重要。关于内存对齐的更多分析请看我给大家推荐的文章。linux提供了posix_memalign和memalign两个函数用于分配字节对齐的内存地址，其函数原型如下:</p><pre style="margin-top: 15px;margin-bottom: 15px;padding: 6px 10px;border-width: 1px;font-size: 13px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: solid;border-color: rgb(204, 204, 204);line-height: 19px;overflow: auto;border-radius: 3px;"><code style="font-size: 12px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: none;background-color: transparent;border-radius: 3px;background-image: initial;background-attachment: initial;background-origin: initial;background-clip: initial;border-width: initial;border-color: initial;"> &nbsp; #include &lt;stdlib.h&gt;
+ &nbsp; int posix_memalign(void **memptr, size_t alignment, size_t size);
+ &nbsp; #include &lt;malloc.h&gt;
+ &nbsp; void *memalign(size_t alignment, size_t size);</code></pre><h4 style="margin-top: 20px;margin-bottom: 10px;border-width: 0px;border-style: initial;border-color: initial;font-weight: bold;-webkit-font-smoothing: antialiased;">如何在栈上分配内存?</h4><p style="margin-top: 10px;margin-bottom: 15px;border-width: 0px;border-style: initial;border-color: initial;">   我们知道malloc是在堆上进行内存分配的，但是你有听过在栈上也可以分配内存的嘛，的确是可以的alloca就可以在栈上进行内存的分配，因为当前函数的栈帧是位于堆栈的顶部。帧的上方是存在可扩展空间，只需要改堆栈指针值即可，其函数原型如下:</p><pre style="margin-top: 15px;margin-bottom: 15px;padding: 6px 10px;border-width: 1px;font-size: 13px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: solid;border-color: rgb(204, 204, 204);line-height: 19px;overflow: auto;border-radius: 3px;"><code style="font-size: 12px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: none;background-color: transparent;border-radius: 3px;background-image: initial;background-attachment: initial;background-origin: initial;background-clip: initial;border-width: initial;border-color: initial;"> &nbsp; #include &lt;alloca.h&gt;
+ &nbsp; void *alloca(size_t size);</code></pre><p style="margin-top: 15px;margin-bottom: 15px;border-width: 0px;border-style: initial;border-color: initial;">   通过alloca分配的内存不需要进行释放，因为函数运行结束后自动释放对应的栈帧，修改器堆栈指针为前一个栈帧的末尾地址。alloca是不是很神奇，笔者很想知道其实现原理。尽管上文中已经说到了，其实就是利用栈上的扩展空间，扩展了栈的空间，使用栈上的扩展空间来进行内存的分配。下面是其实现代码的汇编表示.</p><pre style="margin-top: 15px;margin-bottom: 15px;padding: 6px 10px;border-width: 1px;font-size: 13px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: solid;border-color: rgb(204, 204, 204);line-height: 19px;overflow: auto;border-radius: 3px;"><code style="font-size: 12px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: none;background-color: transparent;border-radius: 3px;background-image: initial;background-attachment: initial;background-origin: initial;background-clip: initial;border-width: initial;border-color: initial;">#include &lt;stdio.h&gt;
+#include &lt;alloca.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main()
+{ &nbsp; 
+void *y = NULL;
+y = alloca(4);
+
+}
+
+
+ &nbsp; &nbsp;pushq &nbsp; %rbp &nbsp; &nbsp; &nbsp; &nbsp;//保存上一个栈帧的基址寄存器
+ &nbsp; &nbsp;movq &nbsp; &nbsp;%rsp, %rbp &nbsp;//设置当前栈帧的基址寄存器
+ &nbsp; &nbsp;subq &nbsp; &nbsp;$16, %rsp &nbsp; //开闭16个字节的空间，因为是向下增长，所以是subq
+ &nbsp; &nbsp;movq &nbsp; &nbsp;$0, -8(%rbp) //void *y = NULL
+ &nbsp; &nbsp;movl &nbsp; &nbsp;$16, %eax &nbsp; &nbsp;//下面是一连串的地址大小计算，现在可以不用管这些细节
+ &nbsp; &nbsp;subq &nbsp; &nbsp;$1, %rax
+ &nbsp; &nbsp;addq &nbsp; &nbsp;$19, %rax
+ &nbsp; &nbsp;movl &nbsp; &nbsp;$16, %ecx
+ &nbsp; &nbsp;movl &nbsp; &nbsp;$0, %edx
+ &nbsp; &nbsp;divq &nbsp; &nbsp;%rcx
+ &nbsp; &nbsp;imulq &nbsp; $16, %rax, %rax
+ &nbsp; &nbsp;subq &nbsp; &nbsp;%rax, %rsp &nbsp; &nbsp; &nbsp;//修改rsp的地址，也就是栈顶地址
+ &nbsp; &nbsp;movq &nbsp; &nbsp;%rsp, %rax
+ &nbsp; &nbsp;addq &nbsp; &nbsp;$15, %rax
+ &nbsp; &nbsp;shrq &nbsp; &nbsp;$4, %rax
+ &nbsp; &nbsp;salq &nbsp; &nbsp;$4, %rax
+ &nbsp; &nbsp;movq &nbsp; &nbsp;%rax, -8(%rbp) &nbsp;//将分配的地址赋值给y 也就是y = alloca(4)
+ &nbsp; &nbsp;leave
+ &nbsp; &nbsp;ret
+打印下y本身的地址和分配的地址如下:
+y的地址:0x7ffd366b7fd8
+分配的地址:0x7ffd366b7fb0</code></pre><p style="margin-top: 15px;border-width: 0px;border-style: initial;border-color: initial;">   根据y的地址结合汇编代码可知，栈顶的地址是0x7ffd366b7fd8 - 8 =0x7ffd366b7fd0分配的地址是0x7ffd366b7fb0， 两者相差0x20。也就是说虽然分配的是4个字节，但是栈顶却减少了0x20个字节，那么现在的栈顶就是0x7ffd366b7fb0，之前的栈顶是0x7ffd366b7fd0，这中间的区域就是分配的空间，至于为什么是0x20这一应该是和malloc的初衷相同，考虑到字节对齐吧。</p><p style="margin-bottom: 15px;border-width: 0px;border-style: initial;border-color: initial;"><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">zhangyifei216</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

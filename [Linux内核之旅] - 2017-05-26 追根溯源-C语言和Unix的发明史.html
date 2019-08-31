@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		追根溯源-C语言和Unix的发明史
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664604068&amp;idx=1&amp;sn=3c47aa8378a1aa0ec553c649f629dc85&amp;chksm=f04d8c41c73a0557592eed674f64ee7a64830a138d780738b480af6237a871ee5b4f50e2e4e6&amp;scene=27#wechat_redirect&cpage=38' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">追根溯源-C语言和Unix的发明史</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        陈莉君
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2017-05-26</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p>&nbsp;
+ &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;导言：偶然在网上看到此文，因其详尽和流畅的文字，转此分享给大家。尽管我们对C和Unix的历史并不陌生，尽管我们对Linux的流行视为必然，但在这些现象的背后，总演绎着一些伟大的人或者事。了解这些，或许，我们不会轻易被眼前的繁华所遮蔽。 &nbsp;</p><p>&nbsp;------------------------------------------------------------------------------------------------------------</p><p>&nbsp;&nbsp;&nbsp; &nbsp;
+ &nbsp; 在计算机发展的历史上，大概没有哪个程序设计语言像C那样得到如此广泛地流行；也没有哪个操作系统像UNIX那样获得计算机厂家和用户的普遍青睐和厚爱。它们对整个软件技术和软件产业都产生了深远的影响。而C和UNIX两者都是贝尔实验室的丹尼斯·里奇（Dennis
+ MacAlistair Ritchie）和肯尼思·汤普森（Kenneth Lane 
+Thompson）设计、开发的。因此，他们两人共同获得1983年度的图灵奖是情理中的事。我们先介绍汤普森，因为就C和UNN两者的关系而言，UNIX的开发在前，C是为了使UNIX具有可移植性而后来研制的；就里奇和汤普森两人的关系而言，他们两人当然是亲密的合作者，但汤普森在UNIX的开发中起了主导的作用，而里奇则在C的设计中起的作用更大一些。 &nbsp;</p><p>&nbsp;
+ &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;汤普森1943年2月4日生于路易斯安娜州的新奥尔良，其父是美国海军战斗机的驾驶员。汤普森自幼的爱好有两个，一个是下棋，一个是组装晶体管收音机。他父亲为了发展孩子的智力和能力，在晶体管当时问世不久，价格不菲（每只晶体管约售10美元）的情况下，很舍得为汤普森买晶体管让他摆弄。由于爱好无线电，汤普森上加州大学伯克利分校时学的专业是电气工程，于1965年取得学士学位，第二年又取得硕士学位。求诩洌共渭恿送ㄓ枚ρЧ荆?General
+ Dynamics Corporation）在伯克利实行的半工半读计划（ work－study 
+Program），因此既增长了知识，又积累了不少实践经验。 &nbsp;</p><p>&nbsp;
+ &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;毕业以后，汤普森加盟贝尔实验室。虽然他学的是电子学，主要是硬件课程，但由于他半工半读时在一个计算中心当过程序员，对软件也相当熟悉，而且更加偏爱，因此很快就和里奇一起被贝尔派到MIT去参加由ARPA出巨资支持的MAC项目，开发第二代分时系统MULTICS。但就在项目完成前不久，贝尔因感到开发费用太大，而成功的希望则不大而退出了该项目，把所有成员都调回贝尔。这使汤普森和里奇深感沮丧。返回贝尔以后，面对实验室中仍以批处理方式工作的落后的计算机环境，他们决心以他们在MAC项目中已学到的多用户、多任务技术来改造这种环境，以提高程序员的效率和设备的效率，便于人机交互和程序员之间的交互，用他们后来描写自己当时的心情和想法的话来说，就是“要创造一个舒适、愉快的工作环境”。但他们意识到，贝尔领导人既然下决心退出MAC，就不可能支持他们的想法，不可能为之立项，提供资金和设备，他们只能悄悄干，自己去创造条件。1969年，万般无奈的汤普森在库房中偶然发现一台已弃置不用的PDP－7，大喜过望，立即开始用它来实施他们的设想。但开头是十分困难的，因为这q
+ PDP－7除了有一个硬盘、一个图形显示终端和一台电传打字机这些硬设备外，什么软件也没有。 &nbsp;</p><p>&nbsp;
+ &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;他们只能在一台 GE 
+645大型机上编程、调试，调通以后穿孔在纸带上，再输入PDP－7。以这种“可怕的”工作方式开发两年以后，连这台PDP－7也损坏得不能再用了。这时，他们听到一个消息，实验室的专利部需要一个字处理系统以便处理专利申请书（贝尔每年要提出不少专利申请），汤普森立即找到上级自告奋勇承担这一开发任务，在这个冠冕堂皇的借口下，他们申请到了一台新的、设备完善的PDP－
+ 11，这才使开发工作顺利地真正开展起来。 &nbsp;</p><p>&nbsp;
+ &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;汤普森以极大的热情和极高的效率投入工作。开发基本上以每个月就完成一个模块（内核，文件系统，内存管理，I/O……）的速度向前推进，到1971年底，UNIX基本成形。UNIX这个名称是从MUL－TICS演变而来的：他们变MULTI为UNI，变CS为X。为了向上级“交差”，UNIX首先交给实验室的专利部使用，3个打字员利用UNIX输人贝尔当年的专利申请表，交口称赞系统好用，大大提高了工作效率，这样，UNIX迅速从专利部推广到贝尔的其他部门，又从贝尔内部推向社会。贝尔实验室的领导人终于认识到了UNIX的巨大价值，把它注册成为商标（但有趣的是，由于法律上的原因，注册商标及版权被贝尔的上属公司AT＆T取得），推向市场。贝尔的一个行政长官甚至宣称，在贝尔的无数发明中，UNIX是继晶体管之后的最重要的一项发明。著名的国际咨询公司
+ IDC的高级分析员 Huie Bruce 
+Kin估计，1985年单是美国就有27万7千个计算机系统使用UNIX，1990年这个数字增长至210万。目前世界上UNIX的安装数量超过500万套，用户数达到3000万。 &nbsp;</p><p>&nbsp;
+ &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;UNIX之所以获得如此巨大的成功，主要是它采用了一系列先进的技术和措施，解决了一系列软件工程的问题，使系统具有功能简单实用，操作使用方便，结构灵活多样的特点。它是有史以来使用最广的操作系统之一，也是关键应用中的首选操作系统。UNIX成为后来的操作系统的楷模，也是大学操作系统课程的“示范标本”。归纳起来，UNIX的主要特性如下： &nbsp;</p><p>&nbsp;
+ &nbsp; 1作为多用户多任务操作系统，每个用户都可同时运行多个进程。 &nbsp;</p><p>&nbsp;
+ &nbsp; 2提供了丰富的经过精心编选的系统调用。整个系统的实现紧凑、简洁、优美。 &nbsp;</p><p>&nbsp;
+ &nbsp; 3提供功能强大的可编程外壳（Shell）语言作为用户界面，具有简洁高效的特点。 &nbsp;</p><p>&nbsp;
+ &nbsp; 4采用树形文件结构，具有良好的安全性、保密性和可维护性。 &nbsp;</p><p>&nbsp;
+ &nbsp; 5提供多种通信机制，如管道通信、软中断通信、消息通信、共享存储器通信和信号灯通信。 &nbsp;</p><p>&nbsp;
+ &nbsp; 6采用进程对换内存管理机制和请求调页内存管理方式实现虚存，大大提高了内存使用效率。 &nbsp;</p><p>&nbsp;
+ &nbsp; 7系统主要用C编写，不但易读、易懂、易修改，更极大提高了可移植性。 &nbsp;</p><p>&nbsp;
+ &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;由于以上特点，也由于看好UNIX的应用和前景，各大公司纷纷推出自己的 UNIX版本，如 IBM的 AIX，SUN的Solaris，HP的 
+HP－UX， SCO的 UNIXWARE和 open Server， DEC（已被 Compaq收购）的digital 
+UNIX，以及加州大学伯克利分校的 UNIX BSD。这些 
+UNIX各具特色，形成百花齐放的局面。到20世纪op年代，UNIX版本多达100余个。UNIX的标准化工作则经历了一个复杂的过程。最早是UNIX用户协会从20世纪80年代开始此项工作，1984年颁布了试用标准。后来此工作被IEEE接收和继承，制定了多个基于UNIX的“仍移植操作系统环境”标准，即POSIX。而计算机厂家在UNIX标准上则分裂为两大阵营，即以AT＆T和SUN为首的UNIX国际（UI）和以IBM、HP、DEC为首的开放系统基金会（OSF）。分裂和竞争一方面促进了UNIX技术的迅猛发展，另外一方面则引起用户的困惑，不利于UNIX市场的健康发展。因此，1993年3月，两大阵营终于走到一起，成立了“公共开发软件环境”组织（COSE），以实现UNIX系统的统一化。1993年10月，Novell公司将从AT＆T购得的UNN商标权无偿移交给开放系统标准化组织X／OPEN，这样，UNIX商标不再受某一厂商控制，而由中性的国际组织管理。1995年，关于UNIX的两个重要标准
+ CDE（规定 UNIX的图形界面）和 UNIX 95（规定 
+UNIX的应用程序界面，也叫Spec．1170）正式颁布，为整个UNIX的标准化打下了基础。1998年，IBM、Intel和SC0三家业界巨头在加利福尼亚的蒙特雷（Monterey）聚会，进一步商讨了UNIX统一问题，制定了蒙特雷计划。这个计划结合了IBM公司的AIX、NUMA－Q和SCO的UnixWare技术，建立一条企业级商用
+ UNIX产品线，使之能同时运行在 Intel IA－32、IA－64和 IBM 
+PowerPC处理器之上，平台适用范围将覆盖从部门级服务器到大型数据库中心的超级服务器。目前，AIX和UnixWare已经相互融合并达到了二进制级的互操作性。 &nbsp;</p><p>&nbsp;
+ &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;应该指出，目前操作系统平台形成了 UNIX、Windows NT和 LINUX三强鼎立的局面，而由芬兰大学生 Linus Torvalds推出的 LINUX本身实际上也是UNIX见的一个变种。 &nbsp;</p><p>&nbsp;
+ &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;由于功能强劲，用途多样，使用方便，因此有人把UNIX称作软件中的“瑞士多用途折叠刀”（或叫“瑞士军刀”）。 &nbsp;</p><p>&nbsp;
+ &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;汤普森本人围绕UNIX的开发工作于1978年结束。之后他从事过的项目有 Plan 9，这是另一个操作系统，旨在提高分布式计算的性能。 
+Plan 
+9用单一协议查询不同的资源、过程、程序和数据，并与之进行通信，为访问分布于由服务器、终端和其他设备组成的网络上的计算资源提供一个统一的方式，尤其适合于那些要求安全运行的Web服务器。
+ Plan 9的设计思路是惊人的，它小而功能强大，而且非常灵活，是 UNIX和 LINUX的竞争产品。 Plan 9早在 20世纪 
+80年代后期就已设计成型，目前的 Plan 9第三版是 1995年推出的。但 
+Plan9至今只限于贝尔实验室内部使用，没有推广和流行。最近（2000年6月），贝尔实验室采取惊人措施，免费开放 Plan 
+9源代码，以便让实验室以外的人使用 Plan 
+9。贝尔实验室的这一举措也许会像当年推出UNIX一样，在软件界引起一次新的震荡。此外，鉴于汤普森自幼爱好下棋，他还建造过一台名为Belle的下棋计算机，还与康顿（Joseph
+ Condon）合作，在 PDP－ 11／23和 PDP－ 
+11／70上编制了下棋程序，这个程序从1979年到1983年在连续几届计算机下棋世界比赛中都独占鳌头，成为“四连冠”，同时也成为被美国围棋联盟USCF授予“大师”称号的第一个下棋程序。这个程序每秒可观察15万个棋步，与现今的IBM的“深蓝”当然无法相比，但在当时却是一个了不起的成就。 &nbsp;</p><p>&nbsp;
+ &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;里奇比汤普森年长2岁，1941年9月9日生于纽约州的勃浪克斯山庄（Bronxville），但在9岁时移居新泽西州的塞米特。里奇的父亲是一个电气工程师，在贝尔实验室的交换系统工程实验室当主任，因此，里奇一家可谓“呗尔世家”。里奇中学毕业后进哈佛大学学物理，并于1963年获得学士学位。其间，哈佛大学有了一台UNIVAC
+ 
+I，并给学生开设有关计算机系统的课程，里奇听了以后产生了很大的兴趣。毕业以后他在应用数学系攻读博士学位，完成了一个有关递归函数论方面的课题，写出了论文，但不知什么原因没有答辩，没有取得博士学位，他就离开了哈佛，于1967年进入贝尔实验室，与比他早一年到贝尔的汤普森会合，从此开始了他们长达数十年的合作。 &nbsp;</p><p>&nbsp;
+ &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;前面说过，UNIX的开发是以汤普森为主的，那末，为什么文献资料中一提到UNIX，都一致地说是里奇和汤普森共同于发的，而且在“排名”上往往是里奇在前，汤普森在后呢？包括他们在1973年由ACM主办、IBM承办的操作系统原理讨论会上首次向社会推介UNIX的论文
+ The UNIX Time－ Sharing System的署名，里奇也是第一作者，汤普森则为第二作者。里奇在UNIX开发中有些什么功劳呢？ &nbsp;</p><p>&nbsp;
+ &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;这里有两个很重要的因素。首先，UNIX的成功应归功于它的创新。前面曾经提到，UNIX吸取与借鉴了MULTICS的经验，如内核，进程，层次式目录，面向流的I／0，把设备当作文件，等等。这是可以理解的，因为任何新事物必然是对原有事物的继承和发展。尤其是UNIX，毕竟没有正式立项，是汤普森、里奇等少数几个人偷偷干的，如果一切都要从头从新设计，那几乎是不可能的。但是UNIX在继承中又有创新，比如
+ 
+UNIX采用一种无格式的文件结构，文件由字节串加句号组成。这带来两大好处：一是在说明文件时不必加进许多无关的“填充物”（类似于COBOL中的FILLER），二是任何程序的输出可直接用作其他任何程序的输入，不必经过转换。后面这一点叫做“流水”（piping），就是UNIX首创的。此外，像把设备当作文件，从而简化了设备管理这一操作系统设计中的难题，虽然不是UNIX的发明，但是实现上它采用了一些新方法，比MULTICS更高明一些。正是在这些方面，里奇发挥了很重要的作用，使UNIX独具特色。 &nbsp;</p><p>&nbsp;
+ &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;其次，UNIX成功的一个重要因素是它的可移植性。正是里奇竭尽全力开发了C语言，并把UNIX用C重写了一遍，这才使它具有了这一特性。汤普森是用汇编语言开发UNIX的，这种语言高度依赖于硬件，由它开发的软件只能在相同的硬件平台上运行。里奇在由剑桥大学的里查德（M．Richard）于1969年开发的BCPL语言（Basic
+ Combined Programming 
+Language）的基础上，巧妙地对它进行改进、改造，形成了既具有机器语言能直接操作二进制位和字符的能力，又具有高级语言许多复杂处理功能如循环、转移、分支等的一种简单易学而又灵活、高效的高级程序设计语言。他们把这种语言称为C，一方面指明了继承关系（因为BCPL的首字母是B。有些资料说是汤普森先根据BCPL开发了一种称为B的语言，再由里奇根据B开发了C。这种说法并不太确切，因为我们在汤普森与里奇本人的叙述中，都没有见到有关B语言这一中间过程的说法），另一方面也反映了他们对软件追求简洁明了的一贯风格。C开发成功以后，里奇用C把U－NIX重写了一遍。我们这里用了“重写”这个词，因为文献资料在提到这件事时都是用的这一说法，显得很轻巧；实际上，里奇做的这件事本身就是“移植”，即把汤普森用汇编语言实现的UNIX改用C来实现，这决不是什么轻巧的工作，尤其是对UNIX这样的大型软件。这需要付出艰苦的劳动，也是一件需要创造性的工作。单是里奇此举就是可以大书特书的，而C作为可以不依附于UNIX的一个独立的软件产品，也自有其本身的巨大价值，在计算机发展史上可以写下浓重的一笔。C已经实现标准化，即ISO于1990年公布的ISO／IEC9899，它以
+ ANSIC为基础，是第一个支持多8位字符集的程序设计语言国际标准。 &nbsp;</p><p>&nbsp;
+ &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;前述里奇和汤普森的论文 The UNIX Time-Sharing Symtem后来发表于 Communications of 
+ACM，1974年 7月。 ACM 
+1983年在纪念该刊创刊25周年时曾经评选出刊登于其上的25篇文章称之为具有里程碑式意义的研究论文，该文就是其中之一。 &nbsp;</p><p>&nbsp;
+ &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;除了论文以外，里奇还和凯尼汉（B．W．Kernighan）合著了一本介绍 C的专著：《C程序设计语言》（The C Programming
+ Language, Prentice－Hall，1978，1988）。我们现在见到的大量论述C语言程序设计的教材和专著都是以本书为蓝本的。 &nbsp;</p><p>&nbsp;
+ &nbsp; 汤普森和里奇在成名以后，都没有走办公司、挣大钱的路，他们仍然在贝尔做他们喜爱做的事，而且还一直保持着他们历来的生活习惯和作风，常常工作到深夜，在贝尔是出名的“夜猫子”。里奇在接受记者采访时，就自称自己是
+ definitely a night person。里奇 1983年接受图灵奖时已经42岁，但仍然单身。 &nbsp;</p><p>&nbsp;
+ &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;ACM于1983年10月举行的年会上向汤普森和里奇颁奖。有趣的是，ACM当年决定新设立一个奖项叫“软件系统奖”（Software 
+Sys－tem 
+Award），奖励优秀的软件系统及其开发者。而首届软件系统奖评选结果中奖的也是UNIX。这样，这届年会上汤普森和里奇成了最受关注的大红人，他们同时接受了“图灵”和“软件系统”两个大奖，这在ACM历年的颁奖仪式上是从来没有过的。里奇发表的图灵奖演说题为“对软件研究的反思”（Reflections
+ on Software Research），汤普森的演说题为“对深信不疑的信任的反思”（Reflections on Trusting 
+Trust），它们刊载于 Communications of ACM，1984年 8月，757－ 763页，或见《前20年 
+ACM图灵奖演说集》（ACM Turing Award Lectures——The First 20 Years： 1966－ 1985， 
+ACM Pr．）， 163－ 
+178页。里奇在演说中强调了UNIX成功的因素，包括比较长的酝酿时期和他们在开发时没有商业上的压力。里奇认为，对研究工作而言，受到过份的关注反而会影响创造力和自由的交换意见。汤普森在演说中谦虚地自称是“程序员”（在他以前获图灵奖的狄克斯特拉、霍尔、克努特和弗洛伊德也都这样称呼过自己）。同里奇一样，汤普森强调了开发程序系统时环境和背景的重要性。 &nbsp;</p><p>&nbsp;
+ &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;除图灵奖外，汤普森和里奇还从两个著名的杂志那里获得奖励和荣誉，一是《电子学》（Electronics）周刊，它从1974年起设立“成就奖”（achievement
+ award），奖励在电子线路、工艺、仪器设备等方面有重大发明创造的科学家，曾经获得该项奖励的人中包括著名的提出“摩尔定理”的 
+Intel总裁摩尔（G． E． Moors），MOS工 
+的发明者里趣曼（P．Richman），发明软盘的舒格特（A．F．Shugart）等。但由于UNIX和C的巨大成功和影响，使1982年的这个奖破例授予了软件开发者汤普森和里奇。二是读者面很广的Datamation月刊，它于1987年创刊30周年时建立了一个“计算机名人堂”（Hall
+ of Fame），首批 
+30位名人中包括图灵、冯·诺伊曼及多位图灵奖得主，如克努特（D．Knuth），巴克斯（J．Backus），麦卡锡（J．McCarthy）等。第二年首次增补名人，就选中了汤普森和里奇。 &nbsp;</p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">陈莉君</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                <div class="reward_qrcode_area reward_area tc" id="js_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                                        <p class="reward_tips"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" id="js_reward_qrcode_img"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

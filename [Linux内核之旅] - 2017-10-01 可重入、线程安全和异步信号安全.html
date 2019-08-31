@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		可重入、线程安全和异步信号安全
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664604802&amp;idx=1&amp;sn=ec8638de00d029c3e07f2fb4698a985c&amp;chksm=f04d8967c73a0071f55b22178222dde7025f27169cb9a63fef9e5c81fd4d0c75b9f005cee188&amp;scene=27#wechat_redirect&cpage=30' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">可重入、线程安全和异步信号安全</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        张义飞
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2017-10-01</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <div class="markdown-here-wrapper" data-md-url="https://mp.weixin.qq.com/cgi-bin/appmsg?t=media/appmsg_edit&amp;action=edit&amp;type=10&amp;appmsgid=517121152&amp;token=1811239471&amp;lang=zh_CN"><p style="margin: 0px 0px 1.2em !important;"><strong>什么是可重入?</strong></p><p style="margin: 0px 0px 1.2em !important;">关于可重入和不可重入这些概念网上可以找到很多，这里引用一下WiKi中的解释</p><pre style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em;line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;margin: 0px 0.15em;padding: 0px 0.3em;white-space: pre-wrap;border: 1px solid rgb(234, 234, 234);background-color: rgb(248, 248, 248);border-radius: 3px;display: inline;white-space: pre;overflow: auto;border-radius: 3px;border: 1px solid rgb(204, 204, 204);padding: 0.5em 0.7em;display: block !important;">a computer program or subroutine is called reentrant if it can be interrupted in the middle of its execution, and then be safely called again (“re-entered”) before its previous invocations complete execution. The interruption could be caused by an internal action such as a jump or call, or by an external action such as an interrupt or signal. Once the reentered invocation completes, the previous invocations will resume correct execution.</code></pre><p style="margin: 0px 0px 1.2em !important;">简单来说是这样的，可重入指的是一个程序或者函数所具备的性质，该性质指的是一个函数在执行的过程中被中断，程序的执行流跑到另外的一个地方把这个函数重新执行了一次，执行完成后返回被中断的地方再次运行之前的函数，而这个整个过程不会影响这个被打断的函数的最终结果，那么就称这个函数是可重入的。举一个可重入函数的例子，比如计算两个值的大小，用户传入两个值，通过加法进行计算，最后返回结果，即使这个函数被中断并被再次运行，也不会影响这个函数的最终结果，因为这个函数是无状态的，如果一个函数在执行的过程中需要把计算的中间结果保存起来，那么这就不是可重入的了，比方说，gethostbyname这个函数在解析域名对应的ip地址的时会将计算的结果放在一个静态的存储中返回，如果某一个时刻调用gethostbyname，将域名已经解析好对应的ip地址了，然后放在静态存储中，在准备返回的时候被中断了，然后再次执行这个函数，但是解析的是另外一个域名，解析后的结果依然会放到静态存储中，那么这次调用就会把之前解析出来的结果给覆盖掉，本质原因就是因为这个函数是有状态的，无状态的函数一定是可重入的。</p><p style="margin: 0px 0px 1.2em !important;">相信通过上面的简单介绍你或许对可重入和不可重入有了一丁丁了解，常见的不可重入的函数一般都具备以下特征:</p><ul style="margin: 1.2em 0px;padding-left: 2em;"><li style="margin: 0.5em 0px;">调用malloc或free (malloc内部维护了全局的链表用来管理分配的内存，这就是状态信息，free也一样)</li><li style="margin: 0.5em 0px;">使用了静态数据结构(全局变量或静态变量)</li><li style="margin: 0.5em 0px;">标准I/O程序库的一部分(内部会有全局锁，锁也是一种状态)</li><li style="margin: 0.5em 0px;">调用了一个不可重入的函数</li></ul><p style="margin: 0px 0px 1.2em !important;">下面举一个不可重入函数的两个小例子:</p><pre style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em;line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;margin: 0px 0.15em;padding: 0px 0.3em;white-space: pre-wrap;border: 1px solid rgb(234, 234, 234);background-color: rgb(248, 248, 248);border-radius: 3px;display: inline;white-space: pre;overflow: auto;border-radius: 3px;border: 1px solid rgb(204, 204, 204);padding: 0.5em 0.7em;display: block !important;">#include &lt;iostream&gt;
+#include &lt;unistd.h&gt;
+#include &lt;signal.h&gt;
+using namespace std;
+struct data
+{
+ &nbsp; &nbsp; &nbsp; &nbsp;int a;
+ &nbsp; &nbsp; &nbsp; &nbsp;int b;
+}da;
+
+void handler(int signum)
+{
+ &nbsp; &nbsp; &nbsp; &nbsp;cout &lt;&lt; "data:" &lt;&lt; da.a &lt;&lt; da.b &lt;&lt; endl;
+ &nbsp; &nbsp; &nbsp; &nbsp;alarm(1);
+}
+
+int main()
+{
+ &nbsp; &nbsp; &nbsp; &nbsp;static data zeros;
+ &nbsp; &nbsp; &nbsp; &nbsp;zeros.a = 0;
+ &nbsp; &nbsp; &nbsp; &nbsp;zeros.b = 0;
+ &nbsp; &nbsp; &nbsp; &nbsp;static data ones;
+ &nbsp; &nbsp; &nbsp; &nbsp;ones.a = 1;
+ &nbsp; &nbsp; &nbsp; &nbsp;ones.b = 1;
+ &nbsp; &nbsp; &nbsp; &nbsp;signal(SIGALRM,handler);
+ &nbsp; &nbsp; &nbsp; &nbsp;da = zeros;
+ &nbsp; &nbsp; &nbsp; &nbsp;alarm(1);
+ &nbsp; &nbsp; &nbsp; &nbsp;while(1)
+ &nbsp; &nbsp; &nbsp; &nbsp;{
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;da = zeros;
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;da = ones;
+ &nbsp; &nbsp; &nbsp; &nbsp;}
+}</code></pre><p style="margin: 0px 0px 1.2em !important;">程序的预期的结果应该是00 11交替输出，然后在这里结果却不一定是这样的，这是因为在结构体赋值的过程中可能随时被信号打断，导致才赋值了部分数据，所以输出就会出现01 或 10这类情况.(这取决于硬件和OS，不同的硬件和OS对于对其的8位、16位、32位数据的读写不一定是原子的)，比如说在32位平台上操作64位的整形，这就不是原子的，赋值和读取操作都至少需要两条指令，这就会存在只赋值了部分数据的情况。</p><p style="margin: 0px 0px 1.2em !important;">下面再看第二个例子:</p><pre style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em;line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;margin: 0px 0.15em;padding: 0px 0.3em;white-space: pre-wrap;border: 1px solid rgb(234, 234, 234);background-color: rgb(248, 248, 248);border-radius: 3px;display: inline;white-space: pre;overflow: auto;border-radius: 3px;border: 1px solid rgb(204, 204, 204);padding: 0.5em 0.7em;display: block !important;">#include &lt;iostream&gt;
+#include &lt;netdb.h&gt;
+#include &lt;signal.h&gt;
+#include &lt;unistd.h&gt;
+
+using namespace std;
+
+void handler(int signum)
+{
+ &nbsp; &nbsp; &nbsp; &nbsp;hostent *hostptr;
+ &nbsp; &nbsp; &nbsp; &nbsp;hostptr = gethostbyname("www.51cto.com");
+ &nbsp; &nbsp; &nbsp; &nbsp;cout &lt;&lt; hostptr-&gt;h_name &lt;&lt; endl;
+ &nbsp; &nbsp; &nbsp; &nbsp;alarm(1);
+}
+
+int main()
+{
+ &nbsp; &nbsp; &nbsp; &nbsp;hostent *hostptr;
+ &nbsp; &nbsp; &nbsp; &nbsp;signal(SIGALRM,handler);
+ &nbsp; &nbsp; &nbsp; &nbsp;alarm(1);
+ &nbsp; &nbsp; &nbsp; &nbsp;while(1)
+ &nbsp; &nbsp; &nbsp; &nbsp;{
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;hostptr = gethostbyname("www.baidu.com");
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;sleep(1);
+ &nbsp; &nbsp; &nbsp; &nbsp;}
+}</code></pre><p style="margin: 0px 0px 1.2em !important;">同样在这个例子中gethostbyname本身就是一个不可重入函数，这个函数的实现机制是将得到的结果保存在一个静态变量中，那么这就容易导致一个问题，假设此时gethostname解析出结果存入静态变量中，在函数没返回之前被中断，中断处理函数中再次调用gethotsbyname改变了静态变量的值，信号返回到被中断处，中断处的gethostbyname返回的则是信号处理函数中gethostbyname设置的结果</p><p style="margin: 0px 0px 1.2em !important;"><strong>可重入和线程安全</strong></p><p style="margin: 0px 0px 1.2em !important;">什么是线程安全的(Thread-Safe)呢?如果一个函数在同一时刻可以被多个线程安全地调用，就称该函数是线程安全的。往往可重入和线程安全被很多人混为一谈，其实二者是两个不同的概念，可以相互组合使用。WiKi中是这样解释两者的关系的:</p><pre style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em;line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;margin: 0px 0.15em;padding: 0px 0.3em;white-space: pre-wrap;border: 1px solid rgb(234, 234, 234);background-color: rgb(248, 248, 248);border-radius: 3px;display: inline;white-space: pre;overflow: auto;border-radius: 3px;border: 1px solid rgb(204, 204, 204);padding: 0.5em 0.7em;display: block !important;">Reentrancy is distinct from, but closely related to, thread-safety. A function can be thread-safe and still not reentrant. For example, a function could be wrapped all around with a mutex (which avoids problems in multithreading environments), but if that function is used in an interrupt service routine, it could starve waiting for the first execution to release the mutex. The key for avoiding confusion is that reentrant refers to only one thread executing. It is a concept from the time when no multitasking operating systems existed.</code></pre><p style="margin: 0px 0px 1.2em !important;">可重入和线程安全是两个不同的概念，但是很相近，一个函数可以是线程安全但不是可重入的，例如一个函数通过mutex来保护某些互斥资源，从线程安全的角度来看这个函数是线程的，但是因为使用了mutex，使得函数是有状态的了，很自然这个函数不是线程安全的。可重入适用于单线程和多线程，而线程安全特指多线程环境下一个函数是否可以被安全的调用。</p><p style="margin: 0px 0px 1.2em !important;"><strong>可重入和异步信号安全</strong></p><p style="margin: 0px 0px 1.2em !important;">异步信号安全指的是可以在信号处理器中可以被安全调用的函数，可重入函数满足了这个特点，通常来说不可重入的函数不是异步信号安全的，为了满足异步信号安全的要求一般会使用以下两个方法：</p><ol style="margin: 1.2em 0px;padding-left: 2em;"><li style="margin: 0.5em 0px;">要求信号处理函数本身必须是可重入的，然后，在信号处理函数中不要去调用不可重入的函数。</li><li style="margin: 0.5em 0px;">函数在在处理一些全局数据时，要进行信号屏蔽，等处理完后再开启信号</li></ol><p style="margin: 0px 0px 1.2em !important;">通过上面对异步信号安全的解释，我认为可重入函数一定是异步信号安全函数，但是异步信号安全函数不一定是可重入的，因为程序中断不仅仅只有信号这一种，异步信号安全的函数是可以通过信号屏蔽的方法使得函数本身变成异步信号安全的。而可重入函数需要处理在任何类型的中断情况下都是可重入的。</p><p style="margin: 0px 0px 1.2em !important;"><strong>最佳实践</strong></p><p style="margin: 0px 0px 1.2em !important;">如何写出一个可重入的函数,是一个需要仔细探讨的问题,要写一个可重入函数就不要在函数内部使用静态或全局数据，不要返回静态或全局数据，也不调用不可重入函数。而要实现线程安全的函数就需要解决多个线程调用函数时访问资源冲突的问题(加锁，线程局部存储或许是大家经常使用的手段)。</p><p style="margin: 0px 0px 1.2em !important;">通过总结出实际工程项目开发中的一些工程实践经验,可以给我们编写可重入函数提供一些指导性意见。</p><ul style="margin: 1.2em 0px;padding-left: 2em;"><li style="margin: 0.5em 0px;">返还指定静态数据结构的指针可能会导致函数不可重入</li></ul><p style="margin: 0px 0px 1.2em !important;">下面是一个不可重入版本的大小写转换</p><pre style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em;line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;margin: 0px 0.15em;padding: 0px 0.3em;white-space: pre-wrap;border: 1px solid rgb(234, 234, 234);background-color: rgb(248, 248, 248);border-radius: 3px;display: inline;white-space: pre;overflow: auto;border-radius: 3px;border: 1px solid rgb(204, 204, 204);padding: 0.5em 0.7em;display: block !important;">char * strtoupper(char *str)
+{
+ &nbsp; &nbsp; &nbsp; &nbsp;static char buf[BUFSIZ];
+ &nbsp; &nbsp; &nbsp; &nbsp;int index;
+ &nbsp; &nbsp; &nbsp; &nbsp;for(index = 0; str[index];index++)
+ &nbsp; &nbsp; &nbsp; &nbsp;{
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;buf[index] = toupper(str[index]);
+ &nbsp; &nbsp; &nbsp; &nbsp;}
+ &nbsp; &nbsp; &nbsp; &nbsp;buf[index] = 0;
+ &nbsp; &nbsp; &nbsp; &nbsp;return buf;
+}</code></pre><p style="margin: 0px 0px 1.2em !important;">修改为可重入版本</p><pre style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em;line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;margin: 0px 0.15em;padding: 0px 0.3em;white-space: pre-wrap;border: 1px solid rgb(234, 234, 234);background-color: rgb(248, 248, 248);border-radius: 3px;display: inline;white-space: pre;overflow: auto;border-radius: 3px;border: 1px solid rgb(204, 204, 204);padding: 0.5em 0.7em;display: block !important;">char * strtoupper_r(char *str,char *dst)
+{
+ &nbsp; &nbsp; &nbsp; &nbsp;int index;
+ &nbsp; &nbsp; &nbsp; &nbsp;for(index = 0; str[index];index++)
+ &nbsp; &nbsp; &nbsp; &nbsp;{
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;dst[index] = toupper(str[index]);
+ &nbsp; &nbsp; &nbsp; &nbsp;}
+ &nbsp; &nbsp; &nbsp; &nbsp;dst[index] = 0;
+ &nbsp; &nbsp; &nbsp; &nbsp;return dst
+}</code></pre><ul style="margin: 1.2em 0px;padding-left: 2em;"><li style="margin: 0.5em 0px;">在函数中记忆(保存)数据的状态导致不可重入</li></ul><pre style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em;line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;margin: 0px 0.15em;padding: 0px 0.3em;white-space: pre-wrap;border: 1px solid rgb(234, 234, 234);background-color: rgb(248, 248, 248);border-radius: 3px;display: inline;white-space: pre;overflow: auto;border-radius: 3px;border: 1px solid rgb(204, 204, 204);padding: 0.5em 0.7em;display: block !important;">
+ &nbsp; &nbsp;char GetLowerCaseChar(char *str)
+ &nbsp; &nbsp;{
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;static index = 0;
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;char c = 0;
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;while(c = str[index])
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if(islower(c))
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;index++;
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;break;
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;index++
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return c;
+ &nbsp; &nbsp;}</code></pre><p style="margin: 0px 0px 1.2em !important;">这是一个搜索字符串中小写字符的程序，函数保存了搜索到字符串的位置index,导致这个函数是不可重入的这个index应该由调用者来维护，下面是这个函数的可重入版本:</p><pre style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em;line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;margin: 0px 0.15em;padding: 0px 0.3em;white-space: pre-wrap;border: 1px solid rgb(234, 234, 234);background-color: rgb(248, 248, 248);border-radius: 3px;display: inline;white-space: pre;overflow: auto;border-radius: 3px;border: 1px solid rgb(204, 204, 204);padding: 0.5em 0.7em;display: block !important;">char GetLowerCaseChar(char *str,int *index)
+{
+ &nbsp; &nbsp; &nbsp; &nbsp;char c = 0;
+ &nbsp; &nbsp; &nbsp; &nbsp;while(c = str[*index])
+ &nbsp; &nbsp; &nbsp; &nbsp;{
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if(islower(c))
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;(*index)++;
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;break;
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;(*index)++
+ &nbsp; &nbsp; &nbsp; &nbsp;}
+ &nbsp; &nbsp; &nbsp; &nbsp;return c;
+}</code></pre><ul style="margin: 1.2em 0px;padding-left: 2em;"><li style="margin: 0.5em 0px;">任何分配和释放内存的库函数都是不可重入的</li><li style="margin: 0.5em 0px;">小心处理进程范围内的全局变量入(例如 errno 和h_errno)<pre style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em;line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;margin: 0px 0.15em;padding: 0px 0.3em;white-space: pre-wrap;border: 1px solid rgb(234, 234, 234);background-color: rgb(248, 248, 248);border-radius: 3px;display: inline;white-space: pre;overflow: auto;border-radius: 3px;border: 1px solid rgb(204, 204, 204);padding: 0.5em 0.7em;display: block !important;"> &nbsp;if(open(filename,O_CREAT|O_RDWR) &lt; 0 ){
+ &nbsp; &nbsp; &nbsp;perror("open file fail:");
+ &nbsp; &nbsp; &nbsp;exit(-1);
+ &nbsp;}</code></pre></li></ul><p style="margin: 0px 0px 1.2em !important;">上面这个函数就是一个不可重入的函数,当在执行open完，因为某些原因导致open失败结果就是改变了errno错误码，但此时被信号中断，去执行信号处理函数，信号处理函数中执行了一些系统调用或者库函数导致了errno全局状态码发生了变化，那么等待信号处理函数执行完毕返还后那么open失败的错误码就被覆盖了。为了避免上述问题发生应该在信号处理函数中保存errno状态码，执行完毕后进行恢复。</p><pre style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;font-size: 1em;line-height: 1.2em;margin: 1.2em 0px;"><code style="font-size: 0.85em;font-family: Consolas, Inconsolata, Courier, monospace;margin: 0px 0.15em;padding: 0px 0.3em;white-space: pre-wrap;border: 1px solid rgb(234, 234, 234);background-color: rgb(248, 248, 248);border-radius: 3px;display: inline;white-space: pre;overflow: auto;border-radius: 3px;border: 1px solid rgb(204, 204, 204);padding: 0.5em 0.7em;display: block !important;">void handler(int signo)
+{
+ &nbsp; &nbsp;int errno_saved;
+ &nbsp; &nbsp;errno_saved = errno;
+ &nbsp; &nbsp;/*
+ &nbsp; &nbsp; &nbsp; &nbsp;执行一些业务
+ &nbsp; &nbsp;*/
+ &nbsp; &nbsp;//状态码恢复
+ &nbsp; &nbsp;errno = errno_saved;
+}</code></pre><div title="MDH:PHA+PHNwYW4gc3R5bGU9ImZvbnQtd2VpZ2h0OiBib2xkOyI+Kirku4DkuYjmmK/lj6/ph43lhaU/
+Kio8L3NwYW4+PGJyPjxicj7lhbPkuo7lj6/ph43lhaXlkozkuI3lj6/ph43lhaXov5nkupvmpoLl
+v7XnvZHkuIrlj6/ku6Xmib7liLDlvojlpJrvvIzov5nph4zlvJXnlKjkuIDkuItXaUtp5Lit55qE
+6Kej6YeKPGJyPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDthIGNvbXB1dGVyIHByb2dyYW0gb3Igc3Vicm91dGluZSBpcyBjYWxsZWQgcmVl
+bnRyYW50IGlmIGl0IGNhbiBiZSBpbnRlcnJ1cHRlZCBpbiB0aGUgbWlkZGxlIG9mIGl0cyBleGVj
+dXRpb24sIGFuZCB0aGVuIGJlIHNhZmVseSBjYWxsZWQgYWdhaW4gKOKAnHJlLWVudGVyZWTigJ0p
+IGJlZm9yZSBpdHMgcHJldmlvdXMgaW52b2NhdGlvbnMgY29tcGxldGUgZXhlY3V0aW9uLiBUaGUg
+aW50ZXJydXB0aW9uIGNvdWxkIGJlIGNhdXNlZCBieSBhbiBpbnRlcm5hbCBhY3Rpb24gc3VjaCBh
+cyBhIGp1bXAgb3IgY2FsbCwgb3IgYnkgYW4gZXh0ZXJuYWwgYWN0aW9uIHN1Y2ggYXMgYW4gaW50
+ZXJydXB0IG9yIHNpZ25hbC4gT25jZSB0aGUgcmVlbnRlcmVkIGludm9jYXRpb24gY29tcGxldGVz
+LCB0aGUgcHJldmlvdXMgaW52b2NhdGlvbnMgd2lsbCByZXN1bWUgY29ycmVjdCBleGVjdXRpb24u
+PC9zcGFuPjxicj48YnI+566A5Y2V5p2l6K+05piv6L+Z5qC355qE77yM5Y+v6YeN5YWl5oyH55qE
+5piv5LiA5Liq56iL5bqP5oiW6ICF5Ye95pWw5omA5YW35aSH55qE5oCn6LSo77yM6K+l5oCn6LSo
+5oyH55qE5piv5LiA5Liq5Ye95pWw5Zyo5omn6KGM55qE6L+H56iL5Lit6KKr5Lit5pat77yM56iL
+5bqP55qE5omn6KGM5rWB6LeR5Yiw5Y+m5aSW55qE5LiA5Liq5Zyw5pa55oqK6L+Z5Liq5Ye95pWw
+6YeN5paw5omn6KGM5LqG5LiA5qyh77yM5omn6KGM5a6M5oiQ5ZCO6L+U5Zue6KKr5Lit5pat55qE
+5Zyw5pa55YaN5qyh6L+Q6KGM5LmL5YmN55qE5Ye95pWw77yM6ICM6L+Z5Liq5pW05Liq6L+H56iL
+5LiN5Lya5b2x5ZON6L+Z5Liq6KKr5omT5pat55qE5Ye95pWw55qE5pyA57uI57uT5p6c77yM6YKj
+5LmI5bCx56ew6L+Z5Liq5Ye95pWw5piv5Y+v6YeN5YWl55qE44CC5Li+5LiA5Liq5Y+v6YeN5YWl
+5Ye95pWw55qE5L6L5a2Q77yM5q+U5aaC6K6h566X5Lik5Liq5YC855qE5aSn5bCP77yM55So5oi3
+5Lyg5YWl5Lik5Liq5YC877yM6YCa6L+H5Yqg5rOV6L+b6KGM6K6h566X77yM5pyA5ZCO6L+U5Zue
+57uT5p6c77yM5Y2z5L2/6L+Z5Liq5Ye95pWw6KKr5Lit5pat5bm26KKr5YaN5qyh6L+Q6KGM77yM
+5Lmf5LiN5Lya5b2x5ZON6L+Z5Liq5Ye95pWw55qE5pyA57uI57uT5p6c77yM5Zug5Li66L+Z5Liq
+5Ye95pWw5piv5peg54q25oCB55qE77yM5aaC5p6c5LiA5Liq5Ye95pWw5Zyo5omn6KGM55qE6L+H
+56iL5Lit6ZyA6KaB5oqK6K6h566X55qE5Lit6Ze057uT5p6c5L+d5a2Y6LW35p2l77yM6YKj5LmI
+6L+Z5bCx5LiN5piv5Y+v6YeN5YWl55qE5LqG77yM5q+U5pa56K+077yMZ2V0aG9zdGJ5bmFtZei/
+meS4quWHveaVsOWcqOino+aekOWfn+WQjeWvueW6lOeahGlw5Zyw5Z2A55qE5pe25Lya5bCG6K6h
+566X55qE57uT5p6c5pS+5Zyo5LiA5Liq6Z2Z5oCB55qE5a2Y5YKo5Lit6L+U5Zue77yM5aaC5p6c
+5p+Q5LiA5Liq5pe25Yi76LCD55SoZ2V0aG9zdGJ5bmFtZe+8jOWwhuWfn+WQjeW3sue7j+ino+ae
+kOWlveWvueW6lOeahGlw5Zyw5Z2A5LqG77yM54S25ZCO5pS+5Zyo6Z2Z5oCB5a2Y5YKo5Lit77yM
+5Zyo5YeG5aSH6L+U5Zue55qE5pe25YCZ6KKr5Lit5pat5LqG77yM54S25ZCO5YaN5qyh5omn6KGM
+6L+Z5Liq5Ye95pWw77yM5L2G5piv6Kej5p6Q55qE5piv5Y+m5aSW5LiA5Liq5Z+f5ZCN77yM6Kej
+5p6Q5ZCO55qE57uT5p6c5L6d54S25Lya5pS+5Yiw6Z2Z5oCB5a2Y5YKo5Lit77yM6YKj5LmI6L+Z
+5qyh6LCD55So5bCx5Lya5oqK5LmL5YmN6Kej5p6Q5Ye65p2l55qE57uT5p6c57uZ6KaG55uW5o6J
+77yM5pys6LSo5Y6f5Zug5bCx5piv5Zug5Li66L+Z5Liq5Ye95pWw5piv5pyJ54q25oCB55qE77yM
+5peg54q25oCB55qE5Ye95pWw5LiA5a6a5piv5Y+v6YeN5YWl55qE44CCPGJyPjxicj7nm7jkv6Hp
+gJrov4fkuIrpnaLnmoTnroDljZXku4vnu43kvaDmiJborrjlr7nlj6/ph43lhaXlkozkuI3lj6/p
+h43lhaXmnInkuobkuIDkuIHkuIHkuobop6PvvIzluLjop4HnmoTkuI3lj6/ph43lhaXnmoTlh73m
+lbDkuIDoiKzpg73lhbflpIfku6XkuIvnibnlvoE6PGJyPjxicj48YnI+PHNwYW4gc3R5bGU9ImNv
+bG9yOiAjODA4MDgwOyI+LSZuYnNwOzwvc3Bhbj7osIPnlKhtYWxsb2PmiJZmcmVlIChtYWxsb2Pl
+hoXpg6jnu7TmiqTkuoblhajlsYDnmoTpk77ooajnlKjmnaXnrqHnkIbliIbphY3nmoTlhoXlrZjv
+vIzov5nlsLHmmK/nirbmgIHkv6Hmga/vvIxmcmVl5Lmf5LiA5qC3KTxicj48c3BhbiBzdHlsZT0i
+Y29sb3I6ICM4MDgwODA7Ij4tJm5ic3A7PC9zcGFuPuS9v+eUqOS6humdmeaAgeaVsOaNrue7k+ae
+hCjlhajlsYDlj5jph4/miJbpnZnmgIHlj5jph48pPGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzgw
+ODA4MDsiPi0mbmJzcDs8L3NwYW4+5qCH5YeGSS9P56iL5bqP5bqT55qE5LiA6YOo5YiGKOWGhemD
+qOS8muacieWFqOWxgOmUge+8jOmUgeS5n+aYr+S4gOenjeeKtuaAgSk8YnI+PHNwYW4gc3R5bGU9
+ImNvbG9yOiAjODA4MDgwOyI+LSZuYnNwOzwvc3Bhbj7osIPnlKjkuobkuIDkuKrkuI3lj6/ph43l
+haXnmoTlh73mlbA8YnI+PGJyPjxicj7kuIvpnaLkuL7kuIDkuKrkuI3lj6/ph43lhaXlh73mlbDn
+moTkuKTkuKrlsI/kvovlrZA6PGJyPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICNiMjIyMjI7Ij4m
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsjaW5jbHVkZSAmbHQ7aW9zdHJlYW0mZ3Q7PC9zcGFuPjxi
+cj48c3BhbiBzdHlsZT0iY29sb3I6ICNiMjIyMjI7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsj
+aW5jbHVkZSAmbHQ7dW5pc3RkLmgmZ3Q7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICNi
+MjIyMjI7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsjaW5jbHVkZSAmbHQ7c2lnbmFsLmgmZ3Q7
+PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDt1c2luZyBuYW1lc3BhY2Ugc3RkOzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9y
+OiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7c3RydWN0IGRhdGE8L3NwYW4+PGJy
+PjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO3s8
+L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO2lu
+dCBhOzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7aW50IGI7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDt9ZGE7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgw
+MDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDs8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xv
+cjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO3ZvaWQgaGFuZGxlcihpbnQgc2ln
+bnVtKTwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7ezwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Y291dCAmbHQ7Jmx0OyAiZGF0YToiICZsdDsmbHQ7IGRhLmEgJmx0OyZsdDsg
+ZGEuYiAmbHQ7Jmx0OyBlbmRsOzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAw
+OyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7YWxhcm0oMSk7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6
+ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDt9PC9zcGFuPjxicj48c3BhbiBzdHls
+ZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDs8L3NwYW4+PGJyPjxz
+cGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO2ludCBt
+YWluKCk8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwO3s8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwO3N0YXRpYyBkYXRhIHplcm9zOzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNv
+bG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7emVyb3MuYSA9IDA7PC9zcGFuPjxicj48c3Bh
+biBzdHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDt6ZXJvcy5iID0gMDs8L3Nw
+YW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO3N0YXRp
+YyBkYXRhIG9uZXM7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDtvbmVzLmEgPSAxOzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4
+MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7b25lcy5iID0gMTs8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJj
+b2xvcjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO3NpZ25hbChTSUdBTFJNLGhhbmRsZXIpOzwv
+c3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7ZGEg
+PSB6ZXJvczs8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwO2FsYXJtKDEpOzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7d2hpbGUoMSk8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAw
+ODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwO3s8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAw
+ODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwO2RhID0gemVyb3M7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMw
+MDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDtkYSA9IG9uZXM7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMw
+MDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDt9PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMw
+MDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDt9PC9zcGFuPjxicj48YnI+56iL5bqP55qE
+6aKE5pyf55qE57uT5p6c5bqU6K+l5pivMDAgMTHkuqTmm7/ovpPlh7rvvIznhLblkI7lnKjov5np
+h4znu5PmnpzljbTkuI3kuIDlrprmmK/ov5nmoLfnmoTvvIzov5nmmK/lm6DkuLrlnKjnu5PmnoTk
+vZPotYvlgLznmoTov4fnqIvkuK3lj6/og73pmo/ml7booqvkv6Hlj7fmiZPmlq3vvIzlr7zoh7Tm
+iY3otYvlgLzkuobpg6jliIbmlbDmja7vvIzmiYDku6XovpPlh7rlsLHkvJrlh7rnjrAwMSDmiJYg
+MTDov5nnsbvmg4XlhrUuKOi/meWPluWGs+S6juehrOS7tuWSjE9T77yM5LiN5ZCM55qE56Gs5Lu2
+5ZKMT1Plr7nkuo7lr7nlhbbnmoQ45L2N44CBMTbkvY3jgIEzMuS9jeaVsOaNrueahOivu+WGmeS4
+jeS4gOWumuaYr+WOn+WtkOeahCnvvIzmr5TlpoLor7TlnKgzMuS9jeW5s+WPsOS4iuaTjeS9nDY0
+5L2N55qE5pW05b2i77yM6L+Z5bCx5LiN5piv5Y6f5a2Q55qE77yM6LWL5YC85ZKM6K+75Y+W5pON
+5L2c6YO96Iez5bCR6ZyA6KaB5Lik5p2h5oyH5Luk77yM6L+Z5bCx5Lya5a2Y5Zyo5Y+q6LWL5YC8
+5LqG6YOo5YiG5pWw5o2u55qE5oOF5Ya144CCPGJyPjxicj7kuIvpnaLlho3nnIvnrKzkuozkuKrk
+vovlrZA6PGJyPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICNiMjIyMjI7Ij4mbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsjaW5jbHVkZSAmbHQ7aW9zdHJlYW0mZ3Q7PC9zcGFuPjxicj48c3BhbiBzdHls
+ZT0iY29sb3I6ICNiMjIyMjI7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsjaW5jbHVkZSAmbHQ7
+bmV0ZGIuaCZndDs8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogI2IyMjIyMjsiPiZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyNpbmNsdWRlICZsdDtzaWduYWwuaCZndDs8L3NwYW4+PGJyPjxz
+cGFuIHN0eWxlPSJjb2xvcjogI2IyMjIyMjsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyNpbmNs
+dWRlICZsdDt1bmlzdGQuaCZndDs8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAw
+MDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9y
+OiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7dXNpbmcgbmFtZXNwYWNlIHN0ZDs8
+L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7dm9pZCBoYW5kbGVyKGludCBzaWdudW0pPC9zcGFuPjxicj48c3BhbiBz
+dHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDt7PC9zcGFuPjxi
+cj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtob3N0ZW50ICpo
+b3N0cHRyOzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7aG9zdHB0ciA9IGdldGhvc3RieW5hbWUoInd3dy41MWN0by5jb20iKTs8L3NwYW4+PGJy
+PjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO2NvdXQgJmx0OyZs
+dDsgaG9zdHB0ci0mZ3Q7aF9uYW1lICZsdDsmbHQ7IGVuZGw7PC9zcGFuPjxicj48c3BhbiBzdHls
+ZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDthbGFybSgxKTs8L3NwYW4+PGJyPjxz
+cGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO308L3Nw
+YW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7aW50IG1haW4oKTwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4
+MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7ezwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNv
+bG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7aG9zdGVudCAqaG9zdHB0cjs8L3NwYW4+PGJy
+PjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO3NpZ25hbChTSUdB
+TFJNLGhhbmRsZXIpOzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7YWxhcm0oMSk7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgw
+MDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDt3aGlsZSgxKTwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9y
+OiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7ezwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9y
+OiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7aG9zdHB0ciA9IGdldGhvc3RieW5hbWUoInd3dy5iYWlkdS5jb20i
+KTs8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO3NsZWVwKDEp
+Ozwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+fTwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7fTwvc3Bhbj48YnI+PGJyPuWQjOagt+WcqOi/meS4quS+i+WtkOS4rWdldGhvc3Ri
+eW5hbWXmnKzouqvlsLHmmK/kuIDkuKrkuI3lj6/ph43lhaXlh73mlbDvvIzov5nkuKrlh73mlbDn
+moTlrp7njrDmnLrliLbmmK/lsIblvpfliLDnmoTnu5Pmnpzkv53lrZjlnKjkuIDkuKrpnZnmgIHl
+j5jph4/kuK3vvIzpgqPkuYjov5nlsLHlrrnmmJPlr7zoh7TkuIDkuKrpl67popjvvIzlgYforr7m
+raTml7ZnZXRob3N0bmFtZeino+aekOWHuue7k+aenOWtmOWFpemdmeaAgeWPmOmHj+S4re+8jOWc
+qOWHveaVsOayoei/lOWbnuS5i+WJjeiiq+S4reaWre+8jOS4reaWreWkhOeQhuWHveaVsOS4reWG
+jeasoeiwg+eUqGdldGhvdHNieW5hbWXmlLnlj5jkuobpnZnmgIHlj5jph4/nmoTlgLzvvIzkv6Hl
+j7fov5Tlm57liLDooqvkuK3mlq3lpITvvIzkuK3mlq3lpITnmoRnZXRob3N0YnluYW1l6L+U5Zue
+55qE5YiZ5piv5L+h5Y+35aSE55CG5Ye95pWw5LitZ2V0aG9zdGJ5bmFtZeiuvue9rueahOe7k+ae
+nDxicj48YnI+PHNwYW4gc3R5bGU9ImZvbnQtd2VpZ2h0OiBib2xkOyI+Kirlj6/ph43lhaXlkozn
+ur/nqIvlronlhagqKjwvc3Bhbj48YnI+PGJyPuS7gOS5iOaYr+e6v+eoi+WuieWFqOeahChUaHJl
+YWQtU2FmZSnlkaI/5aaC5p6c5LiA5Liq5Ye95pWw5Zyo5ZCM5LiA5pe25Yi75Y+v5Lul6KKr5aSa
+5Liq57q/56iL5a6J5YWo5Zyw6LCD55So77yM5bCx56ew6K+l5Ye95pWw5piv57q/56iL5a6J5YWo
+55qE44CC5b6A5b6A5Y+v6YeN5YWl5ZKM57q/56iL5a6J5YWo6KKr5b6I5aSa5Lq65re35Li65LiA
+6LCI77yM5YW25a6e5LqM6ICF5piv5Lik5Liq5LiN5ZCM55qE5qaC5b+177yM5Y+v5Lul55u45LqS
+57uE5ZCI5L2/55So44CCV2lLaeS4reaYr+i/meagt+ino+mHiuS4pOiAheeahOWFs+ezu+eahDo8
+YnI+PGJyPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDtSZWVudHJhbmN5IGlzIGRpc3RpbmN0IGZyb20sIGJ1dCBjbG9zZWx5IHJlbGF0ZWQg
+dG8sIHRocmVhZC1zYWZldHkuIEEgZnVuY3Rpb24gY2FuIGJlIHRocmVhZC1zYWZlIGFuZCBzdGls
+bCBub3QgcmVlbnRyYW50LiBGb3IgZXhhbXBsZSwgYSBmdW5jdGlvbiBjb3VsZCBiZSB3cmFwcGVk
+IGFsbCBhcm91bmQgd2l0aCBhIG11dGV4ICh3aGljaCBhdm9pZHMgcHJvYmxlbXMgaW4gbXVsdGl0
+aHJlYWRpbmcgZW52aXJvbm1lbnRzKSwgYnV0IGlmIHRoYXQgZnVuY3Rpb24gaXMgdXNlZCBpbiBh
+biBpbnRlcnJ1cHQgc2VydmljZSByb3V0aW5lLCBpdCBjb3VsZCBzdGFydmUgd2FpdGluZyBmb3Ig
+dGhlIGZpcnN0IGV4ZWN1dGlvbiB0byByZWxlYXNlIHRoZSBtdXRleC4gVGhlIGtleSBmb3IgYXZv
+aWRpbmcgY29uZnVzaW9uIGlzIHRoYXQgcmVlbnRyYW50IHJlZmVycyB0byBvbmx5IG9uZSB0aHJl
+YWQgZXhlY3V0aW5nLiBJdCBpcyBhIGNvbmNlcHQgZnJvbSB0aGUgdGltZSB3aGVuIG5vIG11bHRp
+dGFza2luZyBvcGVyYXRpbmcgc3lzdGVtcyBleGlzdGVkLjwvc3Bhbj48YnI+PGJyPuWPr+mHjeWF
+peWSjOe6v+eoi+WuieWFqOaYr+S4pOS4quS4jeWQjOeahOamguW/te+8jOS9huaYr+W+iOebuOi/
+ke+8jOS4gOS4quWHveaVsOWPr+S7peaYr+e6v+eoi+WuieWFqOS9huS4jeaYr+WPr+mHjeWFpeea
+hO+8jOS+i+WmguS4gOS4quWHveaVsOmAmui/h211dGV45p2l5L+d5oqk5p+Q5Lqb5LqS5pal6LWE
+5rqQ77yM5LuO57q/56iL5a6J5YWo55qE6KeS5bqm5p2l55yL6L+Z5Liq5Ye95pWw5piv57q/56iL
+55qE77yM5L2G5piv5Zug5Li65L2/55So5LqGbXV0ZXjvvIzkvb/lvpflh73mlbDmmK/mnInnirbm
+gIHnmoTkuobvvIzlvojoh6rnhLbov5nkuKrlh73mlbDkuI3mmK/nur/nqIvlronlhajnmoTjgILl
+j6/ph43lhaXpgILnlKjkuo7ljZXnur/nqIvlkozlpJrnur/nqIvvvIzogIznur/nqIvlronlhajn
+ibnmjIflpJrnur/nqIvnjq/looPkuIvkuIDkuKrlh73mlbDmmK/lkKblj6/ku6Xooqvlronlhajn
+moTosIPnlKjjgII8YnI+PGJyPjxzcGFuIHN0eWxlPSJmb250LXdlaWdodDogYm9sZDsiPioq5Y+v
+6YeN5YWl5ZKM5byC5q2l5L+h5Y+35a6J5YWoKio8L3NwYW4+PGJyPjxicj7lvILmraXkv6Hlj7fl
+ronlhajmjIfnmoTmmK/lj6/ku6XlnKjkv6Hlj7flpITnkIblmajkuK3lj6/ku6Xooqvlronlhajo
+sIPnlKjnmoTlh73mlbDvvIzlj6/ph43lhaXlh73mlbDmu6HotrPkuobov5nkuKrnibnngrnvvIzp
+gJrluLjmnaXor7TkuI3lj6/ph43lhaXnmoTlh73mlbDkuI3mmK/lvILmraXkv6Hlj7flronlhajn
+moTvvIzkuLrkuobmu6HotrPlvILmraXkv6Hlj7flronlhajnmoTopoHmsYLkuIDoiKzkvJrkvb/n
+lKjku6XkuIvkuKTkuKrmlrnms5XvvJo8YnI+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzgwODA4
+MDsiPjEuJm5ic3A7PC9zcGFuPuimgeaxguS/oeWPt+WkhOeQhuWHveaVsOacrOi6q+W/hemhu+aY
+r+WPr+mHjeWFpeeahO+8jOeEtuWQju+8jOWcqOS/oeWPt+WkhOeQhuWHveaVsOS4reS4jeimgeWO
+u+iwg+eUqOS4jeWPr+mHjeWFpeeahOWHveaVsOOAgjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICM4
+MDgwODA7Ij4yLiZuYnNwOzwvc3Bhbj7lh73mlbDlnKjlnKjlpITnkIbkuIDkupvlhajlsYDmlbDm
+ja7ml7bvvIzopoHov5vooYzkv6Hlj7flsY/olL3vvIznrYnlpITnkIblrozlkI7lho3lvIDlkK/k
+v6Hlj7c8YnI+PGJyPumAmui/h+S4iumdouWvueW8guatpeS/oeWPt+WuieWFqOeahOino+mHiu+8
+jOaIkeiupOS4uuWPr+mHjeWFpeWHveaVsOS4gOWumuaYr+W8guatpeS/oeWPt+WuieWFqOWHveaV
+sO+8jOS9huaYr+W8guatpeS/oeWPt+WuieWFqOWHveaVsOS4jeS4gOWumuaYr+WPr+mHjeWFpeea
+hO+8jOWboOS4uueoi+W6j+S4reaWreS4jeS7heS7heWPquacieS/oeWPt+i/meS4gOenje+8jOW8
+guatpeS/oeWPt+WuieWFqOeahOWHveaVsOaYr+WPr+S7pemAmui/h+S/oeWPt+Wxj+iUveeahOaW
+ueazleS9v+W+l+WHveaVsOacrOi6q+WPmOaIkOW8guatpeS/oeWPt+WuieWFqOeahOOAguiAjOWP
+r+mHjeWFpeWHveaVsOmcgOimgeWkhOeQhuWcqOS7u+S9leexu+Wei+eahOS4reaWreaDheWGteS4
+i+mDveaYr+WPr+mHjeWFpeeahOOAgjxicj48YnI+PHNwYW4gc3R5bGU9ImZvbnQtd2VpZ2h0OiBi
+b2xkOyI+KirmnIDkvbPlrp7ot7UqKjwvc3Bhbj48YnI+PGJyPuWmguS9leWGmeWHuuS4gOS4quWP
+r+mHjeWFpeeahOWHveaVsCzmmK/kuIDkuKrpnIDopoHku5Tnu4bmjqLorqjnmoTpl67popgs6KaB
+5YaZ5LiA5Liq5Y+v6YeN5YWl5Ye95pWw5bCx5LiN6KaB5Zyo5Ye95pWw5YaF6YOo5L2/55So6Z2Z
+5oCB5oiW5YWo5bGA5pWw5o2u77yM5LiN6KaB6L+U5Zue6Z2Z5oCB5oiW5YWo5bGA5pWw5o2u77yM
+5Lmf5LiN6LCD55So5LiN5Y+v6YeN5YWl5Ye95pWw44CC6ICM6KaB5a6e546w57q/56iL5a6J5YWo
+55qE5Ye95pWw5bCx6ZyA6KaB6Kej5Yaz5aSa5Liq57q/56iL6LCD55So5Ye95pWw5pe26K6/6Zeu
+6LWE5rqQ5Yay56qB55qE6Zeu6aKYKOWKoOmUge+8jOe6v+eoi+WxgOmDqOWtmOWCqOaIluiuuOaY
+r+Wkp+Wutue7j+W4uOS9v+eUqOeahOaJi+autSnjgII8YnI+PGJyPumAmui/h+aAu+e7k+WHuuWu
+numZheW3peeoi+mhueebruW8gOWPkeS4reeahOS4gOS6m+W3peeoi+Wunui3tee7j+mqjCzlj6/k
+u6Xnu5nmiJHku6znvJblhpnlj6/ph43lhaXlh73mlbDmj5DkvpvkuIDkupvmjIflr7zmgKfmhI/o
+p4HjgII8YnI+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzgwODA4MDsiPi0mbmJzcDs8L3NwYW4+
+6L+U6L+Y5oyH5a6a6Z2Z5oCB5pWw5o2u57uT5p6E55qE5oyH6ZKI5Y+v6IO95Lya5a+86Ie05Ye9
+5pWw5LiN5Y+v6YeN5YWlPGJyPjxicj7kuIvpnaLmmK/kuIDkuKrkuI3lj6/ph43lhaXniYjmnKzn
+moTlpKflsI/lhpnovazmjaI8YnI+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwO2NoYXIgKiBzdHJ0b3VwcGVyKGNoYXIgKnN0cik8L3NwYW4+
+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+O3s8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+O3N0YXRpYyBjaGFyIGJ1ZltCVUZTSVpdOzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAj
+MDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7aW50IGluZGV4Ozwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9
+ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Zm9yKGluZGV4ID0gMDsgc3RyW2luZGV4
+XTtpbmRleCsrKTwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7ezwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+YnVmW2luZGV4XSA9IHRvdXBwZXIoc3RyW2luZGV4XSk7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0i
+Y29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDt9PC9zcGFuPjxicj48c3BhbiBzdHlsZT0i
+Y29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtidWZbaW5kZXhdID0gMDs8L3NwYW4+PGJy
+PjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO3JldHVybiBidWY7
+PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDt9PC9zcGFuPjxicj48YnI+5L+u5pS55Li65Y+v6YeN5YWl54mI5pysPGJyPjxicj48
+c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtjaGFy
+ICogc3RydG91cHBlcl9yKGNoYXIgKnN0cixjaGFyICpkc3QpPC9zcGFuPjxicj48c3BhbiBzdHls
+ZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDt7PC9zcGFuPjxicj48
+c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtpbnQgaW5kZXg7PC9z
+cGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtmb3Io
+aW5kZXggPSAwOyBzdHJbaW5kZXhdO2luZGV4KyspPC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29s
+b3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDt7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29s
+b3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDtkc3RbaW5kZXhdID0gdG91cHBlcihzdHJbaW5kZXhdKTs8L3Nw
+YW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO308L3Nw
+YW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO2RzdFtp
+bmRleF0gPSAwOzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7cmV0dXJuIGRzdDwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAw
+OyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7fTwvc3Bhbj48YnI+PGJyPjxzcGFuIHN0eWxlPSJj
+b2xvcjogIzgwODA4MDsiPi0mbmJzcDs8L3NwYW4+5Zyo5Ye95pWw5Lit6K6w5b+GKOS/neWtmCnm
+lbDmja7nmoTnirbmgIHlr7zoh7TkuI3lj6/ph43lhaU8L3A+PHA+YGBgPC9wPjxwPjxicj48c3Bh
+biBzdHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtjaGFyIEdl
+dExvd2VyQ2FzZUNoYXIoY2hhciAqc3RyKTwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAj
+MDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7ezwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9
+ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7c3RhdGljIGluZGV4ID0gMDs8L3NwYW4+
+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO2NoYXIgYyA9
+IDA7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDt3aGlsZShjID0gc3RyW2luZGV4XSk8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAw
+ODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwO3s8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAw
+ODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwO2lmKGlzbG93ZXIoYykpPC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6
+ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDt7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7
+Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtp
+bmRleCsrOzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7YnJlYWs7PC9zcGFu
+Pjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDt9PC9zcGFuPjxicj48c3Bh
+biBzdHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtpbmRleCsrPC9zcGFuPjxicj48c3BhbiBz
+dHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDt9PC9zcGFuPjxicj48c3BhbiBz
+dHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtyZXR1cm4gYzs8L3NwYW4+PGJy
+PjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO308
+L3NwYW4+PGJyPjxicj5gYGA8YnI+PGJyPjxicj7ov5nmmK/kuIDkuKrmkJzntKLlrZfnrKbkuLLk
+uK3lsI/lhpnlrZfnrKbnmoTnqIvluo/vvIzlh73mlbDkv53lrZjkuobmkJzntKLliLDlrZfnrKbk
+uLLnmoTkvY3nva5pbmRleCzlr7zoh7Tov5nkuKrlh73mlbDmmK/kuI3lj6/ph43lhaXnmoTov5nk
+uKppbmRleOW6lOivpeeUseiwg+eUqOiAheadpee7tOaKpO+8jOS4i+mdouaYr+i/meS4quWHveaV
+sOeahOWPr+mHjeWFpeeJiOacrDo8YnI+PGJyPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgw
+MDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtjaGFyIEdldExvd2VyQ2FzZUNoYXIoY2hhciAq
+c3RyLGludCAqaW5kZXgpPC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4m
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDt7PC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMw
+MDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDtjaGFyIGMgPSAwOzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9
+ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7d2hpbGUoYyA9IHN0clsqaW5kZXhdKTwv
+c3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7ezwv
+c3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7aWYoaXNsb3dlcihj
+KSk8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwO3s8L3NwYW4+
+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOygqaW5kZXgpKys7PC9zcGFuPjxicj48c3Bh
+biBzdHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDticmVhazs8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xv
+cjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwO308L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAw
+MDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOygqaW5kZXgpKys8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAw
+MDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwO308L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAw
+MDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwO3JldHVybiBjOzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9y
+OiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7fTwvc3Bhbj48YnI+PGJyPjxicj48
+c3BhbiBzdHlsZT0iY29sb3I6ICM4MDgwODA7Ij4tJm5ic3A7PC9zcGFuPuS7u+S9leWIhumFjeWS
+jOmHiuaUvuWGheWtmOeahOW6k+WHveaVsOmDveaYr+S4jeWPr+mHjeWFpeeahDxicj48c3BhbiBz
+dHlsZT0iY29sb3I6ICM4MDgwODA7Ij4tJm5ic3A7PC9zcGFuPuWwj+W/g+WkhOeQhui/m+eoi+iM
+g+WbtOWGheeahOWFqOWxgOWPmOmHj+WFpSjkvovlpoIgZXJybm8g5ZKMaF9lcnJubyk8YnI+YGBg
+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+O2lmKG9wZW4oZmlsZW5hbWUsT19DUkVBVHxPX1JEV1IpICZsdDsgMCApezwvc3Bhbj48YnI+PHNw
+YW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7cGVycm9yKCJvcGVuIGZpbGUgZmFpbDoiKTs8L3NwYW4+PGJyPjxz
+cGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwO2V4aXQoLTEpOzwvc3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9y
+OiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7fTwvc3Bhbj48YnI+YGBgPGJyPjxi
+cj7kuIrpnaLov5nkuKrlh73mlbDlsLHmmK/kuIDkuKrkuI3lj6/ph43lhaXnmoTlh73mlbAs5b2T
+5Zyo5omn6KGMb3BlbuWujO+8jOWboOS4uuafkOS6m+WOn+WboOWvvOiHtG9wZW7lpLHotKXnu5Pm
+npzlsLHmmK/mlLnlj5jkuoZlcnJub+mUmeivr+egge+8jOS9huatpOaXtuiiq+S/oeWPt+S4reaW
+re+8jOWOu+aJp+ihjOS/oeWPt+WkhOeQhuWHveaVsO+8jOS/oeWPt+WkhOeQhuWHveaVsOS4reaJ
+p+ihjOS6huS4gOS6m+ezu+e7n+iwg+eUqOaIluiAheW6k+WHveaVsOWvvOiHtOS6hmVycm5v5YWo
+5bGA54q25oCB56CB5Y+R55Sf5LqG5Y+Y5YyW77yM6YKj5LmI562J5b6F5L+h5Y+35aSE55CG5Ye9
+5pWw5omn6KGM5a6M5q+V6L+U6L+Y5ZCO6YKj5LmIb3BlbuWksei0peeahOmUmeivr+eggeWwseii
+q+imhuebluS6huOAguS4uuS6humBv+WFjeS4iui/sOmXrumimOWPkeeUn+W6lOivpeWcqOS/oeWP
+t+WkhOeQhuWHveaVsOS4reS/neWtmGVycm5v54q25oCB56CB77yM5omn6KGM5a6M5q+V5ZCO6L+b
+6KGM5oGi5aSN44CCPGJyPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDt2b2lkIGhhbmRsZXIoaW50IHNpZ25vKTwvc3Bhbj48YnI+PHNwYW4g
+c3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7ezwvc3Bhbj48
+YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7aW50IGVycm5vX3NhdmVkOzwvc3Bhbj48YnI+PHNwYW4g
+c3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7ZXJybm9fc2F2ZWQgPSBlcnJubzs8L3NwYW4+PGJyPjxzcGFuIHN0eWxl
+PSJjb2xvcjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOy8qPC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDvmiafooYzkuIDkupvkuJrliqE8L3NwYW4+PGJyPjxzcGFuIHN0eWxlPSJjb2xv
+cjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyovPC9zcGFuPjxicj48c3BhbiBzdHlsZT0iY29sb3I6ICMwMDgwMDA7Ij4mbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsvL+eKtuaAgeeggeaBouWkjTwv
+c3Bhbj48YnI+PHNwYW4gc3R5bGU9ImNvbG9yOiAjMDA4MDAwOyI+Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7ZXJybm8gPSBlcnJub19zYXZlZDs8L3NwYW4+
+PGJyPjxzcGFuIHN0eWxlPSJjb2xvcjogIzAwODAwMDsiPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+O308L3NwYW4+PC9wPg==" style="height:0;width:0;max-height:0;max-width:0;overflow:hidden;font-size:0em;padding:0;margin:0;"></div></div>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">张义飞</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

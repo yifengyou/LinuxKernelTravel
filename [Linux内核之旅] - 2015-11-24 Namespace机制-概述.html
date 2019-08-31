@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Namespace机制-概述
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=407390960&amp;idx=1&amp;sn=0e1fede8644e933f2c7757b19f9a90d0&amp;chksm=76d7671541a0ee03c03e11777b6cd9c1d4bef804487afa7cbe9d0ac1a97f78be5ff4888a8212&amp;scene=27#wechat_redirect&cpage=85' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Namespace机制-概述</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2015-11-24</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                <div class="rich_media_thumb_wrp" id="media">
+                    
+                                        
+                                    </div>
+                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style=""><span style="font-size: 16px;"></span></p><section class="tn-Powered-by-XIUMI" style="margin-top: 0.5em; margin-bottom: 0.5em; max-width: 100%; box-sizing: border-box; color: rgb(62, 62, 62); line-height: 25.6px; white-space: normal; border: 0px none; word-wrap: break-word !important; background-color: rgb(255, 255, 255);"><section class="tn-Powered-by-XIUMI" style="max-width: 100%; box-sizing: border-box; font-size: 1em; font-family: inherit; text-decoration: inherit; color: rgb(51, 51, 51); border-color: rgb(4, 112, 160); word-wrap: break-word !important;"><section class="tn-Powered-by-XIUMI" style="max-width: 100%; box-sizing: border-box; height: 16px; word-wrap: break-word !important;"><section class="tn-Powered-by-XIUMI" style="max-width: 100%; box-sizing: border-box; height: 16px; width: 24px; float: left; border-top-width: 6px; border-top-style: solid; border-left-width: 6px; border-left-style: solid; border-color: rgb(4, 112, 160); word-wrap: break-word !important;"></section><section class="tn-Powered-by-XIUMI" style="max-width: 100%; box-sizing: border-box; height: 16px; width: 24px; float: right; border-top-width: 6px; border-top-style: solid; border-right-width: 6px; border-right-style: solid; border-color: rgb(4, 112, 160); word-wrap: break-word !important;"></section><section class="tn-Powered-by-XIUMI" style="max-width: 100%; box-sizing: border-box; display: inline-block; color: transparent; clear: both; word-wrap: break-word !important;"></section></section><section class="tn-Powered-by-XIUMI" style="margin: -13px 3px; padding: 12px; max-width: 100%; box-sizing: border-box; word-wrap: break-word; border: 1px solid rgb(4, 112, 160); border-radius: 6px; line-height: 1.4; font-family: inherit;"><section class="tn-Powered-by-XIUMI" style="max-width: 100%; box-sizing: border-box; word-wrap: break-word !important;"><span style="line-height: 25.6px;">Linux Namespaces机制提供了一种资源隔离方案</span></section></section><section class="tn-Powered-by-XIUMI" style="max-width: 100%; box-sizing: border-box; height: 16px; word-wrap: break-word !important;"><section class="tn-Powered-by-XIUMI" style="max-width: 100%; box-sizing: border-box; height: 16px; width: 24px; float: left; border-bottom-width: 6px; border-bottom-style: solid; border-left-width: 6px; border-left-style: solid; border-color: rgb(4, 112, 160); word-wrap: break-word !important;"></section><section class="tn-Powered-by-XIUMI" style="max-width: 100%; box-sizing: border-box; height: 16px; width: 24px; float: right; border-bottom-width: 6px; border-bottom-style: solid; border-right-width: 6px; border-right-style: solid; border-color: rgb(4, 112, 160); word-wrap: break-word !important;"></section></section></section><section style="max-width: 100%; width: 0px; height: 0px; clear: both; box-sizing: border-box !important; word-wrap: break-word !important;"></section></section><p><span style="line-height: 1.6;">       PID,IPC,Network等系统资源不再是全局性的，而是属于特定的Namespace。每个Namespace里面的资源对其他Namespace都是透明的。要创建新的Namespace，只需要在调用clone时指定相应的flag。Linux Namespaces机制为实现基于容器的虚拟化技术提供了很好的基础，LXC（Linux containers）就是利用这一特性实现了资源的隔离。不同container内的进程属于不同的Namespace，彼此透明，互不干扰。下面我们就从clone系统调用的flag出发，来介绍各个Namespace。</span><br  /></p><section class="tn-Powered-by-XIUMI" style="margin-top: 0.8em; margin-bottom: 0.5em; max-width: 100%; box-sizing: border-box; color: rgb(62, 62, 62); line-height: 25.6px; border: 0px none; overflow: hidden; word-wrap: break-word !important; background-color: rgb(255, 255, 255);"><section class="tn-Powered-by-XIUMI" style="max-width: 100%; box-sizing: border-box; display: inline-block; font-size: 1em; font-family: inherit; text-decoration: inherit; color: rgb(255, 255, 255); border-color: rgb(4, 112, 160); word-wrap: break-word !important;"><section class="tn-Powered-by-XIUMI" style="padding: 0.3em 0.5em; max-width: 100%; box-sizing: border-box; height: 2em; display: inline-block; text-align: center; font-size: 1em; line-height: 1.4; vertical-align: top; font-family: inherit; word-wrap: break-word !important; background-color: rgb(4, 112, 160);"><section class="tn-Powered-by-XIUMI" style="max-width: 100%; box-sizing: border-box; word-wrap: break-word !important;">PID Namespace</section></section><section class="tn-Powered-by-XIUMI" style="max-width: 100%; box-sizing: border-box; display: inline-block; height: 2em; width: 0.5em; vertical-align: top; border-left-width: 0.5em; border-left-style: solid; border-left-color: rgb(4, 112, 160); font-size: 1em; word-wrap: break-word !important; border-top-width: 1em !important; border-top-style: solid !important; border-top-color: transparent !important; border-bottom-width: 1em !important; border-bottom-style: solid !important; border-bottom-color: transparent !important;"></section></section></section><p style=""><span style="font-size: 16px;">    当调用clone时，设定了CLONE_NEWPID，就会创建一个新的PID Namespace，clone出来的新进程将成为Namespace里的第一个进程。一个PID Namespace为进程提供了一个独立的PID环境，PID Namespace内的PID将从1开始，在Namespace内调用fork，vfork或clone都将产生一个在该Namespace内独立的PID。新创建的Namespace里的第一个进程在该Namespace内的PID将为1，就像一个独立的系统里的init进程一样。该Namespace内的孤儿进程都将以该进程为父进程，当该进程被结束时，该Namespace内所有的进程都会被结束。PID Namespace是层次性，新创建的Namespace将会是创建该Namespace的进程属于的Namespace的子Namespace。子Namespace中的进程对于父Namespace是可见的，一个进程将拥有不止一个PID，而是在所在的Namespace以及所有直系祖先Namespace中都将有一个PID。系统启动时，内核将创建一个默认的PID Namespace，该Namespace是所有以后创建的Namespace的祖先，因此系统所有的进程在该Namespace都是可见的。</span></p><h2 style=""><strong><span style="font-size: 18px;"></span></strong></h2><section class="tn-Powered-by-XIUMI" style="margin-top: 0.8em; margin-bottom: 0.5em; line-height: 25.6px; white-space: normal; max-width: 100%; box-sizing: border-box; color: rgb(62, 62, 62); border: 0px none; overflow: hidden; word-wrap: break-word !important; background-color: rgb(255, 255, 255);"><section class="tn-Powered-by-XIUMI" style="max-width: 100%; box-sizing: border-box; display: inline-block; font-size: 1em; font-family: inherit; text-decoration: inherit; color: rgb(255, 255, 255); border-color: rgb(4, 112, 160); word-wrap: break-word !important;"><section class="tn-Powered-by-XIUMI" style="padding: 0.3em 0.5em; max-width: 100%; box-sizing: border-box; height: 2em; display: inline-block; text-align: center; font-size: 1em; line-height: 1.4; vertical-align: top; font-family: inherit; word-wrap: break-word !important; background-color: rgb(4, 112, 160);"><section class="tn-Powered-by-XIUMI" style="max-width: 100%; box-sizing: border-box; word-wrap: break-word !important;">IPC Namespace</section></section><section class="tn-Powered-by-XIUMI" style="max-width: 100%; box-sizing: border-box; display: inline-block; height: 2em; width: 0.5em; vertical-align: top; border-left-width: 0.5em; border-left-style: solid; border-left-color: rgb(4, 112, 160); font-size: 1em; word-wrap: break-word !important; border-top-width: 1em !important; border-top-style: solid !important; border-top-color: transparent !important; border-bottom-width: 1em !important; border-bottom-style: solid !important; border-bottom-color: transparent !important;"></section></section><span style="line-height: 1.6;"></span></section><p style=""><span style="font-size: 16px;">    当调用clone时，设定了CLONE_NEWIPC，就会创建一个新的IPC Namespace，clone出来的进程将成为Namespace里的第一个进程。一个IPC Namespace有一组System V IPC objects 标识符构成，这标识符有IPC相关的系统调用创建。在一个IPC Namespace里面创建的IPC object对该Namespace内的所有进程可见，但是对其他Namespace不可见，这样就使得不同Namespace之间的进程不能直接通信，就像是在不同的系统里一样。当一个IPC Namespace被销毁，该Namespace内的所有IPC object会被内核自动销毁。</span></p><p style=""><span style="font-size: 16px;">    <span style="color: rgb(255, 255, 255); line-height: 22.4px; text-align: center;  background-color: rgb(4, 112, 160);">注意:</span>PID Namespace和IPCNamespace可以组合起来一起使用，只需在调用clone时，同时指定CLONE_NEWPID和CLONE_NEWIPC，这样新创建的Namespace既是一个独立的PID空间又是一个独立的IPC空间。不同Namespace的进程彼此不可见，也不能互相通信，这样就实现了进程间的隔离。</span></p><h2 style=""><strong><span style="font-size: 18px;"></span></strong></h2><section class="tn-Powered-by-XIUMI" style="margin-top: 0.8em; margin-bottom: 0.5em; line-height: 25.6px; white-space: normal; max-width: 100%; box-sizing: border-box; color: rgb(62, 62, 62); border: 0px none; overflow: hidden; word-wrap: break-word !important; background-color: rgb(255, 255, 255);"><section class="tn-Powered-by-XIUMI" style="max-width: 100%; box-sizing: border-box; display: inline-block; font-size: 1em; font-family: inherit; text-decoration: inherit; color: rgb(255, 255, 255); border-color: rgb(4, 112, 160); word-wrap: break-word !important;"><section class="tn-Powered-by-XIUMI" style="padding: 0.3em 0.5em; max-width: 100%; box-sizing: border-box; height: 2em; display: inline-block; text-align: center; font-size: 1em; line-height: 1.4; vertical-align: top; font-family: inherit; word-wrap: break-word !important; background-color: rgb(4, 112, 160);"><section class="tn-Powered-by-XIUMI" style="max-width: 100%; box-sizing: border-box; word-wrap: break-word !important;">Mount Namespace</section></section><section class="tn-Powered-by-XIUMI" style="max-width: 100%; box-sizing: border-box; display: inline-block; height: 2em; width: 0.5em; vertical-align: top; border-left-width: 0.5em; border-left-style: solid; border-left-color: rgb(4, 112, 160); font-size: 1em; word-wrap: break-word !important; border-top-width: 1em !important; border-top-style: solid !important; border-top-color: transparent !important; border-bottom-width: 1em !important; border-bottom-style: solid !important; border-bottom-color: transparent !important;"></section></section><span style="line-height: 1.6;"></span></section><p style=""><span style="font-size: 16px;">    当调用clone时，设定了CLONE_NEWNS，就会创建一个新的mount Namespace。每个进程都存在于一个mount Namespace里面，mount Namespace为进程提供了一个文件层次视图。如果不设定这个flag，子进程和父进程将共享一个mount Namespace，其后子进程调用mount或umount将会影响到所有该Namespace内的进程。如果子进程在一个独立的mount Namespace里面，就可以调用mount或umount建立一份新的文件层次视图。该flag配合pivot_root系统调用，可以为进程创建一个独立的目录空间。</span></p><h2 style=""><strong><span style="font-size: 18px;"></span></strong></h2><section class="tn-Powered-by-XIUMI" style="margin-top: 0.8em; margin-bottom: 0.5em; line-height: 25.6px; white-space: normal; max-width: 100%; box-sizing: border-box; color: rgb(62, 62, 62); border: 0px none; overflow: hidden; word-wrap: break-word !important; background-color: rgb(255, 255, 255);"><section class="tn-Powered-by-XIUMI" style="max-width: 100%; box-sizing: border-box; display: inline-block; font-size: 1em; font-family: inherit; text-decoration: inherit; color: rgb(255, 255, 255); border-color: rgb(4, 112, 160); word-wrap: break-word !important;"><section class="tn-Powered-by-XIUMI" style="padding: 0.3em 0.5em; max-width: 100%; box-sizing: border-box; height: 2em; display: inline-block; text-align: center; font-size: 1em; line-height: 1.4; vertical-align: top; font-family: inherit; word-wrap: break-word !important; background-color: rgb(4, 112, 160);"><section class="tn-Powered-by-XIUMI" style="max-width: 100%; box-sizing: border-box; word-wrap: break-word !important;">Network Namespace</section></section><section class="tn-Powered-by-XIUMI" style="max-width: 100%; box-sizing: border-box; display: inline-block; height: 2em; width: 0.5em; vertical-align: top; border-left-width: 0.5em; border-left-style: solid; border-left-color: rgb(4, 112, 160); font-size: 1em; word-wrap: break-word !important; border-top-width: 1em !important; border-top-style: solid !important; border-top-color: transparent !important; border-bottom-width: 1em !important; border-bottom-style: solid !important; border-bottom-color: transparent !important;"></section></section><span style="line-height: 1.6;"></span></section><p style=""><span style="font-size: 16px;">当调用clone时，设定了CLONE_NEWNET，就会创建一个新的Network Namespace。一个Network Namespace为进程提供了一个完全独立的网络协议栈的视图。包括网络设备接口，IPv4和IPv6协议栈，IP路由表，防火墙规则，sockets等等。一个Network Namespace提供了一份独立的网络环境，就跟一个独立的系统一样。一个物理设备只能存在于一NetworkNamespace中，可以从一个Namespace移动另一个Namespace中。虚拟网络设备(virtual network device)提供了一种类似管道的抽象，可以在不同的Namespace之间建立隧道。利用虚拟化网络设备，可以建立到其他Namespace中的物理设备的桥接。当一个Network Namespace被销毁时，物理设备会被自动移回init NetworNamespace，即系统最开始的Namespace。</span></p><h2 style=""><span style="font-size: 16px;"></span></h2><section class="tn-Powered-by-XIUMI" style="margin-top: 0.8em; margin-bottom: 0.5em; line-height: 25.6px; white-space: normal; max-width: 100%; box-sizing: border-box; color: rgb(62, 62, 62); border: 0px none; overflow: hidden; word-wrap: break-word !important; background-color: rgb(255, 255, 255);"><section class="tn-Powered-by-XIUMI" style="max-width: 100%; box-sizing: border-box; display: inline-block; font-size: 1em; font-family: inherit; text-decoration: inherit; color: rgb(255, 255, 255); border-color: rgb(4, 112, 160); word-wrap: break-word !important;"><section class="tn-Powered-by-XIUMI" style="padding: 0.3em 0.5em; max-width: 100%; box-sizing: border-box; height: 2em; display: inline-block; text-align: center; font-size: 1em; line-height: 1.4; vertical-align: top; font-family: inherit; word-wrap: break-word !important; background-color: rgb(4, 112, 160);"><section class="tn-Powered-by-XIUMI" style="max-width: 100%; box-sizing: border-box; word-wrap: break-word !important;">UTS Namespace</section></section><section class="tn-Powered-by-XIUMI" style="max-width: 100%; box-sizing: border-box; display: inline-block; height: 2em; width: 0.5em; vertical-align: top; border-left-width: 0.5em; border-left-style: solid; border-left-color: rgb(4, 112, 160); font-size: 1em; word-wrap: break-word !important; border-top-width: 1em !important; border-top-style: solid !important; border-top-color: transparent !important; border-bottom-width: 1em !important; border-bottom-style: solid !important; border-bottom-color: transparent !important;"></section></section><span style="line-height: 1.6;"></span></section><p style=""><span style="font-size: 16px;">    当调用clone时，设定了CLONENEWUTS，就会创建一个新的UTS Namespace。一个UTSNamespace就是一组被uname返回的标识符。新的UTS Namespace中的标识符通过复制调用进程所属的Namespace的标识符来初始化。Clone出来的进程可以通过相关系统调用改变这些标识符，比如调用sethostname来改变该Namespace的hostname。这一改变对该Namespace内的所有进程可见。CLONENEWUTS和CLONE_NEWNET一起使用，可以虚拟出一个有独立主机名和网络空间的环境，就跟网络上一台独立的主机一样。</span></p><h2 style=""><span style="font-size: 16px;"></span></h2><section class="tn-Powered-by-XIUMI" style="margin-top: 0.8em; margin-bottom: 0.5em; line-height: 25.6px; white-space: normal; max-width: 100%; box-sizing: border-box; color: rgb(62, 62, 62); border: 0px none; overflow: hidden; word-wrap: break-word !important; background-color: rgb(255, 255, 255);"><section class="tn-Powered-by-XIUMI" style="max-width: 100%; box-sizing: border-box; display: inline-block; font-size: 1em; font-family: inherit; text-decoration: inherit; color: rgb(255, 255, 255); border-color: rgb(4, 112, 160); word-wrap: break-word !important;"><section class="tn-Powered-by-XIUMI" style="padding: 0.3em 0.5em; max-width: 100%; box-sizing: border-box; height: 2em; display: inline-block; text-align: center; font-size: 1em; line-height: 1.4; vertical-align: top; font-family: inherit; word-wrap: break-word !important; background-color: rgb(4, 112, 160);"><section class="tn-Powered-by-XIUMI" style="max-width: 100%; box-sizing: border-box; word-wrap: break-word !important;">小结</section></section><section class="tn-Powered-by-XIUMI" style="max-width: 100%; box-sizing: border-box; display: inline-block; height: 2em; width: 0.5em; vertical-align: top; border-left-width: 0.5em; border-left-style: solid; border-left-color: rgb(4, 112, 160); font-size: 1em; word-wrap: break-word !important; border-top-width: 1em !important; border-top-style: solid !important; border-top-color: transparent !important; border-bottom-width: 1em !important; border-bottom-style: solid !important; border-bottom-color: transparent !important;"></section></section><span style="line-height: 1.6;"></span></section><p style=""><span style="font-size: 16px;">    以上所有clone flag都可以一起使用，为进程提供了一个独立的运行环境。LXC正是通过在clone时设定这些flag，为进程创建一个有独立PID，IPC，FS，Network，UTS空间的container。一个container就是一个虚拟的运行环境，对container里的进程是透明的，它会以为自己是直接在一个系统上运行的。一个container就像传统虚拟化技术里面的一台安装了OS的虚拟机，但是开销更小，部署更为便捷。作者曰：Linux Namespaces机制本身就是为了实现container based virtualizaiton开发的。它提供了一套轻量级、高效率的系统资源隔离方案，远比传统的虚拟化技术开销小，不过它也不是完美的，它为内核的开发带来了更多的复杂性，它在隔离性和容错性上跟传统的虚拟化技术比也还有差距。</span></p><p><span style="">(本文整理来自于互联网上的资料)</span></p><p>转自张义飞博客</p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name"></div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://blog.csdn.net/zhangyifei216/article/details/49788629' target='_blank'>
+			阅读全文
+		</a>
+	</div>
+</body>

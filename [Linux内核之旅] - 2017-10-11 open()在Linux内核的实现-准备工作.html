@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		open()在Linux内核的实现-准备工作
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664604810&amp;idx=1&amp;sn=7c632ed1308e0ee5aaa8e9e2cfd8a42f&amp;chksm=f04d896fc73a0079ae45b53f7e25d24a8978a6ca5e5e6db26c4f7b870974bd18bb7520703a76&amp;scene=27#wechat_redirect&cpage=30' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">open()在Linux内核的实现-准备工作</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        武特
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2017-10-11</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <h2 style="border-width: 0px;border-style: initial;border-color: initial;font-size: 28px;margin-top: 1em;margin-bottom: 0.2em;outline: 0px;"><span style="font-size: 16px;">1.基本说明</span></h2><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;"><strong style="border-width: 0px;border-style: initial;border-color: initial;outline: 0px;color: rgb(46, 46, 46);">“open()在Linux内核的实现”</strong>系列文章将分析open系统调用在Linux内核中的实现过程。本系列文章分为六篇，每篇文章都描述 open()实现的一部分内容，与前后的系列文章保持相对独立。本文属于前序文章，集中说明后续文章涉及到的基本原理和基本数据结构，并且对整个分析过程进行Q&amp;A。</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">本系列文章参考Linux内核源码版本为3.2.69。</span></p><h2 style="border-width: 0px;border-style: initial;border-color: initial;font-size: 28px;margin-top: 1em;margin-bottom: 0.2em;outline: 0px;"><span style="font-size: 16px;">2.数据结构</span></h2><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;"><strong style="border-width: 0px;border-style: initial;border-color: initial;outline: 0px;color: rgb(46, 46, 46);">dentry结构</strong></span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">对于打开文件这个操作来说，它是通过路径名查找对应文件inode的过程，这里用户直面的是文件路径，而内核关注的inode。在文件路径和inode之间通过目录项（dentry）缓存进行关联，dentry缓存加快了vfs对文件的查找。所有的目录项通过散列表进行组织，这样可以快速对dentry进行查找；此外，内核将常用的dentry通过LRU算法进行组织，这样可以快速查到最近一段时间经常使用的dentry。</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">下面将对dentry中的部分字段进行说明。</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">d_inode：该字段指向目录项所关联的文件。如果该字段为空，则说明当前目录项指向的是一个并不存在的文件。</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">d_name:该字段表示目录项名称（并不是整个路径名），但它并不是单纯的字符串，而是将字符串文件名、字符串长度和散列值封装成qstr（quick string）结构，这样可以加速目录项的查找工作；</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">d_iname：当目录项名称长度小于DNAME_INLINE_LEN时，则该字符串名称则直接通过该字段进行存储；</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">d_parent：一个路径中的目录项形成层级结构。该字段指向当前目录项的父目录dentry实例；特别的，对于根目录项来说，这个字段指向自己；</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">d_subdirs：当前目录项如果代表目录，则该目录下的所有文件对应的dentry将形成d_subdirs链表（表头）；</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">d_child：这个字段是父目录dentry中d_subdirs链表中的结点；</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">d_alias：一个文件可能有多个名称（硬链接），即多个dentry，则一个文件的所有目录项则形成一个链表，这个链表头位于该文件inode中的i_dentry字段，d_alias充当的该链表中的结点；</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;"><strong style="border-width: 0px;border-style: initial;border-color: initial;outline: 0px;color: rgb(46, 46, 46);">vfsmount结构</strong></span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">每个挂载在内核目录树中的文件系统都将对应一个vfsmount结构，下面将对该结构中的部分字段进行说明。假设设备/dev/sdc为ntfs文件系统，现需要将其挂载在文件系统为ext3的/home/edsionte/work下。因此，/home/edsionte/work可以被称为ntfs文件系统的挂载点，并且称ntfs文件系统与ext3文件系统形成父子文件文件系统关系。同时ntfs也可称为源文件系统，而ext3也可称为目的文件系统。</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">mnt_hash：内核将系统内所有已挂载的文件系统通过散列表的形式进行组织，每个vfsmount将处于其对应哈希值的冲突链表当中。mnt_hash字段则为具体冲突链表的元素。</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">mnt_mounts：如果当前文件系统下挂载了其他的子文件系统，那么这些子文件系统将通过自身vfsmount中的mnt_child字段组成一个链表，该链表头为父文件系统中的mnt_mounts字段。</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">mnt_child：当前文件系统将通过该字段与其他父文件系统下的子文件系统组成一个链表。</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">mnt_parent：该字段指向父文件系统对应的vfsmount结构。即指向ext3文件系统对应的vfsmount结构。</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">mnt_mountpoint：该字段表示源文件系统在目的文件系统中挂载点对应的dentry结构。/home/edsionte/work为挂载点，则该字段指向目录项work。</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">mnt_root：指向当前文件系统的根目录项。对于源文件系统ntfs来说，根目录项相对为/，但在整个系统目录树中，根目录项为work。</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">mnt_sb：每个文件系统都将对应一个super_block结构，该字段指向/dev/sdc设备上文件系统对应的超级块。</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">mnt_list：所有处于一个名字空间的文件系统通过mnt_list字段链接在一起，而该链表的表头为该名字空间结构中的list字段。</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">mnt_ns：该字段表示当前vfsmount所对应的名字空间结构。</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;"><strong style="border-width: 0px;border-style: initial;border-color: initial;outline: 0px;color: rgb(46, 46, 46);">nameidata结构</strong></span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">文件路径是由各级别的目录项组成的，因此路径的查找过程是对目录项的逐级查找。nameidata结构是路径查找过程中的核心数据结构，在每一级目录项查找过程中，它向查找函数输入参数，并且保存本次查找的结果，因此它是不断变化的。</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">下面对nameidata结构中的部分字段进行说明。</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">path：该字段用于保存当前目录项。该字段是path结构，该结构将目录项和该目录项所关联的vfsmount结构进行封装。</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">last：该字段为qstr结构，表示当前目录项的名称。</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">root：该字段为path结构，表示根目录。</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">last_type：表示当前目录项的类型。</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">inode：表示当前目录项对应的inode，它的取值来自于path.dentry.d_inode。</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">depth：表示符号链接当前的嵌套级别，最大不能超过MAX_NESTED_LINKS；</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">saved_names：该字符串数组表示符号链接每个嵌套级别的名称；</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">目录项的类型包括以下几种情况：</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">LAST_NORM:普通目录项；</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">LAST_ROOT：当前目录项为/；</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">LAST_DOT：当前目录项为.；</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">LAST_DOTDOT：当前目录项为..；</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">LAST_BIND：当前目录项为符号链接文件；</span></p><h2 style="border-width: 0px;border-style: initial;border-color: initial;font-size: 28px;margin-top: 1em;margin-bottom: 0.2em;outline: 0px;"><span style="font-size: 16px;">3.基本原理</span></h2><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;"><strong style="border-width: 0px;border-style: initial;border-color: initial;outline: 0px;color: rgb(46, 46, 46);">rcu机制</strong></span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">写时拷贝（rcu，Read-Copy-Update）是Linux内核的一种锁机制，它是一种改良的rwlock（但并不能代替），适合读者多写者少的情景，可以保证读写者操作同时进行。</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">对于读者而言，rcu机制可以保证多个读者在不申请锁的情况下直接对临界区资源进行访问。对于写者而言，它之所以可以与读者同时访问共享资源，是因为在读者读取原始数据的同时它修改的是原始数据的备份。当所有读者都退出访问该共享资源时，写着将用修改后的新数据替换原始数据。同时，rcu中的回收机制将对原始数据进行回收。</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">与rwlock相比，在读多写少的情况下，rcu的效率会高很多。因为rcu所提供的拷贝技术使读写者可以同时访问共享资源，因此免去了读写者申请锁时所花费的开销。</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">由于rcu机制的自身特点，它所使用的上下文必须是不可睡眠的。因为，写者在替换原始数据之前会等待所有读者退出临界区，而此时如果读者处于阻塞状态，那么系统将进入死锁状态。</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;"><strong style="border-width: 0px;border-style: initial;border-color: initial;outline: 0px;color: rgb(46, 46, 46);">rcu-walk和ref-walk</strong></span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">内核中的路径查找提供两种模式：ref-walk和rcu-walk。前者是内核中传统的路径查找方式，而ref-walk是基于rcu所机制的一种路径查找模式。由于路径查找正好是一个读多写少的情景，基于rcu机制快速高效的特点，该模式可以高效的进行路径查找。不过，rcu-walk并不是万能的，如果路径查找过程中需要睡眠，那么必须将查找模式由rcu-walk切换到ref-walk。</span></p><h2 style="border-width: 0px;border-style: initial;border-color: initial;font-size: 28px;margin-top: 1em;margin-bottom: 0.2em;outline: 0px;"><span style="font-size: 16px;">4.总结</span></h2><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;">本篇对open()在内核实现中所涉及的数据结构和原理进行实现说明，并且针对open()实现过程的一些问题进行Q&amp;A。可以在阅读open()内核源码之前阅读本文，也可在阅读之后再次阅读本文。</span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;"><strong style="border-width: 0px;border-style: initial;border-color: initial;outline: 0px;color: rgb(46, 46, 46);">参考资料：</strong></span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;"><strong style="border-width: 0px;border-style: initial;border-color: initial;outline: 0px;color: rgb(46, 46, 46);">1.Linux源码3.2.69；</strong></span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;"><strong style="border-width: 0px;border-style: initial;border-color: initial;outline: 0px;color: rgb(46, 46, 46);">2.深入理解Linux内核：http://book.douban.com/subject/2287506/；</strong></span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;"><strong style="border-width: 0px;border-style: initial;border-color: initial;outline: 0px;color: rgb(46, 46, 46);">3.深入Linux内核架构：http://book.douban.com/subject/4843567/；</strong></span></p><p style="border-width: 0px;border-style: initial;border-color: initial;font-size: 13px;margin-bottom: 9px;outline: 0px;color: rgb(77, 77, 77);"><span style="font-size: 16px;"><strong style="border-width: 0px;border-style: initial;border-color: initial;outline: 0px;color: rgb(46, 46, 46);">4.Linux内核探秘：http://book.douban.com/subject/25817503/；</strong></span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">武特</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                <div class="reward_qrcode_area reward_area tc" id="js_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                                        <p class="reward_tips"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" id="js_reward_qrcode_img"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

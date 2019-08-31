@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		不忘初心
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=414648495&amp;idx=1&amp;sn=fe9fdcc07af28db946ccb300551c4abc&amp;scene=27#wechat_redirect&cpage=82' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">不忘初心</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-01-01</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                <div class="rich_media_thumb_wrp" id="media">
+                    
+                                        
+                                    </div>
+                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p>　　在2015年的最后一天，满屏都是Debian 创始人 Ian Murdock离开人世的信息，他终究没有跨入到新的一年，但他真的离开这个为之战斗过的自由社区么？<span style="line-height: 1.6;"> </span></p><p>   Ian 从 1993 年 8 月开始启动 Debian 项目，并在同一年的稍晚时间正式发布了它的第一个版本，Debian 还会一直坚定不移地继续努力，成为流行世界、亿万人受惠的通用操作系统，不管是嵌入式设备还是太空站，都能看到它的身影。</p><p>　　Ian 一直非常关注在创建一个发行版和开源社区文化的过程中做正取的事情，不管是技术上，还是道德上。每一次准备好的系统发布，都包含着对自由软件和自由精神立场的坚定支持。</p><p><span style="line-height: 1.6;">　Ian 对开源的忠诚奉献一直引导着他的工作，不管是在 Debian 还是在后来的年月里，一直伴随他朝着最好的未来。Ian 的梦想一直都在发扬和继续，Debian 社区仍然非常活跃，成千上万的开发者们用数不清的工作时间带给世界一个安全可靠的操作系统。</span><br  /></p><p><span style="line-height: 1.6;">    一位朋友提到了Ian创建的GNU Gnix，一个百分百自由软件的GNU系统，一种新的包管理器。除了标准的软件包管理功能外，Guix支持透明升级和回滚，无特权包管理，针对每个用户的配置文件，以及垃圾回收，目前已经到了0.9版本，GUILE 是其系统配置语言。</span></p><p><span style="line-height: 1.6;">    最好的怀念就是继承，借此新年之际，祝大家工作顺利，不忘初心，如小企鹅般快乐的驶向未来。</span></p><p><span style="line-height: 1.6;"><img data-s="300,640" data-type="jpeg" src="data:image/JPG;base64,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 " src="SeWfibBcBT0FBxPlIOCFh5COCBxIBfdQkkwYsJNb6Orbn0xXVoVlPMKw2pXHGLia4BFooJg54PezSzawyN2paiadw"  data-ratio="0.75" data-w="400"  /><br  /></span></p><p><span style="line-height: 1.6;">   </span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name"></div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

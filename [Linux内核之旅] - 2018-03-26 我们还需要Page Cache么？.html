@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		我们还需要Page Cache么？
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664605214&amp;idx=1&amp;sn=96c8e9ea252b94d2c84c4d3094304d7c&amp;chksm=f04d8bfbc73a02ed61a100eb2bd4aab9e428060972330577588443c0af6534404d15cf093cb0&amp;scene=27#wechat_redirect&cpage=23' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">我们还需要Page Cache么？</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        齐江 杨艇艇 马涛
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2018-03-26</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 1.6;word-wrap: break-word !important;outline: none !important;">本文根据 https://lwn.net/Articles/712467/ 翻译改编而来。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 1.6;word-wrap: break-word !important;outline: none !important;">随着3DX POINT相关技术的逐渐普及和推广，我们可以预见很快持久化内存（Persistent Memory）将会被使用得越来越多，同时也催生了Linux内核很多方面的革新，Matthew Wilcox的DAX就是其中非常著名的一个，这个东东可以让用户对于基于持久化内存的文件系统跳过页面缓存（Page Cache）直接访问文件系统，而Dave Chinner甚至预测有了DAX，我们将不再需要页面缓存了。这个从1995年开始存在于Linux内核并造福无数苍生的玩意难道要寿终正寝了么？作为DAX的始作俑者，Matthew Wilcox又是怎么认为的？让我们一起去听听他在今年linux.conf.au上的演讲。</p><h3 style="margin-top: 1.2em;margin-bottom: 0.6em;font-weight: bold;font-size: 27.2px;max-width: 100%;box-sizing: border-box;font-family: inherit;line-height: 1.6;color: inherit;word-wrap: break-word !important;outline: none !important;">缓存的重要性</h3><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 1.6;word-wrap: break-word !important;outline: none !important;">首先计算机就是缓存的世界，君不见体系结构领域里面关于cache相关的paper一直是层出不穷，此起彼伏。Wilcox甚至回过头查阅了1975年发行的Unix第六版，并在那里找到了使用缓冲区缓存的例子。同时Wilcox举例说只要缓存都命中，他的新电脑每秒可以执行100亿条指令。但是内存每秒只能跑5亿3千万条cache line，因此缓存未命中就会严重影响性能。如果数据没有缓存到主存，需要从存储设备读， 即使是快速的SSD，也会变得很慢。 PDP-11会因缓存未命中而显著变慢，几十年过去了，这个问题反而恶化了。因为CPU的发展速度比内存快，而同时内存的发展速度相比存储也更快，所以缓存未命中的带来的性能损失也会越来越严重。</p><h3 style="margin-top: 1.2em;margin-bottom: 0.6em;font-weight: bold;font-size: 27.2px;max-width: 100%;box-sizing: border-box;font-family: inherit;line-height: 1.6;color: inherit;word-wrap: break-word !important;outline: none !important;">什么是Linux的页面缓存</h3><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 1.6;word-wrap: break-word !important;outline: none !important;">如前文所述，很久以来，Unix系统都有缓冲区缓存(Buffer Cache)，位于文件系统与磁盘之间，目的是为了缓存磁盘块到内存中。Linux从一开始就有个缓冲区缓存。在1995年发行的1.3.50版本中，Linus Torvald做了一个重大创新——页面缓存。页面缓存与缓冲区缓存的区别在于，它是位于虚拟文件系统（VFS）与文件系统本身之间。有了页面缓存，如果所需的页面已经存在，则根本无需调用文件系统的代码。起初，页面缓存和缓冲区缓存是完全独立的，在1999年，Ingo Molnar统一了它们。现在，缓冲区缓存仍然存在，但是内容是指向页面缓存。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 1.6;word-wrap: break-word !important;outline: none !important;">页面缓存有许多非常重要的功能，比如可以通过给定的索引查找页面。如果页面不存在，则创建并从磁盘填充相应的内容。脏页可以刷回磁盘，页面可以被锁定，解锁，以及从缓存中删除。线程可以等待页面状态的变化，也可以通过接口对给定状态的页面进行搜索，页面缓存还能够追踪与外部存储相关的错误等等。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 1.6;word-wrap: break-word !important;outline: none !important;">另外页面缓存还需要有一套手段来对未来的使用进行预测。当缓存增长太大时，各种启发算法开始决策哪些页面应当被移除。仅使用了一次的页面很可能不会被再使用，因此它们将保留在“不活跃”链表（inactive list）并相对较快的换出。第二次使用将会把页面从不活跃链表转移到活跃链表（active list），活跃链表的页也会因为超时而被移到不活跃列表。 有一个例外，“影子”条目用于追踪已脱离不活跃链表并已回收的页面，这些条目可以延长相对遥远的过去使用过的页的生命周期。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 1.6;word-wrap: break-word !important;outline: none !important;">随着内存变大，大页和透明大页也开始普及起来。不过透明大页（THP）特性最初只能用于匿名（非文件后端）内存，把大页在页面缓存中使用同样也会有很多优点。不过由于radix tree的限制，将大页作为页面缓存是Linux内核的一个挑战。最早的一个尝试是简单地往页面缓存中增加了大量单页条目，以对应于单个大页。Wilcox认为这种方法是“愚蠢的”，他增强了用于追踪页面缓存中页面的radix tree代码，使得页面缓存可以使用单个条目来表示对应的大页，从而使radix tree能够直接处理大页的条目。</p><h3 style="margin-top: 1.2em;margin-bottom: 0.6em;font-weight: bold;font-size: 27.2px;max-width: 100%;box-sizing: border-box;font-family: inherit;line-height: 1.6;color: inherit;word-wrap: break-word !important;outline: none !important;">是否仍然需要页面缓存？</h3><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 1.6;word-wrap: break-word !important;outline: none !important;">介绍完页面缓存光辉的历史和强大的功能以后，我们回到开头的问题，现在Linux内核是否还需要页面缓存呢？由于Wilcox的DAX实现，Dave Chinner预测我们将不再需要页面缓存。当然同样也有其他人不同意Chinner，Linus Torvalds也是其中之一。Torvalds在一个单独的论坛中指出页面缓存很重要，因为在数据访问的关键路径上，好的东西从来不是出自低层的文件系统代码（译者作为一个文件系统开发者，表示很受伤，附上文中Torvalds的原话：the page cache is important because good things don’t come from having low-level filesystem code in the critical path for data access）。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 1.6;word-wrap: break-word !important;outline: none !important;">对于是否需要页面缓存，DAX的作者Wilcox是咋想的呢？他说“没有什么比你的同事怀疑你的整个动机更糟糕的了”，所以貌似他也不是想干掉页面缓存。但是等等，为啥Dave Chinner会得出与之相反的结论呢？</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 1.6;word-wrap: break-word !important;outline: none !important;">原来Wilcox在设计他的DAX代码的时候，其实真的没有使用页面缓存。当一个应用使用类似于read()的系统调用从存储在持久化内存中的文件中读取数据时，DAX会介入。由于请求的数据不存在于页面缓存中，VFS层调用文件系统特定的read_iter()函数。这反过来调用到DAX代码，它将回调到文件系统将文件偏移转换为块号，然后查询块层以获取持久化内存块的位置（如果需要，将其映射到内核地址空间），最终使得块内容可以被拷贝回应用。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 1.6;word-wrap: break-word !important;outline: none !important;">但是现在Wilcox觉得当初他的这个设计是错误的，read()应该以另外一种方式工作，初始的步骤是相同的，因为read_iter()函数仍将被调用，同时它将调用到DAX代码。但是，DAX不是回调到文件系统，而是应当调用到页面缓存以获取文件中所需偏移关联的物理地址，然后数据从该地址拷贝到用户空间。这样的逻辑就和现在页面缓存的工作原理完全一致了，而且如果信息已经存在页面缓存中的情况下，低层文件系统的代码完全无需介入。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 1.6;word-wrap: break-word !important;outline: none !important;">Wilcox在这里又再次引用了Torvalds关于页面缓存的帖子：</p><pre class="" style="margin-top: 0px;margin-bottom: 0px;padding: 0px;max-width: 100%;box-sizing: border-box;word-wrap: break-word !important;"><code class="" style="max-width: 100%;box-sizing: border-box;word-wrap: break-word !important;"><p style="max-width: 100%;min-height: 1em;box-sizing: border-box !important;word-wrap: break-word !important;">从锁的角度来看，这也是一个重大的灾难：相信我，如果你认为你的文件系统可以进行细粒度的锁，当诸如并发路径查找的事情到来时，你会生活在一个梦幻世界。</p></code></pre><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 1.6;word-wrap: break-word !important;outline: none !important;"><br style="max-width: 100%;box-sizing: border-box !important;word-wrap: break-word !important;"  /></p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 1.6;word-wrap: break-word !important;outline: none !important;">Torvalds先生的话是“如此正确”，Wilcox说。DAX中的锁实现的确是灾难性的。他最初认为可能用相对简单的锁来解决，但复杂性在每个新发现的边缘场景蔓延。DAX的锁实现现在“实在丑陋”，他很抱歉他犯了一个错误，认为可以绕过页面缓存。现在，他说他必须去弥补这个错误。</p><h3 style="margin-top: 1.2em;margin-bottom: 0.6em;font-weight: bold;font-size: 27.2px;max-width: 100%;box-sizing: border-box;font-family: inherit;line-height: 1.6;color: inherit;word-wrap: break-word !important;outline: none !important;">未来的工作</h3><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 1.6;word-wrap: break-word !important;outline: none !important;">Wilcox同时总结了围绕DAX和页面缓存的一系列增强。前文提到的大页支持优化是其中之一，这已经在mm树中，应该很快就可以完成。使用页框数而不是页面也已经讨论了一段时间，因为让内核为这些大型持久化内存保持大量的页面结构体（struct page）是完全没有必要的。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 1.6;word-wrap: break-word !important;outline: none !important;">另外他想重新考虑文件系统块尺寸大于系统页面尺寸的想法，这是人们多年想要的东西。现在既然页面缓存可以处理多个页面大小，这个想法应该已经有希望了。不过他自己没时间折腾这个，所以他正在找寻其他感兴趣的开发人员一起来做这个项目。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 1.6;word-wrap: break-word !important;outline: none !important;">交换大页也是一个不错的领域。我们已经在内存中使用了大页，但当这些大页被换出时，他们又被分解成普通尺寸的页面。针对这一问题，目前已经有一些提升交换性能的工作在进行，但是这个解法从根上来看可能就是不对的，正确的解法应该是让交换出去的大页保持在一起。相应的，这同样也有助于我们将内存交换到持久化内存。因为使用持久化内存的交换空间中的数据仍然可以被访问，因此将其留在那可能是有意义的，尤其是当数据没有被大量修改的时候。</p><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 1.6;word-wrap: break-word !important;outline: none !important;">最后附上Wilcox的演讲视频，视频中还包含了页面缓存锁的相关分析和讨论。</p><h3 style="margin-top: 1.2em;margin-bottom: 0.6em;font-weight: bold;font-size: 27.2px;max-width: 100%;box-sizing: border-box;font-family: inherit;line-height: 1.6;color: inherit;word-wrap: break-word !important;outline: none !important;">结论</h3><p style="margin-bottom: 1.1em;max-width: 100%;box-sizing: border-box;min-height: 1em;line-height: 1.6;word-wrap: break-word !important;outline: none !important;">所以貌似即使我们有了持久化内存，页面缓存还会继续存在下去。但是译者觉得随着持久化内存速度越来越快，价格越来越便宜，也许内核社区会有一些新的想法也说不定，让我们拭目以待吧。</p><p style="max-width: 100%;min-height: 1em;box-sizing: border-box !important;word-wrap: break-word !important;"><br style="max-width: 100%;box-sizing: border-box !important;word-wrap: break-word !important;"  /></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">齐江 杨艇艇 马涛</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://lwn.net/Articles/712467/' target='_blank'>
+			阅读全文
+		</a>
+	</div>
+</body>

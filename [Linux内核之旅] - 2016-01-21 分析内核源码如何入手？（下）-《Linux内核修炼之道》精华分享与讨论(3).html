@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		分析内核源码如何入手？（下）-《Linux内核修炼之道》精华分享与讨论(3)
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=415768665&amp;idx=1&amp;sn=32cb000a55391729e1951454613512fb&amp;chksm=76570dbc412084aa94dc9f1ccb55cecd74f5cd7522459c1b7c85189ab162454f82715ce6c720&amp;scene=27#wechat_redirect&cpage=80' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">分析内核源码如何入手？（下）-《Linux内核修炼之道》精华分享与讨论(3)</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        fudan_abc
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-01-21</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">下面的分析，内容不重要，重要的是态度，只要严谨而细致，就会有水落石出时。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">只要你使用这样的态度开始分析内核，那么无论你选择内核的哪个部分作为切入点，比如USB，比如进程管理，在花费相对不算很多的时间之后，你就会发现你对内核的理解会上升到另外一个高度，一个抱着情景分析，抱着0.1内核完全注释，抱着各种各样的内核书籍翻来覆去的看很多遍又忘很多遍都无法达到的高度。请相信我！</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><br  /></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;"><span style="font-size: medium;"><strong>态度决定一切：从初始化函数开始</strong>&nbsp;</span><br  />任小强们说房价高涨从现在开始，股评家们说牛市从5000点开始。他们的开始需要我们的钱袋，我们的开始只需要一台电脑，最好再有一杯茶，伴着几支小曲儿，不盯着钱总是会比较惬意的。生容易，活容易，生活不容易，因为总要盯着钱。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">有了地图Kconfig和Makefile，我们可以在庞大复杂的内核代码中定位以及缩小了目标代码的范围。那么现在，为了研究内核对USB子系统的实现，我们还需要在目标代码中找到一个突破口，这个突破口就是USB子系统的初始化代码。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">针对某个子系统或某个驱动，内核使用subsys_initcall或module_init宏指定初始化函数。在drivers/usb/core/usb.c文件中，我们可以发现下面的代码。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="color: rgb(0, 0, 255); font-size: 18px;">940 subsys_initcall(usb_init);<br  />941 module_exit(usb_exit);<br  /></span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">我们看到一个subsys_initcall，它也是一个宏，我们可以把它理解为module_init，只不过因为这部分代码比较核心，开发者们把它看作一个子系统，而不仅仅是一个模块。这也很好理解，usbcore这个模块它代表的不是某一个设备，而是所有USB设备赖以生存的模块，Linux中，像这样一个类别的设备驱动被归结为一个子系统。比如PCI子系统，比如SCSI子系统，基本上，drivers/目录下面第一层的每个目录都算一个子系统，因为它们代表了一类设备。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">subsys_initcall(usb_init)的意思就是告诉我们usb_init是USB子系统真正的初始化函数，而usb_exit()将是整个USB子系统的结束时的清理函数。于是为了研究USB子系统在内核中的实现，我们需要从usb_init函数开始看起。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="color: rgb(0, 0, 255); font-size: 18px;">865 static int __init usb_init(void)<br  />866 {<br  />867 &nbsp;&nbsp;int retval;<br  />868 &nbsp;&nbsp;if (nousb) {<br  />869 &nbsp;&nbsp;&nbsp;pr_info(&quot;%s: USB support disabled/n&quot;, usbcore_name);<br  />870 &nbsp;&nbsp;&nbsp;return 0;<br  />871 &nbsp;&nbsp;}<br  />872<br  />873 &nbsp;&nbsp;retval = ksuspend_usb_init();<br  />874 &nbsp;&nbsp;if (retval)<br  />875 &nbsp;&nbsp;&nbsp;goto out;<br  />876 &nbsp;&nbsp;retval = bus_register(&amp;usb_bus_type);<br  />877 &nbsp;&nbsp;if (retval)&nbsp;<br  />878 &nbsp;&nbsp;&nbsp;goto bus_register_failed;<br  />879&nbsp; &nbsp;retval = usb_host_init();<br  />880 &nbsp;&nbsp;if (retval)<br  />881 &nbsp;&nbsp;&nbsp;goto host_init_failed;<br  />882 &nbsp;&nbsp;retval = usb_major_init();<br  />883 &nbsp;&nbsp;if (retval)<br  />884 &nbsp;&nbsp;&nbsp;goto major_init_failed;<br  />885&nbsp; &nbsp;retval = usb_register(&amp;usbfs_driver);<br  />886 &nbsp;&nbsp;if (retval)<br  />887 &nbsp;&nbsp;&nbsp;goto driver_register_failed;<br  />888 &nbsp;&nbsp;retval = usb_devio_init();<br  />889 &nbsp;&nbsp;if (retval)<br  />890 &nbsp;&nbsp;&nbsp;goto usb_devio_init_failed;<br  />891 &nbsp;&nbsp;retval = usbfs_init();<br  />892 &nbsp;&nbsp;if (retval)<br  />893 &nbsp;&nbsp;&nbsp;goto fs_init_failed;<br  />894 &nbsp;&nbsp;retval = usb_hub_init();<br  />895&nbsp; &nbsp;if (retval)<br  />896 &nbsp;&nbsp;&nbsp;goto hub_init_failed;<br  />897&nbsp; &nbsp;retval = usb_register_device_driver(&amp;usb_generic_driver, THIS_MODULE);<br  />898 &nbsp;&nbsp;if (!retval)<br  />899 &nbsp;&nbsp;&nbsp;goto out;<br  />900&nbsp;<br  />901 &nbsp;&nbsp;usb_hub_cleanup();<br  />902 &nbsp;hub_init_failed:<br  />903 &nbsp;&nbsp;usbfs_cleanup();<br  />904 fs_init_failed:<br  />905 &nbsp;&nbsp;usb_devio_cleanup();<br  />906 usb_devio_init_failed:<br  />907 &nbsp;&nbsp;usb_deregister(&amp;usbfs_driver);<br  />908 driver_register_failed:<br  />909 &nbsp;&nbsp;usb_major_cleanup();<br  />910 major_init_failed:<br  />911&nbsp; &nbsp;usb_host_cleanup();<br  />912 host_init_failed:<br  />913 &nbsp;&nbsp;bus_unregister(&amp;usb_bus_type);<br  />914 bus_register_failed:<br  />915 &nbsp;&nbsp;ksuspend_usb_cleanup();<br  />916 out:<br  />917 &nbsp;&nbsp;return retval;<br  />918 }&nbsp;<br  /></span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">（1）__init标记。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">关于usb_init，第一个问题是，第865行的__init标记具有什么意义？</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">写过驱动的应该不会陌生，它对内核来说就是一种暗示，表明这个函数仅在初始化期间使用，在模块被装载之后，它占用的资源就会释放掉用作它处。它的暗示你懂，可你的暗示，她却不懂或者懂装不懂，多么让人感伤。它在自己短暂的一生中一直从事繁重的工作，吃的是草吐出的是牛奶，留下的是整个USB子系统的繁荣。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">受这种精神所感染，我觉得有必要为它说的更多些。__init的定义在include/linux/init.h文件里</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="color: rgb(0, 0, 255); font-size: 18px;">43 #define __init&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; __attribute__ ((__section__ (&quot;.init.text&quot;)))</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">好像这里引出了更多的疑问，__attribute__是什么？Linux内核代码使用了大量的GNU C扩展，以至于GNU C成为能够编译内核的唯一编译器，GNU C的这些扩展对代码优化、目标代码布局、安全检查等方面也提供了很强的支持。而__attribute__就是这些扩展中的一个，它主要被用来声明一些特殊的属性，这些属性主要被用来指示编译器进行特定方面的优化和更仔细的代码检查。GNU C支持十几个属性，section是其中的一个，我们查看GCC的手册可以看到下面的描述</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="color: rgb(0, 0, 255); font-size: 18px;">‘section (&quot;section-name&quot;)&#39;<br  />　　 Normally, the compiler places the code it generates in the `text&#39;<br  />&nbsp;section.　Sometimes, however, you need additional sections, or you<br  />need certain particular functions to appear in special sections.<br  />　　 The `section&#39; attribute specifies that a function lives in a<br  />　　 particular section.　For example, the declaration:</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="color: rgb(0, 0, 255); font-size: 18px;">　　　　　extern void foobar (void) __attribute__ ((section (&quot;bar&quot;)));</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="color: rgb(0, 0, 255); font-size: 18px;">　　 puts the function ‘foobar&#39; in the ‘bar&#39; section.</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="color: rgb(0, 0, 255); font-size: 18px;">　　 Some file formats do not support arbitrary sections so the<br  />　　 ‘section&#39; attribute is not available on all platforms.　If you<br  />　　 need to map the entire contents of a module to a particular<br  />　　 section, consider using the facilities of the linker instead.<br  /></span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">通常编译器将函数放在.text节，变量放在.data或.bss节，使用section属性，可以让编译器将函数或变量放在指定的节中。那么前面对__init的定义便表示将它修饰的代码放在.init.text节。连接器可以把相同节的代码或数据安排在一起，比如__init修饰的所有代码都会被放在.init.text节里，初始化结束后就可以释放这部分内存。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">问题可以到此为止，也可以更深入，即内核又是如何调用到这些__init修饰的初始化函数？要回答这个问题，还需要回顾一下subsys_initcall宏，它也在include/linux/init.h里定义</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="color: rgb(0, 0, 255); font-size: 18px;">125 #define subsys_initcall(fn)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; __define_initcall(&quot;4&quot;,fn,4)<br  /></span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">这里又出现了一个宏__define_initcall，它用于将指定的函数指针fn放到initcall.init节里 而对于具体的subsys_initcall宏，则是把fn放到.initcall.init的子节.initcall4.init里。要弄清楚.initcall.init、.init.text和.initcall4.init这样的东东，我们还需要了解一点内核可执行文件相关的概念。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">内核可执行文件由许多链接在一起的对象文件组成。对象文件有许多节，如文本、数据、init数据、bass等等。这些对象文件都是由一个称为链接器脚本的文件链接并装入的。这个链接器脚本的功能是将输入对象文件的各节映射到输出文件中；换句话说，它将所有输入对象文件都链接到单一的可执行文件中，将该可执行文件的各节装入到指定地址处。 vmlinux.lds是存在于arch/&lt;target&gt;/ 目录中的内核链接器脚本，它负责链接内核的各个节并将它们装入内存中特定偏移量处。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">我可以负责任的告诉你，要看懂vmlinux.lds这个文件是需要一番功夫的，不过大家都是聪明人，聪明人做聪明事，所以你需要做的只是搜索initcall.init，然后便会看到似曾相识的内容</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="color: rgb(0, 0, 255); font-size: 18px;">__inicall_start = .;<br  />.initcall.init : AT(ADDR(.initcall.init) – 0xC0000000) {<br  />*(.initcall1.init)<br  />*(.initcall2.init)<br  />*(.initcall3.init)<br  />*(.initcall4.init)<br  />*(.initcall5.init)<br  />*(.initcall6.init)<br  />*(.initcall7.init)<br  />}<br  />__initcall_end = .;<br  /></span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">这里的__initcall_start指向.initcall.init节的开始，__initcall_end指向它的结尾。而.initcall.init节又被分为了7个子节，分别是</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="color: rgb(0, 0, 255); font-size: 18px;">.initcall1.init&nbsp;<br  />.initcall2.init&nbsp;<br  />.initcall3.init&nbsp;<br  />.initcall4.init&nbsp;<br  />.initcall5.init&nbsp;<br  />.initcall6.init&nbsp;<br  />.initcall7.init<br  /></span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">我们的subsys_initcall宏便是将指定的函数指针放在了.initcall4.init子节。其它的比如core_initcall将函数指针放在.initcall1.init子节，device_initcall将函数指针放在了.initcall6.init子节等等，都可以从include/linux/init.h文件找到它们的定义。各个字节的顺序是确定的，即先调用.initcall1.init中的函数指针再调用.initcall2.init中的函数指针，等等。__init修饰的初始化函数在内核初始化过程中调用的顺序和.initcall.init节里函数指针的顺序有关，不同的初始化函数被放在不同的子节中，因此也就决定了它们的调用顺序。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">至于实际执行函数调用的地方，就在/init/main.c文件里，内核的初始化么，不在那里还能在哪里，里面的do_initcalls函数会直接用到这里的__initcall_start、__initcall_end来进行判断。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">&nbsp;（2）模块参数。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">关于usb_init函数，第二个问题是，第868行的nousb表示什么？</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">知道C语言的人都会知道nousb是一个标志，只是不同的标志有不一样的精彩，这里的nousb是用来让我们在启动内核的时候通过内核参数去掉USB子系统的，Linux社会是一个很人性化的世界，它不会去逼迫我们接受USB，一切都只关乎我们自己的需要。不过我想我们一般来说是不会去指定nousb的吧。如果你真的指定了nousb，那它就只会幽怨的说一句“USB support disabled”，然后退出usb_init。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">nousb在drivers/usb/core/usb.c文件中定义为：</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="color: rgb(0, 0, 255); font-size: 18px;">static int nousb;&nbsp;/* Disable USB when built into kernel image */<br  />module_param_named(autosuspend, usb_autosuspend_delay, int, 0644);<br  />MODULE_PARM_DESC(autosuspend, &quot;default autosuspend delay&quot;);<br  /></span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">&nbsp;从中可知nousb是个模块参数。关于模块参数，我们都知道可以在加载模块的时候可以指定，但是如何在内核启动的时候指定？<br  />打开系统的grub文件，然后找到kernel行，比如：</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="color: rgb(0, 0, 255); font-size: 18px;">kernel&nbsp;&nbsp;/boot/vmlinuz-2.6.18-kdb root=/dev/sda1 ro splash=silent vga=0x314<br  /></span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">&nbsp;其中的root，splash，vga等都表示内核参数。当某一模块被编译进内核的时候，它的模块参数便需要在kernel行来指定，格式为“模块名.参数=值”，比如：</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="color: rgb(0, 0, 255); font-size: 18px;">&nbsp;modprobe usbcore autosuspend=2</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">对应到kernel行，即为&nbsp;：</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="color: rgb(0, 0, 255); font-size: 18px;">&nbsp;usbcore.autosuspend=2<br  /></span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">&nbsp;通过命令“modinfo -p ${modulename}”可以得知一个模块有哪些参数可以使用。同时，对于已经加载到内核里的模块，它们的模块参数会列举在/sys/module/${modulename}/parameters/目录下面，可以使用“echo -n ${value} &gt; /sys/module/${modulename}/parameters/${parm}”这样的命令去修改。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">&nbsp;（3）可变参数宏。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">&nbsp;关于usb_init函数，第三个问题是，pr_info如何实现与使用？</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">pr_info只是一个打印信息的可辨参数宏，printk的变体，在include/linux/kernel.h里定义：</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="color: rgb(0, 0, 255); font-size: 18px;">242 #define pr_info(fmt,arg...) /<br  />243&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; printk(KERN_INFO fmt,##arg)</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">99年的ISO C标准里规定了可变参数宏，和函数语法类似，比如</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="color: rgb(0, 0, 255); font-size: 18px;">#define debug(format, ...) fprintf (stderr, format, __VA_ARGS__)<br  /></span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">里面的“…”就表示可变参数，调用时，它们就会替代宏体里的__VA_ARGS__。GCC总是会显得特立独行一些，它支持更复杂的形式，可以给可变参数取个名字，比如</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="color: rgb(0, 0, 255); font-size: 18px;">#define debug(format, args...) fprintf (stderr, format, args)</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">有了名字总是会容易交流一些。是不是与pr_info比较接近了？除了‘##’，它主要是针对空参数的情况。既然说是可变参数，那传递空参数也总是可以的，空即是多，多即是空，股市里的哲理这里同样也是适合的。如果没有‘##’，传递空参数的时候，比如</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="color: rgb(0, 0, 255); font-size: 18px;">debug (&quot;A message&quot;);</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">展开后，里面的字符串后面会多个多余的逗号。这个逗号你应该不会喜欢，而‘##’则会使预处理器去掉这个多余的逗号。</span></p><p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; line-height: 26px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 18px;">&nbsp;关于usb_init函数，上面的三个问题之外，余下的代码分别完成usb各部分的初始化，接下来就需要围绕它们分别进行深入分析。因为这里只是演示如何入手分析，展示的只是一种态度，所以具体的深入分析就免了吧。</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">fudan_abc</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://blog.csdn.net/fudan_abc/article/details/5355062' target='_blank'>
+			阅读全文
+		</a>
+	</div>
+</body>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		IPC under Linux-Shared Memory
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664604077&amp;idx=2&amp;sn=143a234b0298984dfd6c3cdba01e9b7c&amp;chksm=f04d8c48c73a055ee9bc432227d06d060c337e19ae3c63467cb9a92554f12c2699faa21e1d89&amp;scene=27#wechat_redirect&cpage=38' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">IPC under Linux-Shared Memory</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        武特
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2017-05-30</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p><span style="line-height: 1.6;">还记得在上篇文章中我们说到的N个子进程独自访问自己的临界区吗，那么今天要说的共享内存就可以实现多个进程都去访问一块内存！ &nbsp; 如果你对我们前面所说的几种IPC方式都了解，那么关于共享内存的基本知识你就有似曾相识的感觉。我们快速入门吧 &nbsp;！</span></p><p><br  /></p><p>1.如何创建一块共享内存？</p><p><br  /></p><p>其实列出函数原型，你应该会知道每个参数的含义。</p><p><br  /></p><p>1</p><p>int shmget(key_t key,size_t size,int shmflg);</p><p>这里要说明的是size的大小，如果创建一块新的共享内存区，那么size必须大于0；如果size为0，那此时shmget函数的功能就是打开一个已存在的共享内存区（当然，key代表的内存区是否存在那是二话）。size为负，那么调用出错，返回-1。另外shmflg的取值以及用法都与信号量相同，可参考前面的文章。</p><p><br  /></p><p>当shmget调用成功后，返回整形id。</p><p><br  /></p><p>2.共享内存创建好了，进程如何使用？</p><p><br  /></p><p>我们创建好了内存块，但是创建进程此时和这块内存还没联系。所以，我们应该使用shmat函数将其附加到进程的地址空间（具体位于进程的堆栈段）。</p><p><br  /></p><p>1</p><p>void* shmat(int shmid,const void* shmaddr,int shmflg);</p><p>一般我们将shmaddr置为NULL，因为此时内存会自动分配一段何时的内存块。并且最终shmat函数将返回这个内存块的首地址。也许你对此处的void类型比较不解，其实void* shmaddr这样的定义方式其实是为了灵活使用：首先shmaddr是一个指针类型（内存地址），但其具体是指向何种类型的指针，在此并不具体说明。因为当你要使用这个指针时，可以用任何类型强制转换。</p><p><br  /></p><p>与此函数对应的是shmdt函数，它会让调用进程与shmaddr指向的共享内存脱离。</p><p><br  /></p><p>3.对共享内存的控制？</p><p><br  /></p><p>1</p><p>int shmctl(int shmid,int cmd,struct shmid_ds *buf);</p><p>cmd可取值：IPC_RMID,IPC_SET,IPC_STAT分别对应：删除共享内存区，设置共享内存区的shmid_ds结构，获取shmid_ds结构。这里不再赘述具体使用方法，可参考man手册。</p><p><br  /></p><p>介绍完这些，我们的重点就是要学会应用共享内存。《linuxC编程实战》一书中的例10-17非常经典，可以模拟进程之间的同步。该例还特别的定义了一个头文件shm.h，此头文件中加入了许多对信号量以及共享内存的操作函数。现在我们具体来分析，哪些语句实现进程的互斥，哪些语句实现的是进程的同步。</p><p><br  /></p><p>首先，不管是读进程，还是写进程，PV操作之间的代码都属于临界区。临界区的代码都是对共享内存去进行操作，所以应该加上PV操作，避免读写进程交互对共享内存进行访问。所以读写程序中的PV操作实现的是进程的互斥。</p><p><br  /></p><p>我们还可以发现，读写进程代码中都有waitsem(semid,0)语句。以写进程为例，每次写内存时，都要查看信号量（semid信号量集中的0号信号量）是否为1。如果为1，说明此时没有读进程访问共享内存；否则，说明有读进程在访问，此时写进程本应该阻塞，但是这里我们用sleep(1)来模拟进程的阻塞，而且不断的去测试信号量是否为1。</p><p><br  /></p><p>如果写进程成功进入临界区，那么它将写数据至共享内存。可能你对于strcpy(shmaddr,wbuf);这样的语句感到困惑：怎么能将wbuf赋值给共享内存？！其实仔细想想，这没有什么不合理。shmaddr是一个指针，wbuf是一个字符串数组的首字符的首地址，那么strcpy函数所做的就是很平常的事了。同时，我们也可以这么想：一般我们都是提前用malloc来分配内存空间，再让某个指针指向这片内存空间，而现在，上面的shmget以及shat以及完成了类似malloc的工作。</p><p><br  /></p><p>其实我们有这样的想法很自然，毕竟刚开始学习，通过实践可以从感性上认识这些。</p><p><br  /></p><p>那么很显然，waitsem(semid,0)语句实现的便是读写进程的同步问题——协调读写进程对共享内存的访问。</p><p><br  /></p><p>&nbsp; &nbsp; &nbsp;//写进程部分代码</p><p>&nbsp; &nbsp; while(1)</p><p>&nbsp; &nbsp; {</p><p>&nbsp; &nbsp; &nbsp; &nbsp; waitsem(semid,0);</p><p>&nbsp; &nbsp; &nbsp; &nbsp; p(semid,0);</p><p>&nbsp; &nbsp; &nbsp; &nbsp; printf("writer:");</p><p>&nbsp; &nbsp; &nbsp; &nbsp; fgets(wbuf,1024,stdin);</p><p>&nbsp; &nbsp; &nbsp; &nbsp; wbuf[strlen(wbuf)-1]='\0';</p><p>&nbsp; &nbsp; &nbsp; &nbsp; strcpy(shmaddr,wbuf);</p><p>&nbsp; &nbsp; &nbsp; &nbsp; my_sleep(5);</p><p>&nbsp; &nbsp; &nbsp; &nbsp; v(semid,0);</p><p>&nbsp; &nbsp; &nbsp; &nbsp; my_sleep(3);</p><p>&nbsp; &nbsp; &nbsp;}</p><p><br  /></p><p>&nbsp; &nbsp; //读进程部分代码</p><p>&nbsp; &nbsp; while(1)</p><p>&nbsp; &nbsp; {</p><p>&nbsp; &nbsp; &nbsp; &nbsp; waitsem(semid,0);</p><p>&nbsp; &nbsp; &nbsp; &nbsp; p(semid,0);</p><p>&nbsp; &nbsp; &nbsp; &nbsp; printf("reader:");</p><p>&nbsp; &nbsp; &nbsp; &nbsp; printf("%s\n",shmaddr);</p><p>&nbsp; &nbsp; &nbsp; &nbsp; my_sleep(5);</p><p>&nbsp; &nbsp; &nbsp; &nbsp; v(semid,0);</p><p>&nbsp; &nbsp; &nbsp; &nbsp; my_sleep(3);</p><p>&nbsp; &nbsp; &nbsp;}</p><p><br  /></p><p>理解了这个程序要干什么，那么我们再来想想它为什么要这么做：读写进程中为何要加入sleep函数？那我们来做几个测试吧。在测试之前，建议大家适当的修改waitsem函数和my_sleep函数，它可以让我们更好的感知当前进程的“死活”。</p><p><br  /></p><p>int waitsem(int semid,int index)</p><p>{</p><p>&nbsp; &nbsp; while(semctl(semid,index,GETVAL,0)==0)</p><p>&nbsp; &nbsp; {</p><p>&nbsp; &nbsp; &nbsp; &nbsp; sleep(1);</p><p>&nbsp; &nbsp; &nbsp; &nbsp; printf("I am waiting ..\n");</p><p>&nbsp; &nbsp; }</p><p>&nbsp; &nbsp; return 1;</p><p>}</p><p><br  /></p><p>void my_sleep(int i)</p><p>{</p><p>&nbsp; &nbsp; while(i--)</p><p>&nbsp; &nbsp; {</p><p>&nbsp; &nbsp; &nbsp; &nbsp; printf("writer is sleeping..\n");</p><p>&nbsp; &nbsp; &nbsp; &nbsp; //写进程中的my_sleep做相应改动</p><p>&nbsp; &nbsp; &nbsp; &nbsp; sleep(1);</p><p>&nbsp; &nbsp; &nbsp;}</p><p>}</p><p><br  /></p><p>这样增加了一些提示语，再分别在两个终端运行读写进程，可以发现第一个my_sleep函数的作用就是故意延长读（写）进程在临界区的访问时间，以使得写（读）进程阻塞。而第二个my_sleep函数则是故意阻塞写（读）进程，让读（写）进程有时间去读共享内存。好了，既然现在掌握了信号量和共享内存，那么我们就可以试着去完成一些简单的同步互斥的题目了，继续加油吧 &nbsp; &nbsp; &nbsp;！</p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">武特</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                <div class="reward_qrcode_area reward_area tc" id="js_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                                        <p class="reward_tips"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" id="js_reward_qrcode_img"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

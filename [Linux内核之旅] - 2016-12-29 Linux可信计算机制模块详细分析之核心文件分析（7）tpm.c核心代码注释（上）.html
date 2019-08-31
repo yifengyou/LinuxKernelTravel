@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Linux可信计算机制模块详细分析之核心文件分析（7）tpm.c核心代码注释（上）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664603608&amp;idx=1&amp;sn=b8cbb2203270a442b68feaede7e84b06&amp;chksm=f04db23dc73a3b2b9c99acaee30c0e8f837dcca52575cdbdc5b942fd3b3c97473c805000e856&amp;scene=27#wechat_redirect&cpage=51' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Linux可信计算机制模块详细分析之核心文件分析（7）tpm.c核心代码注释（上）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        程香鹏
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-12-29</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <h4><span style="color: rgb(2, 30, 170);"><strong><span style="font-size: 14pt; font-family: 宋体;">2.4.2.6 核心代码注释</span></strong></span><strong><span style="  ;; font-size: 14pt; "><o:p></o:p></span></strong></h4><p><br  /></p><p style="line-height:24px"><span style=";font-family:宋体;font-size:14px">/* tpm_chip_list <span style="font-family:宋体">全局链表，用于存放多个</span><span style="font-family:Times New Roman">tpm_chip</span><span style="font-family:宋体">对象实例</span><span style="font-family:Times New Roman">*/</span></span></p><p style="line-height:24px"><span style=";font-size:14px">static LIST_HEAD(tpm_chip_list);</span></p><p style="line-height:24px"><span style=";font-size:14px"><br  /></span></p><p style="line-height:24px"><span style=";font-family:宋体;font-size:14px">/*<span style="font-family:宋体">定义自旋锁</span><span style="font-family:Times New Roman">*/</span></span></p><p style="line-height:24px"><span style=";font-size:14px">static DEFINE_SPINLOCK(driver_lock);</span></p><p style="line-height:24px"><span style=";font-size:14px"><br  /></span></p><p style="line-height:24px"><span style=";font-family:宋体;font-size:14px">/*<span style="font-family:宋体">用户读取</span><span style="font-family:Times New Roman">TPM</span><span style="font-family:宋体">命令执行结果超过设定时间时的操作</span><span style="font-family:Times New Roman">*/</span></span></p><p style="line-height:24px"><span style=";font-size:14px">static void user_reader_timeout(unsigned long ptr)</span></p><p style="line-height:24px"><span style=";font-size:14px">{</span></p><p style="line-height:24px"><span style=";font-size:14px">struct tpm_chip *chip = (struct tpm_chip *) ptr;</span></p><p style="line-height:24px"><span style=";font-family:宋体;font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;/*<span style="font-family:宋体">调用执行任务，将任务加入工作队列</span><span style="font-family:Times New Roman">*/</span></span></p><p style="line-height:24px"><span style=";font-size:14px">schedule_work(&amp;chip-&gt;work);</span></p><p style="line-height:24px"><span style=";font-size:14px">}</span></p><p style="line-height:24px"><span style=";font-size:14px"><br  /></span></p><p style="line-height:24px"><span style=";font-family:宋体;font-size:14px">/*TPM<span style="font-family:宋体">设备工作超过设定的时间时执行的操作：将数据缓存区读写互斥锁设置为</span><span style="font-family:Times New Roman">0</span><span style="font-family:宋体">，清空数据缓存区的值</span><span style="font-family:Times New Roman">*/</span></span></p><p style="line-height:24px"><span style=";font-size:14px">static void timeout_work(struct work_struct *work)</span></p><p style="line-height:24px"><span style=";font-size:14px">{</span><span style=";font-family:宋体;font-size:14px">&nbsp;&nbsp;&nbsp;/*<span style="font-family:宋体">通过</span><span style="font-family:Times New Roman">work</span><span style="font-family:宋体">字段的地址获得</span><span style="font-family:Times New Roman">tpm_chip </span><span style="font-family:宋体">结构体的首地址</span><span style="font-family:Times New Roman">*/</span></span></p><p style="line-height:24px"><span style=";font-size:14px">struct tpm_chip *chip = container_of(work, struct tpm_chip, work);</span></p><p style="line-height:24px"><span style=";font-family:宋体;font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;/<span style="font-family:宋体">加锁互斥量</span><span style="font-family:Times New Roman">*/</span></span></p><p style="line-height:24px"><span style=";font-size:14px">mutex_lock(&amp;chip-&gt;buffer_mutex);</span></p><p style="line-height:24px"><span style=";font-family:宋体;font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;/*<span style="font-family:宋体">原子操作，设值数据缓冲区互斥锁为</span><span style="font-family:Times New Roman">0*/</span></span></p><p style="line-height:24px"><span style=";font-size:14px">atomic_set(&amp;chip-&gt;data_pending, 0);</span></p><p style="line-height:24px"><span style=";font-family:宋体;font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;/*<span style="font-family:宋体">将数据缓存区</span><span style="font-family:Times New Roman">data_buffer</span><span style="font-family:宋体">的值设为</span><span style="font-family:Times New Roman">0*/</span></span></p><p style="line-height:24px"><span style=";font-size:14px">memset(chip-&gt;data_buffer, 0, TPM_BUFSIZE);</span></p><p style="line-height:24px"><span style=";font-family:宋体;font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;/<span style="font-family:宋体">解锁互斥量</span><span style="font-family:Times New Roman">*/</span></span></p><p style="line-height:24px"><span style=";font-size:14px">mutex_unlock(&amp;chip-&gt;buffer_mutex);</span></p><p style="line-height:24px"><span style=";font-size:14px">}</span></p><p style="line-height:24px"><span style=";font-size:14px"><br  /></span></p><p style="line-height:24px"><span style=";font-size:14px">/*</span><span style=";font-family:宋体;font-size:14px"><span style="font-family:宋体">返回等待时间：单位</span>jiffies</span><span style=";font-size:14px">&nbsp;*/</span></p><p style="line-height:24px"><span style=";font-size:14px">unsigned long tpm_calc_ordinal_duration(struct tpm_chip *chip,</span></p><p style="line-height:24px"><span style=";font-size:14px">&nbsp;&nbsp;&nbsp;u32 ordinal)</span></p><p style="line-height:24px"><span style=";font-size:14px">{</span></p><p style="line-height:24px"><span style=";font-size:14px">int duration_idx = TPM_UNDEFINED;</span></p><p style="line-height:24px"><span style=";font-size:14px">int duration = 0;</span></p><p style="line-height:24px"><span style=";font-size:14px">if (ordinal &lt; TPM_MAX_ORDINAL)</span></p><p style="line-height:24px"><span style=";font-size:14px">duration_idx = tpm_ordinal_duration[ordinal];</span></p><p style="line-height:24px"><span style=";font-size:14px">else if ((ordinal &amp; TPM_PROTECTED_ORDINAL_MASK) &lt;</span></p><p style="line-height:24px"><span style=";font-size:14px">&nbsp;TPM_MAX_PROTECTED_ORDINAL)</span></p><p style="line-height:24px"><span style=";font-size:14px">duration_idx =</span></p><p style="line-height:24px"><span style=";font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;tpm_protected_ordinal_duration[ordinal &amp;</span></p><p style="line-height:24px"><span style=";font-size:14px">&nbsp;&nbsp;&nbsp;TPM_PROTECTED_ORDINAL_MASK];</span></p><p style="line-height:24px"><span style=";font-size:14px">if (duration_idx != TPM_UNDEFINED)</span></p><p style="line-height:24px"><span style=";font-size:14px">duration = chip-&gt;vendor.duration[duration_idx];</span></p><p style="line-height:24px"><span style=";font-size:14px">if (duration &lt;= 0)</span></p><p style="line-height:24px"><span style=";font-size:14px">return 2 * 60 * HZ;</span></p><p style="line-height:24px"><span style=";font-size:14px">else</span></p><p style="line-height:24px"><span style=";font-size:14px">return duration;</span></p><p style="line-height:24px"><span style=";font-size:14px">}</span></p><p style="line-height:24px"><span style=";font-size:14px"><br  /></span></p><p style="line-height:24px"><span style=";font-size:14px">/*</span><span style=";font-family:宋体;font-size:14px">tpm_transmit()<span style="font-family:宋体">用于在内核中给</span><span style="font-family:Times New Roman">TPM</span><span style="font-family:宋体">芯片通信，将命令发送给</span><span style="font-family:Times New Roman">TPM</span><span style="font-family:宋体">设备，等待</span><span style="font-family:Times New Roman">TPM</span><span style="font-family:宋体">设备执行完成，读取执行结果给对应的驱动程序</span></span><span style=";font-size:14px">*/</span></p><p style="line-height:24px"><span style=";font-size:14px">static ssize_t tpm_transmit(struct tpm_chip *chip, const char *buf,</span></p><p style="line-height:24px"><span style=";font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;size_t bufsiz)</span></p><p style="line-height:24px"><span style=";font-size:14px">{</span></p><p style="line-height:24px"><span style=";font-size:14px">ssize_t rc;</span></p><p style="line-height:24px"><span style=";font-size:14px">u32 count, ordinal;</span></p><p style="line-height:24px"><span style=";font-size:14px">unsigned long stop;</span></p><p style="line-height:24px"><span style=";font-family:宋体;font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;/*<span style="font-family:宋体">设置数据缓存区的大小</span><span style="font-family:Times New Roman">*/</span></span></p><p style="line-height:24px"><span style=";font-size:14px">if (bufsiz &gt; TPM_BUFSIZE)</span></p><p style="line-height:24px"><span style=";font-size:14px">bufsiz = TPM_BUFSIZE;</span></p><p style="line-height:24px"><span style=";font-family:宋体;font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;/*<span style="font-family:宋体">将</span><span style="font-family:Times New Roman">32</span><span style="font-family:宋体">位的字节序转换为</span><span style="font-family:Times New Roman">CPU</span><span style="font-family:宋体">字节序</span><span style="font-family:Times New Roman">*/</span></span></p><p style="line-height:24px"><span style=";font-size:14px">count = be32_to_cpu(*((__be32 *) (buf + 2)));</span></p><p style="line-height:24px"><span style=";font-size:14px">ordinal = be32_to_cpu(*((__be32 *) (buf + 6)));</span></p><p style="line-height:24px"><span style=";font-size:14px">if (count == 0)</span></p><p style="line-height:24px"><span style=";font-size:14px">return -ENODATA;</span></p><p style="line-height:24px"><span style=";font-size:14px">if (count &gt; bufsiz) {</span></p><p style="line-height:24px"><span style=";font-size:14px">dev_err(chip-&gt;dev,</span></p><p style="line-height:24px"><span style=";font-size:14px">"invalid count value %x %zx \n", count, bufsiz);</span></p><p style="line-height:24px"><span style=";font-size:14px">return -E2BIG;</span></p><p style="line-height:24px"><span style=";font-size:14px">}</span></p><p style="line-height:24px"><span style=";font-family:宋体;font-size:14px">&nbsp;&nbsp;&nbsp;/*<span style="font-family:宋体">加锁互斥量</span><span style="font-family:Times New Roman">*/</span></span></p><p style="line-height:24px"><span style=";font-size:14px">mutex_lock(&amp;chip-&gt;tpm_mutex);</span></p><p style="line-height:24px"><span style=";font-family:宋体;font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;/*<span style="font-family:宋体">发送</span><span style="font-family:Times New Roman">TPM</span><span style="font-family:宋体">命令给</span><span style="font-family:Times New Roman">TPM</span><span style="font-family:宋体">设备</span><span style="font-family:Times New Roman">*/</span></span></p><p style="line-height:24px"><span style=";font-size:14px">if ((rc = chip-&gt;vendor.send(chip, (u8 *) buf, count)) &lt; 0) {</span></p><p style="line-height:24px"><span style=";font-size:14px">dev_err(chip-&gt;dev,</span></p><p style="line-height:24px"><span style=";font-size:14px">"tpm_transmit: tpm_send: error %zd\n", rc);</span></p><p style="line-height:24px"><span style=";font-size:14px">goto out;</span></p><p style="line-height:24px"><span style=";font-size:14px">}</span></p><p style="line-height:24px"><span style=";font-size:14px">if (chip-&gt;vendor.irq)</span></p><p style="line-height:24px"><span style=";font-size:14px">goto out_recv;</span></p><p style="line-height:24px"><span style=";font-family:宋体;font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;/<span style="font-family:宋体">计算</span><span style="font-family:Times New Roman">TPM</span><span style="font-family:宋体">设备执行命令停止的时间</span><span style="font-family:Times New Roman">*/</span></span></p><p style="line-height:24px"><span style=";font-size:14px">stop = jiffies + tpm_calc_ordinal_duration(chip, ordinal);</span></p><p style="line-height:24px"><span style=";font-family:宋体;font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;/*<span style="font-family:宋体">执行下列循环直到</span><span style="font-family:Times New Roman">jiffies</span><span style="font-family:宋体">值大于</span><span style="font-family:Times New Roman">stop</span><span style="font-family:宋体">的值</span><span style="font-family:Times New Roman">*/</span></span></p><p style="line-height:24px"><span style=";font-size:14px">do {</span></p><p style="line-height:24px"><span style=";font-family:宋体;font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/* <span style="font-family:宋体">获取</span><span style="font-family:Times New Roman">TPM</span><span style="font-family:宋体">设备状态</span><span style="font-family:Times New Roman">*/</span></span></p><p style="line-height:24px"><span style=";font-size:14px">u8 status = chip-&gt;vendor.status(chip);</span></p><p style="line-height:24px"><span style=";font-size:14px">if ((status &amp; chip-&gt;vendor.req_complete_mask) ==</span></p><p style="line-height:24px"><span style=";font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;chip-&gt;vendor.req_complete_val)</span></p><p style="line-height:24px"><span style=";font-size:14px">goto out_recv;</span></p><p style="line-height:24px"><span style=";font-size:14px">if ((status == chip-&gt;vendor.req_canceled)) {</span></p><p style="line-height:24px"><span style=";font-size:14px">dev_err(chip-&gt;dev, "Operation Canceled\n");</span></p><p style="line-height:24px"><span style=";font-size:14px">rc = -ECANCELED;</span></p><p style="line-height:24px"><span style=";font-size:14px">goto out;</span></p><p style="line-height:24px"><span style=";font-size:14px">}</span></p><p style="line-height:24px"><span style=";font-family:宋体;font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/*<span style="font-family:宋体">让进程睡眠</span><span style="font-family:Times New Roman">TPM_TIMEOUT </span><span style="font-family:宋体">秒，</span><span style="font-family:Times New Roman">TPM_TIMEOUT</span><span style="font-family:宋体">定义在</span><span style="font-family:Times New Roman">tpm.h</span><span style="font-family:宋体">文件中</span><span style="font-family:Times New Roman">*/</span></span></p><p style="line-height:24px"><span style=";font-size:14px">msleep(TPM_TIMEOUT);</span><span style=";font-size:14px">/* CHECK */</span></p><p style="line-height:24px"><span style=";font-size:14px">rmb();</span></p><p style="line-height:24px"><span style=";font-size:14px">} while (time_before(jiffies, stop));</span></p><p style="line-height:24px"><span style=";font-family:宋体;font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;/*<span style="font-family:宋体">取消</span><span style="font-family:Times New Roman">TPM</span><span style="font-family:宋体">芯片的操作</span><span style="font-family:Times New Roman">*/</span></span></p><p style="line-height:24px"><span style=";font-size:14px">chip-&gt;vendor.cancel(chip);</span></p><p style="line-height:24px"><span style=";font-size:14px">dev_err(chip-&gt;dev, "Operation Timed out\n");</span></p><p style="line-height:24px"><span style=";font-size:14px">rc = -ETIME;</span></p><p style="line-height:24px"><span style=";font-size:14px">goto out;</span></p><p style="line-height:24px"><span style=";font-size:14px">out_recv:</span></p><p style="line-height:24px"><span style=";font-family:宋体;font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;/*<span style="font-family:宋体">从</span><span style="font-family:Times New Roman">TPM</span><span style="font-family:宋体">设备接收</span><span style="font-family:Times New Roman">TPM</span><span style="font-family:宋体">命令执行结果</span><span style="font-family:Times New Roman">*/</span></span></p><p style="line-height:24px"><span style=";font-size:14px">rc = chip-&gt;vendor.recv(chip, (u8 *) buf, bufsiz);</span></p><p style="line-height:24px"><span style=";font-size:14px">if (rc &lt; 0)</span></p><p style="line-height:24px"><span style=";font-size:14px">dev_err(chip-&gt;dev,</span></p><p style="line-height:24px"><span style=";font-size:14px">"tpm_transmit: tpm_recv: error %zd\n", rc);</span></p><p style="line-height:24px"><span style=";font-size:14px">out:</span></p><p style="line-height:24px"><span style=";font-family:宋体;font-size:14px">&nbsp;&nbsp;&nbsp;/*<span style="font-family:宋体">解锁互斥量</span><span style="font-family:Times New Roman">*/</span></span></p><p style="line-height:24px"><span style=";font-size:14px">mutex_unlock(&amp;chip-&gt;tpm_mutex);</span></p><p style="line-height:24px"><span style=";font-size:14px">return rc;</span></p><p style="line-height:24px"><span style=";font-size:14px">}</span></p><p style="line-height:24px"><span style=";font-size:14px"><br  /></span></p><p style="line-height:24px"><span style=";font-family:宋体;font-size:14px">/*<span style="font-family:宋体">执行</span><span style="font-family:Times New Roman">TPM</span><span style="font-family:宋体">命令并检查执行结果</span><span style="font-family:Times New Roman">*/</span></span></p><p style="line-height:24px"><span style=";font-size:14px">static ssize_t transmit_cmd(struct tpm_chip *chip, struct tpm_cmd_t *cmd,</span></p><p style="line-height:24px"><span style=";font-size:14px">&nbsp;&nbsp;&nbsp;&nbsp;int len, const char *desc)</span></p><p style="line-height:24px"><span style=";font-size:14px">{</span></p><p style="line-height:24px"><span style=";font-size:14px">int err;</span></p><p style="line-height:24px"><span style=";font-size:14px">len = tpm_transmit(chip,(u8 *) cmd, len);</span></p><p style="line-height:24px"><span style=";font-size:14px">if (len &lt; &nbsp;0)</span></p><p style="line-height:24px"><span style=";font-size:14px">return len;</span></p><p style="line-height:24px"><span style=";font-size:14px">else if (len &lt; TPM_HEADER_SIZE)</span></p><p style="line-height:24px"><span style=";font-size:14px">return -EFAULT;</span></p><p style="line-height:24px"><span style=";font-size:14px">err = be32_to_cpu(cmd-&gt;header.out.return_code);</span></p><p style="line-height:24px"><span style=";font-size:14px">if (err != 0)</span></p><p style="line-height:24px"><span style=";font-size:14px">dev_err(chip-&gt;dev, "A TPM error (%d) occurred %s\n", err, desc);</span></p><p style="line-height:24px"><span style=";font-size:14px">return err;</span></p><p style="line-height:24px"><span style=";font-size:14px">}</span></p><p><span style="color: rgb(0, 0, 0);"></span><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">程香鹏</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

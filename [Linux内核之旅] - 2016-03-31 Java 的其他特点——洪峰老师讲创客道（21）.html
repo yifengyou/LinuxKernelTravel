@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		Java 的其他特点——洪峰老师讲创客道（21）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=416870803&amp;idx=1&amp;sn=ef3c8e41340c838de3ca6e998dc221de&amp;chksm=7647dc76413055600d20ea79c7b6e572e2c548470fe9a8a5871c2e9b6e321a1a56718b9d46ed&amp;scene=27#wechat_redirect&cpage=75' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">Java 的其他特点——洪峰老师讲创客道（21）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        洪峰
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-03-31</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="text-indent:28px"><span style=""></span></p><p><mpvoice frameborder="0" class="res_iframe js_editor_audio audio_iframe" src="/cgi-bin/readtemplate?t=tmpl/audio_tmpl&amp;name=%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9321&amp;play_length=16:55" name="%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9321" play_length="1015000" voice_encode_fileid="MzI3NzA5MzUxNF80MTY4NzA4MDE="></mpvoice></p><p style="text-indent:28px"><span style=""></span><br  /></p><p style="text-indent:28px"><span style="">在前面的一讲中我向大家介绍了</span><span style="">Java&nbsp;FX8</span><span style="">用于图形用户界面设计的一些情况，图形用户界面，对于应用程序的开发是极为重要的一个环节。</span></p><p style="text-indent:28px"><span style="">对于已经掌握了</span><span style="">Java</span><span style="">以前版本的同学，现在应该花大量的时间来研究</span><span style="">Java&nbsp;FX8</span><span style="">的一些新内容，逐渐把</span><span style="">Swing</span><span style="">忘记，因为</span><span style="">Swing</span><span style="">代码已经不再被</span><span style="">R</span><span style="">公司维护了，以后的图形界面设计语言只用</span><span style="">Java&nbsp;FX8</span><span style="">进行。对于还没有学习</span><span style="">Java</span><span style="">的同学的，我建议你一开始就学习</span><span style="">Java&nbsp;FX8</span><span style="">的图形用户界面的设计。</span></p><p style="text-indent:28px"><span style="">除了图形用户界面开发之外，一个应用程序肯定要完成某种或者某些特定的功能。所以，一旦图形用户界面的问题解决以后，就开始涉及到关于这些特定功能的实现问题，这是应用程序设计里面一个重要的内容。通常来讲在图形用户界面下，应用程序会向用户提供许多功能供用户使用，比如，在操作数据库时，在窗口最左边的栏目上可能有很多要操作的数据库；中间可能有一些对数据库的具体的选项（比如打开一个数据库、备份一个数据库）；窗口的最右边有可能是对数据库的内容进行显示或播放（比如视频可以播放出来，声音可以通过喇叭或扬声器播放出来），也可以在最右边的窗口下显示一些当时写的句式等；像这样的操作都说明在同一个用户下有许多不同的任务在并发执行。</span></p><p style="text-indent:28px"><span style="">在</span><span style="">Java</span><span style="">编程中，这样的一些任务可以通过</span><span style="">Thread</span><span style="">（多线程）来实现。从</span><span style="">Java1.0</span><span style="">的</span><span style="">API</span><span style="">开始就提供了对多线程的支持，而且在</span><span style="">Java8</span><span style="">里面对多线程的支持和</span><span style="">Java1.0</span><span style="">相比没有太大的变化。虽然在</span><span style="">Java</span><span style="">中初始化一个线程对象并不复杂，可以通过对</span><span style="">Thread</span><span style="">类的继承，或者通过支持一个</span><span style="">Run</span><span style="">n</span><span style="">able</span><span style="">接口来实现一个线程，然而，多线程的调度难度是非常大的，这是</span><span style="">Java</span><span style="">教学中的一个难点，也是大家学习中的一个难点，具体情况可以参考《黑客道》课程中的一些具体细节。当</span><span style="">Java</span><span style="">中的两个线程之间没有共享状态或者共享数据时，</span><span style="">Java&nbsp;Thread</span><span style="">线程是非常简单的，当两个或者是多个线程共享一些东西的时候，一定会有一个共享数据产生互斥，当互斥过度时会产生死锁。因此在</span><span style="">Java</span><span style="">多线程编程和操作系统内核设计中遇到的问题都可以应用到</span><span style="">Java</span><span style="">编程中，比如在</span><span style="">1965</span><span style="">年荷兰计算机科学家</span><span style="">Dijkstra</span><span style="">研究的哲学家就餐问题、读写问题和理发师睡眠问题等都可以在</span><span style="">Java</span><span style="">的多线程开发中派上用场。</span></p><p style="text-indent:28px"><span style="">在</span><span style="">紫皮书</span><span style="">的第三章讲对象、状态、模块的时候对多线程和面向对象编程之间的矛盾做了详细的讲解，大家可以回顾一下，在这一章的后面讲用</span><span style="">Ada</span><span style="">语言设计实时系统的时候还会回到这个课题上，在本书第六章讲操作系统以及在本书第七章讲进程的时候，会不同程度的涉及到多任务多进程和多线程问题。</span></p><p><span style="">前面在介绍</span><span style="">Java</span><span style="">语言技术特点的时候，已经讲过</span><span style="">Java</span><span style="">语言不支持指针运算，不支持指针意味着不能处理内存的分配与管理问题，所以对于驱动程序的设计</span><span style="">Java</span><span style="">是无能为力的。</span><span style="">java</span><span style="">语言本身是使用</span><span style="">C</span><span style="">语言开发的，即</span><span style="">Java</span><span style="">的虚拟机使用</span><span style="">C</span><span style="">语言开发的，所以</span><span style="">Java</span><span style="">语言提供了与</span><span style="">C</span><span style="">语言的接口（</span><span style="">Java&nbsp;Native&nbsp;Interface&nbsp;</span><span style="">，简称</span><span style="">JNI</span><span style="">），这个规范是</span><span style="">Java</span><span style="">语言的一部分，有了</span><span style="">JNI</span><span style="">，可以方便的使用</span><span style="">C</span><span style="">语言去开发设备驱动程序。一旦用</span><span style="">C</span><span style="">语言写的设备驱动程序做好以后，就可以将</span><span style="">C</span><span style="">语言开发的模块打包到</span><span style="">Java</span><span style="">系统中，从而让</span><span style="">Java</span><span style="">也能操作设备驱动程序。相比用</span><span style="">C</span><span style="">或</span><span style="">C++</span><span style="">开发设备驱动程序或开发基于设备驱动的应用程序，我认为使用</span><span style="">Java&nbsp;JNI</span><span style="">更好一些，因为图形用户界面的设计用</span><span style="">Java</span><span style="">语言做是非常合适和高效的，只是关于设备驱动这部分用</span><span style="">C</span><span style="">写，然后驱动用</span><span style="">Java</span><span style="">图形用户界面打包，那么这种应用程序针对某个特定硬件的设备驱动程序的应用程序会加快开发速度。一般来讲用</span><span style="">C</span><span style="">语言开发设备驱动程序是可以的，当设备驱动程序非常复杂的时候也可以用</span><span style="">C++</span><span style="">开发，</span><span style="">C++</span><span style="">开发代码同样也可以通过</span><span style="">JNI</span><span style="">的规范打包到</span><span style="">Java</span><span style="">系统中。也可以把其他一些语言跟</span><span style="">Java</span><span style="">一起混合编程，比如用</span><span style="">Java</span><span style="">设计图形用户界面，而关于方法计算的部分可以用另一种语言做，比如句法分析和符号计算的部分可以用非常强大的</span><span style="">LISP</span><span style="">语言，可以让</span><span style="">Java</span><span style="">的图形用户界面接受用户的数据输入和一些事件，而真正进行符号计算的部分交给</span><span style="">Rack</span><span style="">程序去做，同理，因为</span><span style="">Python</span><span style="">语言擅长文本设计，所以可以将</span><span style="">Java</span><span style="">界面接受到的数据传递个</span><span style="">Python</span><span style="">去做。适合用什么语言开发的任务就用什么语言进行开发相应的算法部分。</span></p><p style="text-indent:28px"><span style="">那么如何让一个</span><span style="">Java</span><span style="">和另外一个程序进行通信呢？这个时候就需要用到</span><span style="">Java</span><span style="">的</span><span style="">Network</span><span style="">的</span><span style="">API</span><span style="">，</span><span style="">Java</span><span style="">联网的</span><span style="">API</span><span style="">和</span><span style="">Java&nbsp;I/O</span><span style="">的部分是密切相关的，但是</span><span style="">Java</span><span style="">的</span><span style="">I/O</span><span style="">设计比较复杂，如果没有经过系统的训练很难掌握</span><span style="">Java</span><span style="">的</span><span style="">I/O</span><span style="">部分。</span><span style="">Java</span><span style="">的</span><span style="">I/O</span><span style="">的</span><span style="">API</span><span style="">设计复杂的主要原因是</span><span style="">Java</span><span style="">要追求跨平台，为了跨平台，</span><span style="">Java</span><span style="">必须在</span><span style="">I/O</span><span style="">的处理上做一些取舍以及强化、简化的一些设计，这也是</span><span style="">Java</span><span style="">的</span><span style="">I/O</span><span style="">比较难学的一个原因。在</span><span style="">Java&nbsp;I/O</span><span style="">技术上发展起来的</span><span style="">Java&nbsp;TCP/IP</span><span style="">的联网功能设计的非常好，前面已经讲过，在</span><span style="">1995</span><span style="">年推出的</span><span style="">Java</span><span style="">语言提供的</span><span style="">Java&nbsp;API1.0</span><span style="">中</span><span style="">TCP/IP</span><span style="">的协议就已经出现了，也就是说，</span><span style="">Java</span><span style="">语言从诞生之日起就已经支持互联网的编程。在</span><span style="">TCP/IP</span><span style="">协议栈中，</span><span style="">IP</span><span style="">存在网络层，</span><span style="">TCP</span><span style="">和</span><span style="">UDP</span><span style="">都位于</span><span style="">IP</span><span style="">层之上，</span><span style="">TCP</span><span style="">协议是面向连接的，当建立一个通信过程时，必须先进行握手，建立连接之后双方再进行通信，通信完成后，双方说再见，这是一个连续的一个过程。</span><span style="">UDP</span><span style="">协议是基于数据报（</span><span style="">Data</span><span style="">&nbsp;G</span><span style="">ram</span><span style="">）的，一个</span><span style="">Data&nbsp;Gram</span><span style="">和下一个</span><span style="">Data&nbsp;Gram</span><span style="">之间没有相互的关联，</span><span style="">UDP</span><span style="">只保证发出去，对用户是否收到数据报以及收到的顺序是否是发送方发出的顺序，</span><span style="">UDP</span><span style="">一概不管。两个协议各有特点，也都有自己的应用。总体来看，</span><span style="">TCP</span><span style="">协议适用于传输可靠的数据，</span><span style="">UDP</span><span style="">协议用于传输非常短小的报文，这是两者技术上的差异。</span></p><p><span style="">无论是</span><span style="">TCP</span><span style="">的编程还是</span><span style="">UDP</span><span style="">的编程，都需要有客户机</span><span style="">/</span><span style="">服务器的概念。服务器的程序要监听</span><span style="">IP</span><span style="">地址和端口，</span><span style="">IP</span><span style="">地址和端口被称为</span><span style="">Socket</span><span style="">，在</span><span style="">Socket</span><span style="">要指定一个数据通信的协议，这是服务器端程序应该完成的功能。客户机程序也要在它的本机上找到一个</span><span style="">IP</span><span style="">地址和一个端口号构成一个</span><span style="">Socket</span><span style="">，客户机的</span><span style="">Socket</span><span style="">和服务器的</span><span style="">Socket</span><span style="">这一对</span><span style="">Socket</span><span style="">按双方约定的协议建立数据通信。设计</span><span style="">TCP</span><span style="">服务器的一个难点在于同一个服务器要处理多个来自网上的请求，在</span><span style="">Java</span><span style="">网络编程中，要理解阻塞服务器和非阻塞服务器两个概念，这与</span><span style="">Java</span><span style="">联网的</span><span style="">API</span><span style="">关系十分密切。阻塞服务器和非阻塞服务器的区别是：一旦客户机与服务器建立</span><span style="">TCP</span><span style="">连接后，服务器会监听它的端口并等待客户机发数据给它，如果客户机不向服务器法数据，服务器就会一直等待下去，这种服务器称作阻塞服务器。在</span><span style="">Java1.4</span><span style="">的</span><span style="">API</span><span style="">之前，所有</span><span style="">Java</span><span style="">的</span><span style="">TCP</span><span style="">网络通信都是按照阻塞式的方式进行设计的。这种阻塞式的服务器对低负载的网站工作没有问题，因为低负载的网站上请求的数据不多，但是对于高负载的网站，阻塞式的服务器编程模型就无法应对了。从</span><span style="">Java1.4</span><span style="">开始，</span><span style="">Java</span><span style="">新的</span><span style="">Network</span><span style="">的</span><span style="">API</span><span style="">（</span><span style="">NIO</span><span style="">的</span><span style="">API</span><span style="">）会引入进来，这个</span><span style="">API</span><span style="">的引入是为了让</span><span style="">Java</span><span style="">去支持高负载、高并发的网络应用程序的设计而提供的。在非阻塞式服务器的设计中，需要理解</span><span style="">Buffer</span><span style="">和</span><span style="">Channel</span><span style="">这两个概念，</span><span style="">Buffer</span><span style="">是缓冲区，</span><span style="">Channel</span><span style="">是把同一个连接按照某种数据格式细分出来，这样对信道的占用变小了，相当于把原来的一条单车道马路分成双车道、三车道或更多的车道，每一个车道上可以跑一辆车，这样的话可以同时在一个连接上跑多辆车。这是一个基本的设计思想，而且对于每一个</span><span style="">Channel</span><span style="">上抛出的数据首先要放到</span><span style="">Buffer</span><span style="">里面，这两个概念支撑起了</span><span style="">Java&nbsp;NIO</span><span style="">的</span><span style="">API</span><span style="">的基础，有了</span><span style="">Buffer</span><span style="">和</span><span style="">Channel</span><span style="">这两个概念之后，</span><span style="">Java&nbsp;NIO</span><span style="">的</span><span style="">API</span><span style="">还提供了</span><span style="">Selects</span><span style="">（选择器）。如何从很多的</span><span style="">Buffer</span><span style="">里面进行选择数据投放给后台的进程，这个问题在</span><span style="">Java&nbsp;NIO</span><span style="">中解决的非常好，也是我们设计高性能网络服务器的一个首选的</span><span style="">API</span><span style="">，从</span><span style="">Java7</span><span style="">开始有一个</span><span style="">Java&nbsp;NIO.2</span><span style="">的</span><span style="">API</span><span style="">被引入进来，</span><span style="">NIO.2</span><span style="">的</span><span style="">API</span><span style="">对文件系统的操作简化了。</span></p><p style="text-indent:28px"><span style="">到此为止，对于利用</span><span style="">Java</span><span style="">语言设计应用程序的细节又向前深入了一步，已经介绍了用</span><span style="">Java</span><span style="">语言设计图形用户界面、用</span><span style="">Java</span><span style="">的线程去支持并发以及</span><span style="">Java</span><span style="">的联网功能，还有让</span><span style="">Java</span><span style="">和许多编程语言进行配合，发挥各种语言的功能。有了这些编程的技巧以后，对</span><span style="">Java</span><span style="">语言设计应用程序在生产力上会有大幅度的提高。</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">洪峰</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

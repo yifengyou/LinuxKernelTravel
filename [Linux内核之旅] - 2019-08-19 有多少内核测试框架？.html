@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		有多少内核测试框架？
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664606756&amp;idx=1&amp;sn=b906f3d2ccc9338a03cec2f9f8b6fc58&amp;chksm=f04d81c1c73a08d783bd16fa38151343c96f39ca4f89e142bc2008d396e8f4c6a8ecb102a2c1&amp;scene=27#wechat_redirect&cpage=0' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">有多少内核测试框架？</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                                            
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2019-08-19</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                <a class="original_area_primary" id="copyright_info" href="##" style="visibility:hidden">
+                    <span class="tips_global_primary">文章转载自公众号</span>
+                    <span class="radius_avatar">
+                                            <img class="avatar" src="http://wx.qlogo.cn/mmhead/Q3auHgzwzM6cga6DtKYhNxna0Eias71mxPD7sVuxpg2WTY7ZBPvzBqQ/0" alt="内核月谈">
+                                          </span>
+                    <span class="original_primary_nickname rich_media_meta_link js_nickname">内核月谈</span>
+                                        <span class="tips_global_primary" id="js_comma">，</span>
+                    <span class="original_primary_author_wrp tips_global_primary" id="js_author">
+                      作者                                            阿里 飞能译
+                                          </span>
+                                    </a>
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <section class="output_wrapper" style="font-size: 16px;color: rgb(62, 62, 62);line-height: 1.6;letter-spacing: 0px;font-family: &quot;Helvetica Neue&quot;, Helvetica, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;, Arial, sans-serif;"><p style="font-size: inherit;color: inherit;line-height: inherit;margin-top: 1.5em;margin-bottom: 1.5em;"><br  /></p><blockquote style="line-height: inherit;padding: 15px 15px 15px 1rem;font-size: 0.9em;color: rgb(129, 145, 152);border-left-width: 6px;border-left-color: rgb(220, 230, 240);background: rgb(242, 247, 251);overflow: auto;overflow-wrap: normal;word-break: normal;"><p style="font-size: inherit;color: inherit;line-height: inherit;">本文摘录了Linux社区邮件列表里关于新提议的内核单元测试框架KUnit的一些讨论帖子的部分内容，通过社区开发人员对内核测试抱怨的槽点、痛点及期待，一窥内核测试的框架的现状以及未来的发展。读者可以从中了解一些Linux内核测试背景知识，也能猎奇社区大牛的关注点。<br  />限于译者水平，不当之处还望多包涵，多指正，感谢！</p></blockquote><p style="font-size: inherit;color: inherit;line-height: inherit;margin-top: 1.5em;margin-bottom: 1.5em;">Linux内核代码树里早就有了内核自测框架(kselftest)，但最近社区又来一个称作KUnit的内核单元测试框架的提议，让人纳闷儿有必要整两个测试框架吗？在该提议冗长的讨论帖子，大家就往内核添加测试框架的理由争论不休。虽说Kselftest跟KUnit有各自不同的使用案例，但不免有人担心多框架会让内核测试变得分散。</p><p style="font-size: inherit;color: inherit;line-height: inherit;margin-top: 1.5em;margin-bottom: 1.5em;">5月初，Brendan Higgins就瞄着内核5.2的合并窗口放出KUnit的第2版补丁集。因合并窗口大概一周后就会打开，大神<br  />Greg Kroah-Hartman和Shuah Khan都觉得有些操之过急了。不过Khan到是同意这些补丁可以通过她的kselftest树合并进内核。虽然部分补丁仍有些技术异议，这也并不奇怪。但总体而言，提议已经得到社区首肯 -- 打上了不少Reviewed-by的标签了。</p><p style="font-size: inherit;color: inherit;line-height: inherit;margin-top: 1.5em;margin-bottom: 1.5em;">然而还是有不少争议，包括 Kroah-Hartman 和Logan Gunthorpe在内的一些人抱怨用KUnit跑测试要依赖用户模式Linux(UML)。Higgins回复说他已经“基本搞定”，尽管Python包裹的脚本仍然得跑在UML上，但现在KUnit基本上能够跑着任何架构上了。随后他就将之文档化了。</p><p style="font-size: inherit;color: inherit;line-height: inherit;margin-top: 1.5em;margin-bottom: 1.5em;">Frank Rowand提了个更首要的问题。在他看来，使用UML的目的就是“避免在真实硬件或虚拟机上起内核”。但他并不真的&gt;认为这是“语义问题”，用UML跑Linux只是一种不同形式的虚拟化。另外：</p><blockquote style="line-height: inherit;padding: 15px 15px 15px 1rem;font-size: 0.9em;color: rgb(129, 145, 152);border-left-width: 6px;border-left-color: rgb(220, 230, 240);background: rgb(242, 247, 251);overflow: auto;overflow-wrap: normal;word-break: normal;"><p style="font-size: inherit;color: inherit;line-height: inherit;">作为一名内核开发者，对我来讲KUnit是另一个我必须去熟悉的基础设施。得往我小小的脑子塞更多东西。<br  />我猜一些开发者只会关心这两个测试环境中的一个(有些同时关注两个)，他们会把开发资源拆散而非集中到一个通用的基础设施上。</p></blockquote><p style="font-size: inherit;color: inherit;line-height: inherit;margin-top: 1.5em;margin-bottom: 1.5em;">Khan认为Kselftest跟KUnit可以互补：Kselftest是“用户空间测试集合，一些case需要少量的内核模块来支持”，而KUnit为内核测试提供了一个框架。Rowand不为所动，他反而看到这两个测试框架有(或可能有)几乎完全重叠的部分。</p><p style="font-size: inherit;color: inherit;line-height: inherit;margin-top: 1.5em;margin-bottom: 1.5em;">Ted Ts'o跟其他开发者不同，他实际上发现了用UML的一些好处。他描述了在开发 ext4 时的一些单元测试，KUnit可以将 ext4 与内核其他&gt;部分孤立开，来测试特定功能，这正是它的价值所在。相比kselftest框架在用户空间跑测试需要起一个真实内核，KUnit更简单更快捷：</p><blockquote style="line-height: inherit;padding: 15px 15px 15px 1rem;font-size: 0.9em;color: rgb(129, 145, 152);border-left-width: 6px;border-left-color: rgb(220, 230, 240);background: rgb(242, 247, 251);overflow: auto;overflow-wrap: normal;word-break: normal;"><p style="font-size: inherit;color: inherit;line-height: inherit;">这是为啥我不在乎跑Kunit要依赖 UML，事实上，这到是KUnit的一个特性。我们不需要测试设备驱动，调度器，或架构相关的其它东西。这种场景下，UML无关虚拟化，关乎使得我们能尽可能快的跑测试。起KVM虚拟<br  />机需要大概3 到 4 秒钟，其中包括初始virtio_scsi和其它设备驱动的时间。如果用 UML，我们可以最小化不必要的内核子系统初始化时间。而且，这意味着我们可以通过一个UML/KUnit代码里的用户空间“printf"与<br  />测试框架[通信]。相对通过虚拟串口与KVM虚拟机console通信，这能够实现轻量级的测试。</p></blockquote><h4 style="color: inherit;line-height: inherit;margin-top: 1.5em;margin-bottom: 1.5em;font-weight: bold;font-size: 1.2em;"><span style="font-size: inherit;color: inherit;line-height: inherit;">框架</span></h4><p style="font-size: inherit;color: inherit;line-height: inherit;margin-top: 1.5em;margin-bottom: 1.5em;">部分意见分歧某种程度上源于对“框架”的定义。Ts'o毫不客气的批评kselfttest并没有提供一个内核测试框架。但Rowand极力反对，他指出kselftest用了内核模块，而且那些内核模块可以编译进UML内核中。“每段内核代码都得创建自己的内&gt;核测试基础设施”，Ts'o不认为这样就能算得上一个框架。Rowand有不同看法：“Kselftest内核测试遵从一个通用模式，这还就是框架”。尽&gt;管Ts'o觉得将来情势可能有变，但这对他来讲还真不等同于框架：</p><blockquote style="line-height: inherit;padding: 15px 15px 15px 1rem;font-size: 0.9em;color: rgb(129, 145, 152);border-left-width: 6px;border-left-color: rgb(220, 230, 240);background: rgb(242, 247, 251);overflow: auto;overflow-wrap: normal;word-break: normal;"><p style="font-size: inherit;color: inherit;line-height: inherit;">对“框架”我们可能有不同的定义，但在我的书里，靠“剪切粘贴”来复用代码做不成一个框架。不管KTF[内核测试框架]还是 KUnit，能不能重写成<strong style="font-size: inherit;color: inherit;line-height: inherit;">使用</strong>一个框架呢？当然！但至少<strong style="font-size: inherit;color: inherit;line-height: inherit;">今天</strong>它们都没用到框架。</p></blockquote><p style="font-size: inherit;color: inherit;line-height: inherit;margin-top: 1.5em;margin-bottom: 1.5em;">另外，Ts'o表示kselftest期望能有一个可以工作的用户空间环境：</p><blockquote style="line-height: inherit;padding: 15px 15px 15px 1rem;font-size: 0.9em;color: rgb(129, 145, 152);border-left-width: 6px;border-left-color: rgb(220, 230, 240);background: rgb(242, 247, 251);overflow: auto;overflow-wrap: normal;word-break: normal;"><p style="font-size: inherit;color: inherit;line-height: inherit;">一个主要的差别在于，kselftest需要一个用户态环境来启动 systemd，得有一个根文件系统让你可以加载模块，等等这些。而KUnit不需要根文件系统，也不需要你启动 systemd，它不允许你肆意的运行 perl、python、bash等脚本。</p></blockquote><p style="font-size: inherit;color: inherit;line-height: inherit;margin-top: 1.5em;margin-bottom: 1.5em;">Rowand没能苟同：</p><blockquote style="line-height: inherit;padding: 15px 15px 15px 1rem;font-size: 0.9em;color: rgb(129, 145, 152);border-left-width: 6px;border-left-color: rgb(220, 230, 240);background: rgb(242, 247, 251);overflow: auto;overflow-wrap: normal;word-break: normal;"><p style="font-size: inherit;color: inherit;line-height: inherit;">kselftest内核测试(讨论的上下文)可以配置为内建而非模块，也可以内建进UML内核。UML内核能够在其试图唤醒init进程前引导、运行内核测试。<br  />无需用户空间环境，所以用此种方式跑测试的开销跟KUnit完全相同。</p></blockquote><p style="font-size: inherit;color: inherit;line-height: inherit;margin-top: 1.5em;margin-bottom: 1.5em;">这并没说服Ts'o，他指出在kselftest文档里只字未提这类测试，在init启动前确实跑了一些测试，但那些并非kselftest测试框架的一部分&gt;：</p><blockquote style="line-height: inherit;padding: 15px 15px 15px 1rem;font-size: 0.9em;color: rgb(129, 145, 152);border-left-width: 6px;border-left-color: rgb(220, 230, 240);background: rgb(242, 247, 251);overflow: auto;overflow-wrap: normal;word-break: normal;"><p style="font-size: inherit;color: inherit;line-height: inherit;">内核里确实存在一些测试模块在init脚本执行前运行 --- 但严格来讲那也并非kselftest框架的一部分，而且没有任何种类的基础设施。如前面提到的，kselftest_harness头文件压根儿就当你是在用户空间跑测试<br  />。</p></blockquote><h4 style="color: inherit;line-height: inherit;margin-top: 1.5em;margin-bottom: 1.5em;font-weight: bold;font-size: 1.2em;"><span style="font-size: inherit;color: inherit;line-height: inherit;">重叠</span></h4><p style="font-size: inherit;color: inherit;line-height: inherit;margin-top: 1.5em;margin-bottom: 1.5em;">KUnit与kselftest在功能上可能有些重叠。Knut Omang，另一个非主线的内核单元测试项目 Kernel Test Framework的项目成员，他指出有两类测试在讨论中可能被混淆。一类是独立的特定子系统测试，用于该子系统开发人员快速重复性测试。另一类是多个子系统间交互测试，尽管开&gt;发人员也会用到，但主要是作为回归测试套件，或持续集成(CI)的一部分来运行。为 ext4 子系统开发单元测试落入第一类，而xfstests属于第二类。</p><p style="font-size: inherit;color: inherit;line-height: inherit;margin-top: 1.5em;margin-bottom: 1.5em;">Omang认为通过通用的配置文件，测试报告等等，这两类很有潜力合二为一，这也是KTF试图在做的。Ts'o对单测试框架是未来发展方向表示怀疑，像 xfstests, blktests, kselftest等等这些都已经是多框架。Omang也指出UML仍在搅单子系统单元测这趟浑水：</p><blockquote style="line-height: inherit;padding: 15px 15px 15px 1rem;font-size: 0.9em;color: rgb(129, 145, 152);border-left-width: 6px;border-left-color: rgb(220, 230, 240);background: rgb(242, 247, 251);overflow: auto;overflow-wrap: normal;word-break: normal;"><p style="font-size: inherit;color: inherit;line-height: inherit;">使用UML的问题在于你仍就逃不开内核运行时系统复杂性，而这类测试你真正想要的不过是在正常的用户上下文编译几个内核源文件，能用上Valgrind或其它一些用户态工具。在这样的环境编译代码通常要依赖一些<br  />微妙的内核宏或定义，颇具挑战性，这也是为什么UML方案看起来很有吸引力的原因。</p></blockquote><p style="font-size: inherit;color: inherit;line-height: inherit;margin-top: 1.5em;margin-bottom: 1.5em;">但Ts'o有不同看法：</p><blockquote style="line-height: inherit;padding: 15px 15px 15px 1rem;font-size: 0.9em;color: rgb(129, 145, 152);border-left-width: 6px;border-left-color: rgb(220, 230, 240);background: rgb(242, 247, 251);overflow: auto;overflow-wrap: normal;word-break: normal;"><p style="font-size: inherit;color: inherit;line-height: inherit;">“仅在正常的用户空间编译几个内核源码文件”远比想象中要难。假如想要测试文件系统的锁缺陷，我需要编写大量模拟(mocking)函数 --- 必须模拟块设备层，大部分的虚拟文件系统(VFS)层，已经调度器，锁层等<br  />等。实践中，UML正是作为mocking层而存在。所以当Frank说KUnit没有mocking函数时，我完全不认同。用KUnit和UML来测试内部接口真的是<strong style="font-size: inherit;color: inherit;line-height: inherit;">超</strong>简单。尤其类比为“作为用户空间测试程序的一部分来编译内核源码&gt;文件”。</p></blockquote><p style="font-size: inherit;color: inherit;line-height: inherit;margin-top: 1.5em;margin-bottom: 1.5em;">Gunthorpe也看到一些潜在的重叠，有些类似Omang的方法，他在测试风格上做了区分。他指出，在这一点上，<code style="font-size: inherit;line-height: inherit;overflow-wrap: break-word;padding: 2px 4px;border-radius: 4px;margin-right: 2px;margin-left: 2px;color: rgb(233, 105, 0);background: rgb(248, 248, 248);">kselftest_harness.h</code> 接口文件并没有多少用户，所以着眼于尽快统一重叠的部分是有意义的。</p><blockquote style="line-height: inherit;padding: 15px 15px 15px 1rem;font-size: 0.9em;color: rgb(129, 145, 152);border-left-width: 6px;border-left-color: rgb(220, 230, 240);background: rgb(242, 247, 251);overflow: auto;overflow-wrap: normal;word-break: normal;"><p style="font-size: inherit;color: inherit;line-height: inherit;">第二点，可以说，跟kselftest有重大重叠。无论你是在轻量级的UML环境跑短测试，还是在较重的虚拟机(VM)里跑高阶测试，两者都得用到相同的框架来编写或是定义内核测试。能够在较重的虚拟机环境跑其它高&gt;阶测试一样跑所有UML测试对某些人来讲可能也是有价值的。<br  />看看代码库里的kselftest代码树，想我在上面第2点提到的，已经有了类似KUnit添加的条目。<code style="font-size: inherit;line-height: inherit;overflow-wrap: break-word;padding: 2px 4px;border-radius: 4px;margin-right: 2px;margin-left: 2px;color: rgb(233, 105, 0);background: rgb(248, 248, 248);">kselftest_harness.h</code> 里的一些宏，像 <code style="font-size: inherit;line-height: inherit;overflow-wrap: break-word;padding: 2px 4px;border-radius: 4px;margin-right: 2px;margin-left: 2px;color: rgb(233, 105, 0);background: rgb(248, 248, 248);">EXPECT_*</code> 和 <code style="font-size: inherit;line-height: inherit;overflow-wrap: break-word;padding: 2px 4px;border-radius: 4px;margin-right: 2px;margin-left: 2px;color: rgb(233, 105, 0);background: rgb(248, 248, 248);">ASSERT_*</code>，跟KUnit新加的 <code style="font-size: inherit;line-height: inherit;overflow-wrap: break-word;padding: 2px 4px;border-radius: 4px;margin-right: 2px;margin-left: 2px;color: rgb(233, 105, 0);background: rgb(248, 248, 248);">EXPECT_* and ASSERT_*</code> 和 <code style="font-size: inherit;line-height: inherit;overflow-wrap: break-word;padding: 2px 4px;border-radius: 4px;margin-right: 2px;margin-left: 2px;color: rgb(233, 105, 0);background: rgb(248, 248, 248);">KUNIT_ASSERT_*</code> 意图非常相似。</p></blockquote><p style="font-size: inherit;color: inherit;line-height: inherit;margin-top: 1.5em;margin-bottom: 1.5em;">Ts'o并不反对任何合理的方式统一内核测试，但他指出在用于内核测试前 <code style="font-size: inherit;line-height: inherit;overflow-wrap: break-word;padding: 2px 4px;border-radius: 4px;margin-right: 2px;margin-left: 2px;color: rgb(233, 105, 0);background: rgb(248, 248, 248);">kselftest_harness.h</code> 需要返工。Gunthorpe似乎改了主意，他<br  />回复说花大力气去整合两个使用案例可能并不划算：</p><blockquote style="line-height: inherit;padding: 15px 15px 15px 1rem;font-size: 0.9em;color: rgb(129, 145, 152);border-left-width: 6px;border-left-color: rgb(220, 230, 240);background: rgb(242, 247, 251);overflow: auto;overflow-wrap: normal;word-break: normal;"><p style="font-size: inherit;color: inherit;line-height: inherit;">对我来讲，用KUnit做内核测试，而kselftest_harness做用户态测试似乎更加明智。试图在这儿统一内核与用户空间测试听起来就很困难，所以除非有人想用真正花哨的工作来搞定它，否则这可能不大好强推。</p></blockquote><p style="font-size: inherit;color: inherit;line-height: inherit;margin-top: 1.5em;margin-bottom: 1.5em;">基本上，在这个补丁系列里，Rowand似乎在为KUnit寻求更好的合并理由，为什么它不同于，且必须不同于 kselftest。“关于KUnit是如何为内核代码创建单元测试提供不同于kselftest的东西，我试图寻找比补丁0里更好更全面的解释”。Higgins征询关于KUnit文档不足的具体建议，Rowand回应道补丁合入理由是作为代码评审人员所追求的：</p><blockquote style="line-height: inherit;padding: 15px 15px 15px 1rem;font-size: 0.9em;color: rgb(129, 145, 152);border-left-width: 6px;border-left-color: rgb(220, 230, 240);background: rgb(242, 247, 251);overflow: auto;overflow-wrap: normal;word-break: normal;"><p style="font-size: inherit;color: inherit;line-height: inherit;">在这个补丁系列的讨论中有一个事情变动非常显眼，有些人没理解kselftest不光有用户空间测试，还包括内核测试。如此一来，KUnit就是“相同特性”的一个额外实现。(你完全可以就kselftest与KUnit都提供了哪<br  />些内核测试特性，存在多少重叠来辩论，但不要以为“相同特性”就是我关于存在多少重叠的最终看法)，这才是需要指出跟解释的关键。</p></blockquote><p style="font-size: inherit;color: inherit;line-height: inherit;margin-top: 1.5em;margin-bottom: 1.5em;">但Gunthorpe不认同：“我认为Brendan已经提供了足够多的信息用以KUnit合入判定”。关于kselftest是否提供了任何&gt;内核测试框架的不同观点，似乎是讨论僵持不下的关键。Gunthorpe相信kselftest内核测试代码应尽可能的改用 KUnit，一旦Kunit合入主线，他将无比开心。</p><p style="font-size: inherit;color: inherit;line-height: inherit;margin-top: 1.5em;margin-bottom: 1.5em;">随着讨论慢慢凉下来，Higgins在5月13日放出了第3版补丁集，紧接着一天后又更新到第4版。两个版本都是在第2版的基础上给出技术评论，添加一些关于在UML之外的架构上运行测试的文档。这两个帖子评论不多，也没有大的抱怨。可<br  />以猜测KUnit正在进入主线的路上了，很可能就是 5.3。</p><blockquote style="line-height: inherit;padding: 15px 15px 15px 1rem;font-size: 0.9em;color: rgb(129, 145, 152);border-left-width: 6px;border-left-color: rgb(220, 230, 240);background: rgb(242, 247, 251);overflow: auto;overflow-wrap: normal;word-break: normal;"><p style="font-size: inherit;color: inherit;line-height: inherit;">译注：截止译稿日，Higgins已经更新到了第8个版本了，看来好事多磨啊！</p></blockquote></section><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">阿里 飞能译</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>

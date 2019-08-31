@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		【陈老师推荐】一位研究生的Linux内核技术博客
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664604053&amp;idx=1&amp;sn=be68105d6b2d5842b3c34eb47f674719&amp;chksm=f04d8c70c73a0566ed8f886ff37949f51f55f293e545d20129822963d98fbdb72b0b42d78457&amp;scene=27#wechat_redirect&cpage=39' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">【陈老师推荐】一位研究生的Linux内核技术博客</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                            <span id="copyright_logo" class="rich_media_meta rich_media_meta_text meta_tag_text">原创：</span>
+                                                                                        <span class="rich_media_meta rich_media_meta_text">
+                                                        陈莉君
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2017-05-22</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p><span style="font-size: 20px;"><span style="background-color: inherit; line-height: 1.5;">&nbsp;&nbsp;</span><span style="line-height: 1.5; background-color: inherit;"><br  /></span></span></p><p><span style="font-size: 20px;"><span style="line-height: 1.5; background-color: inherit;">这位研究生是10</span><span style="line-height: 1.5; background-color: inherit;">级的，博客名</span><span style="background-color: rgb(255, 255, 255); line-height: 1.5;">edsionte（猜猜这个名字的出处）。</span></span><span style="background-color: inherit; line-height: 1.5; font-size: 20px;"><br  /></span></p><p><span style="line-height: 1.5; background-color: inherit; font-size: 20px;">依然记得10年的那个暑假，他对Linux几乎一无所知，为了补Linux的基础，他在西邮长安校区这边租了房子，蹲在Linux 3+1班，与比自己低一级的07级Linux兴趣小组同学一块学习。从那时开始，他就开始了博客的撰写，这一写，在研究生的三年时间里，写了200多篇博客，从图到文，每篇都仔细认真。</span></p><p><span style="line-height: 1.5; background-color: inherit; font-size: 20px;">他的博客地址：</span><span style="background-color: inherit; font-size: 20px;"><a style="background-color: inherit; cursor: pointer; line-height: 1.5;">http://edsionte.com/techblog/</a><br  /></span></p><p><span style="background-color: inherit; font-size: 20px;">他对自己的博客还分门别类进行了组织，你随便挑一篇阅读，从中都会感到一种一丝不苟的态度，比如：</span></p><p><span style="background-color: inherit; font-size: 20px;">&nbsp; &nbsp;</span></p><h1 style="background-color: rgb(255, 255, 255); color: rgb(0, 0, 0); font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; letter-spacing: normal; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; word-spacing: 0px; -webkit-text-stroke-width: 0px; text-decoration-style: initial; text-decoration-color: initial;"><span style="color: rgb(79, 129, 189); background-color: inherit; font-size: 20px;">内核新手区</span></h1><p style="margin: 5px 0px; background-color: inherit; color: rgb(77, 77, 77);"><span style="background-color: inherit; font-size: 20px;">Linux操作系统的原理固然很重要，适量的代码实践则可以让你具体的了解内核。通过原理-实践-原理的过程，可以让我们不断的深入学习。本系列文章是以初学者的角度描写，每篇文章除了简单的分析相关原理外，还有完整的代码演示。</span></p><p style="margin: 5px 0px; background-color: inherit; color: rgb(77, 77, 77);"><span style="background-color: inherit; font-size: 20px;">本系列文章仅作学习中的参考，具体代码应根据具体linux发行版、内核版本等灵活变动。另外，由于作者在写这些文章时，也是一个内核初学者。因此，部分文章中难免有不准确甚至错误的地方，欢迎指正。</span></p><ul data-front-font-size="16px" style="margin-top: 0px; margin-bottom: 0px; background-color: inherit; color: rgb(77, 77, 77); font-size: 16px;" class=" list-paddingleft-2"><li><p><span style="background-color: inherit; font-size: 20px;">内核并不是个空洞：<a target="_blank" style="background-color: inherit; cursor: pointer; color: rgb(0, 77, 153);">编译内核</a></span></p></li><li><p><span style="background-color: inherit; font-size: 20px;">轻松内核模块编程：<a target="_blank" style="background-color: inherit; cursor: pointer; color: rgb(0, 77, 153);">hello，kernel！</a></span></p></li><li><p><span style="background-color: inherit; font-size: 20px;">用户态和内核态编程的不同：<a target="_blank" style="background-color: inherit; cursor: pointer; color: rgb(0, 77, 153);">printf到printk的转变</a></span></p></li><li><p><span style="background-color: inherit; font-size: 20px;">亲切的内核源码：<a target="_blank" style="background-color: inherit; cursor: pointer; color: rgb(0, 77, 153);">list.h文件分析(上)</a></span></p></li><li><p><span style="background-color: inherit; font-size: 20px;">感受内核源码：&nbsp;<a target="_blank" style="background-color: inherit; cursor: pointer; color: rgb(0, 77, 153);">list.h文件分析(下)</a></span></p></li><li><p><span style="background-color: inherit; font-size: 20px;">灵活运用：<a style="background-color: inherit; cursor: pointer; color: rgb(0, 77, 153);">list.h的简单应用</a></span></p></li><li><p><span style="background-color: inherit; font-size: 20px;">便利链表：<a style="background-color: inherit; cursor: pointer; color: rgb(0, 77, 153);">遍历进程链表</a></span></p></li><li><p><span style="background-color: inherit; font-size: 20px;">经典信号量机制实现：<a style="background-color: inherit; cursor: pointer; color: rgb(0, 77, 153);">使用内核实现生产者和消费者</a></span></p></li><li><p><span style="background-color: inherit; font-size: 20px;">感受中断：<a style="background-color: inherit; cursor: pointer; color: rgb(0, 77, 153);">你的第一个中断程序！</a></span></p></li><li><p><span style="background-color: inherit; font-size: 20px;">感受小任务机制：<a style="background-color: inherit; cursor: pointer; color: rgb(0, 77, 153);">中断下半部分之tasklet</a></span></p></li><li><p><span style="background-color: inherit; font-size: 20px;">感受工作队列：<a style="background-color: inherit; cursor: pointer; color: rgb(0, 77, 153);">中断下部分之工作队列</a></span></p></li><li><p><a target="_blank" style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">编译内核</span></a></p></li><li><p><a style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">cdev</span></a></p></li><li><p><a style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">源码阅读工具</span></a></p></li><li><p><a target="_blank" style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">内核中的Makefile与Kconfig(1)</span></a></p></li><li><p><a target="_blank" style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">内核中的Makefile与Kconfig(2)</span></a></p></li><li><p><a target="_blank" style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">理解Makefile、Kconfig和.config文件</span></a></p></li><li><p><a target="_blank" style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">字符设备驱动学习(1)</span></a></p></li><li><p><a target="_blank" style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">字符设备驱动学习(2)</span></a></p></li><li><p><a target="_blank" style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">字符设备驱动再学习</span></a></p></li><li><p><a target="_blank" style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">中断入门</span></a></p></li><li><p><a target="_blank" style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">动手调试中断程序</span></a></p></li><li><p><a target="_blank" style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">中断的上下部分</span></a></p></li><li><p><a target="_blank" style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">中断下部分之tasklet</span></a></p></li><li><p><a target="_blank" style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">中断下部分之工作队列</span></a></p></li><li><p><a style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">中断中的数据结构</span></a></p></li><li><p><a style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">内核定时器</span></a></p></li><li><p><a style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">内核同步之原子操作</span></a></p></li><li><p><a style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">内核同步之锁机制</span></a></p></li><li><p><a style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">等待队列源码分析</span></a></p></li><li><p><a style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">支持阻塞的字符设备驱动</span></a></p></li><li><p><a style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">进程的虚拟地址空间</span></a></p></li><li><p><a style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">进程用户空间的代码描述</span></a></p></li><li><p><a style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">虚拟内核实践(1)</span></a></p></li><li><p><a style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">虚拟内核实践(2)</span></a></p></li><li><p><a style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">虚拟文件系统入门</span></a></p></li><li><p><a style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">虚拟文件系统中的基本数据结构</span></a></p></li><li><p><a style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">虚拟文件系统数据结构图</span></a></p></li><li><p><a style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">虚拟文件系统中的其他数据结构</span></a></p></li><li><p><a style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">动手感受虚拟文件系统</span></a></p></li><li><p><a style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">系统调用与API</span></a></p></li><li><p><span style="background-color: inherit; color: rgb(0, 77, 153); font-size: 20px;"><a style="background-color: inherit; cursor: pointer; color: rgb(0, 77, 153);">系统调用执行过程</a></span></p></li></ul><p><span style="line-height: 21.8182px; background-color: inherit; color: rgb(77, 77, 77); font-size: 20px;"><br style="background-color: inherit;"  /></span></p><h1 style="background-color: rgb(255, 255, 255);"><span style="background-color: inherit; font-size: 20px;">内存管理的那些事儿</span></h1><h2 style="background-color: inherit; color: rgb(0, 0, 0); font-size: 28px; font-weight: normal;"><span style="font-size: 20px;">物理内存管理</span></h2><ul style="margin-top: 0px; margin-bottom: 0px; background-color: inherit; color: rgb(77, 77, 77);" class=" list-paddingleft-2"><li><p><a target="_blank" style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">内存管理中的基本数据结构</span></a></p></li><li><p><a title="直接连接 Linux物理内存管理概述" style="cursor: pointer; color: rgb(0, 77, 153); font-family: Consolas,Monaco,monospace; background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">Linux物理内存管理概述</span></a></p></li><li><p><a target="_blank" style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">请求页框API简介</span></a></p></li><li><p><a target="_blank" style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">Linux页框分配函数的实现（1）-主体分配函数</span></a></p></li><li><p><a title="Permanent Link to Linux页框分配函数的实现（2）-慢速内存分配" style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">Linux页框分配函数的实现（2）-慢速内存分配</span></a></p></li><li><p><a title="Permanent Link to Linux页框分配函数的实现（3）-快速分配函数" style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">Linux页框分配函数的实现（3）-快速分配函数</span></a></p></li><li><p><a title="Permanent Link to 伙伴算法的数据结构" style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">伙伴算法的数据结构</span></a></p></li><li><p><a title="Permanent Link to 伙伴算法的实现-释放页框" style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">伙伴算法的实现-释放页框</span></a></p></li><li><p><a title="Linux内存管理中的slab分配器" style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">Linux内存管理中的slab分配器</span></a></p></li><li><p><a title="Permanent Link to vmalloc()的基本实现" style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">vmalloc()的基本实现</span></a></p></li><li><p><a title="Permanent Link to vmalloc()的实现-分散的物理页框与连续vmalloc区的映射" style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">vmalloc()的实现-分散的物理页框与连续vmalloc区的映射</span></a></p></li></ul><h2 style="background-color: inherit; color: rgb(0, 0, 0); font-size: 28px; font-weight: normal;"><span style="font-size: 20px;">虚拟内存管理</span></h2><ul style="margin-top: 0px; margin-bottom: 0px; background-color: inherit; color: rgb(77, 77, 77);" class=" list-paddingleft-2"><li><p><a title="Permanent Link to Linux中的分页机制" style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">Linux中的分页机制</span></a></p></li><li><p><a title="Permanent Link to x86架构下与分页机制有关的宏和函数" style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">x86架构下与分页机制有关的宏和函数</span></a></p></li><li><p><a title="直接连接 进程的虚拟地址空间" style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">进程的虚拟地址空间</span></a></p></li><li><p><a title="直接连接 进程用户空间的代码描述" style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">进程用户空间的代码描述</span></a></p></li><li><p><a title="Permanent Link to 与虚拟内存区域有关的操作" style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">与虚拟内存区域有关的操作</span></a></p></li><li><p><a title="Permanent Link to 与虚拟内存区域有关的操作（2）-合并内存区域" style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">与虚拟内存区域有关的操作（2）-合并内存区域</span></a></p></li><li><p><a title="直接连接 虚拟映射和mmap()" style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">虚拟映射和mmap()</span></a></p></li><li><p><a target="_blank" style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">malloc之后，内核发生了什么？</span></a></p></li></ul><h2 style="background-color: inherit; color: rgb(0, 0, 0); font-size: 28px; font-weight: normal;"><span style="font-size: 20px;">内存管理实践</span></h2><ul style="margin-top: 0px; margin-bottom: 0px; background-color: inherit; color: rgb(77, 77, 77);" class=" list-paddingleft-2"><li><p><a title="直接连接 内存管理实践之一-打印内存区域" style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">内存管理实践之一-打印内存区域</span></a></p></li><li><p><a title="直接连接 内存管理实践之二-查找内存区域" style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">内存管理实践之二-查找内存区域</span></a></p></li><li><p><a title="Permanent Link to 内存管理实践之三-虚拟地址转换物理地址" style="cursor: pointer; color: rgb(0, 77, 153); background-color: inherit; font-size: 20px; text-decoration: underline;"><span style="background-color: inherit; font-size: 20px;">内存管理实践之三-虚拟地址转换物理地址</span></a></p></li><li><p><span style="background-color: inherit; color: rgb(0, 77, 153); font-size: 20px;">Linux内存管理实践-使用fault()实现内存映射</span></p><p><span style="background-color: inherit; color: rgb(0, 77, 153); font-size: 20px;"></span></p></li></ul><p><span style="background-color: inherit; color: rgb(0, 77, 153); font-size: 20px;"><br  /></span></p><p><strong><span style="background-color: inherit; color: rgb(0, 77, 153); font-size: 20px;">大家可以点击阅读原文来查看博客的内容</span></strong></p><p><span style="background-color: inherit; color: rgb(77, 77, 77); font-size: 20px;"><br style="background-color: inherit;"  /></span></p><p><span style="background-color: inherit; color: rgb(77, 77, 77); font-size: 20px;"><br style="background-color: inherit;"  /></span></p><p><span style="background-color: inherit; font-size: 20px;">&nbsp; <br  /></span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_reward_area" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_reward_avatar">
+                        <img src="" alt="" id="js_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" style="display: none;" id="js_reward_author">陈莉君</div>
+                                                            <p class="reward_button_wrp">
+                      <span id="js_author_reward_qrcode" class="reward_pop_panel">
+                        <img id="js_author_reward_qrcode_img" src="" alt="赞赏二维码">
+                        <strong>微信扫一扫赞赏作者</strong>
+                      </span>
+                        <a class="reward_button" id='js_reward_link' href="##"><span id="js_reward_link_text">赞赏</span></a>
+                    </p>
+                    <div id="js_reward_inner" class="reward_area_inner" style="display:none;">
+                        <p class="weui-loadmore weui-loadmore_line reward_user_tips" id="js_reward_total_parent">
+                          <span class="weui-loadmore__tips">
+                            <a href="javascript:;" id="js_reward_total"></a>&nbsp;<span id="js_reward_total_text">人赞赏</span>
+                        </span>
+                        </p>
+                        
+                        <div id="js_reward_list" class="reward_user_list"></div>
+                        <div id="js_reward_pagination" class="simple_pagination" style="display: none;">
+                          <button disabled class="btn_sp_prev js_reward_pagination_prev">上一页</button>
+                          <span class="sp_page_num_area">
+                            <a class="sp_page_current js_reward_pagination_curpage" href="javascript:;">1</a>&#47;<span class="sp_page_num js_reward_pagination_totalpage">3</span>
+                          </span>
+                          <button class="btn_sp_next js_reward_pagination_next">下一页</button>
+                        </div>
+                    </div>
+                </div>
+                                <div class="reward_qrcode_area reward_area tc" id="js_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                                        <p class="reward_tips"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" id="js_reward_qrcode_img"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://note.youdao.com/share/?id=945e91c54113d0970f031653696e5ba1\x26amp;type=note#/' target='_blank'>
+			阅读全文
+		</a>
+	</div>
+</body>

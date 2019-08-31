@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		专家系统设计的事实和规则——洪峰老师讲创客道（十一）
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=416710437&amp;idx=1&amp;sn=3f64a3d4addee242a6f278d5fd725cb1&amp;chksm=764952c0413edbd616cc6ba5301a04ee5eb331a374c3f6cb8b898f5c40e69de198b971365cbf&amp;scene=27#wechat_redirect&cpage=76' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">专家系统设计的事实和规则——洪峰老师讲创客道（十一）</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        洪峰
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-03-20</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <p style="text-indent:33px"><span style=""></span></p><p><mpvoice frameborder="0" class="res_iframe js_editor_audio audio_iframe" src="/cgi-bin/readtemplate?t=tmpl/audio_tmpl&amp;name=%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9311&amp;play_length=19:35" name="%E6%B4%AA%E5%B3%B0%E8%80%81%E5%B8%88%E8%AE%B2%E5%88%9B%E5%AE%A2%E9%81%9311" play_length="1175000" voice_encode_fileid="MzI3NzA5MzUxNF80MTY3MTA0MzU="></mpvoice></p><p style="text-indent:33px"><span style=""></span><br  /></p><p style="text-indent:33px"><span style="">在上一节的讲课中，我以一个具体的人工智能的专家系统的案例来说明了可能事件的逻辑与编程语言的内在联系，我已经讲过这两方面是同一个创业活动的两个方面。今天，人类社会已经进入了信息时代、网络时代，在这个时代呢，有一个术语叫做“知识经济得到了西方精英阶层的普遍接受”。虽然，今天关于知识经济究竟是什么，还没有给出一个清晰的、一致的定义。但是，它以已经成为当今人类社会发展的一个经济发展模式，这个模式是以创新力为驱动，不断地发现、开发新的经济增长点，他已经成为一个非常重要的模式，对于当今的中国及未来</span><span style="">中国的发展，具有至关重要的意义。</span></p><p style="text-indent:33px"><span style=""><br  /></span></p><p style="text-indent:33px"><span style="">那么我们从编程语言的角度来看，就是说，我们要不断地利用人工智能技术去做一些新的创业项目，这就是我们创客道鼓吹的一个主要观点。因为人工智能技术是人类财富新的生产方式，这个观点是被学术界精英广泛认可的一个观点。现在让我们看看究竟如何对eval和apply这两个高阶旋子组成的基本求值器进行修改来支持逻辑程序的设计，这个问题在紫皮书的第四章第四节有一个初步的、但是比较深入的一个讨论，这里，我来谈谈我的新的一些看法。</span></p><p style="text-indent:33px"><span style=""><br  /></span></p><p style="text-indent:33px"><span style="font-size: 16px;"><span style="">前面我已经讲到，一个专家系统的设计，它应该在这个专家系统里面组织、事实还有规则，并且基于事实和规则提供一个对外服务的接口。而事实与规则的表达究竟如何完成，我们可以用list，就是列表这个数据结构来进行刻画。对于一个事实来讲，比如说我在瑞士的通信地址是瑞士苏黎世街道名称和门牌号码，那么，我们可以用一个列表这样来写，首先左括弧，然后放上address，表示我在瑞士通讯地址的一个程序，然后，第二个元素，我们也可以用一个值表，就是我的名字，我把洪峰放在第二个元素里面，这第二个元素是一个值表，也是一个列表，把它嵌套在address这个列表里面去，第三个就是我刚才讲的那个地址，</span><span style="">&nbsp;</span><span style="">Switzerland街道名称和门牌号码，这是我的街道、门牌号码，可以放到第三个元素里面去，然后用括弧把它括起来。大家看看这样一个列表，是不是里面有一个我们原来讲的Plist或者Alist呢？如果你这样想的话，那就对了。前面的第一个元素address是我们要限定的一个对象，然后后面的所有值表都是对地址对象进行说明的那些部分。换句话讲，我们可以把我刚才提到的一个列表视为对address这个符号的定义，在这个符号中，这个符号的名称叫做address，而其它所有值表，我们可以把它当作一个Plist，就是我前面提到的Proper&nbsp;List，在这个列表里面，如果是用老的Emacs&nbsp;Lisp或者Common&nbsp;Lisp写的话，那我们可以把它作为一个符号加上Plist来实现，那么这个时候，这些Plist叫做内禀性，我前面已经提到过这个概念，请大家复习一下。如果使用Scheme来写的话，我们可以把这个列表称之为由一个变量，由这个address这个变量或者这个符号加上一个Alist合成的。这样的话，在Scheme里面我们找到一个非常简单可行的办法，来对一个事实进行程序，前面我已经讲过，紫皮书里面提到断言以及形式逻辑里面提到的判断命题，我们统统在专家系统设计里面称之为事实，那么一个专家系统可能有非常多的事实，包含在这个数据库里面<span style="">，<span style="">这个是不用奇怪的。</span></span></span></span></p><p style="text-indent:33px"><span style="font-size: 16px;"><span style=""><span style=""><span style=""><br  /></span></span></span></span></p><p style="text-indent:33px"><span style="">然后我们再看看规则，前面我讲过，规则是把一些事实用一些逻辑符号进行组织起来，规则的第一个元素放在这个列表里面，第一个元素叫做rule，这个我在前面已经讲过，那么第二个元素就是结论，第三个元素就是body，大家看，这三个部分也可以把它视为Plist或者Alist，一样的，所以说，从我们的句法形式构造来看，事实的说明和规则的定义，它们两者在Lisp语言里面都是可以通过列表而来实现的。当我们来用list来定义facts和rules之后，我们可以看看如何来对query（查询）来提供支持，这个问题在紫皮书也有非常多的讨论，它把它分为简单查询、复合查询还有合一的一些情形出现，那么，从我的观点来看，所有的这些查询，实际上都是在对一个符号的内禀性进行计算。这个内禀性的概念我以前提到过，那就是把第一个元素作为一个符号的话，我们要检查它的各个属性，Lisp语言提供了很多的函数来帮助程序员对符号的内禀性中的属性进行计算，包括属性的值，还有属性的名称，这两者进行计算。</span></p><p style="text-indent:33px"><span style=""><br  /></span></p><p style="text-indent:33px"><span style="">那么请大家回忆一下，在编译原理里面，当我们完成对词法分析和句法分析之后，我们就开始进入到第三个阶段，也就是语义分析的阶段。在语义分析阶段里面，我们会涉及到对禀性的计算，无论是内禀性还是下禀性。请大家注意，在这个专家系统中，所存放的这些事实和规则，它们之间并不一定都是孤立存在的，在这个事实和规则之间，往往形成依赖关系或者顺序的关系。所以，从这个意义上来讲，在专家系统中，所存放的事实与规则会形成一个网状结构，这个观点请大家建立起来。</span></p><p style="text-indent:33px"><span style=""><br  /></span></p><p style="text-indent:33px"><span style="">从这个图论的角度来看，当一个图中的节点数目增加的时候，那么它关于这个查找、排序所产生的计算量会增加的非常快，一旦节点的数目超过一定数目，往往形成组合爆炸。所以说，为了应对组合爆炸，使用机械的方法，一个一个节点地进行遍历，这个效率是不行的，无论你计算机硬件功能多么发达，都会赶不上需求的增长，所以我们在人工智能里面会继续研发很多算法，来减少计算的规模或者计算量，这是人工智能程序设计的一个要点。那么简单的讲，有这么几个方法来避免组合爆炸，一个就是，我要做规划，通过适当的规划来减少计算量、计算规模；另外一种方法就是，我通过把原有的网络进行沙化，也就是把它打散，也就是化整为零，通过沙化之后，网络的规模就变小了，因为这个时候我要处理的数据不是整个数据集，而是数据集中的一个子集。当然，如何形成沙化，可以有很多的文章可做。</span></p><p style="text-indent:33px"><span style=""><br  /></span></p><p style="text-indent:33px"><span style="">为了说明我刚提到的这个两大类方法，我觉得可以举个例子向大家说明一下，比如说我们要旅行从北京去广州，那么北京到广州的交通网络路径是很多的。比方说，你可以开车去、可以做火车去、可以做飞机去，无论是公路网、铁路网还是航空网，北京到广州的路线是非常多的。比如说，我可以先飞到上海，然后从上海再飞到广州，也可以从北京出发直接飞到广州，也可以先从北京到成都，再由成都到武汉，再由武汉到广州，这样路线就非常多了，但是如果用规划的方法来做，我从北京到广州之间来选一些节点，我只从这些节点来考虑我的旅行计划，那么中国交通网络的其他节点都被排除掉了，那么这个时候的计算量是非常小的，这是关于规划的一个案例。</span></p><p style="text-indent:33px"><span style=""><br  /></span></p><p style="text-indent:33px"><span style="">而关于沙化的案例，我们可以按照交通工具这一个指标，可以把所有的交通网络打散。举例，比如刚提到的公路网，这是其中一种类型；我们又可以按照铁路网，这又是一个类型；我们又可以按照航空方式，这又是一个类型，所以当你只考虑铁路网的时候，你从北京到广州我们可以做高铁去，速度是比较快的，现在可能不到10个小时从北京到达广州，当然你也可以飞机3或4小时到。所以当你只采用铁路网的时候，那么其他的网路，比如公路网和航空网就被排除掉了，那么那些方案都不被你考虑了，这个时候你只需集中精力考虑去坐火车从北京到达广州，那么这个沙化，会大大减少计算量。</span></p><p style="text-indent:33px"><span style=""><br  /></span></p><p style="text-indent:33px"><span style="">有了我刚刚说到的，有了查询语言的设计，这些方法以及对专家系统数据库里面的数据进行查找的方法，那么我们的问题就开始变成了这么一个样子：用户的查询可能含有一些变量，一个或者一些变量，也可能含有一些给定的参数值，而用户的查询传递给专家系统之后，那么专家系统必须根据用户查询的条件来搜索由事实与规则构成的数据库，那么问题也就变成了，如何在数据库里面选择符合要求的数据集合。在这个情况下，前面提到的Scheme求值器的第一种变形惰性求值和第二种变形非确定行计算，关于回朔的概念，我们都可以用上。也就是说，我们先从专家系统的数据库找出符合我们某一个查询条件的所有匹配项，这是一组数据集合，利用这组数据项去匹配用户查询里的条件，如果成功之后，因为查询里面可能还有许多变量，然后再以选择到的数据去从专家系统数据库再进行查找符合第二个变量的数据集，然后一直循环下去，把所有满足查询条件的数据节点都能遍历到，这个模式就是逻辑计算的本质。</span></p><p style="text-indent:33px"><span style="font-size: 16px;"><span style="">在这个过程中，用户的查询和数据库的反应有点像两个棋手的博弈，棋手甲向棋手乙出了一招，然后棋手乙会根据自己的算法给出一个反应，然后棋手甲根据棋手乙下的这个反应，然后进行下一步的反应，它实际上是一个博弈的过程，这个时候模型是不是跟apply和eval这个模型求值实质非常相像。所以说，利用这种相似性，我们可以对基本的求值器进行修改，但是这次的修改的时候，得到的这个变形的差异和基本的求值器模型会非常大，因为这个时候，阴和阳这两者，如果把专家系统视为阴，把用户的查询视为阳的话，那么在阴和阳的比对，这个</span><span style="">泛导，</span><span style="">它可能有非常多的轮回。</span></span></p><p style="text-indent:33px"><span style="font-size: 16px;"><span style=""><br  /></span></span></p><p style="text-indent:33px"><span style="font-size: 16px;"><span style="">所以说，在这个阴阳</span><span style="">泛导</span><span style="">的过程中，我们完成对计算收敛的判定，一旦计算收敛的判定，也就是说，用户提供的所有查询都被完成之后，计算就结束了。同时我请提醒大家注意，就是一个专家系统并不是无所不能的，它不是万能的，特别是在专家系统在刚刚设计的时候，它所处理的那些案例是比较少的，比方说人工智能的程序和世界象棋冠军下棋博弈。刚开始的时候，世界冠军总是获胜的，计算机程序没有获胜的机会，但是计算机科学家会不断的向计算机里面添加新的招数，也就是我们讲的</span><span style="">事实与新</span><span style="">的规则，这样不断增长的计算机程序，它的专家系统规模不断扩大的，那么这个规模一旦扩大到一个临界点，我们叫做阈值，那么这个时候，它的知识库会比世界冠军知识库会更大，这个时候，世界象棋冠军无论是卡斯帕罗夫（Garry&nbsp;Kasparov）还是卡尔波夫（Anatoly&nbsp;Yevgenyevich&nbsp;Karpov）都不是计算机这个程序的对手了，所以他会败下阵来。当然这个卡尔波夫和卡斯帕罗夫有另外一个观点，人和计算机的博弈是不对等的，因为计算机永远不会疲劳，它只会消耗电能，所以在这种情况下，而人是处在一个被动的位置上，这种观点我也同意。但是我们从人工智能这个程序设计来讲，由此判定，计算机下棋的能力已经超过了任何一个世界冠军，这一点是毋庸置疑的。</span></span></p><p style="text-indent:33px"><span style="font-size: 16px;"><span style=""><br  /></span></span></p><p style="text-indent:33px"><span style="">由于这种技术的飞速进步，所以我在这里可以提出这样一个观点，这个下棋作为一种娱乐活动，它接着会继续存在下去，但是，如果把下棋作为一种职业去参与的话，那我现在看来已经没有这个必要了，因为任何一个世界冠军都是计算机程序的手下败将，已经没有这个必要了。类似的道理，也可以推广到许许多多的其他领域里面去，请大家回顾一下，我在这本书第二章讲山水鱼鸟的时候，那里面有那么多的问题有待我们去做出解答的方案，那么有了这种新的继续之后，我们可以把人工智能继续派上用场。</span></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">洪峰</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://www.52pojie.cn/' target='_blank'>
+			吾爱破解论坛
+		</a>
+	</div>
+</body>

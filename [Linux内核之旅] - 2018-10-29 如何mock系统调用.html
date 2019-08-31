@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		如何mock系统调用
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=2664605853&amp;idx=1&amp;sn=d84ec1876b32a6de354e2df3c1e2d79b&amp;chksm=f04d8578c73a0c6e635619dad5511b28e8b548bdffb1d78cfd8a227939295c3120af0b19c931&amp;scene=27#wechat_redirect&cpage=14' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">如何mock系统调用</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        zhangyifei216
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2018-10-29</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <section class="KolEditor" data-role="outer" label="Powered by 365editor" data-tools="365编辑器" style="display:none;"></section><section class="KolEditor" data-role="outer" label="Powered by 365editor" style="font-family:微软雅黑;font-size:16px;"><p><strong>背景</strong></p><p>   Linux下开发存储系统、网络库的时候会用到一系列Linux的系统调用，每一个系统调用都有一些出错的场景，有些场景很极端，比如内存使用达到上限、磁盘写满等，如果对其进行测试的话，很难去构造这样的一个场景，这个时候集成测试就显得力不存心了，只能靠单元测试来覆盖这些场景。现在的问题就是如何去mock这些系统调用，然后通过程序返回对应场景的错误码来模拟各种场景。也就是将对系统函数的依赖注入到程序中。</p><p><strong>系统函数的依赖注入</strong></p><p>  目前实现系统函数的依赖注入的手段有很多，分为编译期注入，和运行期注入，至于什么是依赖注入可以参考知乎的一篇文章如何用最简单的方式解释依赖注入，下面介绍几种依赖注入的方法:</p><p><br  /></p><ul class=" list-paddingleft-2" style="list-style-type: square;"><li><p>虚函数实现依赖注入(运行期注入)</p></li></ul><p>   使用传统的面向对象的手法，借助运行期的延迟绑定实现注入和替换，自己实现一个System接口类，把程序用到的系统调用都用虚函数封装一层，然后在调用的时候不直接调用系统调用，而是调用的System对应的方法。这样代码的主动权就交给了System接口类了。写单元测试的时候将这个System接口类替换成我们自己的mock对象就可以。完整的示例代码如下:</p><pre style="padding: 6px 10px;border-width: 1px;font-size: 13px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: solid;border-color: rgb(204, 204, 204);line-height: 19px;overflow: auto;border-radius: 3px;margin-top: 0px !important;margin-bottom: 0px !important;"><code style="font-size: 12px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: none;background-color: transparent;border-radius: 3px;background-image: initial;background-attachment: initial;background-origin: initial;background-clip: initial;border-width: initial;border-color: initial;">// system.h
+class System {
+public:
+virtual int &nbsp;open(const char *path, int oflag, ...) = 0;
+virtual ssize_t read(int fildes, void *buf, size_t nbyte) = 0;
+virtual ssize_t write(int fildes, const void *buf, size_t nbyte) = 0;
+virtual int close(int fildes) = 0;
+
+static System* GetInstance();
+static void set_instance(System* instance) {
+ &nbsp;instance_ = instance;
+}
+
+private:
+static System* instance_;
+};
+// 具体的实现
+class FileOps : public System {
+public:
+int open(const char *path, int oflag, ...) override;
+ssize_t read(int fildes, void *buf, size_t nbyte) override;
+ssize_t write(int fildes, const void *buf, size_t nbyte) override;
+int close(int fildes) override;
+static FileOps* GetInstance();
+};
+
+// system.cc
+System* System::instance_ = nullptr;
+// 默认实现是FileOps，mock的时候通过改变这个默认实现从而把主动权从默认实现转到了mock的实现
+System* System::GetInstance() { 
+if (!instance_) {
+ &nbsp;instance_ = FileOps::GetInstance();
+}
+assert(instance_);
+return instance_;
+}
+
+int FileOps::open(const char *path, int oflag, ...) {
+return ::open(path, oflag, 0777);
+}
+
+ssize_t FileOps::read(int fildes, void *buf, size_t nbyte) {
+return ::read(fildes, buf, nbyte);
+}
+
+ssize_t FileOps::write(int fildes, const void *buf, size_t nbyte) {
+return ::write(fildes, buf, nbyte);
+}
+
+int FileOps::close(int fildes) {
+return ::close(fildes);
+}
+
+FileOps* FileOps::GetInstance() {
+static FileOps sys;
+return &amp;sys;
+}
+// 正常调用 main.cc
+int main() {
+assert(System::GetInstance() != nullptr);
+int fd = System::GetInstance()-&gt;open("txt", O_RDWR|O_CREAT, 0777);
+assert(fd &gt; 0);
+int ret = System::GetInstance()-&gt;write(fd, "12345", 5);
+assert(ret &gt; 0);
+ret = System::GetInstance()-&gt;close(fd);
+assert(ret == 0);
+
+return 0;
+}
+
+// 测试的时候调用如下，模拟一个IO错误
+
+// 一个mock版本的实现 test.cc
+class MockFileOps : public System {
+public:
+int open(const char *path, int oflag, ...) override;
+ssize_t read(int fildes, void *buf, size_t nbyte) override;
+ssize_t write(int fildes, const void *buf, size_t nbyte) override;
+int close(int fildes) override;
+static MockFileOps* GetInstance();
+};
+
+int MockFileOps::open(const char *path, int oflag, ...) {
+return ::open(path, oflag, 0777);
+}
+
+ssize_t MockFileOps::read(int fildes, void *buf, size_t nbyte) {
+return ::read(fildes, buf, nbyte);
+}
+// 模拟的一个IO错误
+ssize_t MockFileOps::write(int fildes, const void *buf, size_t nbyte) {
+errno = EIO;
+return -1;
+}
+
+int MockFileOps::close(int fildes) {
+return ::close(fildes);
+}
+
+MockFileOps* MockFileOps::GetInstance() {
+static MockFileOps sys;
+return &amp;sys;
+}
+
+int main() {
+// 改变默认实现
+System::set_instance(MockFileOps::GetInstance());
+assert(System::GetInstance() != nullptr);
+int fd = System::GetInstance()-&gt;open("txt", O_RDWR|O_CREAT, 0777);
+assert(fd &gt; 0);
+int ret = System::GetInstance()-&gt;write(fd, "12345", 5);
+assert(ret == &nbsp;-1); // 发生错误
+perror("write");
+ret = System::GetInstance()-&gt;close(fd);
+assert(ret == 0);
+
+return 0;
+}</code></pre><ul class=" list-paddingleft-2" style="list-style-type: square;"><li><p>编译期延迟绑定(编译期注入)</p></li></ul><p>   创建一个命名空间，创建一系列和系统调用同名的方法，间接的调用系统调用，写测试代码的时候重新定义这些方法，这就相当于一份代码有了两份实现，根据编译的时候链接哪份代码来决定是否启用mock，这个看起来要比基于虚函数的要简单的多了。完整的示例代码如下:</p><pre style="padding: 6px 10px;border-width: 1px;font-size: 13px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: solid;border-color: rgb(204, 204, 204);line-height: 19px;overflow: auto;border-radius: 3px;margin-top: 0px !important;margin-bottom: 0px !important;"><code style="font-size: 12px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: none;background-color: transparent;border-radius: 3px;background-image: initial;background-attachment: initial;background-origin: initial;background-clip: initial;border-width: initial;border-color: initial;">// file_ops.h
+namespace FileOps {
+int &nbsp;open(const char *path, int oflag, ...);
+ssize_t read(int fildes, void *buf, size_t nbyte);
+ssize_t write(int fildes, const void *buf, size_t nbyte);
+int close(int fildes);
+} &nbsp;// namespace FileOps
+
+// file_ops.cc
+namespace FileOps {
+
+int open(const char *path, int oflag, ...) {
+return ::open(path, oflag, 0777);
+}
+
+ssize_t read(int fildes, void *buf, size_t nbyte) {
+return ::read(fildes, buf, nbyte);
+}
+
+ssize_t write(int fildes, const void *buf, size_t nbyte) {
+return ::write(fildes, buf, nbyte);
+}
+
+int close(int fildes) {
+return ::close(fildes);
+}
+
+} &nbsp;// namespace FileOps
+
+// mock_file_ops.cc
+
+namespace FileOps {
+
+int open(const char *path, int oflag, ...) {
+return ::open(path, oflag, 0777);
+}
+
+ssize_t read(int fildes, void *buf, size_t nbyte) {
+return ::read(fildes, buf, nbyte);
+}
+// 这里做了mock，改变了write的行为
+ssize_t write(int fildes, const void *buf, size_t nbyte) {
+errno = EIO;
+return -1;
+}
+
+int close(int fildes) {
+return ::close(fildes);
+}
+
+} &nbsp;// namespace FileOps
+
+// 测试程序
+int main() {
+int fd = FileOps::open("txt", O_RDWR|O_CREAT, 0777);
+assert(fd &gt; 0);
+int ret = FileOps::write(fd, "12345", 5);
+if (ret == -1) {
+ &nbsp;perror("write:");
+}
+ret = FileOps::close(fd);
+assert(ret == 0);
+return 0;
+}</code></pre><p style="white-space: normal;"><span style="color: rgb(79, 79, 79);font-family: -apple-system, &quot;SF UI Text&quot;, Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;, &quot;WenQuanYi Micro Hei&quot;, sans-serif;font-size: 16px;font-variant-ligatures: common-ligatures;background-color: rgb(255, 255, 255);">&nbsp; &nbsp; &nbsp; &nbsp;两种方法都比较好实现，前提是代码在一开始的时候就考虑过这些因素，并按照上述方式来编写，然后现实总是残酷的，面对一个已经编码完成的程序该如何为其编写系统调用的mock呢?就需要用到链接期垫片(link seam)的方法。</span></p><p>链接期垫片(link seam)</p><p>   连接器垫片的方式一般情况有三种，如下:</p><p><br  /></p><ul class=" list-paddingleft-2" style="list-style-type: square;"><li><p>Shadowing functions through linking order (override functions in libraries with new definitions in object files)</p></li><li><p>Wrapping functions with GNU’s linker option -wrap (GNU Linux only)</p></li><li><p>Run-time function interception* with the preload functionality of the dynamic linker for shared libraries (GNU Linux and Mac OS X only)</p></li></ul><p>   第一种就是通过链接顺序来改变链接的对象，将要mock的对象重新实现一遍，链接的时候链接器会优先使用我们自己实现的同名函数，这样就可以将目标替换为要mock的对象了，完整代码如下:</p><pre style="padding: 6px 10px;border-width: 1px;font-size: 13px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: solid;border-color: rgb(204, 204, 204);line-height: 19px;overflow: auto;border-radius: 3px;margin-top: 0px !important;margin-bottom: 0px !important;"><code style="font-size: 12px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: none;background-color: transparent;border-radius: 3px;background-image: initial;background-attachment: initial;background-origin: initial;background-clip: initial;border-width: initial;border-color: initial;">// &nbsp;一个待测试的对象
+int main() {
+int fd = ::open("txt", O_RDWR|O_CREAT, 0777);
+assert(fd &gt; 0);
+int ret = ::write(fd, "12345", 5);
+if (ret == -1) {
+perror("write:");
+}
+ret = ::close(fd);
+assert(ret == 0);
+return 0;
+}
+
+// 对目标进行mock，mock的对象是write系统调用
+typedef ssize_t (*write_func_t)(int fildes, const void *buf, size_t nbyte);
+// 通过dlsym的RTLD_NEXT获取write的下一个定义，也就是libc中的定义，如果想在mock中
+// 调用真实的write系统调用不能直接用write，因为write已经被mock了，这样会导致一直递归下去
+// 所以这里通过获取真实的write调用的地址，从而难道write的调用入口，这样既可以在mock中调用
+// 真实的write调用了
+write_func_t old_write_func =
+reinterpret_cast&lt;write_func_t&gt;(dlsym(RTLD_NEXT, "write"));
+
+// 要mock的对象
+extern "C" ssize_t write(int fildes, const void *buf, size_t nbyte) {
+errno = EIO;
+return -1;
+}</code></pre><p style="white-space: normal;"><span style="color: rgb(79, 79, 79);font-family: -apple-system, &quot;SF UI Text&quot;, Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;, &quot;WenQuanYi Micro Hei&quot;, sans-serif;font-size: 16px;font-variant-ligatures: common-ligatures;background-color: rgb(255, 255, 255);"></span><br  /></p><p>另外一种就是Linux下独有的，通过gcc的–wrap选项可以指定要wrap的系统调用，那么相应的就回去调用带有__wrap前缀的对应系统调用实现，比如–wrap=write，那么在链接的时候就会链接到 __wrap_write，而真实的write调用变成了__real_write。完整代码例子如下:</p><pre style="padding: 6px 10px;border-width: 1px;font-size: 13px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: solid;border-color: rgb(204, 204, 204);line-height: 19px;overflow: auto;border-radius: 3px;margin-top: 0px !important;margin-bottom: 0px !important;"><code style="font-size: 12px;font-family: Consolas, &quot;Liberation Mono&quot;, Courier, monospace;border-style: none;background-color: transparent;border-radius: 3px;background-image: initial;background-attachment: initial;background-origin: initial;background-clip: initial;border-width: initial;border-color: initial;">// 测试程序
+int main() {
+int fd = ::open("txt", O_RDWR|O_CREAT, 0777);
+assert(fd &gt; 0);
+int ret = ::write(fd, "12345", 5);
+if (ret == -1) {
+perror("write:");
+}
+ret = ::close(fd);
+assert(ret == 0);
+return 0;
+}
+
+// mock对象
+extern "C" ssize_t __real_write(int fildes, const void *buf, size_t nbyte);
+
+extern "C" ssize_t __wrap_write(int fildes, const void *buf, size_t nbyte) {
+ __real_write(fildes, buf, nbyte);
+errno = EIO;
+return -1;
+}</code></pre><p>最后一种就是给系统调用提供一份mock实现，并编译成动态库，然后通过LD_LIBRARY_PATH改变加载动态库的搜索路径让其优先搜索mock版本的动态库，或者是设置LD_PRELOAD环境变量，预先加载mock的动态库。</p><p><br  /></p><p>附录</p><p>本文所有代码见 https://github.com/zyfjeff/mock</p><p><br  /></p><p style="white-space: normal;"><br  /></p></section><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">zhangyifei216</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='https://blog.csdn.net/zhangyifei216/article/details/78005335' target='_blank'>
+			阅读全文
+		</a>
+	</div>
+</body>

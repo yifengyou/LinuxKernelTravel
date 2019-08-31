@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'>
+	<title>
+		基于IntelVT技术的Linux内核调试器的设计与实现（二）-原理
+	</title>
+	<script src='https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js'>
+	</script>
+	<style>
+		a {color: #607fa6;text-decoration:none;word-wrap:break-word;word-break:break-all;}.rich_media_title{padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #e7e7eb;font-weight:400;} .rich_media_meta_list{font-size:14px;margin-bottom: 22px;}
+		.rich_media_meta{display:inline-block;vertical-align:middle;margin-right:8px;margin-bottom:10px;font-size:14px;}.rich_media_meta_text{color:#8c8c8c;color:rgba(0, 0, 0, 0.3)}.rich_media_meta_list
+		em {font-style: normal;}@media screen and (max-width:768px){.rich_media{position:
+		relative;padding: 20px 15px 15px;background-color: #fff;}}.rich_media_content{text-align:justify;} .rich_media_content * {max-width:100%!important;box-sizing: border-box!important;-webkit-box-sizing:
+		border-box!important;word-wrap: break-word!important;}.rich_media_content
+		blockquote {margin: 0;padding-left: 10px;border-left: 3px solid #dbdbdb;}.rich_media_content
+		.list-paddingleft-2 {padding-left: 2.2em;}a.rich_media_meta_nickname{display: none;}@media screen and (min-width:1025px){.rich_media{position:relative;}a.rich_media_meta_nickname{display:inline-block!important;}span.rich_media_meta_nickname
+		{display: inline-block!important;}.rich_media {width:677px;margin-left:auto;margin-right:auto;}}a.fwjm{font-size: 12px;color: #ececec;}.tenvideo_player {position: relative;width:
+		100 %;height: 100 %;margin: auto;background: #000;}* {margin:0px;padding:0px;} body{line-height: 1.6;letter-spacing: .034em;}
+		.dy_all {text-align: center;margin: 30px 0;} .dy_all a {display: inline-block;height:
+		38px;line-height: 38px;padding: 0 18px;background-color: #009688;color:
+		#fff;white-space: nowrap;font-size: 14px;border: none;border-radius: 2px;cursor:
+		pointer;text-align: center;outline: 0;-webkit-appearance: none;transition:
+		all .3s;-webkit-transition: all .3s;box-sizing: border-box;} img{max-width: 677px!important;}
+
+		.crawler-info{padding: 8px 0;} .article-link>img{margin-left: 20px;width: 16px;}
+		.comment-item::before,.comment-item::after{content:'';display:block;height:0;visibility:hidden;clear:both;*zoom:1;} .comment-item{margin-bottom:30px;}
+		.avatar{width:12%; padding-right:10px;float:left;box-sizing:border-box;} .avatar img{width:100%;}
+		.comment-body{float:left;width:88%;} .comment-body .comment-info{color:#b3b3b3;margin-bottom:4px;margin-top: -5px;} .comment-body .comment-info>span:last-child{float:right;} 
+		.comment-author{border-left:4px solid green;padding-left:6px;margin:8px 0;}
+
+		@media screen and (max-width: 420px) {.article-link>img {margin-left: 0px;}}
+		@media screen and (min-width: 480px) {.avatar {width: 9%;}.comment-body {width: 91%;}}
+	</style>
+</head>
+<body>
+	<div id='js_article' class='rich_media'>
+		<div class="crawler-info">
+			<a href='https://www.52pojie.cn' class='fwjm' target='_blank'>
+				提供的爬取软件来源于：52pojie.cn@夜泉 免费下载使用
+			</a>
+			<a href='https://mp.weixin.qq.com/s?__biz=MzI3NzA5MzUxNA==&amp;mid=415366529&amp;idx=1&amp;sn=0961479d362776cbc1befe596c074ec3&amp;chksm=765ed064412959720e1d72bed7900d3bea3b3f36715cca9322d0936a430750a3604e5a0bcb46&amp;scene=27#wechat_redirect&cpage=81' target='_blank' class="article-link">
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAMAAABA3o1rAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4QUEzQzVDNkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4QUEzQzVENkNGQjExRTk5NzNBQ0VBMjgzMjY1NjkwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OThBQTNDNUE2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OThBQTNDNUI2Q0ZCMTFFOTk3M0FDRUEyODMyNjU2OTAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5TKSKsAAAAclBMVEUuLi77+/stLS1VVVXx8fFOTk7s7Ozt7e1qamp5eXlNTU2WlpZFRUU6Ojrq6urn5+d/f3/8/Pw9PT0/Pz+YmJg8PDyZmZlAQECfn5+QkJBBQUFra2vo6OhDQ0OSkpKenp5WVlY+Pj7r6+tpaWksLCz///9o6ILHAAAAJnRSTlP/////////////////////////////////////////////////AKd6gbwAAACNSURBVHjajJHpEoIwDISDVMotcnuCmLz/K9KCdlqO6v7p7Mw3yW4KxG85fnUkIVfZ5J0SsCtqcgRw0HzjQYY2AAOIdRuaK4ReAPJ5nmglL5qICahpU60C0uXguQ9TgIwGJoDnT9z/ABmxt60ot0N2CsDLfb9mvBxs9ql+n5o9bEDBgbif7/1F4g80CjAAqrVAnnsm5f8AAAAASUVORK5CYII=" />
+			</a>
+		</div>
+		<div id="img-content">
+
+                
+                <h2 class="rich_media_title" id="activity-name">基于IntelVT技术的Linux内核调试器的设计与实现（二）-原理</h2>
+                <div id="meta_content" class="rich_media_meta_list">
+                                                                                                            <span class="rich_media_meta rich_media_meta_text">
+                                                        MXP
+                                                    </span>
+                                                                
+                                        <span class="rich_media_meta rich_media_meta_nickname" id="profileBt"><a href="javascript:void(0);">Linux内核之旅</a>
+                      <div id="js_profile_qrcode" class="profile_container" style="display:none;">
+                          <div class="profile_inner">
+                              <strong class="profile_nickname">Linux内核之旅</strong>
+                              <img class="profile_avatar" id="js_profile_qrcode_img" src="" alt="">
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">微信号</label>
+                              <span class="profile_meta_value">LinuxKernelTravel</span>
+                              </p>
+
+                              <p class="profile_meta">
+                              <label class="profile_meta_label">功能介绍</label>
+                              <span class="profile_meta_value">Linux内核之旅</span>
+                              </p>
+                              
+                          </div>
+                          <span class="profile_arrow_wrp" id="js_profile_arrow_wrp">
+                              <i class="profile_arrow arrow_out"></i>
+                              <i class="profile_arrow arrow_in"></i>
+                          </span>
+                      </div>
+                    </span>
+
+
+                    <em id="publish_time" class="rich_media_meta rich_media_meta_text">2016-01-06</em>
+
+
+
+
+
+                </div>
+
+                
+                
+                                
+                
+                
+                
+                                                
+                                                                
+                                
+                
+                <div class="rich_media_content " id="js_content">
+                    
+
+                    
+
+                    
+                    
+                    <h2><span style=";font-weight:bold;font-size:19px">1. </span><span style=";font-family:黑体;font-weight:bold;font-size:19px">传统调试器原理</span></h2><p style="text-indent:32px"><span style=";font-family:宋体;font-size:16px">传统的内核调试器在实现断点功能时，都是修改中断向量表，捕获</span><span style=";font-size:16px">CPU</span><span style=";font-family:宋体;font-size:16px">的单步异常和断点异常来实现的。被调试软件只要检测中断向量表是否被修改就可以判断当前是否运行了内核调试器。<br  /></span></p><p><img data-s="300,640" data-type="png" src="data:image/PNG;base64,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 " src="SeWfibBcBT0FmseHPdWsZH7AqzeTBp2ZjXiaMvqooEyLWvPMcsdqErHRGZ9KzGDarSbUXLpFSJuFSluhVtrA5OIw"  data-ratio="0.4955947136563877" data-w="454"  /><br  /><span style="line-height: 1.6; font-family: 宋体;">图</span><span style="line-height: 1.6;">1 </span><span style="line-height: 1.6; font-family: 宋体;">原理图：操作系统正常的</span><span style="line-height: 1.6;">CPU</span><span style="line-height: 1.6; font-family: 宋体;">异常处理</span></p><p style="text-indent:32px"><img data-s="300,640" data-type="png" src="data:image/PNG;base64,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 " src="SeWfibBcBT0FmseHPdWsZH7AqzeTBp2ZjUkEK8PwpeooFHnhcHIMzcB99SVicPsdduyfzPwV9z6RBwXhH8licM30A"  data-ratio="0.5059288537549407" data-w="506"  /><br  /><span style="line-height: 1.6; font-family: 宋体;"> </span></p><p><span style=";font-family:宋体;font-size:16px"> 图</span><span style=";font-size:16px">2 </span><span style=";font-family:宋体;font-size:16px">原理图：传统调试器</span></p><h2><span style=";font-weight:bold;font-size:19px">2 </span><span style=";font-family:黑体;font-weight:bold;font-size:19px">硬件虚拟化技术的调试器原理</span></h2><p style="text-indent:32px"><span style=";font-family:宋体;font-size:16px">基于</span><span style=";font-size:16px">VT-x</span><span style=";font-family:宋体;font-size:16px">技术的内核调试器主要原理是创建一个虚拟机，将当前操作系统转置于虚拟</span><span style=";font-size:16px">CPU</span><span style=";font-family:宋体;font-size:16px">中运行。这时调试器属于</span><span style=";font-size:16px">VMM</span><span style=";font-family:宋体;font-size:16px">，客户机引发的</span><span style=";font-size:16px">CPU</span><span style=";font-family:宋体;font-size:16px">异常是会被</span><span style=";font-size:16px">VMM</span><span style=";font-family:宋体;font-size:16px">最先捕获到的。捕获异常并处理完毕后才会下发回客户机。调试器作为</span><span style=";font-size:16px">VMM</span><span style=";font-family:宋体;font-size:16px">只需处理与调试相关的单步和断点异常，并不需要做真正虚拟机做的大量虚拟工作。</span></p><p><img data-s="300,640" data-type="png" src="data:image/PNG;base64,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 " src="SeWfibBcBT0FmseHPdWsZH7AqzeTBp2ZjYbVletcMiaQVZho7jfqpmds3icHVFTYHrCHj0doXysRQyblqMNia1cbdA"  data-ratio="0.6572504708097928" data-w="531"  /></p><p><span style="line-height: 1.6; font-family: 宋体;">     图3</span><span style="line-height: 1.6;"> </span><span style="line-height: 1.6; font-family: 宋体;">原理图：基于虚拟化技术的调试器</span></p><p style="text-indent:32px"><span style=";font-family:宋体;font-size:16px">总的来说虚拟化调试器的最终实现是：不修改中断向量表，且优于操作系统捕获到异常，并且可以决定是否将异常下发到虚拟</span><span style=";font-size:16px">CPU</span><span style=";font-family:宋体;font-size:16px">（操作系统）。而实现的最重要思路就是利用硬件虚拟化技术创建虚拟</span><span style=";font-size:16px">CPU</span><span style=";font-family:宋体;font-size:16px">，并将当前物理</span><span style=";font-size:16px">CPU</span><span style=";font-family:宋体;font-size:16px">上运行的操作系统转到虚拟</span><span style=";font-size:16px">CPU</span><span style=";font-family:宋体;font-size:16px">中。实际上就是</span><span style=";font-size:16px">CPU</span><span style=";font-family:宋体;font-size:16px">控制权的转移，或者说是</span><span style=";font-size:16px">CPU</span><span style=";font-family:宋体;font-size:16px">上下文的转移。</span></p><p style="text-indent:32px"><span style=";font-family:宋体;font-size:16px"></span></p><h1 style="margin-bottom:21px"><span style=";font-family:黑体;font-weight:bold;font-size:20px">3. 开发环境搭建</span></h1><p style="text-indent:32px"><span style="font-size: 16px;"><span style="font-family: 宋体;">操作系统选择了</span>ubuntu 10.04 32<span style="font-family: 宋体;">位非</span>PAE<span style="font-family: 宋体;">版本。使用其它</span>32<span style="font-family: 宋体;">位</span>linux<span style="font-family: 宋体;">均可，没有额外特殊要求。</span></span></p><p style="text-indent:32px"><span style="font-size: 16px;"><span style="font-family: 宋体; font-size: 16px;">调试器需要在单核模式下运行，改变</span>grub<span style="font-family: 宋体; font-size: 16px;">配置文件，为</span>kernel<span style="font-family: 宋体; font-size: 16px;">加入</span>maxcpus=1<span style="font-family: 宋体; font-size: 16px;">这个参数。</span></span></p><p style="text-indent:32px"><span style="font-size: 16px;"><span style="font-family: 宋体; font-size: 16px;">开发环境为</span>gcc<span style="font-family: 宋体; font-size: 16px;">、</span>code::block<span style="font-family: 宋体; font-size: 16px;">、</span>yasm<span style="font-family: 宋体; font-size: 16px;">。</span></span></p><p style="text-indent:32px"><span style="font-size: 16px;">code::block<span style="font-family: 宋体; font-size: 16px;">是一款支持</span>C/C++ <span style="font-family: 宋体; font-size: 16px;">等多种语言编辑的跨平台集成开发环境。他有良好的用户接口，使用</span>apt-get install codeblock<span style="font-family: 宋体; font-size: 16px;">即可一步安装。</span></span></p><p style="text-indent:32px"><span style="font-size: 16px;">yasm<span style="font-family: 宋体; font-size: 16px;">是一款汇编编译器，完全支持</span>nasm<span style="font-family: 宋体; font-size: 16px;">语法，与微软的</span>masm<span style="font-family: 宋体; font-size: 16px;">语法基本相同。它支持</span>x86<span style="font-family: 宋体; font-size: 16px;">和</span>AMD64<span style="font-family: 宋体; font-size: 16px;">指令集，有</span>windows<span style="font-family: 宋体; font-size: 16px;">和</span>linux<span style="font-family: 宋体; font-size: 16px;">等多种操作系统下运行的版本。使用</span> apt-get install yasm <span style="font-family: 宋体; font-size: 16px;">也可一步安装。</span></span></p><p style="text-indent:32px"><span style=";font-family:宋体;font-size:16px"><br  /></span><br  /></p><p><br  /></p>
+                </div>
+                
+
+                
+  <div class="ct_mpda_wrp" id="js_sponsor_ad_area" style="display: none;"></div>
+
+
+                
+                <div class="read-more__area" id="js_more_read_area" style="display:none;">
+                    
+                </div>
+
+                
+                                <div class="reward_area tc reward_area_primary" id="js_preview_reward_author" style="display:none;">
+                    <div class="reward-avatar" style="display: none;" id="js_preview_reward_author_avatar">
+                        <img src="" alt="" id="js_preview_reward_author_head">
+                    </div>
+                    
+                                        <div class="reward-author" id="js_preview_reward_author_name">MXP</div>
+                                        <p class="reward_tips" id="js_preview_reward_author_wording" style="display:none;"></p>
+                    <p class="reward_button_wrp">
+                    
+                      <span class="reward_pop_panel">
+                        <img src="https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/home/index/pic_mp_app4290ba.png" alt="">
+                        <strong>扫一扫下载订阅号助手，用手机发文章</strong>
+                      </span>
+                        <a class="reward_button" id='js_preview_reward_author_link' href="##"><span id="js_preview_reward_link_text">赞赏</span></a>
+                    </p>
+                </div>
+
+                <div class="reward_qrcode_area reward_area tc" id="js_preview_reward_qrcode" style="display:none;">
+                    <p class="tips_global">长按二维码向我转账</p>
+                    <p id="js_preview_reward_ios_wording" class="reward_tips" style="display:none;"></p>
+                    <span class="reward_qrcode_img_wrp"><img class="reward_qrcode_img" src="res.wx.qq.com/mmbizwap/zh_CN/htmledition/images/pic/appmsg/pic_reward_qrcode.2x42f400.png"></span>
+                    <p class="tips_global">受苹果公司新规定影响，微信 iOS 版的赞赏功能被关闭，可通过二维码转账支持公众号。</p>
+                </div>
+                            </div>
+		<div class="comment">
+			<h3 style="margin:26px 0;font-weight:100;padding-bottom:4px;border-bottom:1px solid #ccc;">精选留言</h3>
+		    暂无...
+		</div>
+	</div>
+	<div class='dy_all'>
+		<a href='http://i.ijrou.com' target='_blank'>
+			我的博客
+		</a>
+	</div>
+</body>
